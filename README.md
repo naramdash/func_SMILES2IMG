@@ -31,31 +31,44 @@
 
 Supported on desktop Windows Excel versions featuring modern in-cell image capabilities (Microsoft 365, Office 2021/2024).
 
-### Step 1: Check your Excel bitness (32-bit vs. 64-bit)
+### ⚡ Method A: One-Click Automatic Installer (Recommended)
+
+Open PowerShell and run this **single command** to install and register everything automatically:
+
+```powershell
+irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+```
+
+> **What the installer automates:**  
+> 1. Detects your Excel architecture (32-bit vs. 64-bit)  
+> 2. Downloads and places the latest `.xll` into the official `%APPDATA%\Microsoft\AddIns` directory  
+> 3. Unblocks the file (`Unblock-File`) to remove Windows security flags  
+> 4. Registers the add-in in Excel options for persistent auto-loading  
+
+*(To uninstall anytime, simply run `.\uninstall.ps1` from the repository.)*
+
+---
+
+### 🖐️ Method B: Manual Step-by-Step Installation
+
+#### Step 1: Check your Excel bitness (32-bit vs. 64-bit)
 1. In Excel, go to **[File] → [Account] → [About Excel]**.
 2. Note whether the first line indicates **`32-bit`** or **`64-bit`**.
 
-### Step 2: Prepare the Add-in (.xll) file
-Download the single `.xll` file matching your Excel bitness from the [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest) page (or use the prebuilt files in `dist/`):
+#### Step 2: Prepare the Add-in (.xll) file
+Download the single `.xll` file matching your Excel bitness from the [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest) page (recommended location: `Win+R` ➔ `%APPDATA%\Microsoft\AddIns`):
 * **64-bit Excel:** [**`Smiles2Img-AddIn64-packed.xll`** (v1.0.0 Download)](https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.0.0/Smiles2Img-AddIn64-packed.xll)
 * **32-bit Excel:** [**`Smiles2Img-AddIn-packed.xll`** (v1.0.0 Download)](https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.0.0/Smiles2Img-AddIn-packed.xll)
 
 > [!TIP]
-> **Unblock downloaded file (Recommended):**  
-> If downloaded via browser or git archive, Windows may flag the file with a security block.  
+> **Unblock downloaded file (Essential):**  
+> Web downloads receive an NTFS `Mark of the Web` tag, which causes Excel to block the add-in.  
 > Right-click the downloaded `.xll` file → select **Properties** → check **Unblock** at the bottom of the General tab → click **OK**.
 
-> [!NOTE]
-> **100% Self-Contained Single-File:**  
-> The EPAM Indigo C++ native rendering engine and ExcelDna.IntelliSense library are fully embedded inside the packed `.xll`.  
-> No external DLLs are required alongside the add-in. On initial execution, native binaries are extracted once to `%LOCALAPPDATA%\Smiles2Img\native\`.
-
-### Step 3: Register as an Excel Add-in
+#### Step 3: Register as an Excel Add-in
 1. In Excel, go to **[File] → [Options] → [Add-ins]**.
 2. At the bottom, ensure **Manage: [Excel Add-ins]** is selected and click **[Go...]**.
-3. Click **[Browse...]** and select your downloaded XLL file:
-   * 64-bit: `Smiles2Img-AddIn64-packed.xll`
-   * 32-bit: `Smiles2Img-AddIn-packed.xll`
+3. Click **[Browse...]** and select your downloaded XLL file.
 4. Verify that `Smiles2Img-AddIn` is checked in the list and click **[OK]**.
 
 *(Once registered, the `=SMILES2IMG` function will automatically load every time Excel starts.)*

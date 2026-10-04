@@ -29,33 +29,46 @@
 
 ## 🚀 빠른 시작 (설치 방법)
 
-Windows 데스크톱 Excel(Microsoft 365, Office 2021/2024 등 셀 내 이미지 기능 지원 버전)에서 즉시 사용할 수 있습니다.
+Windows 데스크톱 Excel(Microsoft 365, Office 2021/2024 등 셀 내 이미지 기능 지원 버전)에서 사용하실 수 있습니다.
 
-### 1단계: 내 Excel 비트수(32비트 vs 64비트) 확인
+### ⚡ 방법 A: 원클릭 자동 설치 (가장 추천)
+
+PowerShell을 열고 아래 명령어 **한 줄만 실행**하면 모든 과정이 자동으로 완료됩니다:
+
+```powershell
+irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+```
+
+> **스크립트가 자동으로 처리하는 내용:**  
+> 1. 내 Excel 비트수(32비트 vs 64비트) 자동 감지  
+> 2. `%APPDATA%\Microsoft\AddIns` 표준 안전 폴더로 최신 XLL 다운로드/복사  
+> 3. Windows 보안 차단(`Unblock-File`) 자동 해제  
+> 4. Excel 추가 기능 레지스트리 자동 등록 (Excel 실행 시 즉시 로드)
+
+*(삭제가 필요할 때는 리포지토리의 `.\uninstall.ps1`을 실행하면 깔끔하게 제거됩니다.)*
+
+---
+
+### 🖐️ 방법 B: 수동 설치 (단계별 안내)
+
+#### 1단계: 내 Excel 비트수(32비트 vs 64비트) 확인
 1. Excel 실행 후 **[파일] → [계정] → [Excel 정보]** 클릭
 2. 팝업 창 첫 줄 끝부분에서 **`32비트`** 또는 **`64비트`** 확인
 
-### 2단계: 추가 기능(XLL) 파일 준비
-[GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest) 페이지에서 내 Excel 비트수에 맞는 **`.xll` 파일 1개**를 다운로드합니다 (또는 프로젝트 내 `dist/` 폴더의 빌드 파일을 사용합니다):
-* **64비트 Excel:** [**`Smiles2Img-AddIn64-packed.xll`** (v1.0.0 바로 다운로드)](https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.0.0/Smiles2Img-AddIn64-packed.xll)
-* **32비트 Excel:** [**`Smiles2Img-AddIn-packed.xll`** (v1.0.0 바로 다운로드)](https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.0.0/Smiles2Img-AddIn-packed.xll)
+#### 2단계: 추가 기능(XLL) 파일 준비
+[GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest) 페이지에서 내 Excel 비트수에 맞는 **`.xll` 파일 1개**를 다운로드하여 안전한 폴더(권장: `Win+R` ➔ `%APPDATA%\Microsoft\AddIns`)에 복사합니다:
+* **64비트 Excel:** [**`Smiles2Img-AddIn64-packed.xll`** (v1.0.0 다운로드)](https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.0.0/Smiles2Img-AddIn64-packed.xll)
+* **32비트 Excel:** [**`Smiles2Img-AddIn-packed.xll`** (v1.0.0 다운로드)](https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.0.0/Smiles2Img-AddIn-packed.xll)
 
 > [!TIP]
-> **Windows 보안 차단 해제 (최초 1회 권장):**  
-> 인터넷이나 GitHub에서 다운로드한 파일의 경우 Windows가 실행을 차단할 수 있습니다.  
+> **Windows 보안 차단 해제 (필수):**  
+> 웹에서 다운로드한 파일은 Windows가 인터넷 꼬리표(`Mark of the Web`)를 붙여 Excel에서 실행을 차단합니다.  
 > 다운로드한 `.xll` 파일 우클릭 → **[속성]** → 하단 보안 항목의 **[차단 해제(Unblock)]** 체크 후 **[확인]**을 눌러주세요.
 
-> [!NOTE]
-> **단일 파일(Single-File) 100% 완전 독립 실행:**  
-> EPAM Indigo C++ 네이티브 화학 렌더링 엔진 및 실시간 수식 IntelliSense 라이브러리가 `.xll` 파일 내부에 모두 압축 내장되어 있습니다.  
-> 별도의 추가 DLL들을 복사할 필요 없이, **오직 `.xll` 파일 단 1개만** 있으면 즉시 작동합니다.
-
-### 3단계: Excel에 영구 추가 기능으로 등록
+#### 3단계: Excel에 영구 추가 기능으로 등록
 1. Excel 메뉴에서 **[파일] → [옵션] → [추가 기능]** 이동
 2. 창 하단 **[관리: Excel 추가 기능]** 옆의 **[이동(G)...]** 버튼 클릭
-3. **[찾아보기(B)...]**를 눌러 준비한 XLL 파일 선택:
-   * 64비트: `Smiles2Img-AddIn64-packed.xll`
-   * 32비트: `Smiles2Img-AddIn-packed.xll`
+3. **[찾아보기(B)...]**를 눌러 준비한 XLL 파일 선택
 4. 목록에 `Smiles2Img-AddIn`이 체크된 것을 확인하고 **[확인]** 클릭
 
 *(등록을 완료하면 이후 Excel을 실행할 때마다 함수가 자동으로 로드됩니다.)*
