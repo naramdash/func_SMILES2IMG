@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SMILES.IMG</title>
+    <script src="https://officeapis.public.onecdn.static.microsoft/beta/office.js"></script>
+    <link href="taskpane.css" rel="stylesheet" />
+</head>
+<body>
+    <h1>SMILES.IMG</h1>
+    <p>SMILES 문자열을 셀 안의 분자 이미지로 변환합니다.</p>
+    <p id="sideload-msg">셀 함수를 사용하려면 Excel에서 이 추가 기능을 로드하세요.</p>
+    <main id="app-body" hidden>
+        <ol>
+            <li>A2 셀에 <code>CCO</code>를 입력하세요.</li>
+            <li>B2 셀에 <code>=SMILES.IMG(A2)</code>를 입력하세요.</li>
+            <li>이미지가 잘 보이도록 행 높이와 열 너비를 조정하세요.</li>
+        </ol>
+        <p>문자열을 직접 넣어도 됩니다.</p>
+        <pre>=SMILES.IMG("c1ccccc1")</pre>
+        <p id="status" role="status"></p>
+    </main>
+    <section aria-labelledby="preview-title">
+        <h2 id="preview-title">분자 미리보기</h2>
+        <label for="smiles">SMILES</label>
+        <input id="smiles" type="text" value="CCO" maxlength="2000" />
+        <button id="render" type="button">분자 그리기</button>
+        <p id="preview-status" role="status"></p>
+        <div id="preview-result" hidden>
+            <img id="preview" width="300" height="200" alt="" />
+            <p><a id="download-png" download="molecule.png">PNG 저장</a></p>
+        </div>
+    </section>
+    <p>셀 이미지 반환은 Microsoft 365 Excel의 Preview 기능입니다. Excel 2019는 지원하지 않습니다.</p>
+</body>
+</html>

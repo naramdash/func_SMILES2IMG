@@ -1,0 +1,37 @@
+using System;
+using System.IO;
+using ExcelDna.Integration;
+using ExcelDna.IntelliSense;
+using ExcelDna.Logging;
+using Smiles2Img.Rendering;
+
+namespace Smiles2Img;
+
+public sealed class AddIn : IExcelAddIn
+{
+    internal static bool IsOpen { get; private set; }
+
+    public void AutoOpen()
+    {
+        try
+        {
+            NativeIndigo.Initialize(Path.GetDirectoryName(ExcelDnaUtil.XllPath)!);
+            IntelliSenseServer.Install();
+            IsOpen = true;
+        }
+        catch (Exception error)
+        {
+            LogDisplay.WriteLine("SMILES2IMG startup: " + error.Message);
+        }
+    }
+
+    public void AutoClose()
+    {
+        try
+        {
+            IntelliSenseServer.Uninstall();
+        }
+        catch { }
+        IsOpen = false;
+    }
+}

@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "dependencies": {
+    ".NETFramework,Version=v4.8": {
+      "Indigo.Net": {
+        "type": "Direct",
+        "requested": "[1.48.0-rc.1, )",
+        "resolved": "1.48.0-rc.1",
+        "contentHash": "+I4AYU8ALx60tv3MC/spc0J8kAjWhvFbjYEFHTBI4j2S8onJ1W3V9FFnngv1pRfs6f7mQgw0G9fljTH3+bFycg==",
+        "dependencies": {
+          "System.Drawing.Common": "4.7.2"
+        }
+      },
+      "ExcelDna.AddIn": {
+        "type": "Transitive",
+        "resolved": "1.9.0",
+        "contentHash": "+jxXXswl6ds2ZGTwsuKWwO8crfzqvBFqd/t3PmEtg2YR6EN9F2pA97hiXblckhWZ6AKBlSGEC/ONTrCON2O33A==",
+        "dependencies": {
+          "ExcelDna.Integration": "[1.9.0]"
+        }
+      },
+      "ExcelDna.Integration": {
+        "type": "Transitive",
+        "resolved": "1.9.0",
+        "contentHash": "A1nbeRWa+rg3RoO9NV9iqNwQxWb9eVNG+Ki3uCfo8D3U8CT11/fzTIvVT3y2LoCTzqRIPwTysqp9sj42MKYw5Q=="
+      },
+      "ExcelDna.IntelliSense": {
+        "type": "Transitive",
+        "resolved": "1.9.0",
+        "contentHash": "IskRgqur6aiCdsZSsqYdo7kp5V4ODz1WI8orvEmQaSCdixb5pmQ3ZbEnB0dlC67YHnjOK4aLN55LRragyOI3+w==",
+        "dependencies": {
+          "ExcelDna.Integration": "[1.9.0]"
+        }
+      },
+      "ExcelDna.Interop": {
+        "type": "Transitive",
+        "resolved": "16.0.0",
+        "contentHash": "xJoz0zmnEfJd5hKkC0rzmtpQeyjC0mMEQQdpICrGnIB/zYN8e270S5yLxdtbPpTYeEGk7RUQNfjA4FjG9xlRNA==",
+        "dependencies": {
+          "Microsoft.CSharp": "4.3.0"
+        }
+      },
+      "Microsoft.CSharp": {
+        "type": "Transitive",
+        "resolved": "4.3.0",
+        "contentHash": "P+MBhIM0YX+JqROuf7i306ZLJEjQYA9uUyRDE+OqwUI5sh41e2ZbPQV3LfAPh+29cmceE1pUffXsGfR4eMY3KA=="
+      },
+      "System.Drawing.Common": {
+        "type": "Transitive",
+        "resolved": "4.7.2",
+        "contentHash": "I2y4KBK3VCvU/WqE2xv7NjQ67maXHttkFSHYKgU2evrG9Yqh0oFjfORXt5hZTk+BVjdyFo2h0/YQZsca33BGmg=="
+      },
+      "smiles2img": {
+        "type": "Project",
+        "dependencies": {
+          "ExcelDna.AddIn": "[1.9.0, )",
+          "ExcelDna.IntelliSense": "[1.9.0, )",
+          "ExcelDna.Interop": "[16.0.0, )",
+          "Indigo.Net": "[1.48.0-rc.1, )"
+        }
+      }
+    },
+    ".NETFramework,Version=v4.8/win-x64": {
+      "Indigo.Net": {
+        "type": "Direct",
+        "requested": "[1.48.0-rc.1, )",
+        "resolved": "1.48.0-rc.1",
+        "contentHash": "+I4AYU8ALx60tv3MC/spc0J8kAjWhvFbjYEFHTBI4j2S8onJ1W3V9FFnngv1pRfs6f7mQgw0G9fljTH3+bFycg==",
+        "dependencies": {
+          "System.Drawing.Common": "4.7.2"
+        }
+      }
+    },
+    ".NETFramework,Version=v4.8/win-x86": {
+      "Indigo.Net": {
+        "type": "Direct",
+        "requested": "[1.48.0-rc.1, )",
+        "resolved": "1.48.0-rc.1",
+        "contentHash": "+I4AYU8ALx60tv3MC/spc0J8kAjWhvFbjYEFHTBI4j2S8onJ1W3V9FFnngv1pRfs6f7mQgw0G9fljTH3+bFycg==",
+        "dependencies": {
+          "System.Drawing.Common": "4.7.2"
+        }
+      }
+    }
+  }
+}

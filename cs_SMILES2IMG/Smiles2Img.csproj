@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AssemblyName>Smiles2Img</AssemblyName>
+    <RootNamespace>Smiles2Img</RootNamespace>
+    <ExcelDnaAddInName>SMILES2IMG</ExcelDnaAddInName>
+    <ExcelDnaCreate32BitAddIn>true</ExcelDnaCreate32BitAddIn>
+    <ExcelDnaCreate64BitAddIn>true</ExcelDnaCreate64BitAddIn>
+    <ExcelDnaPackNativeLibraryDependencies>false</ExcelDnaPackNativeLibraryDependencies>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <DistributionRoot Condition="'$(DistributionRoot)' == ''">$(MSBuildProjectDirectory)/dist</DistributionRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ExcelDna.AddIn" Version="1.9.0" />
+    <PackageReference Include="ExcelDna.IntelliSense" Version="1.9.0" />
+    <PackageReference Include="ExcelDna.Interop" Version="16.0.0" />
+    <PackageReference Include="Indigo.Net" Version="1.48.0-rc.1" GeneratePathProperty="true" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="tests/**/*.cs" />
+    <None Remove="tests/**;output/**;dist/**;.nuget/**" />
+    <Reference Include="System.IO.Compression" />
+    <EmbeddedResource Include="assets/native-image-template.xlsx" LogicalName="Smiles2Img.NativeImageTemplate.xlsx" />
+    <EmbeddedResource Include="$(PkgIndigo_Net)/runtimes/win-x64/native/*.dll"
+                      Exclude="$(PkgIndigo_Net)/runtimes/win-x64/native/bingo-nosql.dll"
+                      LogicalName="Smiles2Img.Native.x64.%(Filename)%(Extension)" />
+    <EmbeddedResource Include="$(PkgIndigo_Net)/runtimes/win-x86/native/*.dll"
+                      Exclude="$(PkgIndigo_Net)/runtimes/win-x86/native/bingo-nosql.dll;$(PkgIndigo_Net)/runtimes/win-x86/native/vcruntime140_1.dll"
+                      LogicalName="Smiles2Img.Native.x86.%(Filename)%(Extension)" />
+  </ItemGroup>
+  <Target Name="CreateDistribution" AfterTargets="ExcelDnaPack">
+    <ItemGroup>
+      <Notice Include="$(MSBuildProjectDirectory)/THIRD_PARTY_NOTICES.md" />
+    </ItemGroup>
+    <MakeDir Directories="$(DistributionRoot)/x86;$(DistributionRoot)/x64" />
+    <Copy SourceFiles="$(TargetDir)publish/Smiles2Img-AddIn-packed.xll;@(Notice)" DestinationFolder="$(DistributionRoot)/x86" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(TargetDir)publish/Smiles2Img-AddIn64-packed.xll;@(Notice)" DestinationFolder="$(DistributionRoot)/x64" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

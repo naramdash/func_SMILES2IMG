@@ -2,10 +2,9 @@ const devCerts = require("office-addin-dev-certs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const CustomFunctionsMetadataPlugin = require("custom-functions-metadata-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const path = require("path");
 
 const urlDev = "https://localhost:3000/";
-const urlProd = "https://www.contoso.com/"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
+const urlProd = process.env.ADDIN_BASE_URL ? new URL("./", process.env.ADDIN_BASE_URL).href : urlDev;
 
 async function getHttpsOptions() {
   const httpsOptions = await devCerts.getHttpsServerOptions();
@@ -16,11 +15,14 @@ module.exports = async (env, options) => {
   const dev = options.mode === "development";
   const config = {
     devtool: "source-map",
+    watchOptions: {
+      ignored: ["**/node_modules/**", "**/dist/**", "**/output/**"],
+    },
     entry: {
       polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
       taskpane: ["./src/taskpane/taskpane.ts", "./src/taskpane/taskpane.html"],
-      commands: "./src/commands/commands.ts",
       functions: "./src/functions/functions.ts",
+      commands: "./src/commands/commands.ts",
     },
     output: {
       clean: true,
@@ -41,6 +43,13 @@ module.exports = async (env, options) => {
           test: /\.html$/,
           exclude: /node_modules/,
           use: "html-loader",
+        },
+        {
+          test: /\.css$/,
+          type: "asset/resource",
+          generator: {
+            filename: "[name][ext]",
+          },
         },
         {
           test: /\.(png|jpg|jpeg|gif|ico)$/,
@@ -74,7 +83,7 @@ module.exports = async (env, options) => {
               if (dev) {
                 return content;
               } else {
-                return content.toString().replace(urlDev, urlProd);
+                return content.toString().replaceAll(urlDev, urlProd);
               }
             },
           },
