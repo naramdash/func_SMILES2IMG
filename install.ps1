@@ -13,7 +13,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-Write-Host "=== SMILES2IMG Installer ===" -ForegroundColor Cyan
+Write-Host "=== SMILES2IMG Installer / Updater ===" -ForegroundColor Cyan
 
 # 1. Check if Excel is running
 $excelProc = Get-Process EXCEL -ErrorAction SilentlyContinue
@@ -63,6 +63,13 @@ if (-not (Test-Path $targetDir)) {
 
 $xllName = if ($bitness -eq 'x64') { 'Smiles2Img-AddIn64-packed.xll' } else { 'Smiles2Img-AddIn-packed.xll' }
 $targetPath = Join-Path $targetDir $xllName
+$isUpdate = Test-Path -LiteralPath $targetPath
+
+if ($isUpdate) {
+    Write-Host "[*] Existing installation found. Updating to the latest version..." -ForegroundColor Yellow
+} else {
+    Write-Host "[*] Fresh installation starting..." -ForegroundColor Cyan
+}
 
 # 4. Download latest packed XLL from GitHub Releases
 $downloadUrl = "https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/$xllName"
@@ -106,5 +113,9 @@ $regValue = "/R `"$targetPath`""
 Set-ItemProperty -Path $regPath -Name $openKeyToUse -Value $regValue
 Write-Host "[+] Registered in Excel Options ($openKeyToUse): $regValue" -ForegroundColor Green
 
-Write-Host "`n[SUCCESS] SMILES2IMG has been successfully installed and registered!" -ForegroundColor Cyan
-Write-Host "Now start Excel and enter: =SMILES2IMG(""CCO"")" -ForegroundColor White
+if ($isUpdate) {
+    Write-Host "`n[SUCCESS] SMILES2IMG has been successfully updated to the latest version!" -ForegroundColor Cyan
+} else {
+    Write-Host "`n[SUCCESS] SMILES2IMG has been successfully installed and registered!" -ForegroundColor Cyan
+}
+Write-Host "Open Excel and enter: =SMILES2IMG(""CCO"")" -ForegroundColor White

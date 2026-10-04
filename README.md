@@ -31,9 +31,9 @@
 
 Supported on desktop Windows Excel versions featuring modern in-cell image capabilities (Microsoft 365, Office 2021/2024).
 
-### ⚡ Method A: One-Click Automatic Installer (Recommended)
+### ⚡ Method A: One-Click Automatic Installer & Updater (Recommended)
 
-Open PowerShell and run this **single command** to install and register everything automatically:
+Open PowerShell and run this **single command** to install, register, or update everything automatically:
 
 ```powershell
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
@@ -41,11 +41,12 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 
 > **What the installer automates:**  
 > 1. Detects your Excel architecture (32-bit vs. 64-bit)  
-> 2. Downloads and places the latest `.xll` into the official `%APPDATA%\Microsoft\AddIns` directory  
+> 2. Downloads and updates the latest `.xll` in the official `%APPDATA%\Microsoft\AddIns` directory  
 > 3. Unblocks the file (`Unblock-File`) to remove Windows security flags  
 > 4. Registers the add-in in Excel options for persistent auto-loading  
-
-*(To uninstall anytime, simply run `.\uninstall.ps1` from the repository.)*
+>  
+> 💡 **Future Updates:** Running this exact command again in the future automatically upgrades SMILES2IMG to the latest release!  
+> 🗑️ **Uninstallation:** To uninstall anytime, simply run `.\uninstall.ps1` from the repository.
 
 ---
 

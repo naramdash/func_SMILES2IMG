@@ -31,7 +31,7 @@
 
 Windows 데스크톱 Excel(Microsoft 365, Office 2021/2024 등 셀 내 이미지 기능 지원 버전)에서 사용하실 수 있습니다.
 
-### ⚡ 방법 A: 원클릭 자동 설치 (가장 추천)
+### ⚡ 방법 A: 원클릭 자동 설치 및 업데이트 (가장 추천)
 
 PowerShell을 열고 아래 명령어 **한 줄만 실행**하면 모든 과정이 자동으로 완료됩니다:
 
@@ -41,11 +41,12 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 
 > **스크립트가 자동으로 처리하는 내용:**  
 > 1. 내 Excel 비트수(32비트 vs 64비트) 자동 감지  
-> 2. `%APPDATA%\Microsoft\AddIns` 표준 안전 폴더로 최신 XLL 다운로드/복사  
+> 2. `%APPDATA%\Microsoft\AddIns` 표준 안전 폴더로 최신 XLL 다운로드 및 자동 갱신  
 > 3. Windows 보안 차단(`Unblock-File`) 자동 해제  
-> 4. Excel 추가 기능 레지스트리 자동 등록 (Excel 실행 시 즉시 로드)
-
-*(삭제가 필요할 때는 리포지토리의 `.\uninstall.ps1`을 실행하면 깔끔하게 제거됩니다.)*
+> 4. Excel 추가 기능 레지스트리 자동 등록 (Excel 실행 시 즉시 로드)  
+>  
+> 💡 **최신 버전 업데이트:** 이미 설치되어 있는 상태에서 위 명령어를 다시 실행하면, 최신 버전으로 안전하게 자동 업데이트됩니다.  
+> 🗑️ **삭제 방법:** 리포지토리의 `.\uninstall.ps1`을 실행하면 파일과 레지스트리가 깔끔하게 제거됩니다.
 
 ---
 
