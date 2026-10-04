@@ -106,12 +106,12 @@ Type `=SMILES2IMG(...)` in any worksheet cell to insert an in-cell molecular ren
 | Order | Argument | Type | Required | Default | Allowed Values & Description |
 | :---: | :--- | :---: | :---: | :---: | :--- |
 | **1** | **`smiles`** | String | **Required** | - | A valid SMILES string (1–2000 chars) or a cell reference (e.g., `A2`, `"CCO"`). |
-| **2** | **`background`** | String | Optional | `"white"` | **Background styling (case-insensitive):**<br>• `"trans"`, `"transparent"`, `"nobg"`: Transparent background (blends seamlessly with cell fill/tables)<br>• `"white"`: Opaque white background (default)<br>• `"#RRGGBB"`: Custom hex color (e.g., `"#FFFF00"`, `"#FFF8DC"`) |
+| **2** | **`background`** | String | Optional | `"trans"` | **Background styling (case-insensitive):**<br>• `"trans"`, `"transparent"`, `"nobg"`: Transparent background (default, seamlessly blends with cell fills & zebra tables)<br>• `"white"`: Opaque white canvas background<br>• CSS color names: `"yellow"`, `"lightblue"`, `"lightgray"`, `"aliceblue"`, `"cornsilk"`, `"pink"`, etc. (140+ CSS standard names)<br>• Hex colors: `"#FFFF00"` or `"FFFF00"` (3- or 6-digit hex) |
 | **3** | **`color`** | Boolean/Int | Optional | `TRUE` | **Atom color mode (academic/print style):**<br>• `TRUE` or `1`: Standard elemental colors (Oxygen=red, Nitrogen=blue, Sulfur=dark gold, etc.)<br>• `FALSE` or `0`: Grayscale / black-and-white mode |
 | **4** | **`transform`** | String | Optional | `""` | **2D coordinate transforms (case-insensitive):**<br>• `flip`: Horizontal flip (matches textbook/reference ring orientation)<br>• `flipy`: Vertical flip<br>• `rot90`, `rot180`, `rot270`: Clockwise rotation by 90-degree increments |
 
 > [!TIP]
-> • **Skipping optional arguments:** To keep preceding arguments at their defaults while specifying later ones, use consecutive commas (e.g., `=SMILES2IMG(A2, , , "flip")`).  
+> • **Skipping optional arguments:** To keep preceding arguments at their defaults (transparent background) while specifying later ones, use consecutive commas (e.g., `=SMILES2IMG(A2, , , "flip")`).  
 > • **Smart fallback:** If a boolean `FALSE` is passed directly as the 2nd argument, the parser intelligently recognizes it as grayscale mode.
 
 ---
@@ -120,14 +120,14 @@ Type `=SMILES2IMG(...)` in any worksheet cell to insert an in-cell molecular ren
 
 | Scenario | Example Formula | Note |
 | :--- | :--- | :--- |
-| **Standard Color** | `=SMILES2IMG(A2)` | Cell reference (white background + element colors) |
+| **Default Rendering** | `=SMILES2IMG(A2)` | Cell reference (transparent background + standard colors) |
 | **Direct SMILES String** | `=SMILES2IMG("CC(=O)Oc1ccccc1C(=O)O")` | Inline aspirin SMILES formula |
-| **Transparent Background** | `=SMILES2IMG(A2, "trans")` | Passes cell fill color or table zebra striping through |
-| **Custom Background** | `=SMILES2IMG(A2, "#FFFF00")` | Custom hex color background (e.g. warning yellow) |
+| **Opaque White Background** | `=SMILES2IMG(A2, "white")` | Explicit white canvas background |
+| **CSS Color Background** | `=SMILES2IMG(A2, "yellow")`<br>`=SMILES2IMG(A2, "lightblue")` | Human-readable CSS color names |
+| **Custom Hex Background** | `=SMILES2IMG(A2, "#FFFF00")` | Custom hex color background (`#` is optional) |
 | **ACS Publication Grayscale** | `=SMILES2IMG(A2, , FALSE)` | Black & white publication rendering |
-| **Transparent + Grayscale** | `=SMILES2IMG(A2, "trans", FALSE)` | Transparent background in monochrome |
 | **Textbook Layout Flip** | `=SMILES2IMG(A2, , , "flip")` | Flips horizontal orientation (e.g., nicotine, thiamine) |
-| **Combined Customization** | `=SMILES2IMG(A2, "trans", FALSE, "flip")` | Transparent + monochrome + horizontal flip |
+| **White Canvas + B/W + Flip** | `=SMILES2IMG(A2, "white", FALSE, "flip")` | White background + monochrome + horizontal flip |
 | **90° Rotation** | `=SMILES2IMG(A2, , , "rot90")` | Rotates long chains to fit cell aspect ratios |
 
 ---

@@ -15,7 +15,7 @@ public static class Functions
         Description = "Renders a high-resolution molecular structure image from a SMILES string into the cell.", IsMacroType = true)]
     public static object Img(
         [ExcelArgument(Name = "smiles", Description = "A SMILES string or a cell reference containing one (e.g., A2, \"CCO\").")] string smiles,
-        [ExcelArgument(Name = "background", Description = "Optional: \"trans\" or \"transparent\", \"white\" (default), or hex color (#RRGGBB).")] object? background = null,
+        [ExcelArgument(Name = "background", Description = "Optional: \"trans\" (default), \"white\", CSS color (e.g. \"yellow\"), or hex (#RRGGBB).")] object? background = null,
         [ExcelArgument(Name = "color", Description = "Optional: TRUE for color (default), FALSE for black & white mode.")] object? color = null,
         [ExcelArgument(Name = "transform", Description = "Optional: orientation (flip, flipy, rot90, rot180, rot270).")] object? transform = null)
     {
@@ -43,25 +43,39 @@ public static class Functions
     internal static (bool Color, string? Transform, string? Background) ParseOptions(object? bgArg, object? colorArg, object? transformArg)
     {
         var isColor = true;
-        string? background = null;
+        string? background = "transparent";
 
         if (bgArg is bool bgBool)
         {
             isColor = bgBool;
+            background = "transparent";
         }
         else if (bgArg is string bgStr && !string.IsNullOrWhiteSpace(bgStr))
         {
             var t = bgStr.Trim().ToLowerInvariant();
             if (t == "false" || t == "bw")
+            {
                 isColor = false;
-            else if (t is "transparent" or "trans" or "clear" or "nobg" or "none")
                 background = "transparent";
-            else if (t is "white" or "bg=white")
-                background = "white";
+            }
+            else if (t is "transparent" or "trans" or "clear" or "nobg" or "none")
+            {
+                background = "transparent";
+            }
             else if (t.StartsWith("bg="))
-                background = bgStr.Substring(3).Trim();
+            {
+                var val = t.Substring(3).Trim();
+                if ((val.Length == 6 || val.Length == 3) && System.Text.RegularExpressions.Regex.IsMatch(val, @"\A[0-9a-fA-F]+\z"))
+                    val = "#" + val;
+                background = val;
+            }
             else
-                background = bgStr.Trim();
+            {
+                var val = t;
+                if ((val.Length == 6 || val.Length == 3) && System.Text.RegularExpressions.Regex.IsMatch(val, @"\A[0-9a-fA-F]+\z"))
+                    val = "#" + val;
+                background = val;
+            }
         }
 
         if (colorArg is bool cBool)

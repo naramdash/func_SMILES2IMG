@@ -97,7 +97,18 @@ internal static class CellImages
     {
         using var sha = SHA1.Create();
         var norm = string.IsNullOrEmpty(transform) ? "" : "_" + transform!.Trim().ToLowerInvariant();
-        var bg = string.IsNullOrEmpty(background) ? "" : "_BG_" + background!.Trim().ToLowerInvariant();
+        var bg = "";
+        if (!string.IsNullOrWhiteSpace(background))
+        {
+            var b = background!.Trim().ToLowerInvariant();
+            if (b.StartsWith("bg=")) b = b.Substring(3).Trim();
+            if (b is not ("transparent" or "trans" or "none" or "clear" or "nobg"))
+            {
+                if ((b.Length == 6 || b.Length == 3) && System.Text.RegularExpressions.Regex.IsMatch(b, @"\A[0-9a-fA-F]+\z"))
+                    b = "#" + b;
+                bg = "_BG_" + b;
+            }
+        }
         var prefix = (color ? "C" : "BW") + bg + norm + "_";
         return prefix + BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(smiles))).Replace("-", "");
     }

@@ -186,7 +186,7 @@ internal static class MoleculeRenderer
     {
         if (string.IsNullOrWhiteSpace(background))
         {
-            indigo.setOption("render-background-color", 1.0, 1.0, 1.0);
+            indigo.setOption("render-background-color", -1.0, -1.0, -1.0);
             return;
         }
 
@@ -197,14 +197,31 @@ internal static class MoleculeRenderer
             return;
         }
 
+        if (bg.StartsWith("bg="))
+        {
+            bg = bg.Substring(3).Trim();
+        }
+
+        if ((bg.Length == 6 || bg.Length == 3) && System.Text.RegularExpressions.Regex.IsMatch(bg, @"\A[0-9a-fA-F]+\z"))
+        {
+            bg = "#" + bg;
+        }
+
         try
         {
-            var c = ColorTranslator.FromHtml(background);
-            indigo.setOption("render-background-color", c.R / 255.0, c.G / 255.0, c.B / 255.0);
+            var c = ColorTranslator.FromHtml(bg);
+            if (c.A == 0)
+            {
+                indigo.setOption("render-background-color", -1.0, -1.0, -1.0);
+            }
+            else
+            {
+                indigo.setOption("render-background-color", c.R / 255.0, c.G / 255.0, c.B / 255.0);
+            }
         }
         catch
         {
-            indigo.setOption("render-background-color", 1.0, 1.0, 1.0);
+            indigo.setOption("render-background-color", -1.0, -1.0, -1.0);
         }
     }
 

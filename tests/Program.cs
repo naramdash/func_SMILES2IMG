@@ -47,22 +47,23 @@ internal static class Program
 
             // Verify ParseOptions argument separation: (background, color, transform)
             var opt1 = Functions.ParseOptions(null, null, null);
-            Check(opt1.Color == true && opt1.Transform == null && opt1.Background == null, "ParseOptions default");
+            Check(opt1.Color == true && opt1.Transform == null && opt1.Background == "transparent", "ParseOptions default (transparent)");
             var opt2 = Functions.ParseOptions("trans", null, null);
             Check(opt2.Color == true && opt2.Transform == null && opt2.Background == "transparent", "ParseOptions trans 2nd arg");
-            var opt3 = Functions.ParseOptions(null, false, null);
-            Check(opt3.Color == false && opt3.Transform == null && opt3.Background == null, "ParseOptions B/W 3rd arg");
-            var opt4 = Functions.ParseOptions("trans", false, null);
-            Check(opt4.Color == false && opt4.Transform == null && opt4.Background == "transparent", "ParseOptions trans + B/W");
-            var opt5 = Functions.ParseOptions(null, null, "flip");
-            Check(opt5.Color == true && opt5.Transform == "flip" && opt5.Background == null, "ParseOptions flip 4th arg");
-            var opt6 = Functions.ParseOptions("trans", false, "flip");
-            Check(opt6.Color == false && opt6.Transform == "flip" && opt6.Background == "transparent", "ParseOptions trans + B/W + flip");
-            var opt7 = Functions.ParseOptions("#FFFF00", null, "rot90");
-            Check(opt7.Color == true && opt7.Transform == "rot90" && opt7.Background == "#FFFF00", "ParseOptions hex bg + rot90");
+            var opt3 = Functions.ParseOptions("white", null, null);
+            Check(opt3.Color == true && opt3.Transform == null && opt3.Background == "white", "ParseOptions white 2nd arg");
+            var opt4 = Functions.ParseOptions("yellow", null, null);
+            Check(opt4.Color == true && opt4.Transform == null && opt4.Background == "yellow", "ParseOptions CSS color 'yellow'");
+            var opt5 = Functions.ParseOptions("#FFFF00", null, "rot90");
+            Check(opt5.Color == true && opt5.Transform == "rot90" && opt5.Background == "#ffff00", "ParseOptions hex bg + rot90");
+            var opt6 = Functions.ParseOptions("FFFF00", null, null);
+            Check(opt6.Color == true && opt6.Background == "#ffff00", "ParseOptions hex without hash");
+            var opt7 = Functions.ParseOptions(null, false, "flip");
+            Check(opt7.Color == false && opt7.Transform == "flip" && opt7.Background == "transparent", "ParseOptions default trans + B/W + flip");
             var optFallback = Functions.ParseOptions(false, null, null);
-            Check(optFallback.Color == false, "ParseOptions fallback bool in 2nd arg");
+            Check(optFallback.Color == false && optFallback.Background == "transparent", "ParseOptions fallback bool in 2nd arg");
             Console.WriteLine("PASS ParseOptions (background, color, transform) argument separation");
+
             var bwPng = MoleculeRenderer.Render("CCO", color: false);
             using (var bwStream = new MemoryStream(bwPng))
             using (var bwBitmap = new Bitmap(bwStream))
@@ -91,22 +92,31 @@ internal static class Program
             Check(nicFlippedPng.Length > 100, "Nicotine flip transform render");
             Console.WriteLine("PASS Transform rendering (flip)");
 
-            var transPng = MoleculeRenderer.Render("CCO", color: true, background: "transparent");
-            using (var ms = new MemoryStream(transPng))
+            var defaultTransPng = MoleculeRenderer.Render("CCO");
+            using (var ms = new MemoryStream(defaultTransPng))
             using (var bmp = new Bitmap(ms))
             {
-                Check(bmp.GetPixel(0, 0).A == 0, "Transparent background corner pixel must have alpha 0");
+                Check(bmp.GetPixel(0, 0).A == 0, "Default background corner pixel must have alpha 0 (transparent)");
             }
-            Console.WriteLine("PASS Transparent background rendering");
+            Console.WriteLine("PASS Transparent default background rendering");
 
-            var yellowPng = MoleculeRenderer.Render("CCO", color: true, background: "#FFFF00");
-            using (var ms = new MemoryStream(yellowPng))
+            var cssYellowPng = MoleculeRenderer.Render("CCO", background: "yellow");
+            using (var ms = new MemoryStream(cssYellowPng))
             using (var bmp = new Bitmap(ms))
             {
                 var corner = bmp.GetPixel(0, 0);
-                Check(corner.R > 240 && corner.G > 240 && corner.B < 20, "Yellow background corner pixel");
+                Check(corner.R > 240 && corner.G > 240 && corner.B < 20 && corner.A == 255, "CSS color 'yellow' corner pixel");
             }
-            Console.WriteLine("PASS Custom background color rendering");
+            Console.WriteLine("PASS CSS color (yellow) rendering");
+
+            var whitePng = MoleculeRenderer.Render("CCO", background: "white");
+            using (var ms = new MemoryStream(whitePng))
+            using (var bmp = new Bitmap(ms))
+            {
+                var corner = bmp.GetPixel(0, 0);
+                Check(corner.R == 255 && corner.G == 255 && corner.B == 255 && corner.A == 255, "Explicit white background corner pixel");
+            }
+            Console.WriteLine("PASS Explicit white background rendering");
 
             Directory.CreateDirectory("output/samples");
             File.WriteAllBytes("output/samples/1_nicotine_default.png", MoleculeRenderer.Render("CN1CCC[C@H]1c2cccnc2"));
