@@ -2,7 +2,7 @@
 
 **English** | [한국어](README.KR.md)
 
-[![Platform](https://img.shields.io/badge/Platform-Windows%20Excel%20(32%2F64bit)-blue.svg)](#prerequisites)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Excel%20(32%2F64bit)-blue.svg)](#runtime-requirements)
 [![Framework](https://img.shields.io/badge/.NET%20Framework-4.8-512BD4.svg)](https://dotnet.microsoft.com/)
 [![Excel-DNA](https://img.shields.io/badge/Excel--DNA-1.9.0-green.svg)](https://excel-dna.net/)
 [![EPAM Indigo](https://img.shields.io/badge/EPAM%20Indigo-1.48.0--rc.1-orange.svg)](https://lifescience.opensource.epam.com/indigo/)
@@ -29,7 +29,19 @@
 
 ## 🚀 Quick Start (Installation)
 
-Supported on desktop Windows Excel versions featuring modern in-cell image capabilities (Microsoft 365, Office 2021/2024).
+### Runtime requirements
+
+| Component | Requirement |
+| :--- | :--- |
+| Windows | Windows 10 or 11; Windows 11 recommended |
+| Excel (perpetual license) | Excel 2024 or later with native in-cell image support |
+| Excel (Microsoft 365) | An updated Windows desktop version with **Place in Cell** available |
+| Runtime | **.NET Framework 4.8 or later** |
+| Excel architecture | Both **32-bit and 64-bit** packages are provided; choose the XLL matching Excel's bitness |
+
+The current implementation requires native in-cell images. **Excel 2021, 2019, and 2016 are not supported.** Microsoft's [Place in Cell documentation](https://support.microsoft.com/en-us/excel/insert-picture-in-cell-in-excel) lists Microsoft 365 and Excel 2024 as supported versions. Check **Insert → Pictures → Place in Cell** in Excel to confirm the feature is available. The add-in runs only in Windows desktop Excel; Excel for Mac and Excel for the web cannot load this XLL.
+
+These requirements are based on the current implementation and its dependencies; the project has not established a tested minimum Windows/Excel build across all versions. The **.NET SDK is needed only for development/building**, not for using the downloaded XLL.
 
 ### ⚡ Method A: One-Click Automatic Installer & Updater (Recommended)
 

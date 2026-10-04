@@ -2,7 +2,7 @@
 
 [English](README.md) | **한국어**
 
-[![Platform](https://img.shields.io/badge/Platform-Windows%20Excel%20(32%2F64bit)-blue.svg)](#사전-요구사항)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Excel%20(32%2F64bit)-blue.svg)](#실행-요구사항)
 [![Framework](https://img.shields.io/badge/.NET%20Framework-4.8-512BD4.svg)](https://dotnet.microsoft.com/)
 [![Excel-DNA](https://img.shields.io/badge/Excel--DNA-1.9.0-green.svg)](https://excel-dna.net/)
 [![EPAM Indigo](https://img.shields.io/badge/EPAM%20Indigo-1.48.0--rc.1-orange.svg)](https://lifescience.opensource.epam.com/indigo/)
@@ -29,7 +29,19 @@
 
 ## 🚀 빠른 시작 (설치 방법)
 
-Windows 데스크톱 Excel(Microsoft 365, Office 2021/2024 등 셀 내 이미지 기능 지원 버전)에서 사용하실 수 있습니다.
+### 실행 요구사항
+
+| 항목 | 필요한 환경 |
+| :--- | :--- |
+| Windows | Windows 10 또는 11; Windows 11 권장 |
+| Excel 영구 구매형 | 네이티브 셀 내 이미지 기능을 지원하는 **Excel 2024 이상** |
+| Microsoft 365 Excel | **셀에 그림 배치** 기능이 있는 업데이트된 Windows 데스크톱 버전 |
+| 런타임 | **.NET Framework 4.8 이상** |
+| Excel 비트수 | **32비트·64비트 모두** 배포 파일 제공; Excel 비트수에 맞는 XLL 선택 |
+
+현재 구현은 네이티브 셀 내 이미지 기능을 사용하므로 **Excel 2021·2019·2016은 지원하지 않습니다.** Microsoft의 [셀에 그림 배치 공식 안내](https://support.microsoft.com/en-us/excel/insert-picture-in-cell-in-excel)는 Microsoft 365와 Excel 2024를 지원 대상으로 명시합니다. Excel의 **[삽입] → [그림] → [셀에 배치]** 메뉴에서 기능 제공 여부를 확인할 수 있습니다. 이 추가 기능은 Windows 데스크톱 Excel에서 실행되며, Mac용 Excel과 웹용 Excel에서는 XLL을 로드할 수 없습니다.
+
+위 요구사항은 현재 구현과 의존성을 기준으로 정리했으며, 모든 버전에 대한 실기 테스트로 Windows/Excel의 최소 빌드 번호를 확정한 것은 아닙니다. 다운로드한 XLL을 사용하기 위해 개발용 **.NET SDK를 설치할 필요는 없습니다.** SDK는 개발·빌드할 때만 필요합니다.
 
 ### ⚡ 방법 A: 원클릭 자동 설치 및 업데이트 (가장 추천)
 
