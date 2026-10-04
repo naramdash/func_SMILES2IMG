@@ -64,18 +64,10 @@ if (-not (Test-Path $targetDir)) {
 $xllName = if ($bitness -eq 'x64') { 'Smiles2Img-AddIn64-packed.xll' } else { 'Smiles2Img-AddIn-packed.xll' }
 $targetPath = Join-Path $targetDir $xllName
 
-# 4. Source file (local dist/ or download from GitHub release)
-$scriptDir = $PSScriptRoot
-$localFile = if ($scriptDir) { Join-Path $scriptDir "dist\$bitness\$xllName" } else { $null }
-
-if ($localFile -and (Test-Path $localFile)) {
-    Write-Host "[+] Copying from local build: $localFile" -ForegroundColor Gray
-    Copy-Item -LiteralPath $localFile -Destination $targetPath -Force
-} else {
-    $downloadUrl = "https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/$xllName"
-    Write-Host "[+] Downloading from GitHub Release: $downloadUrl" -ForegroundColor Cyan
-    Invoke-WebRequest -Uri $downloadUrl -OutFile $targetPath -UseBasicParsing
-}
+# 4. Download latest packed XLL from GitHub Releases
+$downloadUrl = "https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/$xllName"
+Write-Host "[+] Downloading latest release: $downloadUrl" -ForegroundColor Cyan
+Invoke-WebRequest -Uri $downloadUrl -OutFile $targetPath -UseBasicParsing
 
 # 5. Unblock file
 Write-Host "[+] Unblocking file (removing Mark of the Web)..." -ForegroundColor Gray
