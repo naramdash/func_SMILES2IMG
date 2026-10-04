@@ -36,9 +36,9 @@ Windows 데스크톱 Excel(Microsoft 365, Office 2021/2024 등 셀 내 이미지
 2. 팝업 창 첫 줄 끝부분에서 **`32비트`** 또는 **`64비트`** 확인
 
 ### 2단계: 추가 기능(XLL) 파일 준비
-내 Excel 비트수에 맞는 **`.xll` 파일 1개만** 원하는 안전한 위치(예: `C:\ExcelAddIns\` 또는 문서 폴더)에 저장합니다:
-* **64비트 Excel:** [`dist/x64/Smiles2Img-AddIn64-packed.xll`](dist/x64/Smiles2Img-AddIn64-packed.xll)
-* **32비트 Excel:** [`dist/x86/Smiles2Img-AddIn-packed.xll`](dist/x86/Smiles2Img-AddIn-packed.xll)
+[GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest) 페이지에서 내 Excel 비트수에 맞는 **`.xll` 파일 1개**를 다운로드합니다 (또는 프로젝트 내 `dist/` 폴더의 빌드 파일을 사용합니다):
+* **64비트 Excel:** [**`Smiles2Img-AddIn64-packed.xll`** (v1.0.0 바로 다운로드)](https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.0.0/Smiles2Img-AddIn64-packed.xll)
+* **32비트 Excel:** [**`Smiles2Img-AddIn-packed.xll`** (v1.0.0 바로 다운로드)](https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.0.0/Smiles2Img-AddIn-packed.xll)
 
 > [!TIP]
 > **Windows 보안 차단 해제 (최초 1회 권장):**  

@@ -36,9 +36,9 @@ Supported on desktop Windows Excel versions featuring modern in-cell image capab
 2. Note whether the first line indicates **`32-bit`** or **`64-bit`**.
 
 ### Step 2: Prepare the Add-in (.xll) file
-Place the corresponding single `.xll` file into a directory of your choice (e.g., `C:\ExcelAddIns\` or your working folder):
-* **64-bit Excel:** [`dist/x64/Smiles2Img-AddIn64-packed.xll`](dist/x64/Smiles2Img-AddIn64-packed.xll)
-* **32-bit Excel:** [`dist/x86/Smiles2Img-AddIn-packed.xll`](dist/x86/Smiles2Img-AddIn-packed.xll)
+Download the single `.xll` file matching your Excel bitness from the [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest) page (or use the prebuilt files in `dist/`):
+* **64-bit Excel:** [**`Smiles2Img-AddIn64-packed.xll`** (v1.0.0 Download)](https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.0.0/Smiles2Img-AddIn64-packed.xll)
+* **32-bit Excel:** [**`Smiles2Img-AddIn-packed.xll`** (v1.0.0 Download)](https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.0.0/Smiles2Img-AddIn-packed.xll)
 
 > [!TIP]
 > **Unblock downloaded file (Recommended):**  
