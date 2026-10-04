@@ -1,124 +1,281 @@
-# SMILES2IMG — Excel 분자 구조식 자동 렌더러
+# SMILES2IMG — Automatic Molecular Structure Renderer for Excel
 
-> **SMILES 화학 구조식 문자열을 Excel 셀 안의 고해상도 분자 이미지로 즉시 변환하는 Excel 추가 기능입니다.**  
-> 외부 웹 서버나 클라우드 전송 없이, PC 로컬에서 100% 오프라인으로 안전하고 빠르게 렌더링됩니다.
+**English** | [한국어](README.KR.md)
+
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Excel%20(32%2F64bit)-blue.svg)](#prerequisites)
+[![Framework](https://img.shields.io/badge/.NET%20Framework-4.8-512BD4.svg)](https://dotnet.microsoft.com/)
+[![Excel-DNA](https://img.shields.io/badge/Excel--DNA-1.9.0-green.svg)](https://excel-dna.net/)
+[![EPAM Indigo](https://img.shields.io/badge/EPAM%20Indigo-1.48.0--rc.1-orange.svg)](https://lifescience.opensource.epam.com/indigo/)
+[![Single-File XLL](https://img.shields.io/badge/Deployment-100%25%20Standalone%20XLL-brightgreen.svg)](#-quick-start-installation)
+
+> **An Excel Add-in that instantly converts SMILES chemical structure strings into crisp, in-cell molecular images.**  
+> 100% local and offline execution without external web requests, cloud services, or browser runtimes.
 
 ---
 
-## 🚀 빠른 시작 (설치 방법)
+## 📑 Table of Contents
+- [🚀 Quick Start (Installation)](#-quick-start-installation)
+- [💡 Usage & Real-Time IntelliSense](#-usage--real-time-intellisense)
+- [📖 Function Syntax & Parameter Specification](#-function-syntax--parameter-specification)
+- [🎨 Practical Recipes & Examples](#-practical-recipes--examples)
+- [🔬 Chemical Structure Rendering Optimizations (ACS Standards)](#-chemical-structure-rendering-optimizations-acs-standards)
+- [🏗️ Architecture & Internal Lifecycle](#️-architecture--internal-lifecycle)
+- [📂 Project Directory Structure](#-project-directory-structure)
+- [🛠️ Building & Distribution (For Developers)](#️-building--distribution-for-developers)
+- [🧪 Automated Testing & Verification](#-automated-testing--verification)
+- [❓ Frequently Asked Questions (FAQ)](#-frequently-asked-questions-faq)
 
-Windows 데스크톱 Excel(Microsoft 365, Office 2021/2024 등 셀 이미지 기능 지원 버전)에서 사용하실 수 있습니다.
+---
 
-### 1단계: 내 Excel 비트수(32비트 vs 64비트) 확인
-1. Excel 실행 후 **[파일] → [계정] → [Excel 정보]** 클릭
-2. 팝업 창 첫 줄 끝부분에서 **`32비트`** 또는 **`64비트`** 확인
+## 🚀 Quick Start (Installation)
 
-### 2단계: 추가 기능(XLL) 파일 준비
-내 Excel 비트수에 맞는 **`.xll` 파일 1개만** 원하는 위치(예: 바탕화면, `C:\ExcelAddIns\` 등)에 복사합니다:
-* **64비트 Excel:** [`cs_SMILES2IMG/dist/x64/Smiles2Img-AddIn64-packed.xll`](cs_SMILES2IMG/dist/x64/Smiles2Img-AddIn64-packed.xll)
-* **32비트 Excel:** [`cs_SMILES2IMG/dist/x86/Smiles2Img-AddIn-packed.xll`](cs_SMILES2IMG/dist/x86/Smiles2Img-AddIn-packed.xll)
+Supported on desktop Windows Excel versions featuring modern in-cell image capabilities (Microsoft 365, Office 2021/2024).
+
+### Step 1: Check your Excel bitness (32-bit vs. 64-bit)
+1. In Excel, go to **[File] → [Account] → [About Excel]**.
+2. Note whether the first line indicates **`32-bit`** or **`64-bit`**.
+
+### Step 2: Prepare the Add-in (.xll) file
+Place the corresponding single `.xll` file into a directory of your choice (e.g., `C:\ExcelAddIns\` or your working folder):
+* **64-bit Excel:** [`dist/x64/Smiles2Img-AddIn64-packed.xll`](dist/x64/Smiles2Img-AddIn64-packed.xll)
+* **32-bit Excel:** [`dist/x86/Smiles2Img-AddIn-packed.xll`](dist/x86/Smiles2Img-AddIn-packed.xll)
+
+> [!TIP]
+> **Unblock downloaded file (Recommended):**  
+> If downloaded via browser or git archive, Windows may flag the file with a security block.  
+> Right-click the downloaded `.xll` file → select **Properties** → check **Unblock** at the bottom of the General tab → click **OK**.
 
 > [!NOTE]
-> **단일 파일(Single-File) 100% 자체 내장:**  
-> 분자 렌더링 C++ 네이티브 엔진 및 수식 자동완성 라이브러리가 `.xll` 파일 하나 안에 모두 압축 내장되어 있습니다.  
-> 다른 DLL 파일들을 함께 옮길 필요 없이, **오직 `.xll` 파일 단 1개만** 있으면 즉시 작동합니다.
+> **100% Self-Contained Single-File:**  
+> The EPAM Indigo C++ native rendering engine and ExcelDna.IntelliSense library are fully embedded inside the packed `.xll`.  
+> No external DLLs are required alongside the add-in. On initial execution, native binaries are extracted once to `%LOCALAPPDATA%\Smiles2Img\native\`.
 
-### 3단계: Excel에 추가 기능 등록
-1. Excel 메뉴에서 **[파일] → [옵션] → [추가 기능]** 이동
-2. 하단 **[관리: Excel 추가 기능]** 옆의 **[이동(G)...]** 버튼 클릭
-3. **[찾아보기(B)...]**를 눌러 비트수에 맞는 XLL 파일 선택:
-   * 64비트: `Smiles2Img-AddIn64-packed.xll`
-   * 32비트: `Smiles2Img-AddIn-packed.xll`
-4. 목록에 `Smiles2Img-AddIn`이 체크된 것을 확인하고 **[확인]** 클릭
+### Step 3: Register as an Excel Add-in
+1. In Excel, go to **[File] → [Options] → [Add-ins]**.
+2. At the bottom, ensure **Manage: [Excel Add-ins]** is selected and click **[Go...]**.
+3. Click **[Browse...]** and select your downloaded XLL file:
+   * 64-bit: `Smiles2Img-AddIn64-packed.xll`
+   * 32-bit: `Smiles2Img-AddIn-packed.xll`
+4. Verify that `Smiles2Img-AddIn` is checked in the list and click **[OK]**.
+
+*(Once registered, the `=SMILES2IMG` function will automatically load every time Excel starts.)*
 
 ---
 
-## 💡 사용 방법
+## 💡 Usage & Real-Time IntelliSense
 
-Excel 워크시트의 셀에 `=SMILES2IMG(...)` 수식을 입력하면 즉시 셀 안에 분자 이미지가 삽입됩니다.
+Type `=SMILES2IMG(...)` in any worksheet cell to insert an in-cell molecular rendering:
 
 ```excel
 =SMILES2IMG(A2)
 ```
 
+```text
+=SMILES2IMG(
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│ SMILES2IMG(smiles, [background], [color], [transform])                                 │
+│ A SMILES string or a cell reference containing one (e.g., A2, "CCO").                  │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
 > [!TIP]
-> • **실시간 수식 도움말(IntelliSense):** 셀에 `=SMILES2IMG(` 를 입력하면 엑셀 기본 함수처럼 `SMILES2IMG(smiles, [color], [options])` 인수 안내 풍선도움말과 설명이 자동으로 표시됩니다.  
-> • 분자 구조가 잘 보이도록 행 높이(예: 80~120pt)와 열 너비(예: 25~40)를 넉넉하게 늘려주시면 훨씬 보기 좋습니다.
+> • **Real-time formula tooltips (ExcelDna.IntelliSense):** As you type `=SMILES2IMG(`, Excel displays native-style tooltips highlighting the active argument in bold with clear English descriptions.  
+> • **Cell sizing:** For optimal bond resolution and readability, increase the row height (e.g., 80–120 pt) and column width (e.g., 25–40).
 
 ---
 
-## 📖 함수 구문 및 인자 안내
+## 📖 Function Syntax & Parameter Specification
 
 ```excel
 =SMILES2IMG(smiles, [background], [color], [transform])
 ```
 
-| 순서 | 인자명 | 필수 여부 | 기본값 | 설명 및 허용 값 |
-| :---: | :--- | :---: | :---: | :--- |
-| **1** | **`smiles`** | **필수** | - | SMILES 문자열 또는 해당 문자열이 들어있는 셀 참조 (예: `A2`, `"CCO"`) |
-| **2** | **`background`** | 선택 | `"white"` | **배경 색상 설정:**<br>• `"trans"` 또는 `"transparent"`, `"nobg"`: 투명 배경 (셀 배경 투과)<br>• `"white"`: 흰색 불투명 배경 (기본값)<br>• `"#RRGGBB"`: 사용자 지정 16진수 색상 (예: `"#FFFF00"`, `"#FFF8DC"`) |
-| **3** | **`color`** | 선택 | `TRUE` | **원소 색상 모드 (학술 논문/인쇄용):**<br>• `TRUE`: 산소(빨강), 질소(파랑), 황(황갈색) 등 원소별 표준 컬러 (기본값)<br>• `FALSE`: 흑백(Grayscale) 모드 |
-| **4** | **`transform`** | 선택 | `""` | **기하학적 변환 (회전 및 반전):**<br>• `flip`: 좌우 반전 (교과서/논문 표준 배치로 전환)<br>• `flipy`: 상하 반전<br>• `rot90`, `rot180`, `rot270`: 시계 방향 회전 |
+| Order | Argument | Type | Required | Default | Allowed Values & Description |
+| :---: | :--- | :---: | :---: | :---: | :--- |
+| **1** | **`smiles`** | String | **Required** | - | A valid SMILES string (1–2000 chars) or a cell reference (e.g., `A2`, `"CCO"`). |
+| **2** | **`background`** | String | Optional | `"white"` | **Background styling (case-insensitive):**<br>• `"trans"`, `"transparent"`, `"nobg"`: Transparent background (blends seamlessly with cell fill/tables)<br>• `"white"`: Opaque white background (default)<br>• `"#RRGGBB"`: Custom hex color (e.g., `"#FFFF00"`, `"#FFF8DC"`) |
+| **3** | **`color`** | Boolean/Int | Optional | `TRUE` | **Atom color mode (academic/print style):**<br>• `TRUE` or `1`: Standard elemental colors (Oxygen=red, Nitrogen=blue, Sulfur=dark gold, etc.)<br>• `FALSE` or `0`: Grayscale / black-and-white mode |
+| **4** | **`transform`** | String | Optional | `""` | **2D coordinate transforms (case-insensitive):**<br>• `flip`: Horizontal flip (matches textbook/reference ring orientation)<br>• `flipy`: Vertical flip<br>• `rot90`, `rot180`, `rot270`: Clockwise rotation by 90-degree increments |
+
+> [!TIP]
+> • **Skipping optional arguments:** To keep preceding arguments at their defaults while specifying later ones, use consecutive commas (e.g., `=SMILES2IMG(A2, , , "flip")`).  
+> • **Smart fallback:** If a boolean `FALSE` is passed directly as the 2nd argument, the parser intelligently recognizes it as grayscale mode.
 
 ---
 
-## 🎨 주요 활용 예시
+## 🎨 Practical Recipes & Examples
 
-### 1. 기본 컬러 렌더링
-```excel
-=SMILES2IMG(A2)
+| Scenario | Example Formula | Note |
+| :--- | :--- | :--- |
+| **Standard Color** | `=SMILES2IMG(A2)` | Cell reference (white background + element colors) |
+| **Direct SMILES String** | `=SMILES2IMG("CC(=O)Oc1ccccc1C(=O)O")` | Inline aspirin SMILES formula |
+| **Transparent Background** | `=SMILES2IMG(A2, "trans")` | Passes cell fill color or table zebra striping through |
+| **Custom Background** | `=SMILES2IMG(A2, "#FFFF00")` | Custom hex color background (e.g. warning yellow) |
+| **ACS Publication Grayscale** | `=SMILES2IMG(A2, , FALSE)` | Black & white publication rendering |
+| **Transparent + Grayscale** | `=SMILES2IMG(A2, "trans", FALSE)` | Transparent background in monochrome |
+| **Textbook Layout Flip** | `=SMILES2IMG(A2, , , "flip")` | Flips horizontal orientation (e.g., nicotine, thiamine) |
+| **Combined Customization** | `=SMILES2IMG(A2, "trans", FALSE, "flip")` | Transparent + monochrome + horizontal flip |
+| **90° Rotation** | `=SMILES2IMG(A2, , , "rot90")` | Rotates long chains to fit cell aspect ratios |
+
+---
+
+## 🔬 Chemical Structure Rendering Optimizations (ACS Standards)
+
+To satisfy the aesthetic and clarity standards of academic chemistry publications (ACS, IUPAC), the following automated enhancements are applied:
+
+```mermaid
+flowchart LR
+    A["SMILES Input"] --> B["dearomatize<br>(Kekulé Form)"]
+    B --> C["Smart Horizontal Layout<br>& Hetero-Methyl Labels"]
+    C --> D["Preserve Ring-Junction<br>Chiral Hydrogens"]
+    E["Insert Native In-Cell Image"]
+    D --> F["Dynamic Resolution<br>Vector-grade PNG"]
+    F --> E
 ```
 
-### 2. 셀 배경색이 투과되는 투명 배경
-엑셀 셀에 채우기 색상(노란색, 연회색 등)이나 표 서식이 적용되어 있을 때 유용합니다. **(2번째 인자에 바로 입력)**
-```excel
-=SMILES2IMG(A2, "trans")
-=SMILES2IMG(A2, "transparent")
+1. **Dynamic Resolution & Vector-Grade Scaling:**  
+   Replaces rigid canvas constraints with dynamic dimensioning based on bond length (80 px), margins (30 px), and relative bond thickness (1.5). Large macromolecular structures and simple diatomics maintain proportional bond weights and consistent label sizes.
+2. **Kekulé Form Normalization (`dearomatize`):**  
+   Converts ambiguous circular aromatic notations into crisp alternating double bonds preferred by organic chemists (`aromaticity-model = generic`).
+3. **Selective Ring-Junction Chiral Hydrogen Preservation:**  
+   While standard skeletal formulas hide carbon-bound hydrogens, bridgehead and ring-junction stereocenters (e.g., aflatoxin, bergenin) retain explicit wedge/dash hydrogens to prevent visual ambiguity and bond overlaps.
+4. **Heteroatom-Bound Methyl Groups & Small-Molecule Readability:**  
+   - Ultra-small molecules ($\le$ 4 heavy atoms, e.g., methyl isocyanate `CN=C=O`, methanol `CO`, ethanol) automatically render explicit text formulas (`H₃C-N=C=O`, `H₃C-OH`).
+   - Heteroatom-bound methyls (e.g., in nicotine, caffeine, pyrethrins) display explicit labels (`N-CH₃`, `H₃C-O-`), while aliphatic hydrocarbon backbones remain sleek skeletal lines.
+5. **Smart Horizontal Layout (`smart-layout` + `layout-orientation: horizontal`):**  
+   Aliphatic bridges between rings (such as in thiamine and nicotine) are leveled horizontally, perfectly complementing standard rectangular spreadsheet cells.
+6. **Optimized Sulfur (S) Visibility:**  
+   Rendered in dark goldenrod (`#A88013`) instead of glaring yellow (`#FFFF00`) for clear contrast on white backgrounds.
+7. **Alpha-Channel Transparency & Hex Colors:**  
+   Supports true 32-bit alpha transparency (`Alpha=0`) and custom hex color fills.
+
+---
+
+## 🏗️ Architecture & Internal Lifecycle
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Excel User
+    participant F as Functions.cs
+    participant C as CellImages.cs
+    participant Cache as Hidden Cache Sheet (__SMILES2IMG)
+    participant R as MoleculeRenderer (Indigo C++)
+    participant U as CellImageUpdates.cs (Async Macro)
+
+    User->>F: Enter formula =SMILES2IMG(A2, ...)
+    F->>F: Parse arguments (Background, Color, Transform)
+    F->>C: Query cell image reference
+    C->>Cache: Lookup hash key via Excel MATCH
+    alt Cache Hit
+        Cache-->>F: Return existing cell ExcelReference (0ms)
+        F-->>User: Immediate image display
+    else Cache Miss
+        C->>R: In-memory high-res PNG render
+        R-->>C: Generated PNG byte stream
+        C->>U: Enqueue async update & return temporary #N/A
+        U->>Cache: Insert native in-cell picture into hidden sheet
+        U->>F: Trigger worksheet recalculation
+        F-->>User: Rendered molecule displayed in cell
+    end
 ```
 
-### 3. 사용자 지정 배경색
-```excel
-=SMILES2IMG(A2, "#FFFF00")              ' 노란색 배경
-=SMILES2IMG(A2, "#FFF8DC")              ' 크림색 배경
-```
+- **100% In-Memory Offline Execution:** Eliminates external network calls, Node.js processes, or embedded browser frameworks.
+- **Cache Persistence & Workbook Portability:** Images are cached in an internal hidden sheet (`__SMILES2IMG`), ensuring instant restoration when workbooks are saved and reopened.
 
-### 4. 학술 논문/인쇄용 ACS 스타일 흑백 표기
-```excel
-=SMILES2IMG(A2, , FALSE)                ' 기본 흰 배경 + 흑백
-=SMILES2IMG(A2, "trans", FALSE)         ' 투명 배경 + 흑백
-```
+---
 
-### 5. 교과서/논문 표준 도식에 맞춘 좌우 반전 (`flip`)
-SMILES 기입 순서로 인해 고리 위치가 교과서 도식과 반대로 렌더링될 때(예: 니코틴, 티아민) 즉시 표준 방향으로 뒤집을 수 있습니다.
-```excel
-=SMILES2IMG(A2, , , "flip")             ' 기본 배경 + 좌우 반전
-=SMILES2IMG(A2, "trans", , "flip")      ' 투명 배경 + 좌우 반전
-=SMILES2IMG(A2, "trans", FALSE, "flip") ' 투명 배경 + 흑백 + 좌우 반전
-```
+## 📂 Project Directory Structure
 
-### 6. 회전 조절
-```excel
-=SMILES2IMG(A2, , , "rot90")            ' 시계 방향 90도 회전
-=SMILES2IMG(A2, "trans", , "rot90")     ' 투명 배경 + 90도 회전
+```text
+func_SMILES2IMG/
+├── dist/                               # Standalone packed XLL distribution artifacts
+│   ├── x64/
+│   │   ├── Smiles2Img-AddIn64-packed.xll   # 64-bit self-contained Excel Add-in (~8.6 MB)
+│   │   └── THIRD_PARTY_NOTICES.md
+│   └── x86/
+│       ├── Smiles2Img-AddIn-packed.xll     # 32-bit self-contained Excel Add-in (~8.7 MB)
+│       └── THIRD_PARTY_NOTICES.md
+├── Rendering/                          # Chemistry rendering & image pipeline
+│   ├── MoleculeRenderer.cs             # Indigo rendering logic & ACS optimizations
+│   ├── NativeImageWorkbook.cs          # OpenXML native image workbook support
+│   └── NativeIndigo.cs                 # Embedded unmanaged C++ DLL extraction loader
+├── assets/                             # Workbook templates & static resources
+│   └── native-image-template.xlsx
+├── Properties/
+│   └── AssemblyInfo.cs
+├── tests/                              # Automated test suites
+│   ├── Excel-Smoke.ps1                 # Full COM automation E2E smoke tests
+│   ├── Program.cs                      # Headless unit test runner
+│   └── Smiles2Img.Tests.csproj
+├── AddIn.cs                            # Excel-DNA initialization & diagnostic ribbon UI
+├── CellImages.cs                       # In-cell image cache & ExcelReference bindings
+├── CellImageUpdates.cs                 # Asynchronous image insertion macro queue
+├── Functions.cs                        # =SMILES2IMG UDF & IntelliSense definitions
+├── Smiles2Img-AddIn.dna                # Excel-DNA manifest configuration
+├── Smiles2Img.csproj                   # MSBuild project file (.NET 4.8)
+├── THIRD_PARTY_NOTICES.md              # Open-source license acknowledgments
+├── PLAN.md                             # Architectural roadmap & optimization log
+├── README.KR.md                        # Korean documentation
+└── README.md                           # Main English documentation (this file)
 ```
 
 ---
 
-## 📂 프로젝트 구조 및 개발 문서
+## 🛠️ Building & Distribution (For Developers)
 
-| 폴더 | 구현 기술 | 주요 특징 | 문서 링크 |
-| :--- | :--- | :--- | :--- |
-| **`cs_SMILES2IMG/`** | **C# (.NET 4.8) + Excel-DNA + EPAM Indigo** | **[메인 추천 버전]** 네이티브 데스크톱 속도, ACS 표준 렌더링 최적화, 고해상도 가변 크기, 100% 로컬 오프라인 실행 | [상세 문서 보기](cs_SMILES2IMG/README.md) |
-| **`js_SMILES2IMG/`** | TypeScript + Office.js + SmilesDrawer | Office.js 웹 런타임 기반 추가 기능 (웹/클라우드 환경 대응 연구용) | [상세 문서 보기](js_SMILES2IMG/README.md) |
+### Prerequisites
+* Windows 10/11
+* [.NET SDK 8.0 or newer](https://dotnet.microsoft.com/) (targeting .NET Framework 4.8)
+
+### Build Commands
+Run from the repository root:
+
+```powershell
+# Restore dependencies
+dotnet restore --tl:off
+
+# Build Release and pack standalone XLLs
+dotnet build -c Release --no-restore --tl:off
+```
+
+The resulting packed XLLs in `dist/x64/` and `dist/x86/` contain all dependencies (ExcelDna, IntelliSense, Indigo C++ runtimes) within a single self-extracting archive.
 
 ---
 
-## 🛠️ 문제 해결 (FAQ)
+## 🧪 Automated Testing & Verification
 
-* **Q. 수식 결과가 `#VALUE!`로 나옵니다.**
-  * 참조한 셀에 올바른 SMILES 문자열이 들어있는지 확인하세요.
-  * 수식이 참조하는 셀에 **셀 병합(Merged Cells)**이 되어 있으면 빈 셀을 참조하여 `#VALUE!`가 발생할 수 있습니다.
-* **Q. 셀 이미지가 너무 작거나 잘려 보입니다.**
-  * 이미지는 셀 크기에 맞춰 자동 축척됩니다. 행 높이와 열 너비를 충분히 늘려주세요.
-* **Q. 상세 로그나 오류를 확인하고 싶습니다.**
-  * Excel 상단 리본 메뉴의 **[SMILES] → [Show diagnostics]** 창에서 상세 로그를 확인할 수 있습니다.
+### 1. Headless Unit Tests (Excel not required)
+Verifies molecule rendering, chiral hydrogen retention, transforms, and alpha transparency in headless console mode:
+
+```powershell
+dotnet build tests/Smiles2Img.Tests.csproj -c Release --no-restore --tl:off
+& tests/bin/Release/net48/Smiles2Img.Tests.exe
+```
+
+### 2. Excel COM E2E Automation Smoke Tests (Runs live Excel)
+Automates an actual background Excel instance to test full lifecycle reliability:
+
+```powershell
+powershell -NoProfile -STA -ExecutionPolicy Bypass -File tests/Excel-Smoke.ps1
+```
+* XLL registration and formula discovery
+* In-cell picture embedding and formula persistence
+* Real-time image replacement upon SMILES modification (zero floating shapes)
+* Cache hit instantaneous reuse across multiple cells
+* Workbook saving, reopening, and cache restoration
+* Automatic orphaned cache cleanup when formulas are deleted
+
+---
+
+## ❓ Frequently Asked Questions (FAQ)
+
+* **Q. The formula returns `#VALUE!`.**
+  * Check that the referenced cell contains a valid SMILES string.
+  * If the target cell is part of **merged cells**, Excel formulas may point to an empty sub-cell, triggering `#VALUE!`.
+* **Q. Excel blocks or refuses to load the XLL.**
+  * Right-click the `.xll` file, open **Properties**, check **Unblock** at the bottom, and click **OK**.
+* **Q. The molecular image looks too small or shrunk.**
+  * Images scale automatically to preserve aspect ratios within cells. Increase the cell's row height (e.g., 100 pt) and column width (e.g., 30) for larger renderings.
+* **Q. How do I inspect diagnostics and logs?**
+  * From the Excel ribbon, click **[SMILES] → [Show diagnostics]** to view live rendering operations, cache statistics, and error logs.
