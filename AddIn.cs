@@ -9,7 +9,7 @@ namespace Smiles2Img;
 
 public sealed class AddIn : IExcelAddIn
 {
-    internal static bool IsOpen { get; private set; }
+    internal static volatile bool IsOpen;
 
     public void AutoOpen()
     {

@@ -14,24 +14,26 @@ public static class FloatFunctions
     public static object ImgFloat(
         [ExcelArgument(Name = "smiles", Description = "A SMILES string or a cell reference containing one (e.g., A2, \"CCO\").")] string smiles,
         [ExcelArgument(Name = "background", Description = "Optional: \"trans\" (default), \"white\", CSS color (e.g. \"yellow\"), or hex (#RRGGBB).")] object? background = null,
-        [ExcelArgument(Name = "color", Description = "Optional: TRUE for color (default), FALSE for black & white mode.")] object? color = null,
+        [ExcelArgument(Name = "style", Description = "Optional: \"color\" (default), \"bw\", \"num\", \"stereo\", \"h\", \"all-c\", \"white\", combined (e.g. \"bw num\" or \"bw|stereo\").")] object? style = null,
         [ExcelArgument(Name = "transform", Description = "Optional: orientation (flip, flipy, rot90, rot180, rot270).")] object? transform = null)
     {
         if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2IMG.FLOAT";
         if (XlCall.Excel(XlCall.xlfCaller) is not ExcelReference caller ||
             caller.RowFirst != caller.RowLast || caller.ColumnFirst != caller.ColumnLast)
             return ExcelError.ExcelErrorValue;
+
         try
         {
-            var (isColor, trans, bg) = Functions.ParseOptions(background, color, transform);
+            var options = Functions.ParseOptions(background, style, transform);
             var input = MoleculeRenderer.Normalize(smiles);
-            var key = CellImages.Key(input, isColor, trans, bg);
-            var png = FloatingPictures.Render(key, () => MoleculeRenderer.Render(input, isColor, trans, bg));
+            var key = CellImages.Key(input, options);
+            var png = FloatingPictures.Render(key, () => MoleculeRenderer.Render(input, options));
             FloatingPictureUpdates.Place(caller, key, input, png);
             return "";
         }
-        catch (InvalidSmilesException)
+        catch (InvalidSmilesException ex)
         {
+            LogDisplay.WriteLine("SMILES2IMG.FLOAT: " + ex.Message);
             FloatingPictureUpdates.Remove(caller);
             return ExcelError.ExcelErrorValue;
         }

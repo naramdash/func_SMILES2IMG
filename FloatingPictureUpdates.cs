@@ -11,20 +11,12 @@ namespace Smiles2Img;
 // (the latest wins) and applied in one macro, indexing each sheet's pictures once.
 internal static class FloatingPictureUpdates
 {
-    private sealed class Pending
+    private sealed class Pending(ExcelReference caller, string? key, string? smiles, byte[]? png)
     {
-        public ExcelReference Caller { get; }
-        public string? Key { get; }
-        public string? Smiles { get; }
-        public byte[]? Png { get; }
-
-        public Pending(ExcelReference caller, string? key, string? smiles, byte[]? png)
-        {
-            Caller = caller;
-            Key = key;
-            Smiles = smiles;
-            Png = png;
-        }
+        public ExcelReference Caller { get; } = caller;
+        public string? Key { get; } = key;
+        public string? Smiles { get; } = smiles;
+        public byte[]? Png { get; } = png;
     }
 
     private static readonly object Gate = new();
@@ -39,7 +31,8 @@ internal static class FloatingPictureUpdates
     {
         lock (Gate)
         {
-            pending[item.Caller.SheetId + ":" + item.Caller.RowFirst + ":" + item.Caller.ColumnFirst] = item;
+            var cellKey = $"{item.Caller.SheetId}:{item.Caller.RowFirst}:{item.Caller.ColumnFirst}";
+            pending[cellKey] = item;
             if (scheduled) return;
             scheduled = true;
         }
@@ -104,7 +97,15 @@ internal static class FloatingPictureUpdates
             {
                 var bookName = sheetRef.Substring(1, closeBracket - 1);
                 var sheetName = sheetRef.Substring(closeBracket + 1);
-                return (Excel.Worksheet)application.Workbooks[bookName].Worksheets[sheetName];
+                try { return (Excel.Worksheet)application.Workbooks[bookName].Worksheets[sheetName]; }
+                catch
+                {
+                    foreach (Excel.Workbook wb in application.Workbooks)
+                    {
+                        if (string.Equals(wb.Name, bookName, StringComparison.OrdinalIgnoreCase))
+                            return (Excel.Worksheet)wb.Worksheets[sheetName];
+                    }
+                }
             }
         }
         catch { }

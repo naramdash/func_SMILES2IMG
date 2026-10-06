@@ -170,6 +170,11 @@ try {
     Wait-ForResult { $sheet.Shapes.Count -eq 1 -and $sheet.Shapes.Item(1).AlternativeText -eq 'c1ccccc1' }
     Write-Output 'PASS SMILES2IMG.FLOAT molecule update and shape replacement'
 
+    $sheet.Range('B2').Formula = '=SMILES2IMG.FLOAT(A2, "trans", "bw,num")'
+    Invoke-Excel { $excel.Calculate() }
+    Wait-ForResult { $sheet.Shapes.Count -eq 1 -and $sheet.Shapes.Item(1).Title.Contains('_NUM') }
+    Write-Output 'PASS SMILES2IMG.FLOAT domain styles (bw,num) metadata caching'
+
     $sheet.Range('B2').ClearContents()
     Invoke-Excel { $excel.Calculate() }
     Wait-ForResult { $sheet.Shapes.Count -eq 0 }

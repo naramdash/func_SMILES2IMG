@@ -71,10 +71,16 @@ if ($isUpdate) {
     Write-Host "[*] Fresh installation starting..." -ForegroundColor Cyan
 }
 
-# 4. Download latest packed XLL from GitHub Releases
-$downloadUrl = "https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/$xllName"
-Write-Host "[+] Downloading latest release: $downloadUrl" -ForegroundColor Cyan
-Invoke-WebRequest -Uri $downloadUrl -OutFile $targetPath -UseBasicParsing
+# 4. Copy from local dist if available, otherwise download latest packed XLL from GitHub Releases
+$localDistPath = if ($PSScriptRoot) { Join-Path $PSScriptRoot "dist\$bitness\$xllName" } else { $null }
+if ($localDistPath -and (Test-Path -LiteralPath $localDistPath)) {
+    Write-Host "[+] Installing from local build: $localDistPath" -ForegroundColor Cyan
+    Copy-Item -LiteralPath $localDistPath -Destination $targetPath -Force
+} else {
+    $downloadUrl = "https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/$xllName"
+    Write-Host "[+] Downloading latest release: $downloadUrl" -ForegroundColor Cyan
+    Invoke-WebRequest -Uri $downloadUrl -OutFile $targetPath -UseBasicParsing
+}
 
 # 5. Unblock file
 Write-Host "[+] Unblocking file (removing Mark of the Web)..." -ForegroundColor Gray

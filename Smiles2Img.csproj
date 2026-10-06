@@ -12,9 +12,9 @@
     <ExcelDnaPackNativeLibraryDependencies>false</ExcelDnaPackNativeLibraryDependencies>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <DistributionRoot Condition="'$(DistributionRoot)' == ''">$(MSBuildProjectDirectory)/dist</DistributionRoot>
-    <Version>1.1.0</Version>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
+    <Version>1.2.0</Version>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ExcelDna.AddIn" Version="1.9.0" />

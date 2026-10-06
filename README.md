@@ -11,6 +11,10 @@
 > **An Excel Add-in that instantly converts SMILES chemical structure strings into crisp, in-cell molecular images.**  
 > 100% local and offline execution without external web requests, cloud services, or browser runtimes.
 
+<p align="center">
+  <img src="assets/excel-showcase.png" alt="SMILES2IMG Excel Native In-Cell Molecular Structure Showcase" width="100%" />
+</p>
+
 ---
 
 ## 📑 Table of Contents
@@ -71,8 +75,8 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 
 #### Step 2: Prepare the Add-in (.xll) file
 Download the single `.xll` file matching your Excel bitness from the [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest) page (recommended location: `Win+R` ➔ `%APPDATA%\Microsoft\AddIns`):
-* **64-bit Excel:** [**`Smiles2Img-AddIn64-packed.xll`** (Latest v1.1.0 Download)](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-AddIn64-packed.xll)
-* **32-bit Excel:** [**`Smiles2Img-AddIn-packed.xll`** (Latest v1.1.0 Download)](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-AddIn-packed.xll)
+* **64-bit Excel:** [**`Smiles2Img-AddIn64-packed.xll`** (Latest v1.2.0 Download)](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-AddIn64-packed.xll)
+* **32-bit Excel:** [**`Smiles2Img-AddIn-packed.xll`** (Latest v1.2.0 Download)](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-AddIn-packed.xll)
 
 > [!TIP]
 > **Unblock downloaded file (Essential):**  
@@ -103,13 +107,13 @@ Type formula in any worksheet cell to insert a molecular rendering:
 ```text
 =SMILES2IMG(
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│ SMILES2IMG(smiles, [background], [color], [transform])                                 │
+│ SMILES2IMG(smiles, [background], [style], [transform])                                 │
 │ [Excel 2024 / Microsoft 365] Renders a high-resolution molecular structure image...   │
 └────────────────────────────────────────────────────────────────────────────────────────┘
 
 =SMILES2IMG.FLOAT(
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│ SMILES2IMG.FLOAT(smiles, [background], [color], [transform])                           │
+│ SMILES2IMG.FLOAT(smiles, [background], [style], [transform])                           │
 │ [Excel 2016+] Places a molecular structure picture over the cell (moves/sizes)...      │
 └────────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -124,8 +128,8 @@ Type formula in any worksheet cell to insert a molecular rendering:
 ## 📖 Function Syntax & Parameter Specification
  
 ```excel
-=SMILES2IMG(smiles, [background], [color], [transform])
-=SMILES2IMG.FLOAT(smiles, [background], [color], [transform])
+=SMILES2IMG(smiles, [background], [style], [transform])
+=SMILES2IMG.FLOAT(smiles, [background], [style], [transform])
 ```
  
 *(Both functions accept identical parameters and default values.)*
@@ -133,29 +137,55 @@ Type formula in any worksheet cell to insert a molecular rendering:
 | Order | Argument | Type | Required | Default | Allowed Values & Description |
 | :---: | :--- | :---: | :---: | :---: | :--- |
 | **1** | **`smiles`** | String | **Required** | - | A valid SMILES string (1–2000 chars) or a cell reference (e.g., `A2`, `"CCO"`). |
-| **2** | **`background`** | String | Optional | `"trans"` | **Background styling (case-insensitive):**<br>• `"trans"`, `"transparent"`, `"nobg"`: Transparent background (default, seamlessly blends with cell fills & zebra tables)<br>• `"white"`: Opaque white canvas background<br>• CSS color names: `"yellow"`, `"lightblue"`, `"lightgray"`, `"aliceblue"`, `"cornsilk"`, `"pink"`, etc. (140+ CSS standard names)<br>• Hex colors: `"#FFFF00"` or `"FFFF00"` (3- or 6-digit hex) |
-| **3** | **`color`** | Boolean/Int | Optional | `TRUE` | **Atom color mode (academic/print style):**<br>• `TRUE` or `1`: Standard elemental colors (Oxygen=red, Nitrogen=blue, Sulfur=dark gold, etc.)<br>• `FALSE` or `0`: Grayscale / black-and-white mode |
-| **4** | **`transform`** | String | Optional | `""` | **2D coordinate transforms (case-insensitive):**<br>• `flip`: Horizontal flip (matches textbook/reference ring orientation)<br>• `flipy`: Vertical flip<br>• `rot90`, `rot180`, `rot270`: Clockwise rotation by 90-degree increments |
+| **2** | **`background`** | String | Optional | `"trans"` | **Background canvas styling (case-insensitive):**<br>• `"trans"`, `"transparent"`, `"nobg"`: Transparent canvas (default, blends with cell fills & zebra tables)<br>• `"white"`: Opaque white canvas background<br>• CSS color names: `"yellow"`, `"lightblue"`, `"lightgray"`, `"aliceblue"`, `"cornsilk"`, `"pink"`, etc. (140+ CSS names)<br>• Hex colors: `"#FFFF00"` or `"FFFF00"` (3- or 6-digit hex) |
+| **3** | **`style`** | String / Bool | Optional | `"color"` | **Chemical rendering style & domain options (combinable with spaces or pipes `|`):**<br>• **Single Style Tokens:**<br>  - Standard CPK colors: `"color"`, `"cpk"`, `TRUE`, `1` *(default: Oxygen=red, Nitrogen=blue, Sulfur=gold)*<br>  - Monochrome line art: `"bw"`, `"mono"`, `"black"`, `FALSE`, `0` *(patent line art & ACS journal print)*<br>  - Atom numbering: `"num"`, `"idx"`, `"number"` *(sequential 1, 2, 3... indices for NMR peaks & mechanisms)*<br>  - Stereochemistry labels: `"stereo"`, `"chiral"`, `"ext"` *(explicit R/S and E/Z annotations)*<br>  - Explicit hydrogens: `"h"`, `"hydrogens"`, `"unfoldh"` *(unfolds and draws all C-H bonds)*<br>  - Skeletal carbon letters: `"all-c"`, `"carbon"` *(explicit "C" text on every backbone vertex)*<br>  - Dark mode white ink: `"white"`, `"light"` *(crisp pure-white lines on dark presentation sheets)*<br>  - Custom ink color: `"ink=#RRGGBB"`, `"ink=navy"` *(brand/corporate theme line color)*<br>• **String Combination Examples (using spaces or pipes `|`):**<br>  - Patent numbered drawings: `"bw num"` *(or `"bw|num"`)*<br>  - Journal monochrome chiral: `"bw stereo"` *(or `"bw|stereo"`)*<br>  - Reaction mechanism tracking: `"num h"` *(or `"num|h"`)*<br>  - Dark mode chiral structure: `"white stereo"` *(or `"white|stereo"`)*<br>  - Dark mode full composite: `"white stereo num h"`<br>• **⭐ Ultimate Full-Option String Example (All Style Capabilities Active):**<br>  - `"bw num stereo h all-c"`<br>  - *(or with pipe delimiters: `"bw|num|stereo|h|all-c"`)* |
+| **4** | **`transform`** | String | Optional | `""` | **2D coordinate transforms (case-insensitive, combinable with spaces):**<br>• `flip`: Horizontal flip (matches textbook/reference ring orientation)<br>• `flipy`: Vertical flip<br>• `rot90`, `rot180`, `rot270`: Clockwise rotation by 90-degree increments<br>• **Composite chaining examples:** `"flip rot90"` (flipped horizontally and rotated 90°), `"rot180"` |
 
 > [!TIP]
-> • **Skipping optional arguments:** To keep preceding arguments at their defaults (transparent background) while specifying later ones, use consecutive commas (e.g., `=SMILES2IMG(A2, , , "flip")`).  
-> • **Smart fallback:** If a boolean `FALSE` is passed directly as the 2nd argument, the parser intelligently recognizes it as grayscale mode.
+> • **The Ultimate "Full-Option" Formula (All Features Active):**  
+>   `=SMILES2IMG(A2, "white", "bw num stereo h all-c", "flip rot90")`  
+>   *(or with pipe delimiters: `=SMILES2IMG(A2, "white", "bw|num|stereo|h|all-c", "flip rot90")`)*  
+>   Combines every single capability: opaque white canvas, 100% monochrome lines, sequential atom indices (1, 2, 3...), stereochemical (R/S) centers, fully unfolded hydrogens, explicit "C" backbone atoms, horizontal textbook flip, and a 90° clockwise rotation!  
+> • **Spaces vs. Pipes (Style Separation):** Combine multiple styles using **spaces** (`"bw num"`, `"white stereo"`) or **pipes** (`"bw|num"`, `"white|stereo"`). Both prevent visual confusion with Excel's argument commas. (Commas `"bw,num"` also supported).  
+> • **Skipping Preceding Optional Arguments:** To keep preceding arguments at their defaults (transparent canvas) while specifying later ones, simply leave them empty with commas (e.g., `=SMILES2IMG(A2, , "bw")` or `=SMILES2IMG(A2, , , "flip")`).  
+> • **Full Backward Compatibility:** Passing booleans (`TRUE`/`FALSE`) or numeric values (`1`/`0`) as the 3rd argument (or as the 2nd argument fallback) remains 100% supported.
 
 ---
 
 ## 🎨 Practical Recipes & Examples
 
-| Scenario | Example Formula | Note |
-| :--- | :--- | :--- |
-| **Default Rendering** | `=SMILES2IMG(A2)` | Cell reference (transparent background + standard colors) |
-| **Direct SMILES String** | `=SMILES2IMG("CC(=O)Oc1ccccc1C(=O)O")` | Inline aspirin SMILES formula |
-| **Opaque White Background** | `=SMILES2IMG(A2, "white")` | Explicit white canvas background |
-| **CSS Color Background** | `=SMILES2IMG(A2, "yellow")`<br>`=SMILES2IMG(A2, "lightblue")` | Human-readable CSS color names |
-| **Custom Hex Background** | `=SMILES2IMG(A2, "#FFFF00")` | Custom hex color background (`#` is optional) |
-| **ACS Publication Grayscale** | `=SMILES2IMG(A2, , FALSE)` | Black & white publication rendering |
-| **Textbook Layout Flip** | `=SMILES2IMG(A2, , , "flip")` | Flips horizontal orientation (e.g., nicotine, thiamine) |
-| **White Canvas + B/W + Flip** | `=SMILES2IMG(A2, "white", FALSE, "flip")` | White background + monochrome + horizontal flip |
-| **90° Rotation** | `=SMILES2IMG(A2, , , "rot90")` | Rotates long chains to fit cell aspect ratios |
+<p align="center">
+  <img src="assets/excel-matrix-showcase.png" alt="SMILES2IMG Style & Transform Option Matrix" width="100%" />
+</p>
+
+| Category | Goal / Scenario | Example Formula | Description |
+| :--- | :--- | :--- | :--- |
+| **⭐ All-in-One** | **Ultimate Full-Option Formula** | `=SMILES2IMG(A2, "white", "bw num stereo h all-c", "flip rot90")` | All parameters combined: White canvas + B/W + Atom numbering + Chiral labels + Unfolded hydrogens + Explicit carbons + Flipped + 90° rotation |
+| **⭐ All-in-One** | **Full-Option Dark Mode** | `=SMILES2IMG(A2, "#1a1a1a", "white stereo num h", "flip")` | Dark canvas + Pure-white bonds + Chiral labels + Atom numbering + Unfolded hydrogens + Flipped |
+| **Basic** | **Cell Reference** | `=SMILES2IMG(A2)` | Standard transparent canvas + full CPK elemental colors |
+| **Basic** | **Direct Inline SMILES** | `=SMILES2IMG("CC(=O)Oc1ccccc1C(=O)O")` | Directly renders aspirin structure without referencing external cells |
+| **Patent & Journal** | **Patent Line Art (B/W)** | `=SMILES2IMG(A2, , "bw")` | 100% black & white monochrome line art for patent (KIPO/USPTO) submissions |
+| **Patent & Journal** | **Patent Drawing with Numbers** | `=SMILES2IMG(A2, , "bw num")` | Numbered atoms (1, 2, 3...) on clean monochrome lines for patent claim drafting |
+| **Patent & Journal** | **Journal Stereochemical Figure** | `=SMILES2IMG(A2, , "bw stereo")` | B/W journal printing style with explicit R/S and E/Z stereochemical annotations |
+| **Patent & Journal** | **Complete Patent Specification** | `=SMILES2IMG(A2, "white", "bw num stereo")` | Opaque white canvas + B/W + atom numbering + chiral labels |
+| **Spectroscopy & Mechanism** | **NMR Peak Assignment** | `=SMILES2IMG(A2, , "num")` | Displays atom index numbers (1, 2, 3...) to correlate with ¹H/¹³C NMR spectra |
+| **Spectroscopy & Mechanism** | **Chiral Centers & Absolute Config** | `=SMILES2IMG(A2, , "stereo")` | Annotates asymmetric carbon centers and double-bond geometry |
+| **Spectroscopy & Mechanism** | **Steric Hindrance / Proton Exchange** | `=SMILES2IMG(A2, , "h")` | Unfolds and displays all C-H hydrogen bonds to inspect crowding and reactive sites |
+| **Spectroscopy & Mechanism** | **Reaction Mechanism Tracking** | `=SMILES2IMG(A2, , "num h")` | Combines atom indexing and explicit hydrogens for curly-arrow electron tracking |
+| **Education & Structural Clarity** | **All Skeletal Carbons Marked** | `=SMILES2IMG(A2, , "all-c")` | Displays literal "C" text on every carbon vertex (ideal for introductory organic chemistry) |
+| **Education & Structural Clarity** | **All Carbons + Atom Numbering** | `=SMILES2IMG(A2, , "all-c num")` | Full skeletal carbon labeling paired with sequential atom indices |
+| **Dark Theme & UI Styling** | **Dark Sheet Presentation** | `=SMILES2IMG(A2, "#1e1e1e", "white")` | Deep gray cell canvas with crisp, pure-white molecular bonds |
+| **Dark Theme & UI Styling** | **Dark Mode with Chiral Labels** | `=SMILES2IMG(A2, "#202020", "white stereo")` | Modern dark background + white molecular bonds + R/S stereochemical labels |
+| **Dark Theme & UI Styling** | **Corporate / Brand Ink Color** | `=SMILES2IMG(A2, "aliceblue", "ink=#003366")` | Custom navy blue line ink on light blue canvas |
+| **Dark Theme & UI Styling** | **Highlighted Hazard Cell** | `=SMILES2IMG(A2, "#FFF9C4", "bw num")` | Pastel yellow alert cell fill with monochrome numbered molecule |
+| **Orientation & Alignment** | **Textbook Orientation (Flip)** | `=SMILES2IMG(A2, , , "flip")` | Horizontally flips rings (e.g., nicotine, thiamine) to match textbook figures |
+| **Orientation & Alignment** | **Vertical Flip** | `=SMILES2IMG(A2, , , "flipy")` | Flips molecular coordinates vertically |
+| **Orientation & Alignment** | **Rotate Long Chains 90°** | `=SMILES2IMG(A2, , , "rot90")` | Rotates elongated linear chains by 90° to fit narrow vertical table columns |
+| **Orientation & Alignment** | **Rotate 180°** | `=SMILES2IMG(A2, , , "rot180")` | Inverts molecule upside-down |
+| **Multi-Combination** | **White Bg + B/W + Flipped** | `=SMILES2IMG(A2, "white", "bw", "flip")` | Clean white canvas + monochrome ink + horizontal flip |
+| **Excel 2016/2019/2021 Mode** | **Floating Shape (Legacy Excel)** | `=SMILES2IMG.FLOAT(A2)` | Cell-anchored floating shape (`xlMoveAndSize`) on Excel 2016, 2019, 2021 |
+| **Excel 2016/2019/2021 Mode** | **Floating Patent Drawing** | `=SMILES2IMG.FLOAT(A2, , "bw num")` | Floating picture mode with patent monochrome numbering |
+| **Excel 2016/2019/2021 Mode** | **Floating Dark Mode** | `=SMILES2IMG.FLOAT(A2, "#1e1e1e", "white stereo")` | Floating picture mode with dark background and white bonds |
 
 ---
 
@@ -238,6 +268,8 @@ func_SMILES2IMG/
 │       └── THIRD_PARTY_NOTICES.md
 ├── Rendering/                          # Chemistry rendering & image pipeline
 │   ├── MoleculeRenderer.cs             # Indigo rendering logic & ACS optimizations
+│   ├── RenderOptions.cs                # Render option model & formula argument parser
+│   ├── ColorHelper.cs                  # Color normalization & Hex/RGB converter
 │   ├── NativeImageWorkbook.cs          # OpenXML native image workbook support
 │   └── NativeIndigo.cs                 # Embedded unmanaged C++ DLL extraction loader
 ├── assets/                             # Workbook templates & static resources
@@ -246,12 +278,17 @@ func_SMILES2IMG/
 │   └── AssemblyInfo.cs
 ├── tests/                              # Automated test suites
 │   ├── Excel-Smoke.ps1                 # Full COM automation E2E smoke tests
+│   ├── Excel-365-FeatureTests.ps1      # Live Excel 365 new styles & full-option tests
+│   ├── Excel-DeepStressTests.ps1       # 20-molecule bulk rendering & edge-case stress test
 │   ├── Program.cs                      # Headless unit test runner
 │   └── Smiles2Img.Tests.csproj
 ├── AddIn.cs                            # Excel-DNA initialization & diagnostic ribbon UI
 ├── CellImages.cs                       # In-cell image cache & ExcelReference bindings
 ├── CellImageUpdates.cs                 # Asynchronous image insertion macro queue
 ├── Functions.cs                        # =SMILES2IMG UDF & IntelliSense definitions
+├── FloatFunctions.cs                   # =SMILES2IMG.FLOAT legacy floating UDF definitions
+├── FloatingPictures.cs                 # Cell-anchored floating shape manager (xlMoveAndSize)
+├── FloatingPictureUpdates.cs           # Floating picture batch update queue
 ├── Smiles2Img-AddIn.dna                # Excel-DNA manifest configuration
 ├── Smiles2Img.csproj                   # MSBuild project file (.NET 4.8)
 ├── THIRD_PARTY_NOTICES.md              # Open-source license acknowledgments
@@ -306,16 +343,33 @@ powershell -NoProfile -STA -ExecutionPolicy Bypass -File tests/Excel-Smoke.ps1
 * Workbook saving, reopening, and cache restoration
 * Automatic orphaned cache cleanup when formulas are deleted
 
+### 3. Excel 365 Real-World Feature & Bulk Stress Tests
+Validates modern delimiters, ultimate full-option formulas, and 20+ concurrent complex molecules:
+
+```powershell
+# Live Excel 365 feature & full-option suite
+powershell -NoProfile -STA -ExecutionPolicy Bypass -File tests/Excel-365-FeatureTests.ps1
+
+# 20-molecule bulk rendering & stress suite
+powershell -NoProfile -STA -ExecutionPolicy Bypass -File tests/Excel-DeepStressTests.ps1
+```
+
 ---
 
 ## ❓ Frequently Asked Questions (FAQ)
 
-* **Q. The formula returns `#VALUE!`.**
+* **Q. Which function should I use for my Excel version?**
+  * **Microsoft 365 or Excel 2024+:** Use `=SMILES2IMG(...)` for native in-cell images that sit snugly inside cells.
+  * **Excel 2016, 2019, 2021:** Use `=SMILES2IMG.FLOAT(...)` because older Excel builds lack in-cell images. Images float over cells while perfectly sizing and moving with cells (`xlMoveAndSize`). If `SMILES2IMG` is invoked on older Excel, it safely returns `Needs Excel 2024/365: use SMILES2IMG.FLOAT`.
+* **Q. The formula returns `#VALUE!`. How do I know why my chemical formula failed?**
   * Check that the referenced cell contains a valid SMILES string.
   * If the target cell is part of **merged cells**, Excel formulas may point to an empty sub-cell, triggering `#VALUE!`.
+  * **💡 Inspect Exact Chemical Errors:** From the Excel ribbon, click **[SMILES] ➔ [Show diagnostics]**. The log window displays the exact error reported by the chemical parser (e.g. unclosed ring cycles `cycle not closed`, invalid valences, or unrecognized atoms) and its exact position!
 * **Q. Excel blocks or refuses to load the XLL.**
-  * Right-click the `.xll` file, open **Properties**, check **Unblock** at the bottom, and click **OK**.
+  * Web downloads receive a Windows `Mark of the Web` security block. Right-click the `.xll` file, open **Properties**, check **Unblock** at the bottom, and click **OK**.
+  * Alternatively, run the **one-line automated install script (Method A)** at the top of this guide; it handles unblocking and registry registration automatically.
 * **Q. The molecular image looks too small or shrunk.**
-  * Images scale automatically to preserve aspect ratios within cells. Increase the cell's row height (e.g., 100 pt) and column width (e.g., 30) for larger renderings.
-* **Q. How do I inspect diagnostics and logs?**
-  * From the Excel ribbon, click **[SMILES] → [Show diagnostics]** to view live rendering operations, cache statistics, and error logs.
+  * Images scale automatically to preserve aspect ratios within cells. Increase the cell's row height (e.g., 80–120 pt) and column width (e.g., 25–40) for larger, high-contrast renderings.
+* **Q. How do I match monochrome journals or dark mode themes?**
+  * Pass `"bw"` as the 3rd argument for 100% monochrome patent and ACS print line art.
+  * For dark mode sheets, pass a dark background (`"#1a1a1a"`) as the 2nd argument and white ink (`"white"`) as the 3rd argument (e.g., `=SMILES2IMG(A2, "#1a1a1a", "white")`).

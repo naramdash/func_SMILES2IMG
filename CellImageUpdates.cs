@@ -2,6 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using ExcelDna.Integration;
 using ExcelDna.Logging;
+using Smiles2Img.Rendering;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Smiles2Img;
@@ -10,9 +11,9 @@ namespace Smiles2Img;
 // formula was deleted or replaced; a stale update only adds an unused cache image.
 internal static class CellImageUpdates
 {
-    private static readonly Regex FormulaPattern = new(@"^=\s*(?:_xll\.)?SMILES2IMG\s*\(", RegexOptions.IgnoreCase);
+    private static readonly Regex FormulaPattern = new(@"(?:^=\s*@?|!|\b)(?:_xll\.)?SMILES2IMG\s*\((?!\.FLOAT)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    internal static void Queue(ExcelReference caller, string smiles, bool color, string? transform, string? background, byte[] png)
+    internal static void Queue(ExcelReference caller, string smiles, RenderOptions options, byte[] png)
     {
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
@@ -26,7 +27,7 @@ internal static class CellImageUpdates
                 if (cell.Formula is not string formula || !FormulaPattern.IsMatch(formula)) return;
 
                 if (!CellImages.NativeImagesUnsupported)
-                    CellImages.Put(caller, cell, smiles, color, transform, background, png);
+                    CellImages.Put(caller, cell, smiles, options, png);
                 cell.Dirty();
                 cell.Calculate();
             }

@@ -20,13 +20,13 @@ internal static class CellImages
     // Set for the session once Excel shows it cannot hold in-cell images (2016/2019/2021).
     internal static volatile bool NativeImagesUnsupported;
 
-    internal static ExcelReference? Find(ExcelReference caller, string smiles, bool color = true, string? transform = null, string? background = null)
+    internal static ExcelReference? Find(ExcelReference caller, string smiles, RenderOptions options)
     {
         var sheet = Prefix(caller) + SheetName;
         try
         {
             var keys = new ExcelReference(0, 1048575, 1, 1, sheet);
-            return XlCall.Excel(XlCall.xlfMatch, Key(smiles, color, transform, background), keys, 0) is double position
+            return XlCall.Excel(XlCall.xlfMatch, Key(smiles, options), keys, 0) is double position
                 ? new ExcelReference((int)position - 1, (int)position - 1, 0, 0, sheet)
                 : null;
         }
@@ -34,9 +34,9 @@ internal static class CellImages
     }
 
     // Called only from the queued macro, never during worksheet calculation.
-    internal static void Put(ExcelReference caller, Excel.Range cell, string smiles, bool color, string? transform, string? background, byte[] png)
+    internal static void Put(ExcelReference caller, Excel.Range cell, string smiles, RenderOptions options, byte[] png)
     {
-        if (Find(caller, smiles, color, transform, background) != null) return;
+        if (Find(caller, smiles, options) != null) return;
         var application = (Excel.Application)ExcelDnaUtil.Application;
         var workbook = (Excel.Workbook)cell.Worksheet.Parent;
         var previousSheet = application.ActiveSheet;
@@ -55,6 +55,7 @@ internal static class CellImages
             var row = ((Excel.Range)store.Cells[store.Rows.Count, 2]).End[Excel.XlDirection.xlUp].Row + 1;
             var target = (Excel.Range)store.Cells[row, 1];
             NativeImageWorkbook.CopyTo(target, png);
+
             // Excel 2016/2019/2021 cannot hold the rich image and leaves the copy empty or as
             // the file's #VALUE! fallback (TYPE 16 and no rich data). In that case, rollback the
             // cache entry and flag native images as unsupported for the session.
@@ -79,7 +80,7 @@ internal static class CellImages
             if (isInvalid)
                 throw new InvalidOperationException("Excel did not create an in-cell image.");
 
-            store.Cells[row, 2] = Key(smiles, color, transform, background);
+            store.Cells[row, 2] = Key(smiles, options);
             store.Cells[row, 3] = smiles;
         }
         finally
@@ -123,26 +124,19 @@ internal static class CellImages
     private static string Prefix(ExcelReference caller)
     {
         var sheet = (string)XlCall.Excel(XlCall.xlSheetNm, caller);
-        return sheet.Substring(0, sheet.IndexOf(']') + 1);
+        var idx = sheet.IndexOf(']');
+        return idx >= 0 ? sheet.Substring(0, idx + 1) : "";
     }
 
-    internal static string Key(string smiles, bool color = true, string? transform = null, string? background = null)
+    internal static string Key(string smiles, RenderOptions options)
     {
         using var sha = SHA1.Create();
-        var norm = string.IsNullOrEmpty(transform) ? "" : "_" + transform!.Trim().ToLowerInvariant();
-        var bg = "";
-        if (!string.IsNullOrWhiteSpace(background))
-        {
-            var b = background!.Trim().ToLowerInvariant();
-            if (b.StartsWith("bg=")) b = b.Substring(3).Trim();
-            if (b is not ("transparent" or "trans" or "none" or "clear" or "nobg"))
-            {
-                if ((b.Length == 6 || b.Length == 3) && System.Text.RegularExpressions.Regex.IsMatch(b, @"\A[0-9a-fA-F]+\z"))
-                    b = "#" + b;
-                bg = "_BG_" + b;
-            }
-        }
-        var prefix = (color ? "C" : "BW") + bg + norm + "_";
-        return prefix + BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(smiles))).Replace("-", "");
+        var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(smiles));
+        var prefix = options.ToKeyString();
+        var sb = new StringBuilder(prefix.Length + 1 + hash.Length * 2);
+        sb.Append(prefix).Append('_');
+        foreach (var b in hash)
+            sb.Append(b.ToString("X2"));
+        return sb.ToString();
     }
 }

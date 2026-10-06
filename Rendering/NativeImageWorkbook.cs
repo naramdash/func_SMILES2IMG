@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using ExcelDna.Integration;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -34,8 +35,20 @@ internal static class NativeImageWorkbook
         }
         finally
         {
-            try { if (source != null) source.Close(SaveChanges: false); }
-            finally { if (File.Exists(path)) File.Delete(path); }
+            try { source?.Close(SaveChanges: false); }
+            catch { }
+
+            if (source != null)
+            {
+                try { Marshal.ReleaseComObject(source); }
+                catch { }
+            }
+
+            if (File.Exists(path))
+            {
+                try { File.Delete(path); }
+                catch { }
+            }
         }
     }
 }

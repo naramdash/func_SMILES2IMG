@@ -76,7 +76,7 @@ internal static class Program
                 Check(Math.Abs(FloatingPictures.Aspect(aspectPng) - (double)aspectBitmap.Width / aspectBitmap.Height) < 1e-9, "PNG aspect from header");
             Console.WriteLine("PASS SMILES2IMG.FLOAT fit, title and aspect helpers");
 
-            // Verify ParseOptions argument separation: (background, color, transform)
+            // Verify ParseOptions argument separation & domain styles
             var opt1 = Functions.ParseOptions(null, null, null);
             Check(opt1.Color == true && opt1.Transform == null && opt1.Background == "transparent", "ParseOptions default (transparent)");
             var opt2 = Functions.ParseOptions("trans", null, null);
@@ -93,7 +93,47 @@ internal static class Program
             Check(opt7.Color == false && opt7.Transform == "flip" && opt7.Background == "transparent", "ParseOptions default trans + B/W + flip");
             var optFallback = Functions.ParseOptions(false, null, null);
             Check(optFallback.Color == false && optFallback.Background == "transparent", "ParseOptions fallback bool in 2nd arg");
-            Console.WriteLine("PASS ParseOptions (background, color, transform) argument separation");
+
+            // Domain style tokens & combinations
+            var optBwNum = Functions.ParseOptions(null, "bw,num", null);
+            Check(optBwNum.Color == false && optBwNum.AtomNumbers == true && optBwNum.StereoLabels == false, "ParseOptions bw,num");
+            var optStereoH = Functions.ParseOptions("white", "stereo+h", null);
+            Check(optStereoH.StereoLabels == true && optStereoH.UnfoldHydrogens == true && optStereoH.Background == "white", "ParseOptions stereo+h with white bg");
+            var optDarkWhite = Functions.ParseOptions("#1e1e1e", "white,stereo", null);
+            Check(optDarkWhite.BaseColor == "white" && optDarkWhite.StereoLabels == true && optDarkWhite.Background == "#1e1e1e", "ParseOptions dark mode white ink + stereo");
+            var optCustomInk = Functions.ParseOptions(null, "ink=#003366,num,stereo", "rot180");
+            Check(optCustomInk.BaseColor == "#003366" && optCustomInk.AtomNumbers == true && optCustomInk.StereoLabels == true && optCustomInk.Transform == "rot180", "ParseOptions custom ink + num + stereo + rot180");
+            var optCarb = Functions.ParseOptions(null, "all-c,num", null);
+            Check(optCarb.AllCarbons == true && optCarb.AtomNumbers == true, "ParseOptions all-c,num");
+            var optMonoAlias = Functions.ParseOptions(null, "mono", null);
+            Check(optMonoAlias.Color == false, "ParseOptions mono alias");
+            var optBlackAlias = Functions.ParseOptions(null, "black", null);
+            Check(optBlackAlias.Color == false, "ParseOptions black alias");
+            var optIdxAlias = Functions.ParseOptions(null, "idx", null);
+            Check(optIdxAlias.AtomNumbers == true, "ParseOptions idx alias");
+            var optChiralAlias = Functions.ParseOptions(null, "chiral", null);
+            Check(optChiralAlias.StereoLabels == true, "ParseOptions chiral alias");
+            var optBoolCompat = Functions.ParseOptions(null, 0.0, null);
+            Check(optBoolCompat.Color == false, "ParseOptions numeric 0 for B/W compatibility");
+            var optPipe = Functions.ParseOptions(null, "bw|num", null);
+            Check(optPipe.Color == false && optPipe.AtomNumbers == true, "ParseOptions bw|num pipe delimiter");
+            var optSpace = Functions.ParseOptions(null, "white stereo", null);
+            Check(optSpace.BaseColor == "white" && optSpace.StereoLabels == true, "ParseOptions white stereo space delimiter");
+
+            // Ultimate full-option tests (spaces & pipes)
+            var optUltimateSpace = Functions.ParseOptions("white", "bw num stereo h all-c", "flip rot90");
+            Check(optUltimateSpace.Color == false && optUltimateSpace.AtomNumbers == true &&
+                  optUltimateSpace.StereoLabels == true && optUltimateSpace.UnfoldHydrogens == true &&
+                  optUltimateSpace.AllCarbons == true && optUltimateSpace.Background == "white" &&
+                  optUltimateSpace.Transform == "flip,rot90", "ParseOptions ultimate full-option (spaces)");
+
+            var optUltimatePipe = Functions.ParseOptions("white", "bw|num|stereo|h|all-c", "flip|rot90");
+            Check(optUltimatePipe.Color == false && optUltimatePipe.AtomNumbers == true &&
+                  optUltimatePipe.StereoLabels == true && optUltimatePipe.UnfoldHydrogens == true &&
+                  optUltimatePipe.AllCarbons == true && optUltimatePipe.Background == "white" &&
+                  optUltimatePipe.Transform == "flip,rot90", "ParseOptions ultimate full-option (pipes)");
+
+            Console.WriteLine("PASS ParseOptions domain styles and composite tokens");
 
             var bwPng = MoleculeRenderer.Render("CCO", color: false);
             using (var bwStream = new MemoryStream(bwPng))
@@ -111,6 +151,54 @@ internal static class Program
             }
             Console.WriteLine("PASS Black and White rendering");
 
+            // Render tests for new domain features
+            var numOptions = Functions.ParseOptions(null, "num", null);
+            var numPng = MoleculeRenderer.Render("CCO", numOptions);
+            Check(numPng.Length > 100, "Render with atom numbers");
+            Console.WriteLine("PASS Atom numbering rendering");
+
+            var stereoOptions = Functions.ParseOptions(null, "stereo", null);
+            var stereoPng = MoleculeRenderer.Render("C[C@H](O)C(=O)O", stereoOptions);
+            Check(stereoPng.Length > 100, "Render with stereo labels");
+            Console.WriteLine("PASS Stereochemistry label rendering");
+
+            var hOptions = Functions.ParseOptions(null, "h", null);
+            var hPng = MoleculeRenderer.Render("CCO", hOptions);
+            Check(hPng.Length > 100, "Render with unfolded hydrogens");
+            Console.WriteLine("PASS Hydrogens unfolding rendering");
+
+            var carbOptions = Functions.ParseOptions(null, "all-c", null);
+            var carbPng = MoleculeRenderer.Render("c1ccccc1", carbOptions);
+            Check(carbPng.Length > 100, "Render with explicit carbons");
+            Console.WriteLine("PASS Explicit carbons rendering");
+
+            var comboOptions = Functions.ParseOptions(null, "bw,num,stereo", null);
+            var comboPng = MoleculeRenderer.Render("C[C@H](O)C(=O)O", comboOptions);
+            Check(comboPng.Length > 100, "Render with composite bw,num,stereo");
+            Console.WriteLine("PASS Composite options (bw,num,stereo) rendering");
+
+            var ultimatePng = MoleculeRenderer.Render("CC(=O)Oc1ccccc1C(=O)O", optUltimateSpace);
+            Check(ultimatePng.Length > 100, "Render with ultimate full-option");
+            Console.WriteLine("PASS Ultimate full-option rendering");
+
+            var darkOptions = Functions.ParseOptions("#1e1e1e", "white,stereo", null);
+            var darkPng = MoleculeRenderer.Render("C[C@H](O)C(=O)O", darkOptions);
+            using (var darkStream = new MemoryStream(darkPng))
+            using (var darkBmp = new Bitmap(darkStream))
+            {
+                var bgPixel = darkBmp.GetPixel(0, 0);
+                Check(bgPixel.R == 0x1e && bgPixel.G == 0x1e && bgPixel.B == 0x1e, "Dark background color match");
+                var hasWhiteInk = false;
+                for (var y = 0; y < darkBmp.Height; y++)
+                    for (var x = 0; x < darkBmp.Width; x++)
+                    {
+                        var p = darkBmp.GetPixel(x, y);
+                        if (p.R > 230 && p.G > 230 && p.B > 230) hasWhiteInk = true;
+                    }
+                Check(hasWhiteInk, "Dark mode image must contain white ink");
+            }
+            Console.WriteLine("PASS Dark mode (white ink + dark bg) rendering");
+
             var aflatoxinPng = MoleculeRenderer.Render("O1C=C[C@H]([C@H]1O2)c3c2cc(OC)c4c3OC(=O)C5=C4CCC(=O)5");
             Check(aflatoxinPng.Length > 100, "Aflatoxin junction H render");
             Console.WriteLine("PASS Ring-junction chiral H rendering");
@@ -122,6 +210,11 @@ internal static class Program
             var nicFlippedPng = MoleculeRenderer.Render("CN1CCC[C@H]1c2cccnc2", color: true, transform: "flip");
             Check(nicFlippedPng.Length > 100, "Nicotine flip transform render");
             Console.WriteLine("PASS Transform rendering (flip)");
+
+            var artemisinin = "CC1CC2CC3(C)OO4C(O2)(C1C(=O)O3)C(C)CC4";
+            var artemisininPng = MoleculeRenderer.Render(artemisinin);
+            Check(artemisininPng.Length > 100, "Artemisinin render");
+            Console.WriteLine("PASS Artemisinin render");
 
             var defaultTransPng = MoleculeRenderer.Render("CCO");
             using (var ms = new MemoryStream(defaultTransPng))
@@ -164,8 +257,12 @@ internal static class Program
             File.WriteAllBytes("output/samples/10_thiamine_flipped.png", MoleculeRenderer.Render("OCCSc1c(C)[n+](cs1)Cc2cnc(C)nc2N", color: true, transform: "flip"));
             File.WriteAllBytes("output/samples/mic.png", micPng);
             File.WriteAllBytes("output/samples/methanol.png", MoleculeRenderer.Render("CO"));
+            File.WriteAllBytes("output/samples/sample_bw_num.png", comboPng);
+            File.WriteAllBytes("output/samples/sample_stereo.png", stereoPng);
+            File.WriteAllBytes("output/samples/sample_unfold_h.png", hPng);
+            File.WriteAllBytes("output/samples/sample_dark_mode.png", darkPng);
 
-            Console.WriteLine("PASS Rendered all 10 reference sample molecules + small molecules");
+            Console.WriteLine("PASS Rendered all 10 reference sample molecules + domain feature samples");
             return 0;
         }
         catch (Exception error) { Console.Error.WriteLine(error); return 1; }

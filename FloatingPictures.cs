@@ -22,7 +22,7 @@ internal static class FloatingPictures
     private const string NamePrefix = "SMILES2IMG.FLOAT_";
     private const double Padding = 2.0;
     private const int RenderCacheLimit = 256;
-    private static readonly Regex FormulaPattern = new(@"SMILES2IMG\.FLOAT\s*\(", RegexOptions.IgnoreCase);
+    private static readonly Regex FormulaPattern = new(@"SMILES2IMG\.FLOAT\s*\(", RegexOptions.IgnoreCase | RegexOptions.Compiled);
     private static readonly Dictionary<string, byte[]> Rendered = new();
     private static Excel.Application? events;
 
@@ -32,6 +32,7 @@ internal static class FloatingPictures
     {
         lock (Rendered)
             if (Rendered.TryGetValue(key, out var cached)) return cached;
+
         var png = render();
         lock (Rendered)
         {
@@ -55,13 +56,13 @@ internal static class FloatingPictures
     internal static double Aspect(byte[] png)
     {
         if (png.Length < 24) return 1;
-        double width = (png[16] << 24) | (png[17] << 16) | (png[18] << 8) | png[19];
-        double height = (png[20] << 24) | (png[21] << 16) | (png[22] << 8) | png[23];
-        return width > 0 && height > 0 ? width / height : 1;
+        uint width = ((uint)png[16] << 24) | ((uint)png[17] << 16) | ((uint)png[18] << 8) | png[19];
+        uint height = ((uint)png[20] << 24) | ((uint)png[21] << 16) | ((uint)png[22] << 8) | png[23];
+        return width > 0 && height > 0 ? (double)width / height : 1;
     }
 
     internal static string Title(string key, double aspect) =>
-        TitleMarker + key + "|" + aspect.ToString("R", CultureInfo.InvariantCulture);
+        $"{TitleMarker}{key}|{aspect.ToString("R", CultureInfo.InvariantCulture)}";
 
     internal static bool TryParseTitle(string? title, out string key, out double aspect)
     {
@@ -78,7 +79,7 @@ internal static class FloatingPictures
     }
 
     internal static bool HasFormula(Excel.Range cell) =>
-        cell.Formula is string formula && formula.StartsWith("=") && FormulaPattern.IsMatch(formula);
+        cell.Formula is string formula && formula.TrimStart().StartsWith("=") && FormulaPattern.IsMatch(formula);
 
     // Pictures owned by the add-in on a sheet, grouped by the (row, column) of their anchor cell.
     internal static Dictionary<(int Row, int Column), List<Excel.Shape>> Index(Excel.Worksheet sheet)
@@ -188,10 +189,10 @@ internal static class FloatingPictures
 
     private static Excel.Shape? Add(Excel.Worksheet sheet, Excel.Range area, string key, string smiles, byte[] png)
     {
-        double width = Convert.ToDouble((object)area.Width), height = Convert.ToDouble((object)area.Height);
+        double width = Convert.ToDouble(area.Width), height = Convert.ToDouble(area.Height);
         if (width < 1 || height < 1) return null; // hidden row/column; placed on a later recalculation
         var aspect = Aspect(png);
-        double areaLeft = Convert.ToDouble((object)area.Left), areaTop = Convert.ToDouble((object)area.Top);
+        double areaLeft = Convert.ToDouble(area.Left), areaTop = Convert.ToDouble(area.Top);
         var (left, top, w, h) = Fit(areaLeft, areaTop, width, height, aspect);
         var path = Path.Combine(Path.GetTempPath(), "smiles2img-float-" + Guid.NewGuid().ToString("N") + ".png");
         try
@@ -213,9 +214,9 @@ internal static class FloatingPictures
 
     private static void FitTo(Excel.Shape shape, Excel.Range area, double aspect)
     {
-        double width = Convert.ToDouble((object)area.Width), height = Convert.ToDouble((object)area.Height);
+        double width = Convert.ToDouble(area.Width), height = Convert.ToDouble(area.Height);
         if (width < 1 || height < 1) return; // hidden: Excel restores the picture when shown again
-        double areaLeft = Convert.ToDouble((object)area.Left), areaTop = Convert.ToDouble((object)area.Top);
+        double areaLeft = Convert.ToDouble(area.Left), areaTop = Convert.ToDouble(area.Top);
         var (left, top, w, h) = Fit(areaLeft, areaTop, width, height, aspect);
         if (Math.Abs(shape.Left - left) < 0.5 && Math.Abs(shape.Top - top) < 0.5 &&
             Math.Abs(shape.Width - w) < 0.5 && Math.Abs(shape.Height - h) < 0.5) return;
