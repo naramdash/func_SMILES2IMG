@@ -8,8 +8,13 @@
 #>
 [CmdletBinding()]
 param(
-    [switch]$Force
+    [switch]$Force,
+    [string]$Version = $(if ($env:SMILES2IMG_VERSION) { $env:SMILES2IMG_VERSION } else { 'latest' })
 )
+
+try {
+    [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+} catch {}
 
 $ErrorActionPreference = 'Stop'
 
@@ -71,14 +76,19 @@ if ($isUpdate) {
     Write-Host "[*] Fresh installation starting..." -ForegroundColor Cyan
 }
 
-# 4. Copy from local dist if available, otherwise download latest packed XLL from GitHub Releases
-$localDistPath = if ($PSScriptRoot) { Join-Path $PSScriptRoot "dist\$bitness\$xllName" } else { $null }
+# 4. Copy from local dist if available (latest only), otherwise download packed XLL from GitHub Releases
+$tag = if ($Version -eq 'latest' -or [string]::IsNullOrWhiteSpace($Version)) { 'latest' } else { if ($Version -notmatch '^v') { "v$Version" } else { $Version } }
+$localDistPath = if ($PSScriptRoot -and $tag -eq 'latest') { Join-Path $PSScriptRoot "dist\$bitness\$xllName" } else { $null }
 if ($localDistPath -and (Test-Path -LiteralPath $localDistPath)) {
     Write-Host "[+] Installing from local build: $localDistPath" -ForegroundColor Cyan
     Copy-Item -LiteralPath $localDistPath -Destination $targetPath -Force
 } else {
-    $downloadUrl = "https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/$xllName"
-    Write-Host "[+] Downloading latest release: $downloadUrl" -ForegroundColor Cyan
+    $downloadUrl = if ($tag -eq 'latest') {
+        "https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/$xllName"
+    } else {
+        "https://github.com/naramdash/func_SMILES2IMG/releases/download/$tag/$xllName"
+    }
+    Write-Host "[+] Downloading release ($tag): $downloadUrl" -ForegroundColor Cyan
     Invoke-WebRequest -Uri $downloadUrl -OutFile $targetPath -UseBasicParsing
 }
 
@@ -125,3 +135,15 @@ if ($isUpdate) {
     Write-Host "`n[SUCCESS] SMILES2IMG has been successfully installed and registered!" -ForegroundColor Cyan
 }
 Write-Host "Open Excel and enter: =SMILES2IMG(""CCO"")" -ForegroundColor White
+
+# 7. Check Windows 11 Smart App Control (SAC)
+$sacPolicy = Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\CI\Policy" -ErrorAction SilentlyContinue
+if ($sacPolicy -and $sacPolicy.VerifiedAndReputablePolicyState -eq 1) {
+    Write-Host "`n----------------------------------------------------------------------" -ForegroundColor Yellow
+    Write-Host "[!] Notice: Windows 11 Smart App Control (SAC) is enabled on this system." -ForegroundColor Yellow
+    Write-Host "    If Excel shows '#NAME?' or 'file format and extension do not match' warnings:" -ForegroundColor Gray
+    Write-Host "    1. Open Windows Security > App & browser control > Smart App Control settings" -ForegroundColor Gray
+    Write-Host "    2. Set it to 'Off' (Real-time Microsoft Defender Antivirus remains 100% active)" -ForegroundColor Gray
+    Write-Host "    3. Restart Excel to use SMILES2IMG normally." -ForegroundColor Gray
+    Write-Host "----------------------------------------------------------------------" -ForegroundColor Yellow
+}
