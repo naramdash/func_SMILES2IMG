@@ -34,14 +34,15 @@
 | 항목 | 필요한 환경 |
 | :--- | :--- |
 | Windows | Windows 10 또는 11; Windows 11 권장 |
-| Excel 영구 구매형 | 네이티브 셀 내 이미지 기능을 지원하는 **Excel 2024 이상** |
-| Microsoft 365 Excel | **셀에 그림 배치** 기능이 있는 업데이트된 Windows 데스크톱 버전 |
+| Excel (인셀 이미지 모드) | 네이티브 셀 내 이미지 기능을 지원하는 **Excel 2024 이상** 및 **Microsoft 365 데스크톱** (`=SMILES2IMG`) |
+| Excel (플로팅 이미지 모드) | 셀 크기에 연동되는 플로팅 그림을 지원하는 **Excel 2016, 2019, 2021** (`=SMILES2IMG.FLOAT`) |
 | 런타임 | **.NET Framework 4.8 이상** |
 | Excel 비트수 | **32비트·64비트 모두** 배포 파일 제공; Excel 비트수에 맞는 XLL 선택 |
 
-현재 구현은 네이티브 셀 내 이미지 기능을 사용하므로 **Excel 2021·2019·2016은 지원하지 않습니다.** Microsoft의 [셀에 그림 배치 공식 안내](https://support.microsoft.com/en-us/excel/insert-picture-in-cell-in-excel)는 Microsoft 365와 Excel 2024를 지원 대상으로 명시합니다. Excel의 **[삽입] → [그림] → [셀에 배치]** 메뉴에서 기능 제공 여부를 확인할 수 있습니다. 이 추가 기능은 Windows 데스크톱 Excel에서 실행되며, Mac용 Excel과 웹용 Excel에서는 XLL을 로드할 수 없습니다.
-
-위 요구사항은 현재 구현과 의존성을 기준으로 정리했으며, 모든 버전에 대한 실기 테스트로 Windows/Excel의 최소 빌드 번호를 확정한 것은 아닙니다. 다운로드한 XLL을 사용하기 위해 개발용 **.NET SDK를 설치할 필요는 없습니다.** SDK는 개발·빌드할 때만 필요합니다.
+**하나의 XLL 파일로 Excel 2016부터 최신 Microsoft 365까지 모두 지원합니다:**
+* **Excel 2024 / Microsoft 365:** `=SMILES2IMG(A2)`를 사용하면 Excel의 네이티브 '셀에 그림 배치' 기능으로 셀 안에 이미지가 쏙 들어갑니다.
+* **Excel 2016 / 2019 / 2021:** 인셀 이미지를 미지원하는 구버전에서는 `=SMILES2IMG.FLOAT(A2)`를 사용합니다. 셀 위에 분자 그림이 배치되며, 셀 이동 및 행/열 크기 변경에 연동(`xlMoveAndSize`)됩니다. 만약 구버전에서 실수로 `SMILES2IMG`를 호출하더라도 오류 대신 `Needs Excel 2024/365: use SMILES2IMG.FLOAT`라는 친절한 안내 문구가 표시됩니다.
+* 이 추가 기능은 Windows 데스크톱 Excel 전용이며, Mac용 Excel과 웹용 Excel에서는 XLL을 로드할 수 없습니다. 다운로드한 XLL을 사용하기 위해 개발용 **.NET SDK를 설치할 필요는 없습니다.**
 
 ### ⚡ 방법 A: 원클릭 자동 설치 및 업데이트 (가장 추천)
 
@@ -70,8 +71,8 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 
 #### 2단계: 추가 기능(XLL) 파일 준비
 [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest) 페이지에서 내 Excel 비트수에 맞는 **`.xll` 파일 1개**를 다운로드하여 안전한 폴더(권장: `Win+R` ➔ `%APPDATA%\Microsoft\AddIns`)에 복사합니다:
-* **64비트 Excel:** [**`Smiles2Img-AddIn64-packed.xll`** (v1.0.0 다운로드)](https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.0.0/Smiles2Img-AddIn64-packed.xll)
-* **32비트 Excel:** [**`Smiles2Img-AddIn-packed.xll`** (v1.0.0 다운로드)](https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.0.0/Smiles2Img-AddIn-packed.xll)
+* **64비트 Excel:** [**`Smiles2Img-AddIn64-packed.xll`** (최신 v1.1.0 다운로드)](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-AddIn64-packed.xll)
+* **32비트 Excel:** [**`Smiles2Img-AddIn-packed.xll`** (최신 v1.1.0 다운로드)](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-AddIn-packed.xll)
 
 > [!TIP]
 > **Windows 보안 차단 해제 (필수):**  
@@ -89,32 +90,45 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 ---
 
 ## 💡 사용 방법 및 수식 IntelliSense
-
-Excel 워크시트의 셀에 `=SMILES2IMG(...)` 수식을 입력하면 즉시 셀 내 분자 이미지가 삽입됩니다.
-
+ 
+Excel 워크시트의 셀에 수식을 입력하면 즉시 분자 이미지가 삽입됩니다:
+* **Excel 2024 / M365:** `=SMILES2IMG(A2)` (인셀 이미지)
+* **Excel 2016 / 2019 / 2021:** `=SMILES2IMG.FLOAT(A2)` (셀 연동 플로팅 이미지)
+ 
 ```excel
 =SMILES2IMG(A2)
+=SMILES2IMG.FLOAT(A2)
 ```
-
+ 
 ```text
 =SMILES2IMG(
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │ SMILES2IMG(smiles, [background], [color], [transform])                                 │
-│ A SMILES string or a cell reference containing one (e.g., A2, "CCO").                  │
+│ [Excel 2024 / Microsoft 365] Renders a high-resolution molecular structure image...   │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+
+=SMILES2IMG.FLOAT(
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│ SMILES2IMG.FLOAT(smiles, [background], [color], [transform])                           │
+│ [Excel 2016+] Places a molecular structure picture over the cell (moves/sizes)...      │
 └────────────────────────────────────────────────────────────────────────────────────────┘
 ```
-
+ 
 > [!TIP]
-> • **실시간 수식 툴팁 (ExcelDna.IntelliSense 내장):** `=SMILES2IMG(` 를 타이핑하면 엑셀 기본 내장 함수와 동일하게 현재 입력 중인 인자가 **굵은 글씨**로 강조되며 영문 설명 풍선도움말이 표시됩니다.  
+> • **실시간 수식 툴팁 (ExcelDna.IntelliSense 내장):** 수식을 타이핑하면 엑셀 기본 내장 함수와 동일하게 지원 버전 및 현재 입력 중인 인자가 **굵은 글씨**로 강조되며 풍선도움말이 표시됩니다.  
+> • **행/열 크기 연동 (FLOAT 모드):** `SMILES2IMG.FLOAT`로 생성된 이미지는 셀과 함께 크기가 조절(`xlMoveAndSize`)됩니다. 만약 행 높이나 열 너비를 크게 변경한 후 비율을 원래대로 깔끔하게 맞추고 싶다면, 리본 메뉴의 **[SMILES] → [Refit floating images]**를 누르면 활성 시트의 모든 분자 그림이 셀 중앙에 완벽한 종횡비로 자동 재배치됩니다.  
 > • **가독성 최적화:** 분자 구조의 미세 결합선이 선명하게 보이도록 행 높이(예: 80~120pt)와 열 너비(예: 25~40)를 넉넉하게 늘려주시는 것을 권장합니다.
-
+ 
 ---
-
+ 
 ## 📖 함수 구문 및 인자 규격
-
+ 
 ```excel
 =SMILES2IMG(smiles, [background], [color], [transform])
+=SMILES2IMG.FLOAT(smiles, [background], [color], [transform])
 ```
+ 
+*(두 함수 모두 전달하는 인자 형식과 기본값이 100% 동일합니다.)*
 
 | 순서 | 인자명 | 타입 | 필수 여부 | 기본값 | 허용 값 및 세부 설명 |
 | :---: | :--- | :---: | :---: | :---: | :--- |

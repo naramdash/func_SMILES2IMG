@@ -73,6 +73,17 @@
     - `=SMILES2IMG(A2, "trans", FALSE)` : 흑백 + 투명 배경
     - `=SMILES2IMG(A2, "trans", FALSE, "flip")` : 흑백 + 투명 배경 + 좌우 반전
 
+### Task 7: Excel 2016 / 2019 / 2021 하위 호환 지원 (구현 완료)
+* **배경 및 과제:**
+  - Excel 2016/2019/2021 영구 구매형 버전은 Microsoft의 네이티브 '셀에 그림 배치(Place in Cell)' 기능이 없어 기존 `=SMILES2IMG`의 인셀 이미지 복사 방식이 동작하지 않음.
+* **해결 및 구현 내용:**
+  - **단일 XLL 배포 체계 유지:** 별도 빌드나 추가 설치 없이 하나의 XLL로 2016부터 365까지 전 버전 지원.
+  - **`=SMILES2IMG.FLOAT(...)` 전용 함수 신설:** 인자는 `=SMILES2IMG`와 100% 동일하며, 셀 위에 분자 구조식 이미지를 오버레이 형태로 배치.
+  - **셀 연동 크기 조정 (`xlMoveAndSize`):** `Placement = xlMoveAndSize`를 기본 적용하여 행/열 크기 조절이나 셀 이동 시 그림이 셀을 따라 연동.
+  - **종횡비 복원 및 일괄 리핏 지원:** 행/열 크기 변경 후 분자 비율을 복원할 수 있도록 리본 메뉴에 **[SMILES] → [Refit floating images]** 명령 제공.
+  - **안전 가드(Safety Guard):** 구버전 Excel에서 실수로 `=SMILES2IMG`를 호출했을 때, 무의미한 캐시 누적이나 `#VALUE!` 대신 `Needs Excel 2024/365: use SMILES2IMG.FLOAT`라는 안내 메시지를 친절하게 반환.
+  - **수식 삭제 시 자동 정리:** 수식 셀의 내용이 지워지거나 변경되면 해당 셀에 귀속된 플로팅 도형을 자동 감지하여 깨끗하게 제거.
+
 ---
 
 ## 3. 마일스톤 및 검증 체크리스트
@@ -84,4 +95,7 @@
 - [x] **회전/반전 수식 옵션(`flip`, `flipy`, `rot90`, `rot180`, `rot270`) 및 복합 파라미터 지원**
 - [x] **당류 평면 쐐기형 vs 의자형 배좌 표준 분석 및 문서화 정리**
 - [x] **투명 배경(`transparent`, `trans`, `nobg`) 및 사용자 지정 배경색 지원**
-- [x] **단위 테스트(`tests/Program.cs`) 및 엑셀 COM 자동화 스모크 테스트(`tests/Excel-Smoke.ps1`) 통과 확인**
+- [x] **Excel 2016/2019/2021 호환 플로팅 이미지 함수(`SMILES2IMG.FLOAT`) 및 xlMoveAndSize 구현**
+- [x] **구버전에서 `=SMILES2IMG` 호출 시 안내 메시지 가드 및 리본 [Refit floating images] 메뉴 구현**
+- [x] **단위 테스트(`tests/Program.cs`) 검증 통과 및 단일 독립형 XLL 패킹 빌드 완료**
+

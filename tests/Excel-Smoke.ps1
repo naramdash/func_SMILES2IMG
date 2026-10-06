@@ -153,6 +153,27 @@ try {
     Wait-ForResult { $sheet.Shapes.Count -eq 0 -and $sheet.Range('B2').Value2 -eq $null }
     if ((Get-ImageMetadata 'B2') -ne '') { throw 'Image remains after deleting the formula.' }
     Write-Output 'PASS image cleanup when the formula is deleted'
+
+    # Verify SMILES2IMG.FLOAT (Excel 2016/2019/2021 compatible floating shape mode)
+    $sheet.Range('A2').Value2 = 'CCO'
+    $sheet.Range('B2').Formula = '=SMILES2IMG.FLOAT(A2)'
+    Invoke-Excel { $excel.Calculate() }
+    Wait-ForResult { $sheet.Shapes.Count -eq 1 }
+    $floatShape = $sheet.Shapes.Item(1)
+    if ($floatShape.Placement -ne 1) { throw 'Floating picture is not xlMoveAndSize (Placement 1).' }
+    if (-not $floatShape.Title.StartsWith('SMILES2IMG.FLOAT|')) { throw 'Floating picture Title metadata missing.' }
+    if ($floatShape.AlternativeText -ne 'CCO') { throw 'Floating picture alt text does not match molecule.' }
+    Write-Output 'PASS SMILES2IMG.FLOAT shape creation and xlMoveAndSize placement'
+
+    $sheet.Range('A2').Value2 = 'c1ccccc1'
+    Invoke-Excel { $excel.Calculate() }
+    Wait-ForResult { $sheet.Shapes.Count -eq 1 -and $sheet.Shapes.Item(1).AlternativeText -eq 'c1ccccc1' }
+    Write-Output 'PASS SMILES2IMG.FLOAT molecule update and shape replacement'
+
+    $sheet.Range('B2').ClearContents()
+    Invoke-Excel { $excel.Calculate() }
+    Wait-ForResult { $sheet.Shapes.Count -eq 0 }
+    Write-Output 'PASS SMILES2IMG.FLOAT shape cleanup on formula deletion'
 } finally {
     try { if ($workbook -ne $null) { Invoke-Excel { $workbook.Close($false) } } }
     finally { if ($excel -ne $null) { Invoke-Excel { $excel.Quit() } } }

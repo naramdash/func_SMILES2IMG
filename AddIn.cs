@@ -18,6 +18,11 @@ public sealed class AddIn : IExcelAddIn
             NativeIndigo.Initialize(Path.GetDirectoryName(ExcelDnaUtil.XllPath)!);
             IntelliSenseServer.Install();
             IsOpen = true;
+            ExcelAsyncUtil.QueueAsMacro(() =>
+            {
+                try { FloatingPictures.Attach(); }
+                catch (Exception error) { LogDisplay.WriteLine("SMILES2IMG.FLOAT events: " + error.Message); }
+            });
         }
         catch (Exception error)
         {
@@ -27,6 +32,11 @@ public sealed class AddIn : IExcelAddIn
 
     public void AutoClose()
     {
+        try
+        {
+            FloatingPictures.Detach();
+        }
+        catch { }
         try
         {
             IntelliSenseServer.Uninstall();

@@ -17,20 +17,28 @@ internal static class CellImageUpdates
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
             if (!AddIn.IsOpen) return;
+            Excel.Range? cell = null;
             try
             {
                 var application = (Excel.Application)ExcelDnaUtil.Application;
                 var address = (string)XlCall.Excel(XlCall.xlfReftext, caller, true);
-                var cell = application.Range[address];
+                cell = application.Range[address];
                 if (cell.Formula is not string formula || !FormulaPattern.IsMatch(formula)) return;
 
-                CellImages.Put(caller, cell, smiles, color, transform, background, png);
+                if (!CellImages.NativeImagesUnsupported)
+                    CellImages.Put(caller, cell, smiles, color, transform, background, png);
                 cell.Dirty();
                 cell.Calculate();
             }
             catch (Exception error)
             {
                 LogDisplay.WriteLine("SMILES2IMG image update: " + error.Message);
+                // Show the "use SMILES2IMG.FLOAT" guidance instead of a blank cell.
+                if (CellImages.NativeImagesUnsupported && cell != null)
+                {
+                    try { cell.Dirty(); cell.Calculate(); }
+                    catch { }
+                }
             }
         });
     }

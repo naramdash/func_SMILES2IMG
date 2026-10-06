@@ -45,6 +45,37 @@ internal static class Program
             Check(name == "SMILES2IMG", "Excel function name");
             Console.WriteLine("PASS Excel function registration name");
 
+            var floatAttribute = typeof(FloatFunctions).GetMethod(nameof(FloatFunctions.ImgFloat))!.GetCustomAttributes(typeof(ExcelFunctionAttribute), false)
+                .Cast<ExcelFunctionAttribute>().Single();
+            Check(floatAttribute.Name == "SMILES2IMG.FLOAT", "Floating Excel function name");
+            Check(floatAttribute.IsMacroType, "Floating function must be IsMacroType=true for caller reference");
+            Check(floatAttribute.Description.StartsWith("[Excel 2016+]") && floatAttribute.Description.Length <= 255, "Floating function states its Excel requirement");
+            var nativeAttribute = typeof(Functions).GetMethod(nameof(Functions.Img))!.GetCustomAttributes(typeof(ExcelFunctionAttribute), false)
+                .Cast<ExcelFunctionAttribute>().Single();
+            Check(nativeAttribute.IsMacroType, "Native function must be IsMacroType=true");
+            var nativeDescription = nativeAttribute.Description;
+            Check(nativeDescription.StartsWith("[Excel 2024 / Microsoft 365]") && nativeDescription.Contains("SMILES2IMG.FLOAT") && nativeDescription.Length <= 255,
+                "In-cell function states its Excel requirement");
+            Console.WriteLine("PASS SMILES2IMG.FLOAT registration and version notes");
+
+            var wide = FloatingPictures.Fit(100, 50, 200, 100, 3.0); // cell wider than needed: height-bound, centered horizontally
+            Check(Math.Abs(wide.Height - 96) < 1e-9 && Math.Abs(wide.Width - 288) > 1 && Math.Abs(wide.Width / wide.Height - 3.0) < 1e-9 || Math.Abs(wide.Width - 196) < 1e-9,
+                "Fit keeps aspect ratio");
+            var tall = FloatingPictures.Fit(0, 0, 100, 300, 2.0); // width-bound, centered vertically
+            Check(Math.Abs(tall.Width - 96) < 1e-9 && Math.Abs(tall.Height - 48) < 1e-9 && Math.Abs(tall.Left - 2) < 1e-9 && Math.Abs(tall.Top - 126) < 1e-9,
+                "Fit centers a width-bound picture");
+            var flat = FloatingPictures.Fit(0, 0, 300, 100, 1.0); // height-bound, centered horizontally
+            Check(Math.Abs(flat.Width - 96) < 1e-9 && Math.Abs(flat.Height - 96) < 1e-9 && Math.Abs(flat.Left - 102) < 1e-9 && Math.Abs(flat.Top - 2) < 1e-9,
+                "Fit centers a height-bound picture");
+            var title = FloatingPictures.Title("C_ABC", 1.75);
+            Check(FloatingPictures.TryParseTitle(title, out var titleKey, out var titleAspect) && titleKey == "C_ABC" && titleAspect == 1.75, "Title round-trip");
+            Check(!FloatingPictures.TryParseTitle("Picture 1", out _, out _) && !FloatingPictures.TryParseTitle(null, out _, out _), "Foreign shapes are not owned");
+            var aspectPng = MoleculeRenderer.Render("CCO");
+            using (var aspectStream = new MemoryStream(aspectPng))
+            using (var aspectBitmap = new Bitmap(aspectStream))
+                Check(Math.Abs(FloatingPictures.Aspect(aspectPng) - (double)aspectBitmap.Width / aspectBitmap.Height) < 1e-9, "PNG aspect from header");
+            Console.WriteLine("PASS SMILES2IMG.FLOAT fit, title and aspect helpers");
+
             // Verify ParseOptions argument separation: (background, color, transform)
             var opt1 = Functions.ParseOptions(null, null, null);
             Check(opt1.Color == true && opt1.Transform == null && opt1.Background == "transparent", "ParseOptions default (transparent)");

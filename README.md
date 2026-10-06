@@ -34,14 +34,15 @@
 | Component | Requirement |
 | :--- | :--- |
 | Windows | Windows 10 or 11; Windows 11 recommended |
-| Excel (perpetual license) | Excel 2024 or later with native in-cell image support |
-| Excel (Microsoft 365) | An updated Windows desktop version with **Place in Cell** available |
+| Excel (In-Cell Image mode) | **Excel 2024 or later** & **Microsoft 365 Desktop** with native 'Place in Cell' (`=SMILES2IMG`) |
+| Excel (Floating Shape mode) | **Excel 2016, 2019, 2021** with cell-anchored shape support (`=SMILES2IMG.FLOAT`) |
 | Runtime | **.NET Framework 4.8 or later** |
 | Excel architecture | Both **32-bit and 64-bit** packages are provided; choose the XLL matching Excel's bitness |
 
-The current implementation requires native in-cell images. **Excel 2021, 2019, and 2016 are not supported.** Microsoft's [Place in Cell documentation](https://support.microsoft.com/en-us/excel/insert-picture-in-cell-in-excel) lists Microsoft 365 and Excel 2024 as supported versions. Check **Insert → Pictures → Place in Cell** in Excel to confirm the feature is available. The add-in runs only in Windows desktop Excel; Excel for Mac and Excel for the web cannot load this XLL.
-
-These requirements are based on the current implementation and its dependencies; the project has not established a tested minimum Windows/Excel build across all versions. The **.NET SDK is needed only for development/building**, not for using the downloaded XLL.
+**A single XLL package supports Excel 2016 through the latest Microsoft 365:**
+* **Excel 2024 / Microsoft 365:** Use `=SMILES2IMG(A2)` for native in-cell images that live directly inside worksheet cells.
+* **Excel 2016 / 2019 / 2021:** Use `=SMILES2IMG.FLOAT(A2)` for floating molecular pictures that automatically move and resize with their cells (`xlMoveAndSize`). If `=SMILES2IMG` is inadvertently called on an older Excel build, it cleanly displays `Needs Excel 2024/365: use SMILES2IMG.FLOAT` instead of cryptic error codes.
+* The add-in runs only in Windows desktop Excel; Excel for Mac and Excel for the web cannot load this XLL. The **.NET SDK is needed only for development/building**, not for using the downloaded XLL.
 
 ### ⚡ Method A: One-Click Automatic Installer & Updater (Recommended)
 
@@ -70,8 +71,8 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 
 #### Step 2: Prepare the Add-in (.xll) file
 Download the single `.xll` file matching your Excel bitness from the [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest) page (recommended location: `Win+R` ➔ `%APPDATA%\Microsoft\AddIns`):
-* **64-bit Excel:** [**`Smiles2Img-AddIn64-packed.xll`** (v1.0.0 Download)](https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.0.0/Smiles2Img-AddIn64-packed.xll)
-* **32-bit Excel:** [**`Smiles2Img-AddIn-packed.xll`** (v1.0.0 Download)](https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.0.0/Smiles2Img-AddIn-packed.xll)
+* **64-bit Excel:** [**`Smiles2Img-AddIn64-packed.xll`** (Latest v1.1.0 Download)](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-AddIn64-packed.xll)
+* **32-bit Excel:** [**`Smiles2Img-AddIn-packed.xll`** (Latest v1.1.0 Download)](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-AddIn-packed.xll)
 
 > [!TIP]
 > **Unblock downloaded file (Essential):**  
@@ -89,32 +90,45 @@ Download the single `.xll` file matching your Excel bitness from the [GitHub Rel
 ---
 
 ## 💡 Usage & Real-Time IntelliSense
-
-Type `=SMILES2IMG(...)` in any worksheet cell to insert an in-cell molecular rendering:
-
+ 
+Type formula in any worksheet cell to insert a molecular rendering:
+* **Excel 2024 / M365:** `=SMILES2IMG(A2)` (In-cell native image)
+* **Excel 2016 / 2019 / 2021:** `=SMILES2IMG.FLOAT(A2)` (Cell-anchored floating picture)
+ 
 ```excel
 =SMILES2IMG(A2)
+=SMILES2IMG.FLOAT(A2)
 ```
-
+ 
 ```text
 =SMILES2IMG(
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │ SMILES2IMG(smiles, [background], [color], [transform])                                 │
-│ A SMILES string or a cell reference containing one (e.g., A2, "CCO").                  │
+│ [Excel 2024 / Microsoft 365] Renders a high-resolution molecular structure image...   │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+
+=SMILES2IMG.FLOAT(
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│ SMILES2IMG.FLOAT(smiles, [background], [color], [transform])                           │
+│ [Excel 2016+] Places a molecular structure picture over the cell (moves/sizes)...      │
 └────────────────────────────────────────────────────────────────────────────────────────┘
 ```
-
+ 
 > [!TIP]
-> • **Real-time formula tooltips (ExcelDna.IntelliSense):** As you type `=SMILES2IMG(`, Excel displays native-style tooltips highlighting the active argument in bold with clear English descriptions.  
+> • **Real-time formula tooltips (ExcelDna.IntelliSense):** As you type `=SMILES2IMG(` or `=SMILES2IMG.FLOAT(`, Excel displays native-style tooltips highlighting the active argument in bold with clear English descriptions.  
+> • **Row/Column resizing (FLOAT mode):** Pictures placed by `SMILES2IMG.FLOAT` move and stretch with cell rows and columns (`xlMoveAndSize`). If row heights or column widths are manually altered and you wish to cleanly restore their exact aspect ratios, click **[SMILES] → [Refit floating images]** on the ribbon menu.  
 > • **Cell sizing:** For optimal bond resolution and readability, increase the row height (e.g., 80–120 pt) and column width (e.g., 25–40).
-
+ 
 ---
-
+ 
 ## 📖 Function Syntax & Parameter Specification
-
+ 
 ```excel
 =SMILES2IMG(smiles, [background], [color], [transform])
+=SMILES2IMG.FLOAT(smiles, [background], [color], [transform])
 ```
+ 
+*(Both functions accept identical parameters and default values.)*
 
 | Order | Argument | Type | Required | Default | Allowed Values & Description |
 | :---: | :--- | :---: | :---: | :---: | :--- |
