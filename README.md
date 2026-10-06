@@ -62,8 +62,12 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 > 3. Unblocks the file (`Unblock-File`) to remove Windows security flags  
 > 4. Registers the add-in in Excel options for persistent auto-loading  
 > 💡 **Future Updates:** Running this exact command again in the future automatically upgrades SMILES2IMG to the latest release!  
-> 🛡️ **Windows 11 Users Note:** If Excel shows `#NAME?` or an extension mismatch warning, Windows 11 Smart App Control has blocked the unsigned XLL. Please refer to the [FAQ](#-frequently-asked-questions-faq) to set it to 'Off' (antivirus remains 100% active).  
 > 🗑️ **Uninstallation:** To uninstall anytime, simply run `.\uninstall.ps1` from the repository.
+
+> [!IMPORTANT]
+> **Windows 11「Smart App Control (스마트 앱 컨트롤)」Notice**  
+> If Excel displays `#NAME?` or warns that `'The file format and extension of Smiles2Img-AddIn64-packed.xll do not match'`, Windows 11 **Smart App Control (스마트 앱 컨트롤)** has blocked the unsigned XLL add-in.  
+> 👉 The file is NOT corrupted. Follow the instructions in the **[FAQ section](#-frequently-asked-questions-faq)** to set **Smart App Control** to **'Off'**. (Real-time Microsoft Defender Antivirus protection remains 100% active).
 
 ---
 
@@ -368,8 +372,8 @@ powershell -NoProfile -STA -ExecutionPolicy Bypass -File tests/Excel-DeepStressT
 * **Q. Excel blocks or refuses to load the XLL.**
   * Web downloads receive a Windows `Mark of the Web` security block. Right-click the `.xll` file, open **Properties**, check **Unblock** at the bottom, and click **OK**.
   * Alternatively, run the **one-line automated install script (Method A)** at the top of this guide; it handles unblocking and registry registration automatically.
-* **Q. Excel displays "The file format and extension do not match" warning or formulas evaluate to `#NAME?`.**
-  * **Cause:** The file is NOT corrupted! Windows 11 **Smart App Control (SAC)** blocks unsigned open-source XLL add-in binaries on enforcement mode.
+* **Q. [Smart App Control] Excel displays "The file format and extension do not match" warning or formulas evaluate to `#NAME?`.**
+  * **Cause:** The file is NOT corrupted! Windows 11 **Smart App Control (스마트 앱 컨트롤)** blocks unsigned open-source XLL add-in binaries on enforcement mode.
   * **Rest assured:** Disabling Smart App Control does **NOT** disable your antivirus; **real-time Microsoft Defender Antivirus protection remains 100% active**.
   * **Solution (10 seconds):**
     1. Open Windows **Settings** (`Win + I`) ➔ **Privacy & security** ➔ **Windows Security**.
