@@ -125,8 +125,13 @@ Type formula in any worksheet cell to insert a molecular rendering:
 > [!TIP]
 > • **Real-time formula tooltips (ExcelDna.IntelliSense):** As you type `=SMILES2IMG(` or `=SMILES2IMG.FLOAT(`, Excel displays native-style tooltips highlighting the active argument in bold with clear English descriptions.  
 > • **Row/Column resizing (FLOAT mode):** Pictures placed by `SMILES2IMG.FLOAT` move and stretch with cell rows and columns (`xlMoveAndSize`). If row heights or column widths are manually altered and you wish to cleanly restore their exact aspect ratios, click **[SMILES] → [Refit floating images]** on the ribbon menu.  
-> • **Cell sizing:** For optimal bond resolution and readability, increase the row height (e.g., 80–120 pt) and column width (e.g., 25–40).
- 
+> • **Cell sizing:** For optimal bond resolution and readability, increase the row height (e.g., 80–120 pt) and column width (e.g., 25–40).  
+> • **🧬 Built-in EPAM Ketcher Molecular Editor (Structure Cells):**  
+>   - **Start from Blank Cell:** Right-click any blank cell and select **`[🧬 분자 구조식 삽입 (Ketcher)...]`** or press **`Ctrl+Shift+K`** to open the EPAM Ketcher editor. Sketch your molecule and click **[Apply to Cell]**—the cell immediately becomes an **in-cell molecular image cell (Structure Cell)** with formula `=SMILES2IMG("...")`.  
+>   - **Double-Click Re-editing:** Double-click any structure image cell at any time to reopen Ketcher with the existing molecule preloaded. Modify and apply to instantly refresh the cell image.  
+>   - **Backward Compatibility:** Double-clicking existing `=SMILES2IMG(A2)` formula cells automatically resolves and edits the source SMILES cell (`A2`), recalculating dependent images seamlessly.  
+>   - **100% Offline & Port-Free:** Uses embedded Microsoft WebView2 virtual host mapping (`ketcher.local`) without opening local TCP server ports or triggering firewall warnings.
+
 ---
  
 ## 📖 Function Syntax & Parameter Specification

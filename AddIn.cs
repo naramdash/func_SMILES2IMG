@@ -22,6 +22,8 @@ public sealed class AddIn : IExcelAddIn
             {
                 try { FloatingPictures.Attach(); }
                 catch (Exception error) { LogDisplay.WriteLine("SMILES2IMG.FLOAT events: " + error.Message); }
+                try { KetcherEditor.Attach(); }
+                catch (Exception error) { LogDisplay.WriteLine("Ketcher events: " + error.Message); }
             });
         }
         catch (Exception error)
@@ -32,6 +34,11 @@ public sealed class AddIn : IExcelAddIn
 
     public void AutoClose()
     {
+        try
+        {
+            KetcherEditor.Detach();
+        }
+        catch { }
         try
         {
             FloatingPictures.Detach();

@@ -54,6 +54,11 @@ $targetDir = Join-Path $env:APPDATA 'Microsoft\AddIns'
         Remove-Item -LiteralPath $file -Force -ErrorAction SilentlyContinue
         Write-Host "[+] Deleted: $file" -ForegroundColor Gray
     }
+# 4. Remove cache directory (%LOCALAPPDATA%\Smiles2Img)
+$cacheDir = Join-Path $env:LOCALAPPDATA 'Smiles2Img'
+if (Test-Path $cacheDir) {
+    Remove-Item -LiteralPath $cacheDir -Recurse -Force -ErrorAction SilentlyContinue
+    Write-Host "[+] Cleaned cache directory: $cacheDir" -ForegroundColor Gray
 }
 
 Write-Host "`n[SUCCESS] SMILES2IMG has been successfully uninstalled." -ForegroundColor Cyan

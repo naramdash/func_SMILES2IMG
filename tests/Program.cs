@@ -263,6 +263,18 @@ internal static class Program
             File.WriteAllBytes("output/samples/sample_dark_mode.png", darkPng);
 
             Console.WriteLine("PASS Rendered all 10 reference sample molecules + domain feature samples");
+
+            // Ketcher integration tests
+            Check(KetcherEditor.IsLikelySmiles("c1ccccc1"), "Ketcher detects benzene SMILES");
+            Check(KetcherEditor.IsLikelySmiles("CC(=O)Oc1ccccc1C(=O)O"), "Ketcher detects aspirin SMILES");
+            Check(!KetcherEditor.IsLikelySmiles("12345"), "Ketcher rejects plain numbers");
+            Check(!KetcherEditor.IsLikelySmiles("Hello world"), "Ketcher rejects plain text");
+            Check(!KetcherEditor.IsLikelySmiles(""), "Ketcher rejects empty string");
+
+            var ketcherFolder = KetcherAssetManager.EnsureKetcherFolder();
+            Check(Directory.Exists(ketcherFolder), "Ketcher folder exists");
+            Check(File.Exists(Path.Combine(ketcherFolder, "index.html")), "Ketcher index.html exists");
+            Console.WriteLine("PASS Ketcher editor SMILES validation and offline asset extraction");
             return 0;
         }
         catch (Exception error) { Console.Error.WriteLine(error); return 1; }

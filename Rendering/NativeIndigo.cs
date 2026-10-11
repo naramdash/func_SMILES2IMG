@@ -11,9 +11,13 @@ internal static class NativeIndigo
     private const uint SearchDllDirectory = 0x00000100;
     private const uint SearchDefaultDirectories = 0x00001000;
 
+    internal static string? NativeDirectory { get; private set; }
+
     internal static void Initialize(string fallbackDirectory)
     {
         var targetDir = GetOrExtractNativeDirectory(fallbackDirectory);
+        NativeDirectory = targetDir;
+        EnsureWebView2Loader();
 
         var dllsToLoad = Environment.Is64BitProcess
             ? new[] { "vcruntime140.dll", "vcruntime140_1.dll", "msvcp140.dll", "indigo.dll", "indigo-renderer.dll" }
@@ -34,6 +38,18 @@ internal static class NativeIndigo
                     }
                 }
             }
+        }
+    }
+
+    internal static void EnsureWebView2Loader()
+    {
+        if (!string.IsNullOrEmpty(NativeDirectory))
+        {
+            try
+            {
+                Microsoft.Web.WebView2.Core.CoreWebView2Environment.SetLoaderDllFolderPath(NativeDirectory);
+            }
+            catch { }
         }
     }
 

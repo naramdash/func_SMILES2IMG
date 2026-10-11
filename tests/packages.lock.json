@@ -45,6 +45,11 @@
         "resolved": "4.3.0",
         "contentHash": "P+MBhIM0YX+JqROuf7i306ZLJEjQYA9uUyRDE+OqwUI5sh41e2ZbPQV3LfAPh+29cmceE1pUffXsGfR4eMY3KA=="
       },
+      "Microsoft.Web.WebView2": {
+        "type": "Transitive",
+        "resolved": "1.0.4258.31",
+        "contentHash": "sHVZ2MQrHT1J3q5/6csn0fIP27rzpTO/RRC+wPQDrZheB7T4t2n+vVbY6SdCKr4WRV9s/gmBM3PPMWWJtoDzMg=="
+      },
       "System.Drawing.Common": {
         "type": "Transitive",
         "resolved": "4.7.2",
@@ -56,7 +61,8 @@
           "ExcelDna.AddIn": "[1.9.0, )",
           "ExcelDna.IntelliSense": "[1.9.0, )",
           "ExcelDna.Interop": "[16.0.0, )",
-          "Indigo.Net": "[1.48.0-rc.1, )"
+          "Indigo.Net": "[1.48.0-rc.1, )",
+          "Microsoft.Web.WebView2": "[1.0.4258.31, )"
         }
       }
     },
@@ -69,6 +75,11 @@
         "dependencies": {
           "System.Drawing.Common": "4.7.2"
         }
+      },
+      "Microsoft.Web.WebView2": {
+        "type": "Transitive",
+        "resolved": "1.0.4258.31",
+        "contentHash": "sHVZ2MQrHT1J3q5/6csn0fIP27rzpTO/RRC+wPQDrZheB7T4t2n+vVbY6SdCKr4WRV9s/gmBM3PPMWWJtoDzMg=="
       }
     },
     ".NETFramework,Version=v4.8/win-x86": {
@@ -80,6 +91,11 @@
         "dependencies": {
           "System.Drawing.Common": "4.7.2"
         }
+      },
+      "Microsoft.Web.WebView2": {
+        "type": "Transitive",
+        "resolved": "1.0.4258.31",
+        "contentHash": "sHVZ2MQrHT1J3q5/6csn0fIP27rzpTO/RRC+wPQDrZheB7T4t2n+vVbY6SdCKr4WRV9s/gmBM3PPMWWJtoDzMg=="
       }
     }
   }
