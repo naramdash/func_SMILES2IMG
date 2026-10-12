@@ -75,10 +75,73 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   imageMso=""PictureEditProperties""
                   size=""large""
                   onAction=""OnEditMolecule"" />
+          <button id=""btnCopySmiles""
+                  label=""SMILES 복사""
+                  screentip=""선택된 분자 구조식의 SMILES 복사""
+                  supertip=""선택된 분자 이미지에서 SMILES 문자열을 추출하여 클립보드에 복사합니다.""
+                  imageMso=""Copy""
+                  size=""large""
+                  onAction=""OnCopySmiles"" />
         </group>
       </tab>
     </tabs>
   </ribbon>
+  <contextMenus>
+    <contextMenu idMso=""ContextMenuInlinePicture"">
+      <button id=""btnContextInlineEdit""
+              label=""분자 구조식 편집 (Ketcher)...""
+              imageMso=""PictureEditProperties""
+              onAction=""OnEditMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextInlineCopySmiles""
+              label=""SMILES 복사 (추출)""
+              imageMso=""Copy""
+              onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextInlineCopyKet""
+              label=""캔버스 데이터(KET) 복사""
+              imageMso=""SaveObjectAs""
+              onAction=""OnCopyKet""
+              insertBeforeMso=""Cut"" />
+      <menuSeparator id=""sepContextInline"" insertBeforeMso=""Cut"" />
+    </contextMenu>
+    <contextMenu idMso=""ContextMenuPicture"">
+      <button id=""btnContextPictureEdit""
+              label=""분자 구조식 편집 (Ketcher)...""
+              imageMso=""PictureEditProperties""
+              onAction=""OnEditMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPictureCopySmiles""
+              label=""SMILES 복사 (추출)""
+              imageMso=""Copy""
+              onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPictureCopyKet""
+              label=""캔버스 데이터(KET) 복사""
+              imageMso=""SaveObjectAs""
+              onAction=""OnCopyKet""
+              insertBeforeMso=""Cut"" />
+      <menuSeparator id=""sepContextPicture"" insertBeforeMso=""Cut"" />
+    </contextMenu>
+    <contextMenu idMso=""ContextMenuShape"">
+      <button id=""btnContextShapeEdit""
+              label=""분자 구조식 편집 (Ketcher)...""
+              imageMso=""PictureEditProperties""
+              onAction=""OnEditMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextShapeCopySmiles""
+              label=""SMILES 복사 (추출)""
+              imageMso=""Copy""
+              onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextShapeCopyKet""
+              label=""캔버스 데이터(KET) 복사""
+              imageMso=""SaveObjectAs""
+              onAction=""OnCopyKet""
+              insertBeforeMso=""Cut"" />
+      <menuSeparator id=""sepContextShape"" insertBeforeMso=""Cut"" />
+    </contextMenu>
+  </contextMenus>
 </customUI>";
     }
 
@@ -97,5 +160,17 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
     {
         if (wordApp == null) return;
         WordStructureManager.EditSelectedMolecule(wordApp);
+    }
+
+    public void OnCopySmiles(IRibbonControl control)
+    {
+        if (wordApp == null) return;
+        WordStructureManager.CopySelectedMoleculeSmiles(wordApp);
+    }
+
+    public void OnCopyKet(IRibbonControl control)
+    {
+        if (wordApp == null) return;
+        WordStructureManager.CopySelectedMoleculeKet(wordApp);
     }
 }

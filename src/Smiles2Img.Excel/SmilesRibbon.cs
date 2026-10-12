@@ -37,6 +37,13 @@ public class SmilesRibbon : ExcelRibbon
                   imageMso=""PictureEditProperties""
                   size=""large""
                   onAction=""OnEditMolecule"" />
+          <button id=""btnCopySmiles""
+                  label=""SMILES 복사""
+                  screentip=""선택된 셀 또는 이미지의 SMILES 복사""
+                  supertip=""선택된 수식 셀 또는 분자 이미지에서 SMILES 문자열을 추출하여 클립보드에 복사합니다.""
+                  imageMso=""Copy""
+                  size=""large""
+                  onAction=""OnCopySmiles"" />
           <button id=""btnOpenDiagnostics""
                   label=""진단 (Diagnostics)""
                   screentip=""SMILES2IMG 로그 및 진단 창""
@@ -50,6 +57,16 @@ public class SmilesRibbon : ExcelRibbon
   </ribbon>
   <contextMenus>
     <contextMenu idMso=""ContextMenuCell"">
+      <button id=""btnContextEditMoleculeCell""
+              label=""분자 구조식 편집 (Ketcher)...""
+              imageMso=""PictureEditProperties""
+              onAction=""OnEditMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextCopySmilesCell""
+              label=""SMILES 복사 (추출)""
+              imageMso=""Copy""
+              onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
       <button id=""btnContextInsertMolecule""
               label=""분자 구조식 삽입 (셀 수식)...""
               imageMso=""EquationInsertNew""
@@ -60,14 +77,19 @@ public class SmilesRibbon : ExcelRibbon
               imageMso=""SmartArtInsert""
               onAction=""OnInsertCanvasMolecule""
               insertBeforeMso=""Cut"" />
-      <button id=""btnContextEditMoleculeCell""
+      <menuSeparator id=""sepContextMolecule"" insertBeforeMso=""Cut"" />
+    </contextMenu>
+    <contextMenu idMso=""ContextMenuListRange"">
+      <button id=""btnContextListEditMoleculeCell""
               label=""분자 구조식 편집 (Ketcher)...""
               imageMso=""PictureEditProperties""
               onAction=""OnEditMolecule""
               insertBeforeMso=""Cut"" />
-      <menuSeparator id=""sepContextMolecule"" insertBeforeMso=""Cut"" />
-    </contextMenu>
-    <contextMenu idMso=""ContextMenuListRange"">
+      <button id=""btnContextListCopySmilesCell""
+              label=""SMILES 복사 (추출)""
+              imageMso=""Copy""
+              onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
       <button id=""btnContextListInsertMolecule""
               label=""분자 구조식 삽입 (셀 수식)...""
               imageMso=""EquationInsertNew""
@@ -78,11 +100,6 @@ public class SmilesRibbon : ExcelRibbon
               imageMso=""SmartArtInsert""
               onAction=""OnInsertCanvasMolecule""
               insertBeforeMso=""Cut"" />
-      <button id=""btnContextListEditMoleculeCell""
-              label=""분자 구조식 편집 (Ketcher)...""
-              imageMso=""PictureEditProperties""
-              onAction=""OnEditMolecule""
-              insertBeforeMso=""Cut"" />
       <menuSeparator id=""sepContextListMolecule"" insertBeforeMso=""Cut"" />
     </contextMenu>
     <contextMenu idMso=""ContextMenuPicture"">
@@ -91,6 +108,16 @@ public class SmilesRibbon : ExcelRibbon
               imageMso=""PictureEditProperties""
               onAction=""OnEditMolecule""
               insertBeforeMso=""Cut"" />
+      <button id=""btnContextPictureCopySmiles""
+              label=""SMILES 복사 (추출)""
+              imageMso=""Copy""
+              onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPictureCopyKet""
+              label=""캔버스 데이터(KET) 복사""
+              imageMso=""SaveObjectAs""
+              onAction=""OnCopyKet""
+              insertBeforeMso=""Cut"" />
       <menuSeparator id=""sepContextPicMolecule"" insertBeforeMso=""Cut"" />
     </contextMenu>
     <contextMenu idMso=""ContextMenuShape"">
@@ -98,6 +125,16 @@ public class SmilesRibbon : ExcelRibbon
               label=""분자 구조식 편집 (Ketcher)...""
               imageMso=""PictureEditProperties""
               onAction=""OnEditMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextShapeCopySmiles""
+              label=""SMILES 복사 (추출)""
+              imageMso=""Copy""
+              onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextShapeCopyKet""
+              label=""캔버스 데이터(KET) 복사""
+              imageMso=""SaveObjectAs""
+              onAction=""OnCopyKet""
               insertBeforeMso=""Cut"" />
       <menuSeparator id=""sepContextShapeMolecule"" insertBeforeMso=""Cut"" />
     </contextMenu>
@@ -126,6 +163,22 @@ public class SmilesRibbon : ExcelRibbon
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
             KetcherEditor.EditSelectedMoleculeCommand();
+        });
+    }
+
+    public void OnCopySmiles(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            KetcherEditor.CopySelectedMoleculeSmilesCommand();
+        });
+    }
+
+    public void OnCopyKet(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            KetcherEditor.CopySelectedMoleculeKetCommand();
         });
     }
 

@@ -277,6 +277,110 @@ public static class WordStructureManager
         return null;
     }
 
+    public static string? ExtractSmiles(params string?[] texts)
+    {
+        foreach (var text in texts)
+        {
+            if (string.IsNullOrWhiteSpace(text)) continue;
+            var match = SmilesTagRegex.Match(text!);
+            if (match.Success)
+            {
+                return match.Groups["smiles"].Value.Trim();
+            }
+        }
+        return null;
+    }
+
+    public static void CopySelectedMoleculeSmiles(MSWord.Application app)
+    {
+        try
+        {
+            var sel = app.Selection;
+            string? smiles = null;
+
+            if (sel.InlineShapes.Count > 0)
+            {
+                var targetInline = sel.InlineShapes[1];
+                smiles = ExtractSmiles(targetInline.Title, targetInline.AlternativeText);
+            }
+            else if (sel.ShapeRange.Count > 0)
+            {
+                var targetShape = sel.ShapeRange[1];
+                smiles = ExtractSmiles(targetShape.Title, targetShape.AlternativeText);
+            }
+
+            if (string.IsNullOrEmpty(smiles))
+            {
+                MessageBox.Show(
+                    "선택된 이미지에서 SMILES 구조식을 찾을 수 없습니다.\n먼저 분자 구조식 이미지를 클릭하여 선택해 주세요.",
+                    "SMILES for Word",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            Clipboard.SetText(smiles!);
+            MessageBox.Show(
+                $"클립보드에 SMILES가 복사되었습니다:\n\n{smiles}",
+                "SMILES 추출 완료",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "SMILES 추출 중 오류가 발생했습니다:\n" + ex.Message,
+                "SMILES for Word",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+
+    public static void CopySelectedMoleculeKet(MSWord.Application app)
+    {
+        try
+        {
+            var sel = app.Selection;
+            string? ket = null;
+
+            if (sel.InlineShapes.Count > 0)
+            {
+                var targetInline = sel.InlineShapes[1];
+                ket = ExtractStructure(targetInline.AlternativeText, targetInline.Title);
+            }
+            else if (sel.ShapeRange.Count > 0)
+            {
+                var targetShape = sel.ShapeRange[1];
+                ket = ExtractStructure(targetShape.AlternativeText, targetShape.Title);
+            }
+
+            if (string.IsNullOrEmpty(ket))
+            {
+                MessageBox.Show(
+                    "선택된 이미지에서 캔버스 구조식(KET)을 찾을 수 없습니다.",
+                    "SMILES for Word",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            Clipboard.SetText(ket!);
+            MessageBox.Show(
+                "클립보드에 캔버스 데이터(KET)가 복사되었습니다.",
+                "KET 복사 완료",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "캔버스 데이터 복사 중 오류가 발생했습니다:\n" + ex.Message,
+                "SMILES for Word",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+
     private static IntPtr GetHwnd(MSWord.Application app)
     {
         try

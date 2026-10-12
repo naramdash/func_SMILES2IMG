@@ -208,6 +208,92 @@ public static class KetcherEditor
         }
     }
 
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "SMILES 복사 (추출)")]
+    public static void CopySelectedMoleculeSmilesCommand()
+    {
+        try
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            var targetShape = GetSelectedShape(app);
+            string? smiles = null;
+
+            if (targetShape != null)
+            {
+                smiles = ExtractSmiles(targetShape);
+            }
+            else if (app.ActiveCell is Excel.Range cell)
+            {
+                smiles = ExtractSmilesFromCell(cell);
+            }
+
+            if (string.IsNullOrEmpty(smiles))
+            {
+                MessageBox.Show(
+                    "선택된 개체 또는 셀에서 SMILES 구조식을 찾을 수 없습니다.\n분자 구조식 이미지 또는 수식 셀을 선택해 주세요.",
+                    "SMILES for Excel",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            Clipboard.SetText(smiles!);
+            MessageBox.Show(
+                $"클립보드에 SMILES가 복사되었습니다:\n\n{smiles}",
+                "SMILES 추출 완료",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "SMILES 추출 중 오류가 발생했습니다: " + ex.Message,
+                "SMILES for Excel",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "캔버스 데이터(KET) 복사")]
+    public static void CopySelectedMoleculeKetCommand()
+    {
+        try
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            var targetShape = GetSelectedShape(app);
+            string? ket = null;
+
+            if (targetShape != null)
+            {
+                ket = ExtractStructure(targetShape);
+            }
+
+            if (string.IsNullOrEmpty(ket))
+            {
+                MessageBox.Show(
+                    "선택된 이미지에서 캔버스 구조식(KET)을 찾을 수 없습니다.",
+                    "SMILES for Excel",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            Clipboard.SetText(ket!);
+            MessageBox.Show(
+                "클립보드에 캔버스 데이터(KET)가 복사되었습니다.",
+                "KET 복사 완료",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "캔버스 데이터 복사 중 오류가 발생했습니다: " + ex.Message,
+                "SMILES for Excel",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+
     public static void EditSelectedMolecule(Excel.Application app)
     {
         var shape = GetSelectedShape(app);
@@ -446,6 +532,89 @@ public static class KetcherEditor
 
                 var match = SmilesTagRegex.Match(trimmed);
                 if (match.Success) return match.Groups["smiles"].Value.Trim();
+            }
+        }
+        catch { }
+
+        return null;
+    }
+
+    public static string? ExtractSmiles(Excel.Shape shape)
+    {
+        try
+        {
+            var title = shape.Title;
+            if (!string.IsNullOrWhiteSpace(title))
+            {
+                var trimmed = title.Trim();
+                if (trimmed.StartsWith(SmilesPrefix, StringComparison.OrdinalIgnoreCase))
+                    return trimmed.Substring(SmilesPrefix.Length).Trim();
+
+                if (FloatingPictures.TryParseTitle(title, out var key, out _))
+                {
+                    if (IsLikelySmiles(key)) return key;
+                }
+
+                var match = SmilesTagRegex.Match(trimmed);
+                if (match.Success) return match.Groups["smiles"].Value.Trim();
+            }
+        }
+        catch { }
+
+        try
+        {
+            var alt = shape.AlternativeText;
+            if (!string.IsNullOrWhiteSpace(alt))
+            {
+                var trimmed = alt.Trim();
+                if (trimmed.StartsWith(SmilesPrefix, StringComparison.OrdinalIgnoreCase))
+                    return trimmed.Substring(SmilesPrefix.Length).Trim();
+                var match = SmilesTagRegex.Match(trimmed);
+                if (match.Success) return match.Groups["smiles"].Value.Trim();
+                if (IsLikelySmiles(trimmed))
+                    return trimmed;
+            }
+        }
+        catch { }
+
+        return null;
+    }
+
+    public static string? ExtractSmilesFromCell(Excel.Range cell)
+    {
+        try
+        {
+            string formula = Convert.ToString((object?)cell.Formula) ?? "";
+            string val = Convert.ToString((object?)cell.Value2) ?? "";
+
+            if (!string.IsNullOrEmpty(formula) && formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                var match = FormulaRefPattern.Match(formula);
+                if (match.Success)
+                {
+                    if (match.Groups["literal"].Success)
+                    {
+                        return match.Groups["literal"].Value.Trim();
+                    }
+                    if (match.Groups["ref"].Success)
+                    {
+                        var refAddr = match.Groups["ref"].Value;
+                        try
+                        {
+                            var sheet = (Excel.Worksheet)cell.Parent;
+                            var app = (Excel.Application)sheet.Application;
+                            Excel.Range refCell = refAddr.Contains("!") ? (Excel.Range)app.Range[refAddr] : (Excel.Range)sheet.Range[refAddr];
+                            var refVal = Convert.ToString(refCell.Value2) ?? "";
+                            return refVal.Trim();
+                        }
+                        catch { }
+                    }
+                }
+            }
+
+            if (IsLikelySmiles(val))
+            {
+                return val.Trim();
             }
         }
         catch { }

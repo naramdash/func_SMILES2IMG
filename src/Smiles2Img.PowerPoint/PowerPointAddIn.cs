@@ -142,10 +142,55 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   imageMso=""PictureEditProperties""
                   size=""large""
                   onAction=""OnEditMolecule"" />
+          <button id=""btnCopySmiles""
+                  label=""SMILES 복사""
+                  screentip=""선택된 분자 구조식의 SMILES 복사""
+                  supertip=""선택된 분자 이미지에서 SMILES 문자열을 추출하여 클립보드에 복사합니다.""
+                  imageMso=""Copy""
+                  size=""large""
+                  onAction=""OnCopySmiles"" />
         </group>
       </tab>
     </tabs>
   </ribbon>
+  <contextMenus>
+    <contextMenu idMso=""ContextMenuPicture"">
+      <button id=""btnContextPptPictureEdit""
+              label=""분자 구조식 편집 (Ketcher)...""
+              imageMso=""PictureEditProperties""
+              onAction=""OnEditMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPptPictureCopySmiles""
+              label=""SMILES 복사 (추출)""
+              imageMso=""Copy""
+              onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPptPictureCopyKet""
+              label=""캔버스 데이터(KET) 복사""
+              imageMso=""SaveObjectAs""
+              onAction=""OnCopyKet""
+              insertBeforeMso=""Cut"" />
+      <menuSeparator id=""sepContextPptPicture"" insertBeforeMso=""Cut"" />
+    </contextMenu>
+    <contextMenu idMso=""ContextMenuShape"">
+      <button id=""btnContextPptShapeEdit""
+              label=""분자 구조식 편집 (Ketcher)...""
+              imageMso=""PictureEditProperties""
+              onAction=""OnEditMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPptShapeCopySmiles""
+              label=""SMILES 복사 (추출)""
+              imageMso=""Copy""
+              onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPptShapeCopyKet""
+              label=""캔버스 데이터(KET) 복사""
+              imageMso=""SaveObjectAs""
+              onAction=""OnCopyKet""
+              insertBeforeMso=""Cut"" />
+      <menuSeparator id=""sepContextPptShape"" insertBeforeMso=""Cut"" />
+    </contextMenu>
+  </contextMenus>
 </customUI>";
     }
 
@@ -164,5 +209,17 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
     {
         if (pptApp == null) return;
         PowerPointStructureManager.EditSelectedMolecule(pptApp);
+    }
+
+    public void OnCopySmiles(IRibbonControl control)
+    {
+        if (pptApp == null) return;
+        PowerPointStructureManager.CopySelectedMoleculeSmiles(pptApp);
+    }
+
+    public void OnCopyKet(IRibbonControl control)
+    {
+        if (pptApp == null) return;
+        PowerPointStructureManager.CopySelectedMoleculeKet(pptApp);
     }
 }
