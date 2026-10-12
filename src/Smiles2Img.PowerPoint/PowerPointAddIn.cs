@@ -19,6 +19,26 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
     private MSPowerPoint.EApplication_Event? pptEvents;
     private IRibbonUI? ribbon;
 
+    private const int WH_MOUSE = 7;
+    private const int WM_LBUTTONDBLCLK = 0x0203;
+
+    private delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
+    private HookProc? mouseHookProc;
+    private IntPtr hMouseHook = IntPtr.Zero;
+    private bool isEditing = false;
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern IntPtr SetWindowsHookEx(int idHook, HookProc lpfn, IntPtr hMod, uint dwThreadId);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern bool UnhookWindowsHookEx(IntPtr hhk);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+    [DllImport("kernel32.dll")]
+    private static extern uint GetCurrentThreadId();
+
     public void OnConnection(object Application, ext_ConnectMode ConnectMode, object AddInInst, ref Array custom)
     {
         try
@@ -29,6 +49,15 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
 
             pptEvents = (MSPowerPoint.EApplication_Event)pptApp;
             pptEvents.WindowBeforeDoubleClick += PowerPointStructureManager.OnWindowBeforeDoubleClick;
+
+            // PowerPoint's native WindowBeforeDoubleClick event does not fire for shapes/pictures in Normal view.
+            // Install an in-process thread-level mouse hook to intercept double-clicks on molecular structure shapes.
+            try
+            {
+                mouseHookProc = MouseHookCallback;
+                hMouseHook = SetWindowsHookEx(WH_MOUSE, mouseHookProc, IntPtr.Zero, GetCurrentThreadId());
+            }
+            catch { }
         }
         catch (Exception ex)
         {
@@ -40,6 +69,13 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
     {
         try
         {
+            if (hMouseHook != IntPtr.Zero)
+            {
+                try { UnhookWindowsHookEx(hMouseHook); } catch { }
+                hMouseHook = IntPtr.Zero;
+            }
+            mouseHookProc = null;
+
             if (pptEvents != null)
             {
                 pptEvents.WindowBeforeDoubleClick -= PowerPointStructureManager.OnWindowBeforeDoubleClick;
@@ -48,6 +84,37 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
             pptApp = null;
         }
         catch { }
+    }
+
+    private IntPtr MouseHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+    {
+        if (nCode >= 0 && wParam == (IntPtr)WM_LBUTTONDBLCLK && !isEditing && pptApp != null)
+        {
+            try
+            {
+                var sel = pptApp.ActiveWindow?.Selection;
+                if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 0)
+                {
+                    var targetShape = sel.ShapeRange[1];
+                    var smiles = PowerPointStructureManager.ExtractSmiles(targetShape);
+                    if (!string.IsNullOrEmpty(smiles))
+                    {
+                        isEditing = true;
+                        try
+                        {
+                            PowerPointStructureManager.EditSelectedMolecule(pptApp, targetShape);
+                        }
+                        finally
+                        {
+                            isEditing = false;
+                        }
+                        return (IntPtr)1; // Suppress PowerPoint's default double-click action (e.g. Picture Format pane)
+                    }
+                }
+            }
+            catch { }
+        }
+        return CallNextHookEx(hMouseHook, nCode, wParam, lParam);
     }
 
     public void OnAddInsUpdate(ref Array custom) { }

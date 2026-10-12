@@ -59,22 +59,26 @@ public static class PowerPointStructureManager
         }
     }
 
-    public static void EditSelectedMolecule(MSPowerPoint.Application app)
+    public static void EditSelectedMolecule(MSPowerPoint.Application app, MSPowerPoint.Shape? targetShape = null)
     {
         try
         {
-            var sel = app.ActiveWindow?.Selection;
-            if (sel == null || sel.Type != MSPowerPoint.PpSelectionType.ppSelectionShapes || sel.ShapeRange.Count == 0)
+            if (targetShape == null)
             {
-                MessageBox.Show(
-                    "선택된 분자 구조식 이미지를 찾을 수 없습니다.\n먼저 편집하려는 구조식 그림을 클릭하여 선택해 주세요.",
-                    "SMILES for PowerPoint",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-                return;
+                var sel = app.ActiveWindow?.Selection;
+                if (sel == null || sel.Type != MSPowerPoint.PpSelectionType.ppSelectionShapes || sel.ShapeRange.Count == 0)
+                {
+                    MessageBox.Show(
+                        "선택된 분자 구조식 이미지를 찾을 수 없습니다.\n먼저 편집하려는 구조식 그림을 클릭하여 선택해 주세요.",
+                        "SMILES for PowerPoint",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                    return;
+                }
+
+                targetShape = sel.ShapeRange[1];
             }
 
-            var targetShape = sel.ShapeRange[1];
             var currentSmiles = ExtractSmiles(targetShape);
 
             if (string.IsNullOrEmpty(currentSmiles))
@@ -119,7 +123,7 @@ public static class PowerPointStructureManager
                 {
                     cancel = true;
                     var app = sel.Application;
-                    EditSelectedMolecule(app);
+                    EditSelectedMolecule(app, shape);
                 }
             }
         }
@@ -236,7 +240,7 @@ public static class PowerPointStructureManager
         }
     }
 
-    private static string? ExtractSmiles(MSPowerPoint.Shape shape)
+    public static string? ExtractSmiles(MSPowerPoint.Shape shape)
     {
         try
         {
