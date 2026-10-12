@@ -4,11 +4,11 @@ using System.IO.Compression;
 
 namespace Smiles2Img;
 
-internal static class KetcherAssetManager
+public static class KetcherAssetManager
 {
     private static string? cachedFolder;
 
-    internal static string EnsureKetcherFolder()
+    public static string EnsureKetcherFolder()
     {
         if (cachedFolder != null && File.Exists(Path.Combine(cachedFolder, "index.html")))
             return cachedFolder;

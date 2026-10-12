@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace Smiles2Img.Rendering;
 
-internal static class ColorHelper
+public static class ColorHelper
 {
     private static readonly Regex HexRegex = new(@"\A[0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?\z", RegexOptions.Compiled);
 
@@ -13,7 +13,7 @@ internal static class ColorHelper
     /// Returns "transparent" for transparent canvas tokens.
     /// Returns standardized hex (#RRGGBB / #RGB) or standard color name.
     /// </summary>
-    internal static string? Normalize(string? raw, bool isBackground = false)
+    public static string? Normalize(string? raw, bool isBackground = false)
     {
         if (string.IsNullOrWhiteSpace(raw)) return null;
 

@@ -10,36 +10,33 @@
     <ExcelDnaCreate32BitAddIn>true</ExcelDnaCreate32BitAddIn>
     <ExcelDnaCreate64BitAddIn>true</ExcelDnaCreate64BitAddIn>
     <ExcelDnaPackNativeLibraryDependencies>false</ExcelDnaPackNativeLibraryDependencies>
-    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <DistributionRoot Condition="'$(DistributionRoot)' == ''">$(MSBuildProjectDirectory)/dist</DistributionRoot>
+    <DistributionRoot Condition="'$(DistributionRoot)' == ''">$(MSBuildProjectDirectory)/../../dist</DistributionRoot>
     <Version>1.3.0</Version>
     <AssemblyVersion>1.3.0.0</AssemblyVersion>
     <FileVersion>1.3.0.0</FileVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Smiles2Img.Core\Smiles2Img.Core.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="ExcelDna.AddIn" Version="1.9.0" />
     <PackageReference Include="ExcelDna.IntelliSense" Version="1.9.0" />
     <PackageReference Include="ExcelDna.Interop" Version="16.0.0" />
-    <PackageReference Include="Indigo.Net" Version="1.48.0-rc.1" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4258.31" GeneratePathProperty="true" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Remove="tests/**/*.cs" />
-    <None Remove="tests/**;output/**;dist/**;.nuget/**" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Drawing" />
     <EmbeddedResource Include="assets/native-image-template.xlsx" LogicalName="Smiles2Img.NativeImageTemplate.xlsx" />
-    <EmbeddedResource Include="assets/ketcher.zip" LogicalName="Smiles2Img.Ketcher.zip" />
-    <EmbeddedResource Include="$(PkgIndigo_Net)/runtimes/win-x64/native/*.dll" Exclude="$(PkgIndigo_Net)/runtimes/win-x64/native/bingo-nosql.dll" LogicalName="Smiles2Img.Native.x64.%(Filename)%(Extension)" />
-    <EmbeddedResource Include="$(PkgIndigo_Net)/runtimes/win-x86/native/*.dll" Exclude="$(PkgIndigo_Net)/runtimes/win-x86/native/bingo-nosql.dll;$(PkgIndigo_Net)/runtimes/win-x86/native/vcruntime140_1.dll" LogicalName="Smiles2Img.Native.x86.%(Filename)%(Extension)" />
-    <EmbeddedResource Include="$(PkgMicrosoft_Web_WebView2)/runtimes/win-x64/native/WebView2Loader.dll" LogicalName="Smiles2Img.Native.x64.WebView2Loader.dll" />
-    <EmbeddedResource Include="$(PkgMicrosoft_Web_WebView2)/runtimes/win-x86/native/WebView2Loader.dll" LogicalName="Smiles2Img.Native.x86.WebView2Loader.dll" />
   </ItemGroup>
+
   <Target Name="CreateDistribution" AfterTargets="ExcelDnaPack">
     <ItemGroup>
-      <Notice Include="$(MSBuildProjectDirectory)/THIRD_PARTY_NOTICES.md" />
+      <Notice Include="$(MSBuildProjectDirectory)/../../THIRD_PARTY_NOTICES.md" />
     </ItemGroup>
     <MakeDir Directories="$(DistributionRoot)/x86;$(DistributionRoot)/x64" />
     <Copy SourceFiles="$(TargetDir)publish/Smiles2Img-AddIn-packed.xll;@(Notice)" DestinationFolder="$(DistributionRoot)/x86" SkipUnchangedFiles="true" />

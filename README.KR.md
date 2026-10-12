@@ -1,26 +1,37 @@
-# SMILES2IMG — Excel 분자 구조식 자동 렌더러
+# SMILES for Microsoft Office Suite — 화학 분자 구조식 자동 렌더러 & 에디터 (Excel · Word · PowerPoint)
 
 [English](README.md) | **한국어**
 
-[![Platform](https://img.shields.io/badge/Platform-Windows%20Excel%20(32%2F64bit)-blue.svg)](#실행-요구사항)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Office%20(Excel%20%7C%20Word%20%7C%20PowerPoint)-blue.svg)](#실행-요구사항)
 [![Framework](https://img.shields.io/badge/.NET%20Framework-4.8-512BD4.svg)](https://dotnet.microsoft.com/)
 [![Excel-DNA](https://img.shields.io/badge/Excel--DNA-1.9.0-green.svg)](https://excel-dna.net/)
 [![EPAM Indigo](https://img.shields.io/badge/EPAM%20Indigo-1.48.0--rc.1-orange.svg)](https://lifescience.opensource.epam.com/indigo/)
-[![Single-File XLL](https://img.shields.io/badge/Deployment-100%25%20Standalone%20XLL-brightgreen.svg)](#-빠른-시작-설치-방법)
+[![EPAM Ketcher](https://img.shields.io/badge/EPAM%20Ketcher-v3.1.0-blueviolet.svg)](https://lifescience.opensource.epam.com/ketcher/)
+[![Office Suite Installer](https://img.shields.io/badge/Installer-Unified%20Office%20Suite-brightgreen.svg)](#-빠른-시작-설치-방법)
 
-> **SMILES 화학 구조식 문자열을 Excel 셀 안의 고해상도 인셀(In-Cell) 분자 이미지로 즉시 변환하는 Excel 추가 기능(Add-in)입니다.**  
-> 외부 웹 서버나 클라우드 전송 없이, PC 로컬에서 100% 오프라인으로 안전하고 빠르게 렌더링됩니다.
+> **SMILES 화학 구조식 문자열을 Microsoft Office(Excel, Word, PowerPoint)에 고해상도 분자 이미지로 즉시 삽입하고, 내장된 Ketcher 웹 에디터로 자유롭게 그리고 수정할 수 있는 통합 오피스 추가 기능(Office Suite Add-in)입니다.**  
+> 외부 웹 서버나 클라우드 전송 없이, PC 로컬에서 100% 오프라인으로 안전하고 빠르게 렌더링되며 관리자 권한(Admin) 없이 간편하게 설치됩니다.
 
 <p align="center">
-  <img src="assets/excel-showcase.png" alt="SMILES2IMG Excel Native In-Cell Molecular Structure Showcase" width="100%" />
+  <img src="assets/excel-showcase.png" alt="SMILES for Excel Showcase" width="100%" />
+</p>
+
+<p align="center">
+  <img src="assets/word-showcase.png" alt="SMILES for Word Showcase" width="49%" />
+  <img src="assets/powerpoint-showcase.png" alt="SMILES for PowerPoint Showcase" width="49%" />
 </p>
 
 ---
 
 ## 📑 목차
-- [🚀 빠른 시작 (설치 방법)](#-빠른-시작-설치-방법)
-- [💡 사용 방법 및 수식 IntelliSense](#-사용-방법-및-수식-intellisense)
-- [📖 함수 구문 및 인자 규격](#-함수-구문-및-인자-규격)
+- [✨ 지원 애플리케이션 및 주요 기능](#-지원-애플리케이션-및-주요-기능)
+  - 📗 [Excel 사용법 가이드](docs/EXCEL_GUIDE.md)
+  - 📘 [Word 사용법 가이드](docs/WORD_GUIDE.md)
+  - 📙 [PowerPoint 사용법 가이드](docs/POWERPOINT_GUIDE.md)
+- [🚀 빠른 시작 (통합 오피스 슈트 설치 방법)](#-빠른-시작-통합-오피스-슈트-설치-방법)
+- [💡 Excel 사용 방법 및 수식 IntelliSense](#-excel-사용-방법-및-수식-intellisense)
+- [📝 Word 및 PowerPoint 사용 방법](#-word-및-powerpoint-사용-방법)
+- [📖 함수 구문 및 인자 규격 (Excel)](#-함수-구문-및-인자-규격-excel)
 - [🎨 주요 활용 레시피 (실전 예시)](#-주요-활용-레시피-실전-예시)
 - [🔬 화학 구조 렌더링 최적화 (ACS 저널 표준)](#-화학-구조-렌더링-최적화-acs-저널-표준)
 - [🏗️ 내부 아키텍처 및 동작 원리](#️-내부-아키텍처-및-동작-원리)
@@ -28,6 +39,22 @@
 - [🛠️ 빌드 및 배포 방법 (개발자용)](#️-빌드-및-배포-방법-개발자용)
 - [🧪 자동화 테스트 및 검증](#-자동화-테스트-및-검증)
 - [❓ 자주 묻는 질문 (FAQ)](#-자주-묻는-질문-faq)
+
+---
+
+## ✨ 지원 애플리케이션 및 주요 기능
+
+| 애플리케이션 | 주요 기능 | 지원 방식 | 사용 가이드 |
+| :--- | :--- | :--- | :---: |
+| **Microsoft Excel** | • `=SMILES2IMG("CCO")` 네이티브 인셀 이미지 삽입<br>• `=SMILES2IMG.FLOAT("CCO")` 구버전 호환 플로팅 그림<br>• **셀 더블 클릭 시 Ketcher 2D 에디터 자동 팝업** 및 구조식 수정 | Excel-DNA Standalone XLL (32/64비트) | 📗 [**Excel 가이드**](docs/EXCEL_GUIDE.md) |
+| **Microsoft Word** | • 상단 리본 메뉴 **`[SMILES]`** 탭 제공<br>• **분자 구조식 삽입**: 커서 위치에 고해상도 인라인 그림 삽입<br>• **구조식 편집 / 더블 클릭**: 문서 내 분자 그림 더블 클릭 시 Ketcher 에디터로 즉시 불러와 수정 | Office COM Add-in (`.dll`, HKCU 무권한 등록) | 📘 [**Word 가이드**](docs/WORD_GUIDE.md) |
+| **Microsoft PowerPoint** | • 상단 리본 메뉴 **`[SMILES]`** 탭 제공<br>• **분자 구조식 삽입**: 현재 슬라이드에 고해상도 벡터급 분자 그림 삽입<br>• **구조식 편집 / 더블 클릭**: 슬라이드 분자 그림 더블 클릭 시 Ketcher 에디터로 즉시 불러와 수정 | Office COM Add-in (`.dll`, HKCU 무권한 등록) | 📙 [**PowerPoint 가이드**](docs/POWERPOINT_GUIDE.md) |
+
+<br>
+
+<p align="center">
+  <img src="assets/workflow-ketcher.png" alt="4-Step Interactive Workflow" width="100%" />
+</p>
 
 ---
 
@@ -50,19 +77,19 @@
 
 ### ⚡ 방법 A: 원클릭 자동 설치 및 업데이트 (가장 추천)
 
-PowerShell을 열고 아래 명령어 **한 줄만 실행**하면 모든 과정이 자동으로 완료됩니다:
+PowerShell을 열고 아래 명령어 **한 줄만 실행**하면 Microsoft Office 전체(Excel, Word, PowerPoint)에 대한 설치, 보안 해제, 레지스트리 등록이 모두 자동으로 완료됩니다:
 
 ```powershell
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
 > **스크립트가 자동으로 처리하는 내용:**  
-> 1. 내 Excel 비트수(32비트 vs 64비트) 자동 감지  
-> 2. `%APPDATA%\Microsoft\AddIns` 표준 안전 폴더로 최신 XLL 다운로드 및 자동 갱신  
-> 3. Windows 보안 차단(`Unblock-File`) 자동 해제  
-> 4. Excel 추가 기능 레지스트리 자동 등록 (Excel 실행 시 즉시 로드)  
+> 1. 내 Office 비트수(32비트 vs 64비트) 및 설치된 프로그램(Excel, Word, PowerPoint) 자동 감지  
+> 2. `%APPDATA%\Microsoft\AddIns\Smiles2Img` 안전 폴더로 통합 오피스 슈트(Excel XLL, Word COM DLL, PowerPoint COM DLL) 자동 다운로드 및 배치  
+> 3. Windows 보안 차단(`Unblock-File`) 일괄 자동 해제  
+> 4. Excel, Word, PowerPoint 레지스트리 자동 등록 (관리자 권한 불필요, 실행 시 자동 로드)  
 > 💡 **최신 버전 업데이트:** 이미 설치되어 있는 상태에서 위 명령어를 다시 실행하면, 최신 버전으로 안전하게 자동 업데이트됩니다.  
-> 🗑️ **삭제 방법:** 리포지토리의 `.\uninstall.ps1`을 실행하면 파일과 레지스트리가 깔끔하게 제거됩니다.
+> 🗑️ **삭제 방법:** 언제든 PowerShell에서 `irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex`를 실행하면 모든 파일과 등록 정보가 깔끔하게 제거됩니다.
 
 > [!IMPORTANT]
 > **Windows 11「스마트 앱 컨트롤 (Smart App Control)」관련 안내**  
@@ -73,31 +100,31 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 
 ### 🖐️ 방법 B: 수동 설치 (단계별 안내)
 
-#### 1단계: 내 Excel 비트수(32비트 vs 64비트) 확인
-1. Excel 실행 후 **[파일] → [계정] → [Excel 정보]** 클릭
+#### 1단계: 내 Office 비트수(32비트 vs 64비트) 확인
+1. Excel, Word 또는 PowerPoint 실행 후 **[파일] → [계정] → [Excel / Word / PowerPoint 정보]** 클릭
 2. 팝업 창 첫 줄 끝부분에서 **`32비트`** 또는 **`64비트`** 확인
 
-#### 2단계: 추가 기능(XLL) 파일 준비
-[GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest) 페이지에서 내 Excel 비트수에 맞는 **`.xll` 파일 1개**를 다운로드하여 안전한 폴더(권장: `Win+R` ➔ `%APPDATA%\Microsoft\AddIns`)에 복사합니다:
-* **64비트 Excel:** [**`Smiles2Img-AddIn64-packed.xll`** (최신 v1.2.0 다운로드)](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-AddIn64-packed.xll)
-* **32비트 Excel:** [**`Smiles2Img-AddIn-packed.xll`** (최신 v1.2.0 다운로드)](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-AddIn-packed.xll)
+#### 2단계: 배포 파일 다운로드
+[GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest) 페이지에서 용도에 맞는 파일을 선택합니다:
+* **선택 1 (통합 오피스 슈트 전체 — Excel, Word, PowerPoint):**  
+  [**`Smiles2Img-Office-x64.zip`**](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-Office-x64.zip) (또는 [**`x86.zip`**](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-Office-x86.zip))을 다운로드하여 `%APPDATA%\Microsoft\AddIns\Smiles2Img`에 압축 해제 후 `install.ps1`을 실행합니다.
+* **선택 2 (Excel 전용 단독 XLL):**  
+  [**`Smiles2Img-AddIn64-packed.xll`**](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-AddIn64-packed.xll) (또는 [**`Smiles2Img-AddIn-packed.xll`**](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-AddIn-packed.xll)) 다운로드 후 `%APPDATA%\Microsoft\AddIns` 폴더에 복사합니다.
 
 > [!TIP]
 > **Windows 보안 차단 해제 (필수):**  
-> 웹에서 다운로드한 파일은 Windows가 인터넷 꼬리표(`Mark of the Web`)를 붙여 Excel에서 실행을 차단합니다.  
-> 다운로드한 `.xll` 파일 우클릭 → **[속성]** → 하단 보안 항목의 **[차단 해제(Unblock)]** 체크 후 **[확인]**을 눌러주세요.
+> 웹에서 다운로드한 파일은 Windows가 인터넷 꼬리표(`Mark of the Web`)를 붙여 실행을 차단합니다.  
+> 다운로드한 파일 우클릭 → **[속성]** → 하단 보안 항목의 **[차단 해제(Unblock)]** 체크 후 **[확인]**을 눌러주세요.
 
-#### 3단계: Excel에 영구 추가 기능으로 등록
+#### 3단계: Excel에 추가 기능으로 등록 (단독 XLL의 경우)
 1. Excel 메뉴에서 **[파일] → [옵션] → [추가 기능]** 이동
 2. 창 하단 **[관리: Excel 추가 기능]** 옆의 **[이동(G)...]** 버튼 클릭
-3. **[찾아보기(B)...]**를 눌러 준비한 XLL 파일 선택
+3. **[찾아보기(B)...]**를 눌러 다운로드한 XLL 파일 선택
 4. 목록에 `Smiles2Img-AddIn`이 체크된 것을 확인하고 **[확인]** 클릭
-
-*(등록을 완료하면 이후 Excel을 실행할 때마다 함수가 자동으로 로드됩니다.)*
 
 ---
 
-## 💡 사용 방법 및 수식 IntelliSense
+## 💡 Excel 사용 방법 및 수식 IntelliSense
  
 Excel 워크시트의 셀에 수식을 입력하면 즉시 분자 이미지가 삽입됩니다:
 * **Excel 2024 / M365:** `=SMILES2IMG(A2)` (인셀 이미지)
@@ -130,7 +157,31 @@ Excel 워크시트의 셀에 수식을 입력하면 즉시 분자 이미지가 �
 >   - **빈 셀에서 시작:** 빈 셀을 마우스 우클릭하고 **`[🧬 분자 구조식 삽입 (Ketcher)...]`**를 클릭하거나 **`Ctrl+Shift+K`**를 누르면 EPAM Ketcher 분자 에디터가 열립니다. 구조를 그리고 **[셀에 적용]**을 누르면 셀 자체가 `=SMILES2IMG("...")` 형태의 **인셀 분자 이미지 셀(Structure Cell)**로 즉시 변환됩니다.  
 >   - **더블 클릭으로 간편 재편집:** 분자 이미지가 들어간 셀을 언제든 **더블 클릭**하면 기존 구조식이 에디터에 자동 로드되며, 수정 후 적용 시 셀 이미지가 즉시 갱신됩니다.  
 >   - **하위 호환성:** 기존에 참조 형태로 작성된 `=SMILES2IMG(A2)` 셀을 더블 클릭할 경우, 원본 참조 셀(`A2`)의 SMILES 문자열을 자동으로 불러와 수정 후 원본 셀을 안전하게 갱신합니다.  
->   - **오프라인 동작:** 외부 통신이나 로컬 HTTP 서버 포트 개방 없이 WebView2의 가상 호스트 매핑 기술로 **100% 안전하게 오프라인에서 구동**됩니다.
+>   - **오프라인 동작:** 외부 통신이나 로컬 HTTP 서버 포트 개방 없이 WebView2의 가상 호스트 매핑 기술로 **100% 안전하게 오프라인에서 구동**됩니다.  
+>  
+> 👉 **모든 인자 옵션과 상세 실전 레시피는 [docs/EXCEL_GUIDE.md](docs/EXCEL_GUIDE.md) 가이드에서 확인하실 수 있습니다.**
+
+---
+
+## 📝 Word 및 PowerPoint 사용 방법
+
+Word와 PowerPoint에서도 Excel과 동일한 고품질 화학 구조식 렌더링 엔진(EPAM Indigo)과 2D 에디터(EPAM Ketcher)가 상단 리본 메뉴에 완벽히 통합됩니다.
+
+### 1. 상단 리본 메뉴: `[SMILES]` 탭
+Office 프로그램을 실행하면 상단 리본 탭에 **`[SMILES]`** 탭이 자동으로 생성됩니다:
+* **[분자 구조식 삽입]**: 클릭 즉시 100% 오프라인 Ketcher 분자 에디터 창이 팝업됩니다. 화학 구조식을 그린 뒤 **[적용]**을 누르면 고해상도 그림으로 문서/슬라이드에 삽입됩니다.
+* **[구조식 편집]**: 편집하려는 분자 이미지를 클릭하여 선택한 후 리본 버튼을 누르면, 해당 그림의 SMILES 정보를 에디터로 다시 불러와 수정합니다.
+
+### 2. 그림 더블 클릭 원클릭 편집 (Double-Click to Edit)
+* **Word**: 문서 내에 삽입된 분자 그림을 마우스로 **더블 클릭**하면, 다른 메뉴를 찾을 필요 없이 Ketcher 에디터가 즉시 열립니다. 구조를 수정하고 창을 닫으면 기존 위치와 크기를 유지하며 수정된 구조식으로 즉시 교체됩니다.
+* **PowerPoint**: 슬라이드 상의 분자 그림을 마우스로 **더블 클릭**하면 동일하게 Ketcher 에디터가 열려 바로 수정할 수 있으며, 기존 크기, 위치, 종횡비를 완벽히 유지하며 교체됩니다.
+
+### 3. 무손실 메타데이터 보존
+* 삽입된 모든 그림의 개체 속성(`AlternativeText`, `Title`, `Tags`)에 원본 SMILES 정보(`SMILES:CCO`)가 무손실로 안전하게 보존되므로, 문서를 저장하고 다른 사람에게 공유하거나 나중에 다시 열어도 언제든지 구조식을 복원하고 편집할 수 있습니다.
+
+> 📚 **애플리케이션별 상세 가이드:**  
+> • 📘 [**Word 사용법 상세 가이드 (docs/WORD_GUIDE.md)**](docs/WORD_GUIDE.md): 표 서식, 보고서 레이아웃, 인쇄 및 고해상도 PDF 변환 팁.  
+> • 📙 [**PowerPoint 사용법 상세 가이드 (docs/POWERPOINT_GUIDE.md)**](docs/POWERPOINT_GUIDE.md): 카드형 슬라이드 레이아웃, 반응식 작성, 다크 테마 발표 팁.
 
 ---
  
@@ -267,40 +318,47 @@ sequenceDiagram
 
 ```text
 func_SMILES2IMG/
-├── dist/                               # 배포용 단일 파일 XLL 산출물
+├── Smiles2Img.sln                      # Visual Studio / .NET 통합 솔루션 파일
+├── src/
+│   ├── Smiles2Img.Core/                # 공통 렌더링 및 에디터 코어 라이브러리 (net48)
+│   │   ├── Rendering/                  # EPAM Indigo C++ 래퍼, ACS 표준 렌더러, 색상/옵션 파서
+│   │   ├── Editor/                     # EPAM Ketcher WebView2 분자 에디터 Form 및 에셋 관리자
+│   │   └── COM/                        # Office 공통 COM 인터페이스 (IDTExtensibility2, IRibbonExtensibility)
+│   ├── Smiles2Img.Excel/               # Excel-DNA 독립형 XLL 추가 기능 (net48)
+│   │   ├── Functions.cs                # =SMILES2IMG 인셀 함수 (Excel 2024 / M365)
+│   │   ├── FloatFunctions.cs           # =SMILES2IMG.FLOAT 플로팅 함수 (Excel 2016-2021)
+│   │   ├── CellImages.cs               # 인셀 이미지 캐시 관리
+│   │   ├── FloatingPictures.cs         # 셀 크기 연동 플로팅 이미지 관리
+│   │   └── KetcherEditor.cs            # 셀 더블 클릭 및 우클릭 메뉴 Ketcher 연동
+│   ├── Smiles2Img.Word/                # Word COM 추가 기능 DLL (net48)
+│   │   ├── WordAddIn.cs                # IDTExtensibility2 + IRibbonExtensibility 구현체
+│   │   └── WordStructureManager.cs     # 인라인 분자 그림 삽입, 교체 및 더블 클릭 핸들러
+│   └── Smiles2Img.PowerPoint/          # PowerPoint COM 추가 기능 DLL (net48)
+│       ├── PowerPointAddIn.cs          # IDTExtensibility2 + IRibbonExtensibility 구현체
+│       └── PowerPointStructureManager.cs # 슬라이드 분자 개체 삽입, 교체 및 더블 클릭 핸들러
+├── dist/                               # 배포용 산출물 디렉터리
 │   ├── x64/
-│   │   ├── Smiles2Img-AddIn64-packed.xll   # 64비트 Excel용 완전 독립형 XLL (~8.6 MB)
-│   │   └── THIRD_PARTY_NOTICES.md
+│   │   ├── Smiles2Img-AddIn64-packed.xll # 64비트 Excel용 완전 독립형 XLL
+│   │   ├── Word/                       # 64비트 Word COM 추가 기능 바이너리
+│   │   ├── PowerPoint/                 # 64비트 PowerPoint COM 추가 기능 바이너리
+│   │   └── Smiles2Img-Office-x64.zip   # 64비트 Office 슈트 배포용 아카이브
 │   └── x86/
-│       ├── Smiles2Img-AddIn-packed.xll     # 32비트 Excel용 완전 독립형 XLL (~8.7 MB)
-│       └── THIRD_PARTY_NOTICES.md
-├── Rendering/                          # 분자 렌더링 및 네이티브 이미지 처리
-│   ├── MoleculeRenderer.cs             # Indigo 렌더링 파이프라인 (ACS 표준 최적화)
-│   ├── RenderOptions.cs                # 렌더링 옵션 모델 및 수식 인자 파서
-│   ├── ColorHelper.cs                  # 색상 정규화 및 Hex/RGB 변환기
-│   ├── NativeImageWorkbook.cs          # OpenXML 기반 네이티브 이미지 워크북 지원
-│   └── NativeIndigo.cs                 # 임베디드 C++ 네이티브 DLL 런타임 자동 추출기
-├── assets/                             # 템플릿 및 리소스
-│   └── native-image-template.xlsx
-├── Properties/
-│   └── AssemblyInfo.cs
+│       ├── Smiles2Img-AddIn-packed.xll   # 32비트 Excel용 완전 독립형 XLL
+│       ├── Word/                       # 32비트 Word COM 추가 기능 바이너리
+│       ├── PowerPoint/                 # 32비트 PowerPoint COM 추가 기능 바이너리
+│       └── Smiles2Img-Office-x86.zip   # 32비트 Office 슈트 배포용 아카이브
 ├── tests/                              # 자동화 테스트 슈트
 │   ├── Excel-Smoke.ps1                 # 실제 Excel COM 프로세스 구동 E2E 테스트
 │   ├── Excel-365-FeatureTests.ps1      # Excel 365 실전 신규 스타일 및 풀옵션 통합 테스트
-│   ├── Excel-DeepStressTests.ps1       # 20개 대량 분자 동시 렌더링 및 엣지케이스 스트레스 테스트
+│   ├── Excel-DeepStressTests.ps1       # 대량 분자 동시 렌더링 스트레스 테스트
 │   ├── Program.cs                      # 헤드리스 단위 테스트 (렌더링 무결성 검증)
 │   └── Smiles2Img.Tests.csproj
-├── AddIn.cs                            # Excel-DNA 진입점 및 진단 리본 UI
-├── CellImages.cs                       # 인셀 이미지 캐시 관리 및 ExcelReference 바인딩
-├── CellImageUpdates.cs                 # 비동기 이미지 삽입 매크로 큐
-├── Functions.cs                        # =SMILES2IMG 수식 정의 및 IntelliSense 메타데이터
-├── FloatFunctions.cs                   # =SMILES2IMG.FLOAT 구버전 연동 수식 정의
-├── FloatingPictures.cs                 # 셀 크기 연동 플로팅 이미지 관리자 (xlMoveAndSize)
-├── FloatingPictureUpdates.cs           # 플로팅 이미지 배치 갱신 큐
-├── Smiles2Img-AddIn.dna                # Excel-DNA 구성 선언 파일
-├── Smiles2Img.csproj                   # MSBuild 프로젝트 파일
+├── scripts/
+│   ├── Package-Release.ps1             # 릴리스용 ZIP 아카이브 패키징 스크립트
+│   └── Generate-Showcase-Workbook.ps1  # 쇼케이스 엑셀 워크북 생성기
+├── install.ps1                         # Office Suite 통합 원클릭 설치 스크립트
+├── uninstall.ps1                       # Office Suite 통합 제거 스크립트
 ├── THIRD_PARTY_NOTICES.md              # 오픈소스 라이선스 고지문
-├── PLAN.md                             # 상세 설계 및 개선 로드맵 문서
 ├── README.KR.md                        # 한국어 가이드 문서
 └── README.md                           # 영문 기본 가이드 문서
 ```
@@ -313,15 +371,15 @@ func_SMILES2IMG/
 * Windows 10/11
 * [.NET SDK 8.0 이상](https://dotnet.microsoft.com/) (.NET Framework 4.8 타깃 빌드)
 
-### 빌드 명령어
+### 전체 솔루션 빌드 명령어
 프로젝트 루트 디렉터리에서 아래 명령어를 실행합니다:
 
 ```powershell
-# 패키지 복원
-dotnet restore --tl:off
+# 패키지 복원 및 전체 솔루션 릴리스 빌드 (Excel XLL 패킹 및 Word/PowerPoint 바이너리 포함)
+dotnet build Smiles2Img.sln -c Release
 
-# 릴리스 빌드 및 단일 파일 XLL 패킹
-dotnet build -c Release --no-restore --tl:off
+# 릴리스 배포용 아카이브(ZIP) 생성
+powershell -ExecutionPolicy Bypass -File scripts\Package-Release.ps1
 ```
 
 빌드가 성공하면 `dist/x64/` 및 `dist/x86/`에 모든 C++ 네이티브 라이브러리와 IntelliSense가 압축 내장된 단일 `.xll` 파일이 생성됩니다.

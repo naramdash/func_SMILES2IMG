@@ -1,10 +1,10 @@
-<#
+﻿<#
 .SYNOPSIS
-    SMILES2IMG Excel Add-in Automatic Installer
+    SMILES for Microsoft Office Suite Automatic Installer (Excel, Word, PowerPoint)
 .DESCRIPTION
-    Automatically detects Excel bitness (32-bit vs 64-bit),
-    copies or downloads the packed .xll to %APPDATA%\Microsoft\AddIns,
-    unblocks the file, and registers it in Excel's add-in registry.
+    Automatically detects Office bitness (32-bit vs 64-bit),
+    installs Excel Add-in (.xll) and Word/PowerPoint COM Add-ins (.dll),
+    unblocks all files, and registers them in Office and Windows COM registry (HKCU, no admin required).
 #>
 [CmdletBinding()]
 param(
@@ -18,28 +18,30 @@ try {
 
 $ErrorActionPreference = 'Stop'
 
-Write-Host "=== SMILES2IMG Installer / Updater ===" -ForegroundColor Cyan
+Write-Host "=== SMILES for Microsoft Office Suite Installer (Excel, Word, PowerPoint) ===" -ForegroundColor Cyan
 
-# 1. Check if Excel is running
-$excelProc = Get-Process EXCEL -ErrorAction SilentlyContinue
-if ($excelProc) {
-    Write-Warning "Excel is currently running. Please save your work and close Excel so registration can complete."
+# 1. Check if Office applications are running
+$officeProcs = Get-Process -Name EXCEL, WINWORD, POWERPNT -ErrorAction SilentlyContinue
+if ($officeProcs) {
+    $procNames = ($officeProcs | Select-Object -ExpandProperty ProcessName -Unique) -join ', '
+    Write-Warning "The following Office application(s) are currently running: $procNames."
+    Write-Warning "Please save your work and close them so add-in registration can complete."
     if (-not $Force) {
-        $confirm = Read-Host "Close Excel now? (y/N)"
+        $confirm = Read-Host "Close Office applications now? (y/N)"
         if ($confirm -match '^[yY]') {
-            $excelProc | Stop-Process -Force
+            $officeProcs | Stop-Process -Force
             Start-Sleep -Seconds 1
         } else {
-            Write-Host "Installation aborted. Please close Excel and run the installer again." -ForegroundColor Yellow
+            Write-Host "Installation aborted. Please close Office apps and run the installer again." -ForegroundColor Yellow
             return
         }
     } else {
-        $excelProc | Stop-Process -Force
+        $officeProcs | Stop-Process -Force
         Start-Sleep -Seconds 1
     }
 }
 
-# 2. Detect Excel Bitness & Version
+# 2. Detect Office Bitness & Version
 $bitness = 'x64'
 $officeVersion = '16.0'
 
@@ -58,53 +60,45 @@ if ($c2r -and $c2r.Platform) {
     }
 }
 
-Write-Host "[+] Detected Excel Architecture: $bitness (Office $officeVersion)" -ForegroundColor Green
+Write-Host "[+] Detected Office Architecture: $bitness (Office $officeVersion)" -ForegroundColor Green
 
-# 3. Destination Directory
-$targetDir = Join-Path $env:APPDATA 'Microsoft\AddIns'
-if (-not (Test-Path $targetDir)) {
-    New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
-}
+# 3. Target Directories
+$addInsDir = Join-Path $env:APPDATA 'Microsoft\AddIns'
+$suiteDir = Join-Path $addInsDir 'Smiles2Img'
+if (-not (Test-Path $addInsDir)) { New-Item -ItemType Directory -Path $addInsDir -Force | Out-Null }
+if (-not (Test-Path $suiteDir))  { New-Item -ItemType Directory -Path $suiteDir -Force | Out-Null }
 
-$xllName = if ($bitness -eq 'x64') { 'Smiles2Img-AddIn64-packed.xll' } else { 'Smiles2Img-AddIn-packed.xll' }
-$targetPath = Join-Path $targetDir $xllName
-$isUpdate = Test-Path -LiteralPath $targetPath
-
-if ($isUpdate) {
-    Write-Host "[*] Existing installation found. Updating to the latest version..." -ForegroundColor Yellow
-} else {
-    Write-Host "[*] Fresh installation starting..." -ForegroundColor Cyan
-}
-
-# 4. Copy from local dist if available (latest only), otherwise download packed XLL from GitHub Releases
 $tag = if ($Version -eq 'latest' -or [string]::IsNullOrWhiteSpace($Version)) { 'latest' } else { if ($Version -notmatch '^v') { "v$Version" } else { $Version } }
-$localDistPath = if ($PSScriptRoot -and $tag -eq 'latest') { Join-Path $PSScriptRoot "dist\$bitness\$xllName" } else { $null }
-if ($localDistPath -and (Test-Path -LiteralPath $localDistPath)) {
-    Write-Host "[+] Installing from local build: $localDistPath" -ForegroundColor Cyan
-    Copy-Item -LiteralPath $localDistPath -Destination $targetPath -Force
+
+# -------------------------------------------------------------
+# 4. Install Excel Add-in (.xll)
+# -------------------------------------------------------------
+$xllName = if ($bitness -eq 'x64') { 'Smiles2Img-AddIn64-packed.xll' } else { 'Smiles2Img-AddIn-packed.xll' }
+$targetXllPath = Join-Path $addInsDir $xllName
+$isExcelUpdate = Test-Path -LiteralPath $targetXllPath
+
+$localXllPath = if ($PSScriptRoot -and $tag -eq 'latest') { Join-Path $PSScriptRoot "dist\$bitness\$xllName" } else { $null }
+if ($localXllPath -and (Test-Path -LiteralPath $localXllPath)) {
+    Write-Host "[+] Installing Excel Add-in from local build: $localXllPath" -ForegroundColor Cyan
+    Copy-Item -LiteralPath $localXllPath -Destination $targetXllPath -Force
 } else {
     $downloadUrl = if ($tag -eq 'latest') {
         "https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/$xllName"
     } else {
         "https://github.com/naramdash/func_SMILES2IMG/releases/download/$tag/$xllName"
     }
-    Write-Host "[+] Downloading release ($tag): $downloadUrl" -ForegroundColor Cyan
-    Invoke-WebRequest -Uri $downloadUrl -OutFile $targetPath -UseBasicParsing
+    Write-Host "[+] Downloading Excel Add-in ($tag): $downloadUrl" -ForegroundColor Cyan
+    Invoke-WebRequest -Uri $downloadUrl -OutFile $targetXllPath -UseBasicParsing
 }
 
-# 5. Unblock file
-Write-Host "[+] Unblocking file (removing Mark of the Web)..." -ForegroundColor Gray
-Unblock-File -LiteralPath $targetPath
+Unblock-File -LiteralPath $targetXllPath
 
-# 6. Register in Excel Options
-$regPath = "HKCU:\Software\Microsoft\Office\$officeVersion\Excel\Options"
-if (-not (Test-Path $regPath)) {
-    New-Item -Path $regPath -Force | Out-Null
-}
+# Register in Excel Options
+$excelRegPath = "HKCU:\Software\Microsoft\Office\$officeVersion\Excel\Options"
+if (-not (Test-Path $excelRegPath)) { New-Item -Path $excelRegPath -Force | Out-Null }
 
-$props = Get-ItemProperty $regPath -ErrorAction SilentlyContinue
+$props = Get-ItemProperty $excelRegPath -ErrorAction SilentlyContinue
 $openKeyToUse = $null
-
 $openProps = $props.PSObject.Properties | Where-Object { $_.Name -match '^OPEN(\d+)?$' }
 foreach ($p in $openProps) {
     if ($p.Value -match 'Smiles2Img') {
@@ -112,31 +106,158 @@ foreach ($p in $openProps) {
         break
     }
 }
-
 if (-not $openKeyToUse) {
     if (-not $props.OPEN) {
         $openKeyToUse = 'OPEN'
     } else {
         $idx = 1
-        while ($props.("OPEN$idx")) {
-            $idx++
-        }
+        while ($props.("OPEN$idx")) { $idx++ }
         $openKeyToUse = "OPEN$idx"
     }
 }
+$regValue = "/R `"$targetXllPath`""
+Set-ItemProperty -Path $excelRegPath -Name $openKeyToUse -Value $regValue
+Write-Host "[+] Excel Add-in registered ($openKeyToUse): $regValue" -ForegroundColor Green
 
-$regValue = "/R `"$targetPath`""
-Set-ItemProperty -Path $regPath -Name $openKeyToUse -Value $regValue
-Write-Host "[+] Registered in Excel Options ($openKeyToUse): $regValue" -ForegroundColor Green
+# -------------------------------------------------------------
+# 5. Install Word & PowerPoint COM Add-ins (.dll)
+# -------------------------------------------------------------
+$localWordDir = if ($PSScriptRoot) { Join-Path $PSScriptRoot "dist\$bitness\Word" } else { $null }
+$localPptDir  = if ($PSScriptRoot) { Join-Path $PSScriptRoot "dist\$bitness\PowerPoint" } else { $null }
 
-if ($isUpdate) {
-    Write-Host "`n[SUCCESS] SMILES2IMG has been successfully updated to the latest version!" -ForegroundColor Cyan
+if ($localWordDir -and (Test-Path $localWordDir) -and $localPptDir -and (Test-Path $localPptDir)) {
+    Write-Host "[+] Installing Word & PowerPoint Add-ins from local build..." -ForegroundColor Cyan
+    Copy-Item -Path "$localWordDir\*.dll" -Destination $suiteDir -Force
+    Copy-Item -Path "$localPptDir\*.dll" -Destination $suiteDir -Force
 } else {
-    Write-Host "`n[SUCCESS] SMILES2IMG has been successfully installed and registered!" -ForegroundColor Cyan
+    # Remote download suite zip
+    $zipName = "Smiles2Img-Office-$bitness.zip"
+    $zipUrl = if ($tag -eq 'latest') {
+        "https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/$zipName"
+    } else {
+        "https://github.com/naramdash/func_SMILES2IMG/releases/download/$tag/$zipName"
+    }
+    $tempZip = Join-Path $env:TEMP $zipName
+    try {
+        Write-Host "[+] Downloading Office Suite package ($tag): $zipUrl" -ForegroundColor Cyan
+        Invoke-WebRequest -Uri $zipUrl -OutFile $tempZip -UseBasicParsing
+        Expand-Archive -LiteralPath $tempZip -DestinationPath $suiteDir -Force
+    } catch {
+        Write-Warning "Office Suite zip package not found on release ($($_.Exception.Message))."
+        Write-Warning "Word and PowerPoint add-ins can be installed from local build."
+    } finally {
+        if (Test-Path $tempZip) { Remove-Item $tempZip -Force -ErrorAction SilentlyContinue }
+    }
 }
-Write-Host "Open Excel and enter: =SMILES2IMG(""CCO"")" -ForegroundColor White
 
+# Unblock all DLLs in suite directory
+Get-ChildItem -Path $suiteDir -Filter "*.dll" | ForEach-Object {
+    Unblock-File -LiteralPath $_.FullName
+}
+
+# Helper to register COM AddIn in HKCU (Zero Admin Required)
+function Register-OfficeComAddIn {
+    param(
+        [string]$ProgId,
+        [string]$Clsid,
+        [string]$ClassName,
+        [string]$AssemblyString,
+        [string]$DllPath,
+        [string]$OfficeApp,
+        [string]$FriendlyName,
+        [string]$Description
+    )
+
+    if (-not (Test-Path -LiteralPath $DllPath)) {
+        Write-Warning "File not found: $DllPath. Skipping $OfficeApp add-in registration."
+        return
+    }
+
+    $codeBaseUri = ([uri]$DllPath).AbsoluteUri
+    $roots = @("HKCU:\Software\Classes", "HKCU:\Software\Classes\Wow6432Node")
+
+    foreach ($root in $roots) {
+        # ProgID
+        $pKey = "$root\$ProgId"
+        New-Item -Path $pKey -Force | Out-Null
+        Set-ItemProperty -Path $pKey -Name "(Default)" -Value $ClassName
+        New-Item -Path "$pKey\CLSID" -Force | Out-Null
+        Set-ItemProperty -Path "$pKey\CLSID" -Name "(Default)" -Value $Clsid
+
+        # CLSID
+        $cKey = "$root\CLSID\$Clsid"
+        New-Item -Path $cKey -Force | Out-Null
+        Set-ItemProperty -Path $cKey -Name "(Default)" -Value $ClassName
+
+        # InprocServer32
+        $sKey = "$cKey\InprocServer32"
+        New-Item -Path $sKey -Force | Out-Null
+        Set-ItemProperty -Path $sKey -Name "(Default)" -Value "mscoree.dll"
+        Set-ItemProperty -Path $sKey -Name "ThreadingModel" -Value "Both"
+        Set-ItemProperty -Path $sKey -Name "Class" -Value $ClassName
+        Set-ItemProperty -Path $sKey -Name "Assembly" -Value $AssemblyString
+        Set-ItemProperty -Path $sKey -Name "RuntimeVersion" -Value "v4.0.30319"
+        Set-ItemProperty -Path $sKey -Name "CodeBase" -Value $codeBaseUri
+
+        # ProgId subkey under CLSID
+        New-Item -Path "$cKey\ProgId" -Force | Out-Null
+        Set-ItemProperty -Path "$cKey\ProgId" -Name "(Default)" -Value $ProgId
+
+        # Implemented Categories
+        New-Item -Path "$cKey\Implemented Categories\{62C8FE65-4EBB-45E7-B440-6E39B2CDBF29}" -Force | Out-Null
+    }
+
+    # Office App Addin registration
+    $addInKey = "HKCU:\Software\Microsoft\Office\$OfficeApp\Addins\$ProgId"
+    New-Item -Path $addInKey -Force | Out-Null
+    Set-ItemProperty -Path $addInKey -Name "FriendlyName" -Value $FriendlyName
+    Set-ItemProperty -Path $addInKey -Name "Description" -Value $Description
+    Set-ItemProperty -Path $addInKey -Name "LoadBehavior" -Value 3 -Type DWord
+    Set-ItemProperty -Path $addInKey -Name "CommandLineSafe" -Value 0 -Type DWord
+
+    Write-Host "[+] $OfficeApp COM Add-in registered: $FriendlyName" -ForegroundColor Green
+}
+
+# Register Word COM Add-in
+$wordDllPath = Join-Path $suiteDir 'Smiles2Img.Word.dll'
+if (Test-Path $wordDllPath) {
+    Register-OfficeComAddIn `
+        -ProgId "Smiles2Img.Word.AddIn" `
+        -Clsid "{41A5C1F0-559A-46E0-B9C0-8B35A0F1D910}" `
+        -ClassName "Smiles2Img.Word.WordAddIn" `
+        -AssemblyString "Smiles2Img.Word, Version=1.3.0.0, Culture=neutral, PublicKeyToken=null" `
+        -DllPath $wordDllPath `
+        -OfficeApp "Word" `
+        -FriendlyName "SMILES for Word" `
+        -Description "SMILES 화학 구조식 렌더러 및 Ketcher 에디터"
+}
+
+# Register PowerPoint COM Add-in
+$pptDllPath = Join-Path $suiteDir 'Smiles2Img.PowerPoint.dll'
+if (Test-Path $pptDllPath) {
+    Register-OfficeComAddIn `
+        -ProgId "Smiles2Img.PowerPoint.AddIn" `
+        -Clsid "{A755973C-21FB-494A-A3C5-086AFFB7C2AC}" `
+        -ClassName "Smiles2Img.PowerPoint.PowerPointAddIn" `
+        -AssemblyString "Smiles2Img.PowerPoint, Version=1.3.0.0, Culture=neutral, PublicKeyToken=null" `
+        -DllPath $pptDllPath `
+        -OfficeApp "PowerPoint" `
+        -FriendlyName "SMILES for PowerPoint" `
+        -Description "SMILES 화학 구조식 렌더러 및 Ketcher 에디터"
+}
+
+# -------------------------------------------------------------
+# 6. Success Output
+# -------------------------------------------------------------
+Write-Host "`n[SUCCESS] SMILES for Microsoft Office Suite has been successfully installed!" -ForegroundColor Cyan
+Write-Host "  * Excel:      Type =SMILES2IMG(""CCO"") in any cell" -ForegroundColor White
+Write-Host "  * Word:       Click '분자 구조식 삽입' in the [SMILES] ribbon tab" -ForegroundColor White
+Write-Host "  * PowerPoint: Click '분자 구조식 삽입' in the [SMILES] ribbon tab" -ForegroundColor White
+Write-Host "  * All apps:   Double-click any molecule image to edit in Ketcher!" -ForegroundColor Yellow
+
+# -------------------------------------------------------------
 # 7. Check Windows 11 Smart App Control (SAC)
+# -------------------------------------------------------------
 $sacPolicy = Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\CI\Policy" -ErrorAction SilentlyContinue
 if ($sacPolicy -and $sacPolicy.VerifiedAndReputablePolicyState -eq 1) {
     Write-Host "`n----------------------------------------------------------------------" -ForegroundColor Yellow
@@ -144,6 +265,6 @@ if ($sacPolicy -and $sacPolicy.VerifiedAndReputablePolicyState -eq 1) {
     Write-Host "    If Excel shows '#NAME?' or 'file format and extension do not match' warnings:" -ForegroundColor Gray
     Write-Host "    1. Open Windows Security > App & browser control > Smart App Control settings" -ForegroundColor Gray
     Write-Host "    2. Set it to 'Off' (Real-time Microsoft Defender Antivirus remains 100% active)" -ForegroundColor Gray
-    Write-Host "    3. Restart Excel to use SMILES2IMG normally." -ForegroundColor Gray
+    Write-Host "    3. Restart Office to use SMILES2IMG normally." -ForegroundColor Gray
     Write-Host "----------------------------------------------------------------------" -ForegroundColor Yellow
 }

@@ -6,14 +6,14 @@ using com.epam.indigo;
 namespace Smiles2Img.Rendering;
 
 [Serializable]
-internal sealed class InvalidSmilesException(string message) : Exception(message);
+public sealed class InvalidSmilesException(string message) : Exception(message);
 
-internal static class MoleculeRenderer
+public static class MoleculeRenderer
 {
     private const int RingTopology = 10;
     private static readonly char[] TransformSeparators = [' ', ',', '|', ';'];
 
-    internal static string Normalize(string smiles)
+    public static string Normalize(string smiles)
     {
         var input = smiles?.Trim();
         if (string.IsNullOrEmpty(input) || input!.Length > 2000)
@@ -35,10 +35,10 @@ internal static class MoleculeRenderer
         return input;
     }
 
-    internal static byte[] Render(string smiles, bool color = true, string? transform = null, string? background = null)
+    public static byte[] Render(string smiles, bool color = true, string? transform = null, string? background = null)
         => Render(smiles, new RenderOptions { Color = color, Transform = transform, Background = background });
 
-    internal static byte[] Render(string smiles, RenderOptions options)
+    public static byte[] Render(string smiles, RenderOptions options)
     {
         options ??= new RenderOptions();
         using var indigo = new Indigo();

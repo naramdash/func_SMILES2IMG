@@ -11,7 +11,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />
-    <ProjectReference Include="../Smiles2Img.csproj" />
+    <ProjectReference Include="../src/Smiles2Img.Core/Smiles2Img.Core.csproj" />
+    <ProjectReference Include="../src/Smiles2Img.Excel/Smiles2Img.Excel.csproj" />
     <PackageReference Include="Indigo.Net" Version="1.48.0-rc.1" GeneratePathProperty="true" />
   </ItemGroup>
   <Target Name="CopyNativeLibraries" AfterTargets="Build">

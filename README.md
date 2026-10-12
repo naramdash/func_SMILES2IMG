@@ -1,26 +1,37 @@
-# SMILES2IMG — Automatic Molecular Structure Renderer for Excel
+# SMILES for Microsoft Office Suite — Chemical Structure Renderer & Editor (Excel · Word · PowerPoint)
 
 **English** | [한국어](README.KR.md)
 
-[![Platform](https://img.shields.io/badge/Platform-Windows%20Excel%20(32%2F64bit)-blue.svg)](#runtime-requirements)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Office%20(Excel%20%7C%20Word%20%7C%20PowerPoint)-blue.svg)](#runtime-requirements)
 [![Framework](https://img.shields.io/badge/.NET%20Framework-4.8-512BD4.svg)](https://dotnet.microsoft.com/)
 [![Excel-DNA](https://img.shields.io/badge/Excel--DNA-1.9.0-green.svg)](https://excel-dna.net/)
 [![EPAM Indigo](https://img.shields.io/badge/EPAM%20Indigo-1.48.0--rc.1-orange.svg)](https://lifescience.opensource.epam.com/indigo/)
-[![Single-File XLL](https://img.shields.io/badge/Deployment-100%25%20Standalone%20XLL-brightgreen.svg)](#-quick-start-installation)
+[![EPAM Ketcher](https://img.shields.io/badge/EPAM%20Ketcher-v3.1.0-blueviolet.svg)](https://lifescience.opensource.epam.com/ketcher/)
+[![Office Suite Installer](https://img.shields.io/badge/Installer-Unified%20Office%20Suite-brightgreen.svg)](#-quick-start-installation)
 
-> **An Excel Add-in that instantly converts SMILES chemical structure strings into crisp, in-cell molecular images.**  
-> 100% local and offline execution without external web requests, cloud services, or browser runtimes.
+> **A unified Microsoft Office add-in suite (Excel, Word, PowerPoint) that renders high-resolution 2D chemical structures directly from SMILES strings and provides interactive structure sketching via EPAM Ketcher.**  
+> 100% local and offline execution without external web requests, cloud services, or administrative privileges.
 
 <p align="center">
-  <img src="assets/excel-showcase.png" alt="SMILES2IMG Excel Native In-Cell Molecular Structure Showcase" width="100%" />
+  <img src="assets/excel-showcase.png" alt="SMILES for Excel Showcase" width="100%" />
+</p>
+
+<p align="center">
+  <img src="assets/word-showcase.png" alt="SMILES for Word Showcase" width="49%" />
+  <img src="assets/powerpoint-showcase.png" alt="SMILES for PowerPoint Showcase" width="49%" />
 </p>
 
 ---
 
 ## 📑 Table of Contents
-- [🚀 Quick Start (Installation)](#-quick-start-installation)
-- [💡 Usage & Real-Time IntelliSense](#-usage--real-time-intellisense)
-- [📖 Function Syntax & Parameter Specification](#-function-syntax--parameter-specification)
+- [✨ Supported Applications & Key Features](#-supported-applications--key-features)
+  - 📗 [Excel User Guide](docs/EXCEL_GUIDE.md)
+  - 📘 [Word User Guide](docs/WORD_GUIDE.md)
+  - 📙 [PowerPoint User Guide](docs/POWERPOINT_GUIDE.md)
+- [🚀 Quick Start (Unified Suite Installation)](#-quick-start-unified-suite-installation)
+- [💡 Excel Usage & Real-Time IntelliSense](#-excel-usage--real-time-intellisense)
+- [📝 Word & PowerPoint Usage](#-word--powerpoint-usage)
+- [📖 Function Syntax & Parameter Specification (Excel)](#-function-syntax--parameter-specification-excel)
 - [🎨 Practical Recipes & Examples](#-practical-recipes--examples)
 - [🔬 Chemical Structure Rendering Optimizations (ACS Standards)](#-chemical-structure-rendering-optimizations-acs-standards)
 - [🏗️ Architecture & Internal Lifecycle](#️-architecture--internal-lifecycle)
@@ -28,6 +39,22 @@
 - [🛠️ Building & Distribution (For Developers)](#️-building--distribution-for-developers)
 - [🧪 Automated Testing & Verification](#-automated-testing--verification)
 - [❓ Frequently Asked Questions (FAQ)](#-frequently-asked-questions-faq)
+
+---
+
+## ✨ Supported Applications & Key Features
+
+| Application | Features | Integration Model | User Guide |
+| :--- | :--- | :--- | :---: |
+| **Microsoft Excel** | • `=SMILES2IMG("CCO")` native in-cell images<br>• `=SMILES2IMG.FLOAT("CCO")` cell-anchored floating shapes<br>• **Double-click cell to open Ketcher 2D Editor** and edit structures interactively | Standalone Excel-DNA XLL (32/64-bit) | 📗 [**Excel Guide**](docs/EXCEL_GUIDE.md) |
+| **Microsoft Word** | • Native ribbon tab **`[SMILES]`**<br>• **Insert Molecular Structure**: insert vector-grade inline pictures at cursor position<br>• **Edit Structure / Double-click**: double-click any inserted molecule image to re-open Ketcher and update in-place | Office COM Add-in (`.dll`, per-user HKCU registration) | 📘 [**Word Guide**](docs/WORD_GUIDE.md) |
+| **Microsoft PowerPoint** | • Native ribbon tab **`[SMILES]`**<br>• **Insert Molecular Structure**: insert high-resolution slide pictures<br>• **Edit Structure / Double-click**: double-click any molecule on a slide to re-open Ketcher and update preserving dimensions and coordinates | Office COM Add-in (`.dll`, per-user HKCU registration) | 📙 [**PowerPoint Guide**](docs/POWERPOINT_GUIDE.md) |
+
+<br>
+
+<p align="center">
+  <img src="assets/workflow-ketcher.png" alt="4-Step Interactive Workflow" width="100%" />
+</p>
 
 ---
 
@@ -50,19 +77,19 @@
 
 ### ⚡ Method A: One-Click Automatic Installer & Updater (Recommended)
 
-Open PowerShell and run this **single command** to install, register, or update everything automatically:
+Open PowerShell and run this **single command** to install, register, or update the entire Microsoft Office Suite (Excel, Word, PowerPoint) automatically:
 
 ```powershell
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
 > **What the installer automates:**  
-> 1. Detects your Excel architecture (32-bit vs. 64-bit)  
-> 2. Downloads and updates the latest `.xll` in the official `%APPDATA%\Microsoft\AddIns` directory  
-> 3. Unblocks the file (`Unblock-File`) to remove Windows security flags  
-> 4. Registers the add-in in Excel options for persistent auto-loading  
-> 💡 **Future Updates:** Running this exact command again in the future automatically upgrades SMILES2IMG to the latest release!  
-> 🗑️ **Uninstallation:** To uninstall anytime, simply run `.\uninstall.ps1` from the repository.
+> 1. Detects your Office bitness (32-bit vs. 64-bit) and installed applications  
+> 2. Downloads and installs the entire Office Suite (Excel XLL, Word COM DLL, PowerPoint COM DLL) in `%APPDATA%\Microsoft\AddIns\Smiles2Img`  
+> 3. Unblocks all files (`Unblock-File`) to remove Windows security flags  
+> 4. Registers add-ins across Excel, Word, and PowerPoint for seamless auto-loading (HKCU registry, zero admin rights needed)  
+> 💡 **Future Updates:** Running this exact command again in the future automatically upgrades your SMILES Office Suite to the latest release!  
+> 🗑️ **Uninstallation:** To uninstall anytime, simply run `irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex`.
 
 > [!IMPORTANT]
 > **Windows 11「Smart App Control (스마트 앱 컨트롤)」Notice**  
@@ -73,31 +100,31 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 
 ### 🖐️ Method B: Manual Step-by-Step Installation
 
-#### Step 1: Check your Excel bitness (32-bit vs. 64-bit)
-1. In Excel, go to **[File] → [Account] → [About Excel]**.
+#### Step 1: Check your Office bitness (32-bit vs. 64-bit)
+1. In Excel, Word, or PowerPoint, go to **[File] → [Account] → [About Excel / Word / PowerPoint]**.
 2. Note whether the first line indicates **`32-bit`** or **`64-bit`**.
 
-#### Step 2: Prepare the Add-in (.xll) file
-Download the single `.xll` file matching your Excel bitness from the [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest) page (recommended location: `Win+R` ➔ `%APPDATA%\Microsoft\AddIns`):
-* **64-bit Excel:** [**`Smiles2Img-AddIn64-packed.xll`** (Latest v1.2.0 Download)](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-AddIn64-packed.xll)
-* **32-bit Excel:** [**`Smiles2Img-AddIn-packed.xll`** (Latest v1.2.0 Download)](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-AddIn-packed.xll)
+#### Step 2: Download Release Files
+From the [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest) page, choose one of the following:
+* **Option 1 (Full Office Suite — Excel, Word, PowerPoint):**  
+  Download [**`Smiles2Img-Office-x64.zip`**](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-Office-x64.zip) (or [**`x86.zip`**](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-Office-x86.zip)), extract to `%APPDATA%\Microsoft\AddIns\Smiles2Img`, and run `install.ps1`.
+* **Option 2 (Standalone Excel XLL Only):**  
+  Download [**`Smiles2Img-AddIn64-packed.xll`**](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-AddIn64-packed.xll) (or [**`Smiles2Img-AddIn-packed.xll`**](https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/Smiles2Img-AddIn-packed.xll)) and copy to `%APPDATA%\Microsoft\AddIns`.
 
 > [!TIP]
-> **Unblock downloaded file (Essential):**  
-> Web downloads receive an NTFS `Mark of the Web` tag, which causes Excel to block the add-in.  
-> Right-click the downloaded `.xll` file → select **Properties** → check **Unblock** at the bottom of the General tab → click **OK**.
+> **Unblock downloaded files (Essential):**  
+> Web downloads receive an NTFS `Mark of the Web` tag, which causes Windows to block add-ins.  
+> Right-click the downloaded file → select **Properties** → check **Unblock** at the bottom of the General tab → click **OK**.
 
-#### Step 3: Register as an Excel Add-in
+#### Step 3: Register in Excel (For Standalone XLL)
 1. In Excel, go to **[File] → [Options] → [Add-ins]**.
 2. At the bottom, ensure **Manage: [Excel Add-ins]** is selected and click **[Go...]**.
 3. Click **[Browse...]** and select your downloaded XLL file.
 4. Verify that `Smiles2Img-AddIn` is checked in the list and click **[OK]**.
 
-*(Once registered, the `=SMILES2IMG` function will automatically load every time Excel starts.)*
-
 ---
 
-## 💡 Usage & Real-Time IntelliSense
+## 💡 Excel Usage & Real-Time IntelliSense
  
 Type formula in any worksheet cell to insert a molecular rendering:
 * **Excel 2024 / M365:** `=SMILES2IMG(A2)` (In-cell native image)
@@ -130,11 +157,35 @@ Type formula in any worksheet cell to insert a molecular rendering:
 >   - **Start from Blank Cell:** Right-click any blank cell and select **`[🧬 분자 구조식 삽입 (Ketcher)...]`** or press **`Ctrl+Shift+K`** to open the EPAM Ketcher editor. Sketch your molecule and click **[Apply to Cell]**—the cell immediately becomes an **in-cell molecular image cell (Structure Cell)** with formula `=SMILES2IMG("...")`.  
 >   - **Double-Click Re-editing:** Double-click any structure image cell at any time to reopen Ketcher with the existing molecule preloaded. Modify and apply to instantly refresh the cell image.  
 >   - **Backward Compatibility:** Double-clicking existing `=SMILES2IMG(A2)` formula cells automatically resolves and edits the source SMILES cell (`A2`), recalculating dependent images seamlessly.  
->   - **100% Offline & Port-Free:** Uses embedded Microsoft WebView2 virtual host mapping (`ketcher.local`) without opening local TCP server ports or triggering firewall warnings.
+>   - **100% Offline & Port-Free:** Uses embedded Microsoft WebView2 virtual host mapping (`ketcher.local`) without opening local TCP server ports or triggering firewall warnings.  
+>  
+> 👉 **For the comprehensive Excel guide with all parameter recipes and troubleshooting, read [docs/EXCEL_GUIDE.md](docs/EXCEL_GUIDE.md).**
 
 ---
- 
-## 📖 Function Syntax & Parameter Specification
+
+## 📝 Word & PowerPoint Usage
+
+The same high-performance chemical rendering pipeline (EPAM Indigo) and 2D sketching editor (EPAM Ketcher) are natively integrated into Microsoft Word and PowerPoint through a dedicated ribbon tab.
+
+### 1. Ribbon Menu: `[SMILES]` Tab
+Upon launching Word or PowerPoint, a top-level **`[SMILES]`** tab appears automatically:
+* **[Insert Molecular Structure]**: Instantly opens the 100% offline Ketcher editor. Sketch your 2D molecule, click **[Apply]**, and a vector-grade molecular picture is inserted right at your current cursor position (Word) or centered on the active slide (PowerPoint).
+* **[Edit Structure]**: Select any existing molecular picture and click this button to reload its SMILES string back into Ketcher for modifications.
+
+### 2. Double-Click to Edit (Seamless In-Place Replacement)
+* **Word**: Double-click any molecular image in your document to immediately pop open the Ketcher editor. When you finish modifying and close the window, the document image is replaced in-place while maintaining proper formatting and dimensions.
+* **PowerPoint**: Double-click any molecular structure shape on your slide to edit in Ketcher. The updated chemical structure preserves the shape's exact dimensions, coordinates, and aspect ratio.
+
+### 3. Lossless Metadata Preservation
+* Each molecule image stores its raw SMILES string in Office metadata (`AlternativeText`, `Title`, and `Tags` as `SMILES:<string>`). The molecular information is never lost when saving, emailing, or reopening `.docx` and `.pptx` presentations.
+
+> 📚 **Detailed Application Guides:**  
+> • 📘 [**Word Detailed User Guide (docs/WORD_GUIDE.md)**](docs/WORD_GUIDE.md): Table formatting, report layouts, and PDF export.  
+> • 📙 [**PowerPoint Detailed User Guide (docs/POWERPOINT_GUIDE.md)**](docs/POWERPOINT_GUIDE.md): Card layouts, reaction schemes, and high-contrast presentations.
+
+---
+
+## 📖 Function Syntax & Parameter Specification (Excel)
  
 ```excel
 =SMILES2IMG(smiles, [background], [style], [transform])
@@ -268,40 +319,47 @@ sequenceDiagram
 
 ```text
 func_SMILES2IMG/
-├── dist/                               # Standalone packed XLL distribution artifacts
+├── Smiles2Img.sln                      # Visual Studio / .NET unified solution file
+├── src/
+│   ├── Smiles2Img.Core/                # Shared rendering & Ketcher editor core (net48)
+│   │   ├── Rendering/                  # EPAM Indigo C++ wrapper, ACS standards, color/option parsers
+│   │   ├── Editor/                     # EPAM Ketcher WebView2 editor Form & offline asset manager
+│   │   └── COM/                        # Shared Office COM interfaces (IDTExtensibility2, IRibbonExtensibility)
+│   ├── Smiles2Img.Excel/               # Excel-DNA standalone XLL add-in (net48)
+│   │   ├── Functions.cs                # =SMILES2IMG in-cell UDF (Excel 2024 / M365)
+│   │   ├── FloatFunctions.cs           # =SMILES2IMG.FLOAT floating UDF (Excel 2016-2021)
+│   │   ├── CellImages.cs               # In-cell image cache manager
+│   │   ├── FloatingPictures.cs         # Cell-anchored floating shape manager
+│   │   └── KetcherEditor.cs            # Double-click cell & context menu Ketcher handlers
+│   ├── Smiles2Img.Word/                # Word COM add-in DLL (net48)
+│   │   ├── WordAddIn.cs                # IDTExtensibility2 + IRibbonExtensibility implementation
+│   │   └── WordStructureManager.cs     # Inline structure image insertion, replacement & double-click
+│   └── Smiles2Img.PowerPoint/          # PowerPoint COM add-in DLL (net48)
+│       ├── PowerPointAddIn.cs          # IDTExtensibility2 + IRibbonExtensibility implementation
+│       └── PowerPointStructureManager.cs # Slide structure shape insertion, replacement & double-click
+├── dist/                               # Distribution output directory
 │   ├── x64/
-│   │   ├── Smiles2Img-AddIn64-packed.xll   # 64-bit self-contained Excel Add-in (~8.6 MB)
-│   │   └── THIRD_PARTY_NOTICES.md
+│   │   ├── Smiles2Img-AddIn64-packed.xll # 64-bit standalone Excel XLL
+│   │   ├── Word/                       # 64-bit Word COM add-in binaries
+│   │   ├── PowerPoint/                 # 64-bit PowerPoint COM add-in binaries
+│   │   └── Smiles2Img-Office-x64.zip   # 64-bit unified Office Suite package
 │   └── x86/
-│       ├── Smiles2Img-AddIn-packed.xll     # 32-bit self-contained Excel Add-in (~8.7 MB)
-│       └── THIRD_PARTY_NOTICES.md
-├── Rendering/                          # Chemistry rendering & image pipeline
-│   ├── MoleculeRenderer.cs             # Indigo rendering logic & ACS optimizations
-│   ├── RenderOptions.cs                # Render option model & formula argument parser
-│   ├── ColorHelper.cs                  # Color normalization & Hex/RGB converter
-│   ├── NativeImageWorkbook.cs          # OpenXML native image workbook support
-│   └── NativeIndigo.cs                 # Embedded unmanaged C++ DLL extraction loader
-├── assets/                             # Workbook templates & static resources
-│   └── native-image-template.xlsx
-├── Properties/
-│   └── AssemblyInfo.cs
+│       ├── Smiles2Img-AddIn-packed.xll   # 32-bit standalone Excel XLL
+│       ├── Word/                       # 32-bit Word COM add-in binaries
+│       ├── PowerPoint/                 # 32-bit PowerPoint COM add-in binaries
+│       └── Smiles2Img-Office-x86.zip   # 32-bit unified Office Suite package
 ├── tests/                              # Automated test suites
 │   ├── Excel-Smoke.ps1                 # Full COM automation E2E smoke tests
 │   ├── Excel-365-FeatureTests.ps1      # Live Excel 365 new styles & full-option tests
-│   ├── Excel-DeepStressTests.ps1       # 20-molecule bulk rendering & edge-case stress test
+│   ├── Excel-DeepStressTests.ps1       # Bulk rendering & edge-case stress test
 │   ├── Program.cs                      # Headless unit test runner
 │   └── Smiles2Img.Tests.csproj
-├── AddIn.cs                            # Excel-DNA initialization & diagnostic ribbon UI
-├── CellImages.cs                       # In-cell image cache & ExcelReference bindings
-├── CellImageUpdates.cs                 # Asynchronous image insertion macro queue
-├── Functions.cs                        # =SMILES2IMG UDF & IntelliSense definitions
-├── FloatFunctions.cs                   # =SMILES2IMG.FLOAT legacy floating UDF definitions
-├── FloatingPictures.cs                 # Cell-anchored floating shape manager (xlMoveAndSize)
-├── FloatingPictureUpdates.cs           # Floating picture batch update queue
-├── Smiles2Img-AddIn.dna                # Excel-DNA manifest configuration
-├── Smiles2Img.csproj                   # MSBuild project file (.NET 4.8)
+├── scripts/
+│   ├── Package-Release.ps1             # Release archive packaging script
+│   └── Generate-Showcase-Workbook.ps1  # Showcase workbook generator
+├── install.ps1                         # Unified Office Suite one-click installer
+├── uninstall.ps1                       # Unified Office Suite uninstaller
 ├── THIRD_PARTY_NOTICES.md              # Open-source license acknowledgments
-├── PLAN.md                             # Architectural roadmap & optimization log
 ├── README.KR.md                        # Korean documentation
 └── README.md                           # Main English documentation (this file)
 ```
@@ -314,15 +372,15 @@ func_SMILES2IMG/
 * Windows 10/11
 * [.NET SDK 8.0 or newer](https://dotnet.microsoft.com/) (targeting .NET Framework 4.8)
 
-### Build Commands
+### Full Solution Build Command
 Run from the repository root:
 
 ```powershell
-# Restore dependencies
-dotnet restore --tl:off
+# Restore dependencies & build entire solution (packs Excel XLL and compiles Word/PowerPoint add-ins)
+dotnet build Smiles2Img.sln -c Release
 
-# Build Release and pack standalone XLLs
-dotnet build -c Release --no-restore --tl:off
+# Generate release ZIP archives
+powershell -ExecutionPolicy Bypass -File scripts\Package-Release.ps1
 ```
 
 The resulting packed XLLs in `dist/x64/` and `dist/x86/` contain all dependencies (ExcelDna, IntelliSense, Indigo C++ runtimes) within a single self-extracting archive.

@@ -6,14 +6,14 @@ using System.Runtime.InteropServices;
 
 namespace Smiles2Img.Rendering;
 
-internal static class NativeIndigo
+public static class NativeIndigo
 {
     private const uint SearchDllDirectory = 0x00000100;
     private const uint SearchDefaultDirectories = 0x00001000;
 
-    internal static string? NativeDirectory { get; private set; }
+    public static string? NativeDirectory { get; private set; }
 
-    internal static void Initialize(string fallbackDirectory)
+    public static void Initialize(string fallbackDirectory)
     {
         var targetDir = GetOrExtractNativeDirectory(fallbackDirectory);
         NativeDirectory = targetDir;
@@ -41,7 +41,7 @@ internal static class NativeIndigo
         }
     }
 
-    internal static void EnsureWebView2Loader()
+    public static void EnsureWebView2Loader()
     {
         if (!string.IsNullOrEmpty(NativeDirectory))
         {

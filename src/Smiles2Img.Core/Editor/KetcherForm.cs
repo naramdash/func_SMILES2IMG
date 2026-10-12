@@ -4,14 +4,13 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ExcelDna.Integration;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using Smiles2Img.Rendering;
 
 namespace Smiles2Img;
 
-internal sealed class Win32Window(IntPtr handle) : IWin32Window
+public sealed class Win32Window(IntPtr handle) : IWin32Window
 {
     public IntPtr Handle => handle;
 }
@@ -35,7 +34,14 @@ public sealed class KetcherForm : Form
         this.cellAddress = cellAddress ?? "";
         this.initialSmiles = initialSmiles ?? "";
 
-        Text = $"EPAM Ketcher 분자 에디터 - [{this.cellAddress}]";
+        string titleContext = this.cellAddress switch
+        {
+            "Word" => "Word 문서",
+            "PowerPoint" => "PowerPoint 슬라이드",
+            "" => "분자 구조식",
+            _ => $"Excel [{this.cellAddress}]"
+        };
+        Text = $"EPAM Ketcher 분자 에디터 - {titleContext}";
         Width = 1040;
         Height = 720;
         StartPosition = FormStartPosition.CenterScreen;
@@ -70,13 +76,30 @@ public sealed class KetcherForm : Form
             NativeIndigo.EnsureWebView2Loader();
             var ketcherFolder = KetcherAssetManager.EnsureKetcherFolder();
 
-            var userDataFolder = Path.Combine(
+            var baseUserDataFolder = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Smiles2Img", "WebView2UserData");
-            Directory.CreateDirectory(userDataFolder);
+            Directory.CreateDirectory(baseUserDataFolder);
 
-            var env = await CoreWebView2Environment.CreateAsync(null, userDataFolder, null);
-            await webView.EnsureCoreWebView2Async(env);
+            // Isolate per process (Excel / Word / PowerPoint) to prevent lock contention
+            string procName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+            var procUserDataFolder = Path.Combine(baseUserDataFolder, procName);
+            Directory.CreateDirectory(procUserDataFolder);
+
+            CoreWebView2Environment env;
+            try
+            {
+                env = await CoreWebView2Environment.CreateAsync(null, procUserDataFolder, null);
+                await webView.EnsureCoreWebView2Async(env);
+            }
+            catch (Exception ex) when (ex.HResult == unchecked((int)0x800700AA) || ex.Message.Contains("0x800700AA") || ex.Message.Contains("사용 중"))
+            {
+                // Fallback to a dedicated unique session directory if locked by an orphaned browser process
+                string fallbackFolder = Path.Combine(Path.GetTempPath(), "Smiles2Img_WV2_" + procName + "_" + Guid.NewGuid().ToString("N"));
+                Directory.CreateDirectory(fallbackFolder);
+                env = await CoreWebView2Environment.CreateAsync(null, fallbackFolder, null);
+                await webView.EnsureCoreWebView2Async(env);
+            }
 
             webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
             webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
@@ -92,9 +115,14 @@ public sealed class KetcherForm : Form
         }
         catch (Exception ex)
         {
+            string msg = ex.Message;
+            if (ex is DllNotFoundException || ex.GetType().Name.Contains("WebView2"))
+            {
+                msg += "\n\n(Microsoft Edge WebView2 런타임이 설치되어 있는지 확인해 주세요.)";
+            }
             MessageBox.Show(
                 this,
-                "Ketcher 웹 에디터를 초기화하는 중 오류가 발생했습니다:\n" + ex.Message,
+                "Ketcher 웹 에디터를 초기화하는 중 오류가 발생했습니다:\n" + msg,
                 "SMILES2IMG 에디터 오류",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
@@ -111,7 +139,28 @@ public sealed class KetcherForm : Form
 
             if (msg == "ready")
             {
-                var script = $"window.initEditor('{EscapeJs(cellAddress)}', '{EscapeJs(initialSmiles)}');";
+                string buttonText = cellAddress switch
+                {
+                    "Word" => "문서에 적용 (Enter)",
+                    "PowerPoint" => "슬라이드에 적용 (Enter)",
+                    _ => "셀에 적용 (Enter)"
+                };
+                string badgeText = cellAddress switch
+                {
+                    "Word" => "Word 문서 (커서 위치)",
+                    "PowerPoint" => "PowerPoint (현재 슬라이드)",
+                    _ => string.IsNullOrEmpty(cellAddress) ? "분자 구조식" : $"셀: {cellAddress}"
+                };
+
+                var script = $@"
+                    if (window.initEditor) {{
+                        window.initEditor('{EscapeJs(cellAddress)}', '{EscapeJs(initialSmiles)}');
+                    }}
+                    var b = document.getElementById('btn-apply');
+                    if (b) b.innerText = '{EscapeJs(buttonText)}';
+                    var ind = document.getElementById('cell-indicator');
+                    if (ind) ind.innerText = '{EscapeJs(badgeText)}';
+                ";
                 webView.ExecuteScriptAsync(script);
             }
             else if (msg.StartsWith("apply:", StringComparison.Ordinal))
