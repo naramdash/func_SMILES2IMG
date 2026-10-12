@@ -19,10 +19,24 @@ public class SmilesRibbon : ExcelRibbon
           <button id=""btnInsertMolecule""
                   label=""분자 구조식 삽입""
                   screentip=""EPAM Ketcher 분자 에디터 (Ctrl+Shift+K)""
-                  supertip=""Ketcher 웹 에디터를 열어 화학 구조식을 그리고 현재 활성 셀에 삽입합니다.""
+                  supertip=""Ketcher 웹 에디터를 열어 화학 구조식을 그리고 현재 활성 셀에 수식(=SMILES2IMG)으로 삽입합니다.""
                   imageMso=""EquationInsertNew""
                   size=""large""
                   onAction=""OnInsertMolecule"" />
+          <button id=""btnInsertCanvasMolecule""
+                  label=""캔버스 구조식 삽입""
+                  screentip=""캔버스 형태 분자 구조식 삽입 (KET)""
+                  supertip=""Ketcher 웹 에디터를 열어 반응식, 화살표, 텍스트가 포함된 분자 구조식을 시트 위에 캔버스 이미지(KET)로 삽입합니다.""
+                  imageMso=""SmartArtInsert""
+                  size=""large""
+                  onAction=""OnInsertCanvasMolecule"" />
+          <button id=""btnEditMolecule""
+                  label=""구조식 편집""
+                  screentip=""선택된 분자 구조식 편집""
+                  supertip=""선택된 수식 셀(=SMILES2IMG) 또는 시트 위의 분자 캔버스 이미지를 Ketcher 에디터로 다시 불러와 수정합니다.""
+                  imageMso=""PictureEditProperties""
+                  size=""large""
+                  onAction=""OnEditMolecule"" />
           <button id=""btnOpenDiagnostics""
                   label=""진단 (Diagnostics)""
                   screentip=""SMILES2IMG 로그 및 진단 창""
@@ -37,19 +51,55 @@ public class SmilesRibbon : ExcelRibbon
   <contextMenus>
     <contextMenu idMso=""ContextMenuCell"">
       <button id=""btnContextInsertMolecule""
-              label=""분자 구조식 삽입 (Ketcher)...""
+              label=""분자 구조식 삽입 (셀 수식)...""
               imageMso=""EquationInsertNew""
               onAction=""OnInsertMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextInsertCanvasMolecule""
+              label=""캔버스 구조식 삽입 (KET)...""
+              imageMso=""SmartArtInsert""
+              onAction=""OnInsertCanvasMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextEditMoleculeCell""
+              label=""분자 구조식 편집 (Ketcher)...""
+              imageMso=""PictureEditProperties""
+              onAction=""OnEditMolecule""
               insertBeforeMso=""Cut"" />
       <menuSeparator id=""sepContextMolecule"" insertBeforeMso=""Cut"" />
     </contextMenu>
     <contextMenu idMso=""ContextMenuListRange"">
       <button id=""btnContextListInsertMolecule""
-              label=""분자 구조식 삽입 (Ketcher)...""
+              label=""분자 구조식 삽입 (셀 수식)...""
               imageMso=""EquationInsertNew""
               onAction=""OnInsertMolecule""
               insertBeforeMso=""Cut"" />
+      <button id=""btnContextListInsertCanvasMolecule""
+              label=""캔버스 구조식 삽입 (KET)...""
+              imageMso=""SmartArtInsert""
+              onAction=""OnInsertCanvasMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextListEditMoleculeCell""
+              label=""분자 구조식 편집 (Ketcher)...""
+              imageMso=""PictureEditProperties""
+              onAction=""OnEditMolecule""
+              insertBeforeMso=""Cut"" />
       <menuSeparator id=""sepContextListMolecule"" insertBeforeMso=""Cut"" />
+    </contextMenu>
+    <contextMenu idMso=""ContextMenuPicture"">
+      <button id=""btnContextPictureEditMolecule""
+              label=""분자 구조식 편집 (Ketcher)...""
+              imageMso=""PictureEditProperties""
+              onAction=""OnEditMolecule""
+              insertBeforeMso=""Cut"" />
+      <menuSeparator id=""sepContextPicMolecule"" insertBeforeMso=""Cut"" />
+    </contextMenu>
+    <contextMenu idMso=""ContextMenuShape"">
+      <button id=""btnContextShapeEditMolecule""
+              label=""분자 구조식 편집 (Ketcher)...""
+              imageMso=""PictureEditProperties""
+              onAction=""OnEditMolecule""
+              insertBeforeMso=""Cut"" />
+      <menuSeparator id=""sepContextShapeMolecule"" insertBeforeMso=""Cut"" />
     </contextMenu>
   </contextMenus>
 </customUI>";
@@ -60,6 +110,22 @@ public class SmilesRibbon : ExcelRibbon
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
             KetcherEditor.OpenKetcherCommand();
+        });
+    }
+
+    public void OnInsertCanvasMolecule(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            KetcherEditor.InsertCanvasMoleculeCommand();
+        });
+    }
+
+    public void OnEditMolecule(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            KetcherEditor.EditSelectedMoleculeCommand();
         });
     }
 

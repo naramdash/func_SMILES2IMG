@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -24,15 +25,18 @@ public sealed class KetcherForm : Form
 
     private readonly WebView2 webView;
     private readonly string cellAddress;
-    private readonly string initialSmiles;
+    private readonly string initialStructure;
     private bool initialized;
 
     public string? ResultSmiles { get; private set; }
+    public string? ResultKet { get; private set; }
+    public string? ResultMolfile { get; private set; }
+    public byte[]? ResultPngBytes { get; private set; }
 
-    public KetcherForm(string cellAddress, string initialSmiles)
+    public KetcherForm(string cellAddress, string initialStructure)
     {
         this.cellAddress = cellAddress ?? "";
-        this.initialSmiles = initialSmiles ?? "";
+        this.initialStructure = initialStructure ?? "";
 
         string titleContext = this.cellAddress switch
         {
@@ -143,18 +147,20 @@ public sealed class KetcherForm : Form
                 {
                     "Word" => "문서에 적용 (Enter)",
                     "PowerPoint" => "슬라이드에 적용 (Enter)",
+                    "Canvas" => "시트에 적용 (Enter)",
                     _ => "셀에 적용 (Enter)"
                 };
                 string badgeText = cellAddress switch
                 {
                     "Word" => "Word 문서 (커서 위치)",
                     "PowerPoint" => "PowerPoint (현재 슬라이드)",
+                    "Canvas" => "Excel 시트 (캔버스 형태)",
                     _ => string.IsNullOrEmpty(cellAddress) ? "분자 구조식" : $"셀: {cellAddress}"
                 };
 
                 var script = $@"
                     if (window.initEditor) {{
-                        window.initEditor('{EscapeJs(cellAddress)}', '{EscapeJs(initialSmiles)}');
+                        window.initEditor('{EscapeJs(cellAddress)}', '{EscapeJs(initialStructure)}');
                     }}
                     var b = document.getElementById('btn-apply');
                     if (b) b.innerText = '{EscapeJs(buttonText)}';
@@ -162,6 +168,34 @@ public sealed class KetcherForm : Form
                     if (ind) ind.innerText = '{EscapeJs(badgeText)}';
                 ";
                 webView.ExecuteScriptAsync(script);
+            }
+            else if (msg.StartsWith("{", StringComparison.Ordinal) && msg.Contains("\"action\":\"apply\""))
+            {
+                try
+                {
+                    var serializer = new System.Web.Script.Serialization.JavaScriptSerializer { MaxJsonLength = int.MaxValue };
+                    var dict = serializer.Deserialize<Dictionary<string, object>>(msg);
+                    if (dict != null)
+                    {
+                        if (dict.TryGetValue("smiles", out var s) && s is string smilesStr)
+                            ResultSmiles = smilesStr.Trim();
+                        if (dict.TryGetValue("ket", out var k) && k is string ketStr)
+                            ResultKet = ketStr;
+                        if (dict.TryGetValue("molfile", out var m) && m is string molStr)
+                            ResultMolfile = molStr;
+                        if (dict.TryGetValue("imageBase64", out var img) && img is string imgBase64 && !string.IsNullOrWhiteSpace(imgBase64))
+                        {
+                            try { ResultPngBytes = Convert.FromBase64String(imgBase64); } catch { }
+                        }
+                    }
+                    DialogResult = DialogResult.OK;
+                    Close();
+                }
+                catch
+                {
+                    DialogResult = DialogResult.Cancel;
+                    Close();
+                }
             }
             else if (msg.StartsWith("apply:", StringComparison.Ordinal))
             {

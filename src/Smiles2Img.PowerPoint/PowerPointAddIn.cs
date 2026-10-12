@@ -96,8 +96,8 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 0)
                 {
                     var targetShape = sel.ShapeRange[1];
-                    var smiles = PowerPointStructureManager.ExtractSmiles(targetShape);
-                    if (!string.IsNullOrEmpty(smiles))
+                    var structStr = PowerPointStructureManager.ExtractStructure(targetShape);
+                    if (!string.IsNullOrEmpty(structStr))
                     {
                         isEditing = true;
                         try

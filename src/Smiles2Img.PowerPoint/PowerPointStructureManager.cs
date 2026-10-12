@@ -11,6 +11,7 @@ namespace Smiles2Img.PowerPoint;
 
 public static class PowerPointStructureManager
 {
+    private const string KetPrefix = "KET:";
     private const string SmilesPrefix = "SMILES:";
     private static readonly Regex SmilesTagRegex = new(@"\bSMILES:(?<smiles>[^\r\n]+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
@@ -43,10 +44,12 @@ public static class PowerPointStructureManager
             using var form = new KetcherForm("PowerPoint", "");
             var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
-            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(form.ResultSmiles))
+            if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
             {
-                var smiles = form.ResultSmiles!.Trim();
-                InsertSmilesAsPicture(app, slide, smiles);
+                var ket = form.ResultKet;
+                var smiles = form.ResultSmiles?.Trim() ?? "";
+                var pngBytes = form.ResultPngBytes ?? MoleculeRenderer.Render(smiles, RenderOptions.Default);
+                InsertMoleculeAsPicture(app, slide, ket, smiles, pngBytes);
             }
         }
         catch (Exception ex)
@@ -79,12 +82,12 @@ public static class PowerPointStructureManager
                 targetShape = sel.ShapeRange[1];
             }
 
-            var currentSmiles = ExtractSmiles(targetShape);
+            var currentStructure = ExtractStructure(targetShape);
 
-            if (string.IsNullOrEmpty(currentSmiles))
+            if (string.IsNullOrEmpty(currentStructure))
             {
                 MessageBox.Show(
-                    "선택된 개체는 SMILES 분자 구조식 이미지가 아닙니다.",
+                    "선택된 개체는 SMILES/KET 분자 구조식 이미지가 아닙니다.",
                     "SMILES for PowerPoint",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -92,13 +95,15 @@ public static class PowerPointStructureManager
             }
 
             var hwnd = GetHwnd(app);
-            using var form = new KetcherForm("PowerPoint", currentSmiles ?? "");
+            using var form = new KetcherForm("PowerPoint", currentStructure ?? "");
             var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
-            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(form.ResultSmiles))
+            if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
             {
-                var newSmiles = form.ResultSmiles!.Trim();
-                ReplaceShape(targetShape, newSmiles);
+                var newKet = form.ResultKet;
+                var newSmiles = form.ResultSmiles?.Trim() ?? "";
+                var newPngBytes = form.ResultPngBytes ?? MoleculeRenderer.Render(newSmiles, RenderOptions.Default);
+                ReplaceShape(targetShape, newKet, newSmiles, newPngBytes);
             }
         }
         catch (Exception ex)
@@ -118,8 +123,8 @@ public static class PowerPointStructureManager
             if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 0)
             {
                 var shape = sel.ShapeRange[1];
-                var smiles = ExtractSmiles(shape);
-                if (!string.IsNullOrEmpty(smiles))
+                var structStr = ExtractStructure(shape);
+                if (!string.IsNullOrEmpty(structStr))
                 {
                     cancel = true;
                     var app = sel.Application;
@@ -130,10 +135,9 @@ public static class PowerPointStructureManager
         catch { }
     }
 
-    private static void InsertSmilesAsPicture(MSPowerPoint.Application app, MSPowerPoint.Slide slide, string smiles)
+    private static void InsertMoleculeAsPicture(MSPowerPoint.Application app, MSPowerPoint.Slide slide, string? ket, string smiles, byte[] pngBytes)
     {
-        var pngBytes = MoleculeRenderer.Render(smiles, RenderOptions.Default);
-        var tempFile = Path.Combine(Path.GetTempPath(), $"smiles_{Guid.NewGuid():N}.png");
+        var tempFile = Path.Combine(Path.GetTempPath(), $"structure_{Guid.NewGuid():N}.png");
 
         try
         {
@@ -171,9 +175,10 @@ public static class PowerPointStructureManager
                 Width: width,
                 Height: height);
 
-            shape.AlternativeText = SmilesPrefix + smiles;
-            shape.Title = SmilesPrefix + smiles;
-            try { shape.Tags.Add("SMILES", smiles); } catch { }
+            shape.AlternativeText = !string.IsNullOrEmpty(ket) ? KetPrefix + ket : SmilesPrefix + smiles;
+            shape.Title = !string.IsNullOrEmpty(smiles) ? SmilesPrefix + smiles : "Molecule";
+            if (!string.IsNullOrEmpty(ket)) try { shape.Tags.Add("KET", ket); } catch { }
+            if (!string.IsNullOrEmpty(smiles)) try { shape.Tags.Add("SMILES", smiles); } catch { }
             shape.Select();
         }
         finally
@@ -182,10 +187,9 @@ public static class PowerPointStructureManager
         }
     }
 
-    private static void ReplaceShape(MSPowerPoint.Shape oldShape, string newSmiles)
+    private static void ReplaceShape(MSPowerPoint.Shape oldShape, string? newKet, string newSmiles, byte[] pngBytes)
     {
-        var pngBytes = MoleculeRenderer.Render(newSmiles, RenderOptions.Default);
-        var tempFile = Path.Combine(Path.GetTempPath(), $"smiles_{Guid.NewGuid():N}.png");
+        var tempFile = Path.Combine(Path.GetTempPath(), $"structure_{Guid.NewGuid():N}.png");
 
         try
         {
@@ -229,9 +233,10 @@ public static class PowerPointStructureManager
                 Width: newWidth,
                 Height: newHeight);
 
-            newShape.AlternativeText = SmilesPrefix + newSmiles;
-            newShape.Title = SmilesPrefix + newSmiles;
-            try { newShape.Tags.Add("SMILES", newSmiles); } catch { }
+            newShape.AlternativeText = !string.IsNullOrEmpty(newKet) ? KetPrefix + newKet : SmilesPrefix + newSmiles;
+            newShape.Title = !string.IsNullOrEmpty(newSmiles) ? SmilesPrefix + newSmiles : "Molecule";
+            if (!string.IsNullOrEmpty(newKet)) try { newShape.Tags.Add("KET", newKet); } catch { }
+            if (!string.IsNullOrEmpty(newSmiles)) try { newShape.Tags.Add("SMILES", newSmiles); } catch { }
             newShape.Select();
         }
         finally
@@ -240,12 +245,35 @@ public static class PowerPointStructureManager
         }
     }
 
-    public static string? ExtractSmiles(MSPowerPoint.Shape shape)
+    public static string? ExtractStructure(MSPowerPoint.Shape shape)
     {
         try
         {
-            var tag = shape.Tags["SMILES"];
-            if (!string.IsNullOrWhiteSpace(tag)) return tag.Trim();
+            var ketTag = shape.Tags["KET"];
+            if (!string.IsNullOrWhiteSpace(ketTag)) return ketTag.Trim();
+        }
+        catch { }
+
+        try
+        {
+            var alt = shape.AlternativeText;
+            if (!string.IsNullOrWhiteSpace(alt))
+            {
+                var trimmed = alt.Trim();
+                if (trimmed.StartsWith(KetPrefix, StringComparison.OrdinalIgnoreCase))
+                    return trimmed.Substring(KetPrefix.Length).Trim();
+                var idx = trimmed.IndexOf(KetPrefix, StringComparison.OrdinalIgnoreCase);
+                if (idx >= 0)
+                    return trimmed.Substring(idx + KetPrefix.Length).Trim();
+            }
+        }
+        catch { }
+
+        // Fallback to legacy SMILES
+        try
+        {
+            var smilesTag = shape.Tags["SMILES"];
+            if (!string.IsNullOrWhiteSpace(smilesTag)) return smilesTag.Trim();
         }
         catch { }
 

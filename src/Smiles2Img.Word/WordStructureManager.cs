@@ -9,6 +9,7 @@ namespace Smiles2Img.Word;
 
 public static class WordStructureManager
 {
+    private const string KetPrefix = "KET:";
     private const string SmilesPrefix = "SMILES:";
     private static readonly Regex SmilesTagRegex = new(@"\bSMILES:(?<smiles>[^\r\n]+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
@@ -25,10 +26,12 @@ public static class WordStructureManager
             using var form = new KetcherForm("Word", "");
             var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
-            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(form.ResultSmiles))
+            if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
             {
-                var smiles = form.ResultSmiles!.Trim();
-                InsertSmilesAsPicture(app, smiles);
+                var ket = form.ResultKet;
+                var smiles = form.ResultSmiles?.Trim() ?? "";
+                var pngBytes = form.ResultPngBytes ?? MoleculeRenderer.Render(smiles, RenderOptions.Default);
+                InsertMoleculeAsPicture(app, ket, smiles, pngBytes);
             }
         }
         catch (Exception ex)
@@ -48,20 +51,20 @@ public static class WordStructureManager
             var sel = app.Selection;
             MSWord.InlineShape? targetInline = null;
             MSWord.Shape? targetShape = null;
-            string? currentSmiles = null;
+            string? currentStructure = null;
 
             if (sel.InlineShapes.Count > 0)
             {
                 targetInline = sel.InlineShapes[1];
-                currentSmiles = ExtractSmiles(targetInline.AlternativeText, targetInline.Title);
+                currentStructure = ExtractStructure(targetInline.AlternativeText, targetInline.Title);
             }
             else if (sel.ShapeRange.Count > 0)
             {
                 targetShape = sel.ShapeRange[1];
-                currentSmiles = ExtractSmiles(targetShape.AlternativeText, targetShape.Title);
+                currentStructure = ExtractStructure(targetShape.AlternativeText, targetShape.Title);
             }
 
-            if (string.IsNullOrEmpty(currentSmiles))
+            if (string.IsNullOrEmpty(currentStructure))
             {
                 MessageBox.Show(
                     "선택된 분자 구조식 이미지를 찾을 수 없습니다.\n먼저 편집하려는 구조식 그림을 클릭하여 선택해 주세요.",
@@ -72,19 +75,22 @@ public static class WordStructureManager
             }
 
             var hwnd = GetHwnd(app);
-            using var form = new KetcherForm("Word", currentSmiles ?? "");
+            using var form = new KetcherForm("Word", currentStructure ?? "");
             var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
-            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(form.ResultSmiles))
+            if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
             {
-                var newSmiles = form.ResultSmiles!.Trim();
+                var newKet = form.ResultKet;
+                var newSmiles = form.ResultSmiles?.Trim() ?? "";
+                var newPngBytes = form.ResultPngBytes ?? MoleculeRenderer.Render(newSmiles, RenderOptions.Default);
+
                 if (targetInline != null)
                 {
-                    ReplaceInlineShape(app, targetInline, newSmiles);
+                    ReplaceInlineShape(app, targetInline, newKet, newSmiles, newPngBytes);
                 }
                 else if (targetShape != null)
                 {
-                    ReplaceShape(app, targetShape, newSmiles);
+                    ReplaceShape(app, targetShape, newKet, newSmiles, newPngBytes);
                 }
             }
         }
@@ -105,8 +111,8 @@ public static class WordStructureManager
             if (sel.InlineShapes.Count > 0)
             {
                 var shape = sel.InlineShapes[1];
-                var smiles = ExtractSmiles(shape.AlternativeText, shape.Title);
-                if (!string.IsNullOrEmpty(smiles))
+                var structStr = ExtractStructure(shape.AlternativeText, shape.Title);
+                if (!string.IsNullOrEmpty(structStr))
                 {
                     cancel = true;
                     var app = sel.Application;
@@ -116,8 +122,8 @@ public static class WordStructureManager
             else if (sel.ShapeRange.Count > 0)
             {
                 var shape = sel.ShapeRange[1];
-                var smiles = ExtractSmiles(shape.AlternativeText, shape.Title);
-                if (!string.IsNullOrEmpty(smiles))
+                var structStr = ExtractStructure(shape.AlternativeText, shape.Title);
+                if (!string.IsNullOrEmpty(structStr))
                 {
                     cancel = true;
                     var app = sel.Application;
@@ -128,10 +134,9 @@ public static class WordStructureManager
         catch { }
     }
 
-    private static void InsertSmilesAsPicture(MSWord.Application app, string smiles)
+    private static void InsertMoleculeAsPicture(MSWord.Application app, string? ket, string smiles, byte[] pngBytes)
     {
-        var pngBytes = MoleculeRenderer.Render(smiles, RenderOptions.Default);
-        var tempFile = Path.Combine(Path.GetTempPath(), $"smiles_{Guid.NewGuid():N}.png");
+        var tempFile = Path.Combine(Path.GetTempPath(), $"structure_{Guid.NewGuid():N}.png");
 
         try
         {
@@ -142,8 +147,8 @@ public static class WordStructureManager
                 LinkToFile: false,
                 SaveWithDocument: true);
 
-            shape.AlternativeText = SmilesPrefix + smiles;
-            shape.Title = SmilesPrefix + smiles;
+            shape.AlternativeText = !string.IsNullOrEmpty(ket) ? KetPrefix + ket : SmilesPrefix + smiles;
+            shape.Title = !string.IsNullOrEmpty(smiles) ? SmilesPrefix + smiles : "Molecule";
         }
         finally
         {
@@ -151,10 +156,9 @@ public static class WordStructureManager
         }
     }
 
-    private static void ReplaceInlineShape(MSWord.Application app, MSWord.InlineShape oldShape, string newSmiles)
+    private static void ReplaceInlineShape(MSWord.Application app, MSWord.InlineShape oldShape, string? newKet, string newSmiles, byte[] pngBytes)
     {
-        var pngBytes = MoleculeRenderer.Render(newSmiles, RenderOptions.Default);
-        var tempFile = Path.Combine(Path.GetTempPath(), $"smiles_{Guid.NewGuid():N}.png");
+        var tempFile = Path.Combine(Path.GetTempPath(), $"structure_{Guid.NewGuid():N}.png");
 
         try
         {
@@ -179,8 +183,8 @@ public static class WordStructureManager
             }
             catch { }
 
-            newShape.AlternativeText = SmilesPrefix + newSmiles;
-            newShape.Title = SmilesPrefix + newSmiles;
+            newShape.AlternativeText = !string.IsNullOrEmpty(newKet) ? KetPrefix + newKet : SmilesPrefix + newSmiles;
+            newShape.Title = !string.IsNullOrEmpty(newSmiles) ? SmilesPrefix + newSmiles : "Molecule";
             newShape.Select();
         }
         finally
@@ -189,10 +193,9 @@ public static class WordStructureManager
         }
     }
 
-    private static void ReplaceShape(MSWord.Application app, MSWord.Shape oldShape, string newSmiles)
+    private static void ReplaceShape(MSWord.Application app, MSWord.Shape oldShape, string? newKet, string newSmiles, byte[] pngBytes)
     {
-        var pngBytes = MoleculeRenderer.Render(newSmiles, RenderOptions.Default);
-        var tempFile = Path.Combine(Path.GetTempPath(), $"smiles_{Guid.NewGuid():N}.png");
+        var tempFile = Path.Combine(Path.GetTempPath(), $"structure_{Guid.NewGuid():N}.png");
 
         try
         {
@@ -236,8 +239,8 @@ public static class WordStructureManager
                 Width: newWidth,
                 Height: newHeight);
 
-            newShape.AlternativeText = SmilesPrefix + newSmiles;
-            newShape.Title = SmilesPrefix + newSmiles;
+            newShape.AlternativeText = !string.IsNullOrEmpty(newKet) ? KetPrefix + newKet : SmilesPrefix + newSmiles;
+            newShape.Title = !string.IsNullOrEmpty(newSmiles) ? SmilesPrefix + newSmiles : "Molecule";
             newShape.Select();
         }
         finally
@@ -246,8 +249,22 @@ public static class WordStructureManager
         }
     }
 
-    private static string? ExtractSmiles(params string?[] texts)
+    public static string? ExtractStructure(params string?[] texts)
     {
+        foreach (var text in texts)
+        {
+            if (string.IsNullOrWhiteSpace(text)) continue;
+            var trimmed = text!.Trim();
+            if (trimmed.StartsWith(KetPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                return trimmed.Substring(KetPrefix.Length).Trim();
+            }
+            var ketIdx = trimmed.IndexOf(KetPrefix, StringComparison.OrdinalIgnoreCase);
+            if (ketIdx >= 0)
+            {
+                return trimmed.Substring(ketIdx + KetPrefix.Length).Trim();
+            }
+        }
         foreach (var text in texts)
         {
             if (string.IsNullOrWhiteSpace(text)) continue;
