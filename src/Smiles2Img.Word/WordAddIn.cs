@@ -59,7 +59,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
         return @"<customUI xmlns=""http://schemas.microsoft.com/office/2009/07/customui"" onLoad=""OnRibbonLoad"">
   <ribbon>
     <tabs>
-      <tab id=""tabSmiles"" label=""SMILES"" insertAfterMso=""TabInsert"">
+      <tab id=""tabSmiles"" label=""SMILES"">
         <group id=""grpMolecules"" label=""분자 구조식 (Structure)"">
           <button id=""btnInsertMolecule""
                   label=""분자 구조식 삽입""
