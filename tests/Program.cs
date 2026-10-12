@@ -274,7 +274,17 @@ internal static class Program
             var ketcherFolder = KetcherAssetManager.EnsureKetcherFolder();
             Check(Directory.Exists(ketcherFolder), "Ketcher folder exists");
             Check(File.Exists(Path.Combine(ketcherFolder, "index.html")), "Ketcher index.html exists");
+            var indexContent = File.ReadAllText(Path.Combine(ketcherFolder, "index.html"));
+            Check(indexContent.Contains("getCanvasSvg"), "Ketcher index.html includes getCanvasSvg");
+            Check(indexContent.Contains("calculateCanvasBBox"), "Ketcher index.html includes calculateCanvasBBox");
             Console.WriteLine("PASS Ketcher editor SMILES validation and offline asset extraction");
+
+            // Test native KET rendering
+            var sampleKet = "{\"root\":{\"nodes\":[{\"type\":\"molecule\",\"atoms\":[{\"label\":\"C\",\"location\":[0,0,0]},{\"label\":\"O\",\"location\":[1,0,0]}],\"bonds\":[{\"type\":1,\"atoms\":[0,1]}]}]}}";
+            var ketPng = MoleculeRenderer.RenderKet(sampleKet);
+            Check(ketPng != null && ketPng.Length > 100, "MoleculeRenderer renders KET data directly");
+            Check(ketPng!.Take(8).SequenceEqual(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }), "KET PNG signature");
+            Console.WriteLine("PASS Native KET rendering fallback");
             return 0;
         }
         catch (Exception error) { Console.Error.WriteLine(error); return 1; }

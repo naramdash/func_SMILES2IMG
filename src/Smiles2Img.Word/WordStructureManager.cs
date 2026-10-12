@@ -30,7 +30,8 @@ public static class WordStructureManager
             {
                 var ket = form.ResultKet;
                 var smiles = form.ResultSmiles?.Trim() ?? "";
-                var pngBytes = form.ResultPngBytes ?? MoleculeRenderer.Render(smiles, RenderOptions.Default);
+                var pngBytes = ResolvePngBytes(form, ket, smiles);
+                if (pngBytes == null) return;
                 InsertMoleculeAsPicture(app, ket, smiles, pngBytes);
             }
         }
@@ -82,7 +83,8 @@ public static class WordStructureManager
             {
                 var newKet = form.ResultKet;
                 var newSmiles = form.ResultSmiles?.Trim() ?? "";
-                var newPngBytes = form.ResultPngBytes ?? MoleculeRenderer.Render(newSmiles, RenderOptions.Default);
+                var newPngBytes = ResolvePngBytes(form, newKet, newSmiles);
+                if (newPngBytes == null) return;
 
                 if (targetInline != null)
                 {
@@ -379,6 +381,34 @@ public static class WordStructureManager
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
+    }
+
+    private static byte[]? ResolvePngBytes(KetcherForm form, string? ket, string? smiles)
+    {
+        var pngBytes = form.ResultPngBytes;
+        if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
+
+        if (!string.IsNullOrWhiteSpace(ket))
+        {
+            try
+            {
+                pngBytes = MoleculeRenderer.RenderKet(ket!);
+                if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
+            }
+            catch { }
+        }
+
+        if (!string.IsNullOrWhiteSpace(smiles))
+        {
+            try
+            {
+                pngBytes = MoleculeRenderer.Render(smiles!, RenderOptions.Default);
+                if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
+            }
+            catch { }
+        }
+
+        return null;
     }
 
     private static IntPtr GetHwnd(MSWord.Application app)

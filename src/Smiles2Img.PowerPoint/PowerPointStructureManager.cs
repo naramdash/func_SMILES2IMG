@@ -48,7 +48,8 @@ public static class PowerPointStructureManager
             {
                 var ket = form.ResultKet;
                 var smiles = form.ResultSmiles?.Trim() ?? "";
-                var pngBytes = form.ResultPngBytes ?? MoleculeRenderer.Render(smiles, RenderOptions.Default);
+                var pngBytes = ResolvePngBytes(form, ket, smiles);
+                if (pngBytes == null) return;
                 InsertMoleculeAsPicture(app, slide, ket, smiles, pngBytes);
             }
         }
@@ -102,7 +103,8 @@ public static class PowerPointStructureManager
             {
                 var newKet = form.ResultKet;
                 var newSmiles = form.ResultSmiles?.Trim() ?? "";
-                var newPngBytes = form.ResultPngBytes ?? MoleculeRenderer.Render(newSmiles, RenderOptions.Default);
+                var newPngBytes = ResolvePngBytes(form, newKet, newSmiles);
+                if (newPngBytes == null) return;
                 ReplaceShape(targetShape, newKet, newSmiles, newPngBytes);
             }
         }
@@ -393,6 +395,34 @@ public static class PowerPointStructureManager
                 return match.Groups["smiles"].Value.Trim();
             }
         }
+        return null;
+    }
+
+    private static byte[]? ResolvePngBytes(KetcherForm form, string? ket, string? smiles)
+    {
+        var pngBytes = form.ResultPngBytes;
+        if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
+
+        if (!string.IsNullOrWhiteSpace(ket))
+        {
+            try
+            {
+                pngBytes = MoleculeRenderer.RenderKet(ket!);
+                if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
+            }
+            catch { }
+        }
+
+        if (!string.IsNullOrWhiteSpace(smiles))
+        {
+            try
+            {
+                pngBytes = MoleculeRenderer.Render(smiles!, RenderOptions.Default);
+                if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
+            }
+            catch { }
+        }
+
         return null;
     }
 

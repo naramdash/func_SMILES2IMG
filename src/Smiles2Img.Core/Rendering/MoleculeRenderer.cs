@@ -90,6 +90,43 @@ public static class MoleculeRenderer
         return renderer.renderToBuffer(molecule);
     }
 
+    public static byte[]? RenderKet(string ket, RenderOptions? options = null)
+    {
+        if (string.IsNullOrWhiteSpace(ket)) return null;
+        options ??= new RenderOptions();
+        using var indigo = new Indigo();
+        using var renderer = new IndigoRenderer(indigo);
+
+        indigo.setOption("render-output-format", "png");
+        indigo.setOption("render-bond-length", 80.0);
+        indigo.setOption("render-margins", 30, 30);
+        indigo.setOption("render-relative-thickness", 1.5);
+        indigo.setOption("aromaticity-model", "generic");
+        indigo.setOption("render-coloring", options.Color);
+
+        ApplyBackground(indigo, options.Background);
+
+        if (!string.IsNullOrWhiteSpace(options.BaseColor))
+            ApplyBaseColor(indigo, options.BaseColor);
+
+        IndigoObject? obj = null;
+        try
+        {
+            obj = indigo.loadMolecule(ket);
+        }
+        catch
+        {
+            try { obj = indigo.loadReaction(ket); } catch { }
+        }
+
+        if (obj == null) return null;
+
+        using (obj)
+        {
+            return renderer.renderToBuffer(obj);
+        }
+    }
+
     // Expose explicit H only on stereocenters whose non-H bonds are all part of rings
     // (e.g. ring junctions, bridgeheads). This prevents Indigo from putting wedge bonds
     // directly onto ring bonds while keeping standard skeletal formulas everywhere else.

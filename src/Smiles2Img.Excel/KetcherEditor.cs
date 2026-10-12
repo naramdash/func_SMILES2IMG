@@ -337,7 +337,7 @@ public static class KetcherEditor
             {
                 var newKet = form.ResultKet;
                 var newSmiles = form.ResultSmiles?.Trim() ?? "";
-                var newPngBytes = form.ResultPngBytes ?? (string.IsNullOrEmpty(newSmiles) ? null : MoleculeRenderer.Render(newSmiles, RenderOptions.Default));
+                var newPngBytes = ResolvePngBytes(form, newKet, newSmiles);
                 if (newPngBytes == null) return;
 
                 ReplaceShape(targetShape, newKet, newSmiles, newPngBytes);
@@ -366,7 +366,7 @@ public static class KetcherEditor
             {
                 var newKet = form.ResultKet;
                 var newSmiles = form.ResultSmiles?.Trim() ?? "";
-                var newPngBytes = form.ResultPngBytes ?? (string.IsNullOrEmpty(newSmiles) ? null : MoleculeRenderer.Render(newSmiles, RenderOptions.Default));
+                var newPngBytes = ResolvePngBytes(form, newKet, newSmiles);
                 if (newPngBytes == null) return;
 
                 var tempFile = Path.Combine(Path.GetTempPath(), $"structure_{Guid.NewGuid():N}.png");
@@ -776,7 +776,7 @@ public static class KetcherEditor
                 {
                     // User drew reaction / canvas with KET not convertible to single SMILES formula
                     // Insert as floating canvas shape over the cell
-                    var newPngBytes = form.ResultPngBytes;
+                    var newPngBytes = ResolvePngBytes(form, newKet, null);
                     if (newPngBytes != null)
                     {
                         var tempFile = Path.Combine(Path.GetTempPath(), $"structure_{Guid.NewGuid():N}.png");
@@ -828,6 +828,34 @@ public static class KetcherEditor
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
+    }
+
+    private static byte[]? ResolvePngBytes(KetcherForm form, string? ket, string? smiles)
+    {
+        var pngBytes = form.ResultPngBytes;
+        if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
+
+        if (!string.IsNullOrWhiteSpace(ket))
+        {
+            try
+            {
+                pngBytes = MoleculeRenderer.RenderKet(ket!);
+                if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
+            }
+            catch { }
+        }
+
+        if (!string.IsNullOrWhiteSpace(smiles))
+        {
+            try
+            {
+                pngBytes = MoleculeRenderer.Render(smiles!, RenderOptions.Default);
+                if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
+            }
+            catch { }
+        }
+
+        return null;
     }
 
     internal static bool IsLikelySmiles(string text)
