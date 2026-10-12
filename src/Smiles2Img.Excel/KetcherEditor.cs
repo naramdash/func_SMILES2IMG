@@ -26,7 +26,8 @@ public static class KetcherEditor
         {
             events = (Excel.Application)ExcelDnaUtil.Application;
             events.SheetBeforeDoubleClick += OnSheetBeforeDoubleClick;
-            AddCellContextMenu();
+            // Clean up any legacy CommandBar buttons; modern Excel uses SmilesRibbon <contextMenus>
+            RemoveCellContextMenu();
         }
         catch (Exception ex)
         {
@@ -65,7 +66,9 @@ public static class KetcherEditor
                             MsoControlType.msoControlButton,
                             Temporary: true,
                             Before: 1);
-                        button.Caption = "🧬 분자 구조식 삽입 (Ketcher)...";
+                        button.Style = MsoButtonStyle.msoButtonIconAndCaption;
+                        button.FaceId = 385;
+                        button.Caption = "분자 구조식 삽입 (Ketcher)...";
                         button.Tag = ContextMenuTag;
                         button.OnAction = "OpenKetcherCommand";
                         button.BeginGroup = true;
