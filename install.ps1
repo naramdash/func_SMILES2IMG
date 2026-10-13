@@ -251,8 +251,8 @@ if (Test-Path $pptDllPath) {
 # -------------------------------------------------------------
 Write-Host "`n[SUCCESS] SMILES for Microsoft Office Suite has been successfully installed!" -ForegroundColor Cyan
 Write-Host "  * Excel:      Type =SMILES2IMG(""CCO"") in any cell" -ForegroundColor White
-Write-Host "  * Word:       Click '분자 구조식 삽입' in the [SMILES] ribbon tab" -ForegroundColor White
-Write-Host "  * PowerPoint: Click '분자 구조식 삽입' in the [SMILES] ribbon tab" -ForegroundColor White
+Write-Host "  * Word:       Click 'Insert Structure' in the [SMILES] ribbon tab" -ForegroundColor White
+Write-Host "  * PowerPoint: Click 'Insert Structure' in the [SMILES] ribbon tab" -ForegroundColor White
 Write-Host "  * All apps:   Double-click any molecule image to edit in Ketcher!" -ForegroundColor Yellow
 
 # -------------------------------------------------------------
