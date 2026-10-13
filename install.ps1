@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     SMILES for Microsoft Office Suite Automatic Installer (Excel, Word, PowerPoint)
 .DESCRIPTION
@@ -225,7 +225,7 @@ if (Test-Path $wordDllPath) {
         -ProgId "Smiles2Img.Word.AddIn" `
         -Clsid "{41A5C1F0-559A-46E0-B9C0-8B35A0F1D910}" `
         -ClassName "Smiles2Img.Word.WordAddIn" `
-        -AssemblyString "Smiles2Img.Word, Version=1.3.0.0, Culture=neutral, PublicKeyToken=null" `
+        -AssemblyString "Smiles2Img.Word, Version=1.4.0.0, Culture=neutral, PublicKeyToken=null" `
         -DllPath $wordDllPath `
         -OfficeApp "Word" `
         -FriendlyName "SMILES for Word" `
@@ -239,7 +239,7 @@ if (Test-Path $pptDllPath) {
         -ProgId "Smiles2Img.PowerPoint.AddIn" `
         -Clsid "{A755973C-21FB-494A-A3C5-086AFFB7C2AC}" `
         -ClassName "Smiles2Img.PowerPoint.PowerPointAddIn" `
-        -AssemblyString "Smiles2Img.PowerPoint, Version=1.3.0.0, Culture=neutral, PublicKeyToken=null" `
+        -AssemblyString "Smiles2Img.PowerPoint, Version=1.4.0.0, Culture=neutral, PublicKeyToken=null" `
         -DllPath $pptDllPath `
         -OfficeApp "PowerPoint" `
         -FriendlyName "SMILES for PowerPoint" `

@@ -4,9 +4,9 @@
     ".NETFramework,Version=v4.8": {
       "Indigo.Net": {
         "type": "Direct",
-        "requested": "[1.48.0-rc.1, )",
-        "resolved": "1.48.0-rc.1",
-        "contentHash": "+I4AYU8ALx60tv3MC/spc0J8kAjWhvFbjYEFHTBI4j2S8onJ1W3V9FFnngv1pRfs6f7mQgw0G9fljTH3+bFycg==",
+        "requested": "[1.49.0-rc.2, )",
+        "resolved": "1.49.0-rc.2",
+        "contentHash": "hkSvDPwOMHPAteoCtK2IQb4na0msqNm2NprNrSZh1lpH7+M2bu65YasiyVwxW3yq2w8JUw3zztLL1DdIsnT1pg==",
         "dependencies": {
           "System.Drawing.Common": "4.7.2"
         }
@@ -61,13 +61,13 @@
           "ExcelDna.AddIn": "[1.9.0, )",
           "ExcelDna.IntelliSense": "[1.9.0, )",
           "ExcelDna.Interop": "[16.0.0, )",
-          "Smiles2Img.Core": "[1.3.0, )"
+          "Smiles2Img.Core": "[1.4.0, )"
         }
       },
       "smiles2img.core": {
         "type": "Project",
         "dependencies": {
-          "Indigo.Net": "[1.48.0-rc.1, )",
+          "Indigo.Net": "[1.49.0-rc.2, )",
           "Microsoft.Web.WebView2": "[1.0.4258.31, )"
         }
       }
@@ -75,9 +75,9 @@
     ".NETFramework,Version=v4.8/win-x64": {
       "Indigo.Net": {
         "type": "Direct",
-        "requested": "[1.48.0-rc.1, )",
-        "resolved": "1.48.0-rc.1",
-        "contentHash": "+I4AYU8ALx60tv3MC/spc0J8kAjWhvFbjYEFHTBI4j2S8onJ1W3V9FFnngv1pRfs6f7mQgw0G9fljTH3+bFycg==",
+        "requested": "[1.49.0-rc.2, )",
+        "resolved": "1.49.0-rc.2",
+        "contentHash": "hkSvDPwOMHPAteoCtK2IQb4na0msqNm2NprNrSZh1lpH7+M2bu65YasiyVwxW3yq2w8JUw3zztLL1DdIsnT1pg==",
         "dependencies": {
           "System.Drawing.Common": "4.7.2"
         }
@@ -91,9 +91,9 @@
     ".NETFramework,Version=v4.8/win-x86": {
       "Indigo.Net": {
         "type": "Direct",
-        "requested": "[1.48.0-rc.1, )",
-        "resolved": "1.48.0-rc.1",
-        "contentHash": "+I4AYU8ALx60tv3MC/spc0J8kAjWhvFbjYEFHTBI4j2S8onJ1W3V9FFnngv1pRfs6f7mQgw0G9fljTH3+bFycg==",
+        "requested": "[1.49.0-rc.2, )",
+        "resolved": "1.49.0-rc.2",
+        "contentHash": "hkSvDPwOMHPAteoCtK2IQb4na0msqNm2NprNrSZh1lpH7+M2bu65YasiyVwxW3yq2w8JUw3zztLL1DdIsnT1pg==",
         "dependencies": {
           "System.Drawing.Common": "4.7.2"
         }

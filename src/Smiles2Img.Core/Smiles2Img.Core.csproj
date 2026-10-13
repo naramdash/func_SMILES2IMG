@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Indigo.Net" Version="1.48.0-rc.1" GeneratePathProperty="true" />
+    <PackageReference Include="Indigo.Net" Version="1.49.0-rc.2" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4258.31" GeneratePathProperty="true" />
   </ItemGroup>
 

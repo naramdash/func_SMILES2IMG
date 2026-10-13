@@ -149,7 +149,6 @@ try {
     $ws.Range("B1").RowHeight = 90
     $ws.Range("B1").ColumnWidth = 24
     $ws.Range("B1").Formula = "=SMILES2IMG.FLOAT(A1)"
-    $excel.CalculateFull()
     Start-Sleep -Seconds 2
 
     $valB1 = $ws.Range("B1").Text
