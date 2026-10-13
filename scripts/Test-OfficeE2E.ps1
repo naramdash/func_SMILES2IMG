@@ -133,8 +133,21 @@ Write-Host "=============================================================" -Fore
 Write-Host " 3. Testing Microsoft Excel Live Add-in (.xll) & E2E Workflow" -ForegroundColor Cyan
 Write-Host "=============================================================" -ForegroundColor Cyan
 $excel = $null
+$ownedExcelId = 0
+$existingExcelIds = @(Get-Process EXCEL -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Id)
+Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+public static class OfficeE2EWindow {
+    [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr window, out uint process);
+}
+'@ -ErrorAction SilentlyContinue
+
 try {
     $excel = New-Object -ComObject Excel.Application
+    [uint32]$instanceId = 0
+    [void][OfficeE2EWindow]::GetWindowThreadProcessId([IntPtr]$excel.Hwnd, [ref]$instanceId)
+    if ($instanceId -ne 0 -and $existingExcelIds -notcontains [int]$instanceId) { $ownedExcelId = [int]$instanceId }
     $excel.Visible = $false
     $excel.DisplayAlerts = $false
 
@@ -158,7 +171,15 @@ try {
 } finally {
     if ($excel) {
         try { $excel.Quit() } catch {}
-        [System.Runtime.InteropServices.Marshal]::ReleaseComObject($excel) | Out-Null
+        [System.Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel) | Out-Null
+    }
+    [GC]::Collect()
+    [GC]::WaitForPendingFinalizers()
+    if ($ownedExcelId -ne 0) {
+        $ownedExcel = Get-Process -Id $ownedExcelId -ErrorAction SilentlyContinue
+        if ($null -ne $ownedExcel -and -not $ownedExcel.WaitForExit(2000) -and $ownedExcel.MainWindowTitle -eq '') {
+            Stop-Process -Id $ownedExcelId -Force -ErrorAction SilentlyContinue
+        }
     }
 }
 

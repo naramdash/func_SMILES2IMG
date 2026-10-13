@@ -3,11 +3,20 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.IO.Compression.FileSystem
+Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+public static class ExcelFeatWindow {
+    [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr window, out uint process);
+}
+'@
 
 $resolvedAddIn = (Resolve-Path -LiteralPath $AddInPath).Path
 $excel = $null
 $workbook = $null
 $sheet = $null
+$ownedExcelId = 0
+$existingExcelIds = @(Get-Process EXCEL -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Id)
 
 function Invoke-Excel([scriptblock]$operation) {
     $deadline = [DateTime]::UtcNow.AddSeconds(20)
@@ -87,6 +96,9 @@ function Get-CellRichImage([string]$address) {
 try {
     Write-Host "=== Starting Excel Desktop 365 Real Add-In Verification ===" -ForegroundColor Cyan
     $excel = New-Object -ComObject Excel.Application
+    [uint32]$instanceId = 0
+    [void][ExcelFeatWindow]::GetWindowThreadProcessId([IntPtr]$excel.Hwnd, [ref]$instanceId)
+    if ($instanceId -ne 0 -and $existingExcelIds -notcontains [int]$instanceId) { $ownedExcelId = [int]$instanceId }
     $excel.Visible = $false
     $excel.DisplayAlerts = $false
 
@@ -174,8 +186,19 @@ try {
 finally {
     if ($workbook -ne $null) { try { Invoke-Excel { $workbook.Close($false) } } catch {} }
     if ($excel -ne $null) { try { Invoke-Excel { $excel.Quit() } } catch {} }
+    foreach ($ownedObject in @($sheet, $workbook, $excel)) {
+        if ($ownedObject -ne $null -and [Runtime.InteropServices.Marshal]::IsComObject($ownedObject)) {
+            [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($ownedObject)
+        }
+    }
     [GC]::Collect()
     [GC]::WaitForPendingFinalizers()
+    if ($ownedExcelId -ne 0) {
+        $ownedExcel = Get-Process -Id $ownedExcelId -ErrorAction SilentlyContinue
+        if ($null -ne $ownedExcel -and -not $ownedExcel.WaitForExit(2000) -and $ownedExcel.MainWindowTitle -eq '') {
+            Stop-Process -Id $ownedExcelId -Force -ErrorAction SilentlyContinue
+        }
+    }
     if ($testSavePath -ne $null -and (Test-Path $testSavePath)) {
         Remove-Item -LiteralPath $testSavePath -Force -ErrorAction SilentlyContinue
     }
