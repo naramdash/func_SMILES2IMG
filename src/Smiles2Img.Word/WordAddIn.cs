@@ -173,12 +173,30 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
       <menuSeparator id=""sepContextShape"" insertBeforeMso=""Cut"" />
     </contextMenu>
     <contextMenu idMso=""ContextMenuText"">
-      <button id=""btnContextTextQuickInsert""
-              label=""Insert Structure from Clipboard/Selection""
+      <button id=""btnContextTextInsert""
+              label=""Insert / Edit Structure...""
               imageMso=""EquationInsertNew""
+              onAction=""OnInsertMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextTextQuickInsert""
+              label=""Paste Structure""
+              imageMso=""Paste""
               onAction=""OnQuickInsert""
               insertBeforeMso=""Cut"" />
       <menuSeparator id=""sepContextText"" insertBeforeMso=""Cut"" />
+    </contextMenu>
+    <contextMenu idMso=""ContextMenuTable"">
+      <button id=""btnContextTableInsert""
+              label=""Insert / Edit Structure...""
+              imageMso=""EquationInsertNew""
+              onAction=""OnInsertMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextTableQuickInsert""
+              label=""Paste Structure""
+              imageMso=""Paste""
+              onAction=""OnQuickInsert""
+              insertBeforeMso=""Cut"" />
+      <menuSeparator id=""sepContextTable"" insertBeforeMso=""Cut"" />
     </contextMenu>
   </contextMenus>
 </customUI>";
