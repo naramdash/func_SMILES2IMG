@@ -75,11 +75,11 @@ public class SmilesRibbon : ExcelRibbon
   </ribbon>
   <contextMenus>
     <contextMenu idMso=""ContextMenuCell"">
-      <menuSeparator id=""sepContextCellPre"" insertAfterMso=""PasteSpecialDialog"" />
+      <menuSeparator id=""sepContextCellPre"" insertAfterMso=""PasteGalleryMini"" />
       <menu id=""menuContextExcelCell""
             label=""Chemical Structure""
             imageMso=""EquationInsertNew""
-            insertAfterMso=""PasteSpecialDialog"">
+            insertAfterMso=""PasteGalleryMini"">
         <button id=""btnContextInsertMolecule""
                 label=""Insert / Edit Structure (SMILES2IMG)...""
                 imageMso=""EquationInsertNew""
@@ -106,14 +106,14 @@ public class SmilesRibbon : ExcelRibbon
                 imageMso=""Copy""
                 onAction=""OnCopyMoleculeInfo"" />
       </menu>
-      <menuSeparator id=""sepContextMolecule"" insertAfterMso=""PasteSpecialDialog"" />
+      <menuSeparator id=""sepContextMolecule"" insertAfterMso=""PasteGalleryMini"" />
     </contextMenu>
     <contextMenu idMso=""ContextMenuListRange"">
-      <menuSeparator id=""sepContextListPre"" insertAfterMso=""PasteSpecialDialog"" />
+      <menuSeparator id=""sepContextListPre"" insertAfterMso=""PasteGalleryMini"" />
       <menu id=""menuContextExcelList""
             label=""Chemical Structure""
             imageMso=""EquationInsertNew""
-            insertAfterMso=""PasteSpecialDialog"">
+            insertAfterMso=""PasteGalleryMini"">
         <button id=""btnContextListInsertMolecule""
                 label=""Insert / Edit Structure (SMILES2IMG)...""
                 imageMso=""EquationInsertNew""
@@ -140,7 +140,7 @@ public class SmilesRibbon : ExcelRibbon
                 imageMso=""Copy""
                 onAction=""OnCopyMoleculeInfo"" />
       </menu>
-      <menuSeparator id=""sepContextListMolecule"" insertAfterMso=""PasteSpecialDialog"" />
+      <menuSeparator id=""sepContextListMolecule"" insertAfterMso=""PasteGalleryMini"" />
     </contextMenu>
     <contextMenu idMso=""ContextMenuPicture"">
       <button id=""btnContextPictureEditMolecule""
