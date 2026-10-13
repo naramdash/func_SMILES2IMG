@@ -33,6 +33,8 @@ public sealed class KetcherForm : Form
     public string? ResultMolfile { get; private set; }
     public byte[]? ResultPngBytes { get; private set; }
     public string ResultBackground { get; private set; } = "transparent";
+    public bool AutoApplyAfterLoadForTest { get; set; }
+    public bool ToggleWhiteBackgroundForTest { get; set; }
 
     public KetcherForm(string cellAddress, string initialStructure)
     {
@@ -168,6 +170,28 @@ public sealed class KetcherForm : Form
                     var ind = document.getElementById('cell-indicator');
                     if (ind) ind.innerText = '{EscapeJs(badgeText)}';
                 ";
+                if (AutoApplyAfterLoadForTest)
+                {
+                    var toggleJs = ToggleWhiteBackgroundForTest ? "if (window.toggleBackground) window.toggleBackground();" : "";
+                    script += $@"
+                        (function() {{
+                            var attempts = 0;
+                            var iv = setInterval(function() {{
+                                attempts++;
+                                if (window.ketcher && window.ketcher.editor && window.ketcher.editor.render && window.ketcher.editor.render.paper) {{
+                                    clearInterval(iv);
+                                    setTimeout(function() {{
+                                        {toggleJs}
+                                        if (window.onApply) window.onApply();
+                                    }}, 1000);
+                                }} else if (attempts > 100) {{
+                                    clearInterval(iv);
+                                    if (window.onApply) window.onApply();
+                                }}
+                            }}, 100);
+                        }})();
+                    ";
+                }
                 webView.ExecuteScriptAsync(script);
             }
             else if (msg.StartsWith("{", StringComparison.Ordinal) && msg.Contains("\"action\":\"apply\""))

@@ -11,6 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <ProjectReference Include="../src/Smiles2Img.Core/Smiles2Img.Core.csproj" />
     <ProjectReference Include="../src/Smiles2Img.Excel/Smiles2Img.Excel.csproj" />
     <PackageReference Include="Indigo.Net" Version="1.48.0-rc.1" GeneratePathProperty="true" />

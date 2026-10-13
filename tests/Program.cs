@@ -309,6 +309,54 @@ internal static class Program
                   && quickKetPng != null && quickKetPng.Length > 100 && quickKetOut == sampleKet,
                   "TryRenderStructure renders KET");
             Console.WriteLine("PASS TryRenderStructure for Quick Paste");
+
+            // Live WebView2 + Ketcher E2E Test (1: SMILES -> KET + Transparent Canvas PNG)
+            string? e2eKet = null;
+            using (var form1 = new KetcherForm("PowerPoint", "CC(=O)Oc1ccccc1C(=O)O")
+            {
+                AutoApplyAfterLoadForTest = true,
+                ToggleWhiteBackgroundForTest = false
+            })
+            {
+                var dr1 = form1.ShowDialog();
+                Check(dr1 == System.Windows.Forms.DialogResult.OK, "E2E KetcherForm #1 returned DialogResult.OK");
+                Check(!string.IsNullOrWhiteSpace(form1.ResultKet) && form1.ResultKet!.Contains("\"root\""), "E2E KetcherForm #1 returned valid KET JSON");
+                Check(!string.IsNullOrWhiteSpace(form1.ResultSmiles), "E2E KetcherForm #1 returned non-empty SMILES: " + form1.ResultSmiles);
+                Check(form1.ResultBackground == "transparent", "E2E KetcherForm #1 background is transparent");
+                Check(form1.ResultPngBytes != null && form1.ResultPngBytes.Length > 500, "E2E KetcherForm #1 captured canvas PNG bytes (" + (form1.ResultPngBytes?.Length ?? 0) + " bytes)");
+                using (var ms1 = new MemoryStream(form1.ResultPngBytes!))
+                using (var bmp1 = new Bitmap(ms1))
+                {
+                    Check(bmp1.Width >= 100 && bmp1.Height >= 100, $"E2E KetcherForm #1 canvas PNG dimensions ({bmp1.Width}x{bmp1.Height}) are valid molecule canvas");
+                    Check(bmp1.GetPixel(0, 0).A == 0, "E2E KetcherForm #1 corner pixel is transparent");
+                }
+                File.WriteAllBytes("output/samples/e2e_ketcher_trans.png", form1.ResultPngBytes!);
+                e2eKet = form1.ResultKet;
+                Console.WriteLine($"PASS E2E WebView2 Ketcher #1 (Transparent PNG: {form1.ResultPngBytes!.Length} bytes, SMILES: {form1.ResultSmiles})");
+            }
+
+            // Live WebView2 + Ketcher E2E Test (2: KET Round-Trip -> White Background Canvas PNG)
+            using (var form2 = new KetcherForm("Word", e2eKet!)
+            {
+                AutoApplyAfterLoadForTest = true,
+                ToggleWhiteBackgroundForTest = true
+            })
+            {
+                var dr2 = form2.ShowDialog();
+                Check(dr2 == System.Windows.Forms.DialogResult.OK, "E2E KetcherForm #2 returned DialogResult.OK");
+                Check(!string.IsNullOrWhiteSpace(form2.ResultKet) && form2.ResultKet!.Contains("\"root\""), "E2E KetcherForm #2 round-tripped KET JSON");
+                Check(form2.ResultBackground == "white", "E2E KetcherForm #2 background toggled to white");
+                Check(form2.ResultPngBytes != null && form2.ResultPngBytes.Length > 500, "E2E KetcherForm #2 captured white-bg canvas PNG bytes");
+                using (var ms2 = new MemoryStream(form2.ResultPngBytes!))
+                using (var bmp2 = new Bitmap(ms2))
+                {
+                    var corner = bmp2.GetPixel(0, 0);
+                    Check(corner.A == 255 && corner.R == 255 && corner.G == 255 && corner.B == 255, "E2E KetcherForm #2 corner pixel is opaque white");
+                }
+                File.WriteAllBytes("output/samples/e2e_ketcher_white.png", form2.ResultPngBytes!);
+                Console.WriteLine($"PASS E2E WebView2 Ketcher #2 (KET Round-Trip + White BG PNG: {form2.ResultPngBytes!.Length} bytes)");
+            }
+
             return 0;
         }
         catch (Exception error) { Console.Error.WriteLine(error); return 1; }
