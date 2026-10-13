@@ -173,29 +173,35 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
       <menuSeparator id=""sepContextShape"" insertBeforeMso=""Cut"" />
     </contextMenu>
     <contextMenu idMso=""ContextMenuText"">
-      <button id=""btnContextTextInsert""
-              label=""Insert / Edit Structure...""
-              imageMso=""EquationInsertNew""
-              onAction=""OnInsertMolecule""
-              insertAfterMso=""PasteGalleryMini"" />
-      <button id=""btnContextTextQuickInsert""
-              label=""Paste Structure""
-              imageMso=""Paste""
-              onAction=""OnQuickInsert""
-              insertAfterMso=""PasteGalleryMini"" />
+      <menu id=""menuContextWordText""
+            label=""Chemical Structure""
+            imageMso=""EquationInsertNew""
+            insertAfterMso=""PasteGalleryMini"">
+        <button id=""btnContextTextInsert""
+                label=""Insert / Edit Structure...""
+                imageMso=""EquationInsertNew""
+                onAction=""OnInsertMolecule"" />
+        <button id=""btnContextTextQuickInsert""
+                label=""Paste Structure""
+                imageMso=""Paste""
+                onAction=""OnQuickInsert"" />
+      </menu>
       <menuSeparator id=""sepContextText"" insertAfterMso=""PasteGalleryMini"" />
     </contextMenu>
     <contextMenu idMso=""ContextMenuTable"">
-      <button id=""btnContextTableInsert""
-              label=""Insert / Edit Structure...""
-              imageMso=""EquationInsertNew""
-              onAction=""OnInsertMolecule""
-              insertAfterMso=""PasteGalleryMini"" />
-      <button id=""btnContextTableQuickInsert""
-              label=""Paste Structure""
-              imageMso=""Paste""
-              onAction=""OnQuickInsert""
-              insertAfterMso=""PasteGalleryMini"" />
+      <menu id=""menuContextWordTable""
+            label=""Chemical Structure""
+            imageMso=""EquationInsertNew""
+            insertAfterMso=""PasteGalleryMini"">
+        <button id=""btnContextTableInsert""
+                label=""Insert / Edit Structure...""
+                imageMso=""EquationInsertNew""
+                onAction=""OnInsertMolecule"" />
+        <button id=""btnContextTableQuickInsert""
+                label=""Paste Structure""
+                imageMso=""Paste""
+                onAction=""OnQuickInsert"" />
+      </menu>
       <menuSeparator id=""sepContextTable"" insertAfterMso=""PasteGalleryMini"" />
     </contextMenu>
   </contextMenus>
