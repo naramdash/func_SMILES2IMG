@@ -1,4 +1,4 @@
-﻿param(
+param(
     [string]$OutputPath = (Join-Path $PSScriptRoot '../assets/powerpoint-showcase.png')
 )
 
@@ -13,10 +13,10 @@ $coreDll = (Resolve-Path (Join-Path $PSScriptRoot "../dist/x64/Word/Smiles2Img.C
 
 # Render sample molecules to temp files
 $samples = @(
-    @{ Name = "Aspirin (아스피린)"; Formula = "C9H8O4"; Smiles = "CC(=O)Oc1ccccc1C(=O)O"; Desc = "진통·소염·해열제" },
-    @{ Name = "Caffeine (카페인)"; Formula = "C8H10N4O2"; Smiles = "Cn1cnc2c1c(=O)n(C)c(=O)n2C"; Desc = "중추신경계 자극제" },
-    @{ Name = "Nicotine (니코틴)"; Formula = "C10H14N2"; Smiles = "c1cncc(c1)[C@@H]2CCCN2C"; Desc = "피리딘-피롤리딘 알칼로이드" },
-    @{ Name = "Paracetamol (타이레놀)"; Formula = "C8H9NO2"; Smiles = "CC(=O)Nc1ccc(O)cc1"; Desc = "아세트아미노펜 해열진통제" }
+    @{ Name = "Aspirin"; Formula = "C9H8O4"; Smiles = "CC(=O)Oc1ccccc1C(=O)O"; Desc = "Analgesic • Anti-inflammatory" },
+    @{ Name = "Caffeine"; Formula = "C8H10N4O2"; Smiles = "Cn1cnc2c1c(=O)n(C)c(=O)n2C"; Desc = "CNS Stimulant" },
+    @{ Name = "Nicotine"; Formula = "C10H14N2"; Smiles = "c1cncc(c1)[C@@H]2CCCN2C"; Desc = "Pyridine-Pyrrolidine Alkaloid" },
+    @{ Name = "Paracetamol"; Formula = "C8H9NO2"; Smiles = "CC(=O)Nc1ccc(O)cc1"; Desc = "Antipyretic Analgesic" }
 )
 
 $tempFiles = @()
@@ -28,12 +28,15 @@ foreach ($s in $samples) {
     $tempFiles += $tmp
 }
 
+$msoTrue = -1
+$msoFalse = 0
+
 # 2. Automate PowerPoint
 $ppt = New-Object -ComObject PowerPoint.Application
-$ppt.Visible = [Microsoft.Office.Core.MsoTriState]::msoTrue
+$ppt.Visible = $msoTrue
 
 try {
-    $pres = $ppt.Presentations.Add([Microsoft.Office.Core.MsoTriState]::msoTrue)
+    $pres = $ppt.Presentations.Add($msoTrue)
     $pres.PageSetup.SlideWidth = 960
     $pres.PageSetup.SlideHeight = 540
 
@@ -50,12 +53,12 @@ try {
     $titleBox.TextFrame.TextRange.Text = "SMILES for PowerPoint — Chemical Structure Showcase"
     $titleBox.TextFrame.TextRange.Font.Name = "Segoe UI"
     $titleBox.TextFrame.TextRange.Font.Size = 24
-    $titleBox.TextFrame.TextRange.Font.Bold = [Microsoft.Office.Core.MsoTriState]::msoTrue
+    $titleBox.TextFrame.TextRange.Font.Bold = $msoTrue
     $titleBox.TextFrame.TextRange.Font.Color.RGB = 0xFFFFFF
 
     $subBox = $slide.Shapes.AddTextbox(1, 40, 70, 880, 25)
-    $subBox.TextFrame.TextRange.Text = "EPAM Indigo 벡터 렌더러 & Ketcher 에디터 통합 • 슬라이드 상에서 더블 클릭으로 실시간 편집"
-    $subBox.TextFrame.TextRange.Font.Name = "Malgun Gothic"
+    $subBox.TextFrame.TextRange.Text = "EPAM Indigo Vector Renderer & Ketcher 2D Integration • Instant In-Place Slide Editing"
+    $subBox.TextFrame.TextRange.Font.Name = "Segoe UI"
     $subBox.TextFrame.TextRange.Font.Size = 13
     $subBox.TextFrame.TextRange.Font.Color.RGB = 0x94A3B8
 
@@ -80,9 +83,9 @@ try {
         # Card Title
         $nameBox = $slide.Shapes.AddTextbox(1, $cardX + 10, $startY + 12, $cardWidth - 20, 28)
         $nameBox.TextFrame.TextRange.Text = $item.Name
-        $nameBox.TextFrame.TextRange.Font.Name = "Malgun Gothic"
+        $nameBox.TextFrame.TextRange.Font.Name = "Segoe UI"
         $nameBox.TextFrame.TextRange.Font.Size = 13
-        $nameBox.TextFrame.TextRange.Font.Bold = [Microsoft.Office.Core.MsoTriState]::msoTrue
+        $nameBox.TextFrame.TextRange.Font.Bold = $msoTrue
         $nameBox.TextFrame.TextRange.Font.Color.RGB = 0x38BDF8 # Sky blue
 
         # Formula & Desc
@@ -96,15 +99,15 @@ try {
         $imgBox = $slide.Shapes.AddShape(1, $cardX + 10, $startY + 70, $cardWidth - 20, 210)
         $imgBox.Fill.Solid()
         $imgBox.Fill.ForeColor.RGB = 0xFFFFFF # White canvas for molecule
-        $imgBox.Line.Visible = [Microsoft.Office.Core.MsoTriState]::msoFalse
+        $imgBox.Line.Visible = $msoFalse
 
         # Add picture centered in imgBox
         $imgW = 175
         $imgH = 190
         $pic = $slide.Shapes.AddPicture(
             $item.TempPath,
-            [Microsoft.Office.Core.MsoTriState]::msoFalse,
-            [Microsoft.Office.Core.MsoTriState]::msoTrue,
+            $msoFalse,
+            $msoTrue,
             $cardX + 15,
             $startY + 80,
             $imgW,
@@ -126,6 +129,12 @@ try {
     $exportPath = [System.IO.Path]::GetFullPath($OutputPath)
     $slide.Export($exportPath, "PNG", 1920, 1080)
     Write-Host "[+] Saved PowerPoint Showcase: $exportPath" -ForegroundColor Green
+
+    $docsPublicPath = (Join-Path $PSScriptRoot '../docs/public/powerpoint-showcase.png')
+    if (Test-Path $exportPath) {
+        Copy-Item -Path $exportPath -Destination $docsPublicPath -Force
+        Write-Host "[+] Synced PowerPoint Showcase to docs/public: $docsPublicPath" -ForegroundColor Cyan
+    }
 
     $pres.Close()
 }

@@ -1,4 +1,4 @@
-﻿param(
+param(
     [string]$OutputPath = (Join-Path $PSScriptRoot '../assets/word-showcase.png')
 )
 
@@ -13,10 +13,10 @@ $coreDll = (Resolve-Path (Join-Path $PSScriptRoot "../dist/x64/Word/Smiles2Img.C
 
 # Render sample molecules to temp files
 $samples = @(
-    @{ Name = "Aspirin (아스피린)"; Formula = "C9H8O4"; Smiles = "CC(=O)Oc1ccccc1C(=O)O"; Category = "NSAID 진통소염제" },
-    @{ Name = "Caffeine (카페인)"; Formula = "C8H10N4O2"; Smiles = "Cn1cnc2c1c(=O)n(C)c(=O)n2C"; Category = "크산틴 알칼로이드" },
-    @{ Name = "Paracetamol (아세트아미노펜)"; Formula = "C8H9NO2"; Smiles = "CC(=O)Nc1ccc(O)cc1"; Category = "해열진통제" },
-    @{ Name = "Nicotine (니코틴)"; Formula = "C10H14N2"; Smiles = "c1cncc(c1)[C@@H]2CCCN2C"; Category = "천연 알칼로이드" }
+    @{ Name = "Aspirin"; Formula = "C9H8O4"; Smiles = "CC(=O)Oc1ccccc1C(=O)O"; Category = "NSAID Analgesic" },
+    @{ Name = "Caffeine"; Formula = "C8H10N4O2"; Smiles = "Cn1cnc2c1c(=O)n(C)c(=O)n2C"; Category = "Xanthine Alkaloid" },
+    @{ Name = "Paracetamol"; Formula = "C8H9NO2"; Smiles = "CC(=O)Nc1ccc(O)cc1"; Category = "Antipyretic Analgesic" },
+    @{ Name = "Nicotine"; Formula = "C10H14N2"; Smiles = "c1cncc(c1)[C@@H]2CCCN2C"; Category = "Natural Alkaloid" }
 )
 
 $tempFiles = @()
@@ -38,8 +38,8 @@ try {
 
     # Title
     $titlePara = $doc.Paragraphs.Add()
-    $titlePara.Range.Text = "화학 화합물 연구 보고서 (SMILES for Word)"
-    $titlePara.Range.Font.Name = "Malgun Gothic"
+    $titlePara.Range.Text = "Chemical Compound Research Report (SMILES for Word)"
+    $titlePara.Range.Font.Name = "Segoe UI"
     $titlePara.Range.Font.Size = 18
     $titlePara.Range.Font.Bold = 1
     $titlePara.Range.Font.Color = 0x1E293B
@@ -47,8 +47,8 @@ try {
 
     # Subtitle
     $subPara = $doc.Paragraphs.Add()
-    $subPara.Range.Text = "EPAM Indigo 분자 구조식 자동 렌더링 및 Ketcher 에디터 연동 샘플 문서"
-    $subPara.Range.Font.Name = "Malgun Gothic"
+    $subPara.Range.Text = "EPAM Indigo Molecular Structure Auto-Rendering & Ketcher 2D Editor Integration"
+    $subPara.Range.Font.Name = "Segoe UI"
     $subPara.Range.Font.Size = 10.5
     $subPara.Range.Font.Color = 0x64748B
     $subPara.Range.InsertParagraphAfter()
@@ -61,11 +61,11 @@ try {
     $table.Borders.InsideColor = 0xE2E8F0
 
     # Header Row
-    $headers = @("화합물명", "화학식 / 용도", "2D 화학 구조식 (Double-Click)", "SMILES 코드")
+    $headers = @("Compound Name", "Formula / Class", "2D Structure (Double-Click)", "SMILES Code")
     for ($c = 1; $c -le 4; $c++) {
         $cell = $table.Cell(1, $c)
         $cell.Range.Text = $headers[$c - 1]
-        $cell.Range.Font.Name = "Malgun Gothic"
+        $cell.Range.Font.Name = "Segoe UI"
         $cell.Range.Font.Size = 10
         $cell.Range.Font.Bold = 1
         $cell.Shading.BackgroundPatternColor = 0xF1F5F9
@@ -79,7 +79,7 @@ try {
 
         $c1 = $table.Cell($row, 1)
         $c1.Range.Text = $item.Name
-        $c1.Range.Font.Name = "Malgun Gothic"
+        $c1.Range.Font.Name = "Segoe UI"
         $c1.Range.Font.Size = 9.5
         $c1.Range.Font.Bold = 1
 
@@ -109,14 +109,14 @@ try {
 
     # Column widths
     $table.Columns.Item(1).Width = 120
-    $table.Columns.Item(2).Width = 110
-    $table.Columns.Item(3).Width = 150
+    $table.Columns.Item(2).Width = 120
+    $table.Columns.Item(3).Width = 140
     $table.Columns.Item(4).Width = 140
 
     # Note
     $notePara = $doc.Paragraphs.Add()
-    $notePara.Range.Text = "※ 문서 내의 임의의 분자 구조식 그림을 마우스로 더블 클릭하면 내장된 EPAM Ketcher 2D 에디터가 열려 바로 편집할 수 있습니다."
-    $notePara.Range.Font.Name = "Malgun Gothic"
+    $notePara.Range.Text = "* Double-clicking any chemical structure launches the embedded EPAM Ketcher 2D editor for instant in-place editing."
+    $notePara.Range.Font.Name = "Segoe UI"
     $notePara.Range.Font.Size = 9
     $notePara.Range.Font.Italic = 1
     $notePara.Range.Font.Color = 0x2563EB
@@ -182,6 +182,12 @@ try {
     }
 
     $doc.Close($false)
+
+    $docsPublicPath = (Join-Path $PSScriptRoot '../docs/public/word-showcase.png')
+    if (Test-Path $exportPath) {
+        Copy-Item -Path $exportPath -Destination $docsPublicPath -Force
+        Write-Host "[+] Synced Word Showcase to docs/public: $docsPublicPath" -ForegroundColor Cyan
+    }
 }
 finally {
     $word.Quit()
