@@ -2,12 +2,9 @@
 layout: home
 
 hero:
-  name: "SMILES for Office"
+  name: "func_SMILES2IMG"
   text: "Chemical Structure Renderer & 2D Editor"
   tagline: "High-resolution 2D chemical structure rendering, real-time in-cell formulas, seamless double-click editing, and lossless KET reaction canvases across Excel, Word, and PowerPoint — 100% offline & local."
-  image:
-    src: /logo.svg
-    alt: SMILES for Office
   actions:
     - theme: brand
       text: Get Started

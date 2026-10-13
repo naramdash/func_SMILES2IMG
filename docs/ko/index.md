@@ -2,12 +2,9 @@
 layout: home
 
 hero:
-  name: "SMILES for Office"
+  name: "func_SMILES2IMG"
   text: "화학 분자 구조식 자동 렌더러 & 2D 에디터"
   tagline: "고해상도 2D 화학 구조식 자동 렌더링, 실시간 인셀 수식, 더블 클릭 제자리 수정, 무손실 반응식 KET 캔버스 — Microsoft Excel, Word, PowerPoint 100% 로컬 오프라인 구동."
-  image:
-    src: /logo.svg
-    alt: SMILES for Office
   actions:
     - theme: brand
       text: 시작 가이드

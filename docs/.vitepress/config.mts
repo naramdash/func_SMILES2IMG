@@ -1,21 +1,19 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: 'SMILES for Office',
+  title: 'func_SMILES2IMG',
   description: 'Chemical Structure Renderer & 2D Editor for Microsoft Excel, Word, and PowerPoint',
   base: '/func_SMILES2IMG/',
   cleanUrls: true,
   lastUpdated: true,
 
-  head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/func_SMILES2IMG/logo.svg' }]
-  ],
+  head: [],
 
   locales: {
     root: {
       label: 'English',
       lang: 'en',
-      title: 'SMILES for Office',
+      title: 'func_SMILES2IMG',
       description: 'Chemical Structure Renderer & 2D Editor for Microsoft Excel, Word, and PowerPoint',
       themeConfig: {
         nav: [
@@ -79,7 +77,7 @@ export default defineConfig({
       label: '한국어',
       lang: 'ko',
       link: '/ko/',
-      title: 'SMILES for Office',
+      title: 'func_SMILES2IMG',
       description: 'Microsoft Excel, Word, PowerPoint용 화학 분자 구조식 자동 렌더러 & 에디터',
       themeConfig: {
         nav: [
@@ -142,7 +140,6 @@ export default defineConfig({
   },
 
   themeConfig: {
-    logo: '/logo.svg',
     socialLinks: [
       { icon: 'github', link: 'https://github.com/naramdash/func_SMILES2IMG' }
     ],
