@@ -135,6 +135,13 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   imageMso=""EquationInsertNew""
                   size=""large""
                   onAction=""OnInsertMolecule"" />
+          <button id=""btnQuickInsert""
+                  label=""클립보드 즉시 삽입""
+                  screentip=""클립보드 SMILES/KET 즉시 삽입""
+                  supertip=""에디터를 열지 않고 클립보드에 복사된 SMILES 또는 KET 구조식을 즉시 슬라이드에 삽입합니다.""
+                  imageMso=""Paste""
+                  size=""large""
+                  onAction=""OnQuickInsert"" />
           <button id=""btnEditMolecule""
                   label=""구조식 편집""
                   screentip=""선택된 분자 구조식 편집""
@@ -149,6 +156,13 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopySmiles"" />
+          <button id=""btnCopyMoleculeInfo""
+                  label=""분자 정보 복사""
+                  screentip=""화학식 및 분자량(MW) 정보 복사""
+                  supertip=""선택된 분자 구조식의 화학식(Formula), 분자량(MW), 정밀 질량(Exact Mass)을 계산하여 표시하고 클립보드에 복사합니다.""
+                  imageMso=""Info""
+                  size=""large""
+                  onAction=""OnCopyMoleculeInfo"" />
         </group>
       </tab>
     </tabs>
@@ -164,6 +178,11 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               label=""SMILES 복사 (추출)""
               imageMso=""Copy""
               onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPptPictureCopyInfo""
+              label=""분자 정보 (화학식·분자량) 복사""
+              imageMso=""Info""
+              onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPptPictureCopyKet""
               label=""캔버스 데이터(KET) 복사""
@@ -182,6 +201,11 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               label=""SMILES 복사 (추출)""
               imageMso=""Copy""
               onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPptShapeCopyInfo""
+              label=""분자 정보 (화학식·분자량) 복사""
+              imageMso=""Info""
+              onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPptShapeCopyKet""
               label=""캔버스 데이터(KET) 복사""
@@ -205,6 +229,12 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
         PowerPointStructureManager.InsertMolecule(pptApp);
     }
 
+    public void OnQuickInsert(IRibbonControl control)
+    {
+        if (pptApp == null) return;
+        PowerPointStructureManager.QuickInsertFromClipboard(pptApp);
+    }
+
     public void OnEditMolecule(IRibbonControl control)
     {
         if (pptApp == null) return;
@@ -221,5 +251,11 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
     {
         if (pptApp == null) return;
         PowerPointStructureManager.CopySelectedMoleculeKet(pptApp);
+    }
+
+    public void OnCopyMoleculeInfo(IRibbonControl control)
+    {
+        if (pptApp == null) return;
+        PowerPointStructureManager.CopySelectedMoleculeInfo(pptApp);
     }
 }

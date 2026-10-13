@@ -383,16 +383,117 @@ public static class WordStructureManager
         }
     }
 
+    public static void QuickInsertFromSelectionOrClipboard(MSWord.Application app)
+    {
+        try
+        {
+            if (app.Documents.Count == 0)
+            {
+                app.Documents.Add();
+            }
+
+            var sel = app.Selection;
+            if (sel != null && sel.Start != sel.End && !string.IsNullOrWhiteSpace(sel.Text))
+            {
+                var selectedText = sel.Text.Trim();
+                if (MoleculeRenderer.TryRenderStructure(selectedText, RenderOptions.Default, out var selPng, out var selKet, out var selSmiles) && selPng != null)
+                {
+                    sel.Text = "";
+                    InsertMoleculeAsPicture(app, selKet, selSmiles ?? "", selPng);
+                    return;
+                }
+            }
+
+            if (Clipboard.ContainsText())
+            {
+                var clipText = Clipboard.GetText()?.Trim();
+                if (MoleculeRenderer.TryRenderStructure(clipText, RenderOptions.Default, out var clipPng, out var clipKet, out var clipSmiles) && clipPng != null)
+                {
+                    InsertMoleculeAsPicture(app, clipKet, clipSmiles ?? "", clipPng);
+                    return;
+                }
+            }
+
+            MessageBox.Show(
+                "선택된 텍스트나 클립보드에서 유효한 SMILES 또는 KET 구조식 데이터를 찾을 수 없습니다.\n먼저 SMILES 문자열(예: CC(=O)Oc1ccccc1C(=O)O)을 복사하거나 문서에서 텍스트를 드래그해 선택해 주세요.",
+                "SMILES for Word",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "클립보드 구조식 즉시 삽입 중 오류가 발생했습니다:\n" + ex.Message,
+                "SMILES for Word",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+
+    public static void CopySelectedMoleculeInfo(MSWord.Application app)
+    {
+        try
+        {
+            var sel = app.Selection;
+            string? targetData = null;
+
+            if (sel.InlineShapes.Count > 0)
+            {
+                var targetInline = sel.InlineShapes[1];
+                targetData = ExtractSmiles(targetInline.Title, targetInline.AlternativeText)
+                             ?? ExtractStructure(targetInline.AlternativeText, targetInline.Title);
+            }
+            else if (sel.ShapeRange.Count > 0)
+            {
+                var targetShape = sel.ShapeRange[1];
+                targetData = ExtractSmiles(targetShape.Title, targetShape.AlternativeText)
+                             ?? ExtractStructure(targetShape.AlternativeText, targetShape.Title);
+            }
+            else if (sel != null && sel.Start != sel.End && !string.IsNullOrWhiteSpace(sel.Text))
+            {
+                targetData = sel.Text.Trim();
+            }
+
+            var info = MoleculeRenderer.TryGetMoleculeInfo(targetData);
+            if (info == null)
+            {
+                MessageBox.Show(
+                    "선택된 분자 구조식에서 화학식/분자량 정보를 계산할 수 없습니다.\n먼저 분자 구조식 이미지를 클릭하여 선택해 주세요.",
+                    "SMILES for Word",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            Clipboard.SetText(info.FormatClipboardSummary());
+            MessageBox.Show(
+                $"클립보드에 분자 물성 정보가 복사되었습니다:\n\n{info.FormatDisplayMessage()}",
+                "분자 정보 (화학식 · 분자량)",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "분자 정보 계산 중 오류가 발생했습니다:\n" + ex.Message,
+                "SMILES for Word",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+
     private static byte[]? ResolvePngBytes(KetcherForm form, string? ket, string? smiles)
     {
         var pngBytes = form.ResultPngBytes;
         if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
 
+        var opts = new RenderOptions { Background = form.ResultBackground };
+
         if (!string.IsNullOrWhiteSpace(ket))
         {
             try
             {
-                pngBytes = MoleculeRenderer.RenderKet(ket!);
+                pngBytes = MoleculeRenderer.RenderKet(ket!, opts);
                 if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
             }
             catch { }
@@ -402,7 +503,7 @@ public static class WordStructureManager
         {
             try
             {
-                pngBytes = MoleculeRenderer.Render(smiles!, RenderOptions.Default);
+                pngBytes = MoleculeRenderer.Render(smiles!, opts);
                 if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
             }
             catch { }

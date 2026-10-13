@@ -46,9 +46,9 @@
 
 | Application | Features | Integration Model | User Guide |
 | :--- | :--- | :--- | :---: |
-| **Microsoft Excel** | • `=SMILES2IMG("CCO")` native in-cell images<br>• `=SMILES2IMG.FLOAT("CCO")` cell-anchored floating shapes<br>• **Double-click cell to open Ketcher 2D Editor** and edit structures interactively | Standalone Excel-DNA XLL (32/64-bit) | 📗 [**Excel Guide**](docs/EXCEL_GUIDE.md) |
-| **Microsoft Word** | • Native ribbon tab **`[SMILES]`**<br>• **Insert Molecular Structure**: insert vector-grade inline pictures at cursor position<br>• **Edit Structure / Double-click**: double-click any inserted molecule image to re-open Ketcher and update in-place | Office COM Add-in (`.dll`, per-user HKCU registration) | 📘 [**Word Guide**](docs/WORD_GUIDE.md) |
-| **Microsoft PowerPoint** | • Native ribbon tab **`[SMILES]`**<br>• **Insert Molecular Structure**: insert high-resolution slide pictures<br>• **Edit Structure / Double-click**: double-click any molecule on a slide to re-open Ketcher and update preserving dimensions and coordinates | Office COM Add-in (`.dll`, per-user HKCU registration) | 📙 [**PowerPoint Guide**](docs/POWERPOINT_GUIDE.md) |
+| **Microsoft Excel** | • `=SMILES2IMG("CCO")` native in-cell images & `=SMILES2IMG.FLOAT("CCO")` cell-anchored shapes<br>• **Canvas Structure (KET)**: insert reactions, arrows, and multi-structure canvases on sheets<br>• **Quick Paste / Molecule Info (Formula & MW) / Right-Click Context Menus**<br>• **Double-click cell or canvas shape to edit in Ketcher** | Standalone Excel-DNA XLL (32/64-bit) | 📗 [**Excel Guide**](docs/EXCEL_GUIDE.md) |
+| **Microsoft Word** | • Native ribbon tab **`[SMILES]`** & **Right-Click Context Menus**<br>• **Full KET Canvas Storage**: preserves reactions, arrows, pluses, text annotations, and 2D coordinates<br>• **Quick Paste from Clipboard / Selected Text** & **Copy SMILES / KET / Formula & MW**<br>• **Double-click any molecule image to re-open Ketcher and update in-place** | Office COM Add-in (`.dll`, per-user HKCU registration) | 📘 [**Word Guide**](docs/WORD_GUIDE.md) |
+| **Microsoft PowerPoint** | • Native ribbon tab **`[SMILES]`** & **Right-Click Context Menus**<br>• **Full KET Canvas Storage**: high-DPI slide rendering with transparent or white background toggle<br>• **Quick Paste from Clipboard** & **Copy SMILES / KET / Formula & MW**<br>• **Double-click any molecule on a slide to re-open Ketcher and update in-place** | Office COM Add-in (`.dll`, per-user HKCU registration) | 📙 [**PowerPoint Guide**](docs/POWERPOINT_GUIDE.md) |
 
 <br>
 
@@ -153,10 +153,11 @@ Type formula in any worksheet cell to insert a molecular rendering:
 > • **Real-time formula tooltips (ExcelDna.IntelliSense):** As you type `=SMILES2IMG(` or `=SMILES2IMG.FLOAT(`, Excel displays native-style tooltips highlighting the active argument in bold with clear English descriptions.  
 > • **Row/Column resizing (FLOAT mode):** Pictures placed by `SMILES2IMG.FLOAT` move and stretch with cell rows and columns (`xlMoveAndSize`). If row heights or column widths are manually altered and you wish to cleanly restore their exact aspect ratios, click **[SMILES] → [Refit floating images]** on the ribbon menu.  
 > • **Cell sizing:** For optimal bond resolution and readability, increase the row height (e.g., 80–120 pt) and column width (e.g., 25–40).  
-> • **🧬 Built-in EPAM Ketcher Molecular Editor (Structure Cells):**  
->   - **Start from Blank Cell:** Right-click any blank cell and select **`[🧬 분자 구조식 삽입 (Ketcher)...]`** or press **`Ctrl+Shift+K`** to open the EPAM Ketcher editor. Sketch your molecule and click **[Apply to Cell]**—the cell immediately becomes an **in-cell molecular image cell (Structure Cell)** with formula `=SMILES2IMG("...")`.  
->   - **Double-Click Re-editing:** Double-click any structure image cell at any time to reopen Ketcher with the existing molecule preloaded. Modify and apply to instantly refresh the cell image.  
->   - **Backward Compatibility:** Double-clicking existing `=SMILES2IMG(A2)` formula cells automatically resolves and edits the source SMILES cell (`A2`), recalculating dependent images seamlessly.  
+> • **🧬 Built-in EPAM Ketcher Molecular Editor (Structure Cells & Canvas Mode):**  
+>   - **Start from Blank Cell (`=SMILES2IMG`):** Right-click any blank cell and select **`[분자 구조식 삽입 (셀 수식)...]`** or press **`Ctrl+Shift+K`** to open the EPAM Ketcher editor. Sketch your molecule and click **[Apply (Ctrl+Enter)]**—the cell immediately becomes an **in-cell molecular image cell (Structure Cell)** with formula `=SMILES2IMG("...")`.  
+>   - **Canvas Structure Mode (`KET`):** Click **`[캔버스 구조식 삽입]`** on the `[SMILES]` ribbon tab (or right-click menu) to draw multi-step reactions, arrows, plus signs, and text annotations stored in native Ketcher `KET` canvas format.  
+>   - **Quick Paste & Molecule Info:** Click **`[클립보드 즉시 삽입]`** to instantly convert a copied SMILES/KET string without opening the editor, or **`[분자 정보 복사]`** to calculate and copy Formula, Molecular Weight (MW), and Exact Mass.  
+>   - **Double-Click & Right-Click Editing:** Double-click (or right-click) any structure cell or floating canvas image at any time to reopen Ketcher, extract SMILES, or copy KET/molecular properties.  
 >   - **100% Offline & Port-Free:** Uses embedded Microsoft WebView2 virtual host mapping (`ketcher.local`) without opening local TCP server ports or triggering firewall warnings.  
 >  
 > 👉 **For the comprehensive Excel guide with all parameter recipes and troubleshooting, read [docs/EXCEL_GUIDE.md](docs/EXCEL_GUIDE.md).**
@@ -165,19 +166,21 @@ Type formula in any worksheet cell to insert a molecular rendering:
 
 ## 📝 Word & PowerPoint Usage
 
-The same high-performance chemical rendering pipeline (EPAM Indigo) and 2D sketching editor (EPAM Ketcher) are natively integrated into Microsoft Word and PowerPoint through a dedicated ribbon tab.
+The same high-performance chemical rendering pipeline (EPAM Indigo) and 2D sketching editor (EPAM Ketcher) are natively integrated into Microsoft Word and PowerPoint through a dedicated ribbon tab and right-click context menus.
 
-### 1. Ribbon Menu: `[SMILES]` Tab
-Upon launching Word or PowerPoint, a top-level **`[SMILES]`** tab appears automatically:
-* **[Insert Molecular Structure]**: Instantly opens the 100% offline Ketcher editor. Sketch your 2D molecule, click **[Apply]**, and a vector-grade molecular picture is inserted right at your current cursor position (Word) or centered on the active slide (PowerPoint).
-* **[Edit Structure]**: Select any existing molecular picture and click this button to reload its SMILES string back into Ketcher for modifications.
+### 1. Ribbon Menu: `[SMILES]` Tab & Right-Click Context Menus
+Upon launching Word or PowerPoint, a **`[SMILES]`** tab appears at the end of the ribbon alongside right-click picture/shape context menu actions:
+* **[분자 구조식 삽입 (Insert Structure)]**: Opens the 100% offline Ketcher editor. Sketch molecules, chemical reactions, reaction arrows, and text labels, choose **Transparent or White background**, and press **`Ctrl+Enter`** to insert a high-resolution PNG at your cursor position (Word) or slide (PowerPoint).
+* **[클립보드 즉시 삽입 (Quick Paste)]**: Instantly converts any SMILES or KET string in your clipboard (or selected text in Word/PowerPoint) into a rendered structure image in 0.1s without opening the editor.
+* **[구조식 편집 (Edit Structure)]**: Reloads the selected structure's full KET canvas (or SMILES) back into Ketcher for modifications.
+* **[SMILES 복사 (Copy SMILES)] & [분자 정보 복사 (Copy Formula & MW)]**: Extracts the canonical SMILES string, or calculates and copies the **Chemical Formula, Molecular Weight (g/mol), and Monoisotopic Exact Mass** directly to the clipboard.
 
 ### 2. Double-Click to Edit (Seamless In-Place Replacement)
-* **Word**: Double-click any molecular image in your document to immediately pop open the Ketcher editor. When you finish modifying and close the window, the document image is replaced in-place while maintaining proper formatting and dimensions.
-* **PowerPoint**: Double-click any molecular structure shape on your slide to edit in Ketcher. The updated chemical structure preserves the shape's exact dimensions, coordinates, and aspect ratio.
+* **Word**: Double-click any molecular image in your document to immediately pop open the Ketcher editor. When you finish modifying and apply, the document image is replaced in-place while maintaining proper formatting and dimensions.
+* **PowerPoint**: Double-click any molecular structure shape on your slide to edit in Ketcher (suppressing PowerPoint's default Picture Format pane). The updated chemical structure preserves the shape's exact dimensions, coordinates, and aspect ratio.
 
-### 3. Lossless Metadata Preservation
-* Each molecule image stores its raw SMILES string in Office metadata (`AlternativeText`, `Title`, and `Tags` as `SMILES:<string>`). The molecular information is never lost when saving, emailing, or reopening `.docx` and `.pptx` presentations.
+### 3. Lossless KET Canvas & SMILES Metadata Preservation
+* Each structure image stores its full **Ketcher native `KET` JSON canvas** (`KET:{...}`) and **`SMILES:<string>`** in Office metadata (`AlternativeText`, `Title`, and `Tags`). Multi-molecule layouts, reaction arrows, atom coordinates, and annotations are 100% preserved across saving, emailing, or reopening `.docx`, `.pptx`, and `.xlsx` files.
 
 > 📚 **Detailed Application Guides:**  
 > • 📘 [**Word Detailed User Guide (docs/WORD_GUIDE.md)**](docs/WORD_GUIDE.md): Table formatting, report layouts, and PDF export.  

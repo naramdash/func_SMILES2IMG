@@ -30,6 +30,13 @@ public class SmilesRibbon : ExcelRibbon
                   imageMso=""SmartArtInsert""
                   size=""large""
                   onAction=""OnInsertCanvasMolecule"" />
+          <button id=""btnQuickInsert""
+                  label=""클립보드 즉시 삽입""
+                  screentip=""클립보드 SMILES/KET 즉시 삽입""
+                  supertip=""에디터를 열지 않고 클립보드에 복사된 SMILES 또는 KET 구조식을 현재 셀 또는 시트에 즉시 삽입합니다.""
+                  imageMso=""Paste""
+                  size=""large""
+                  onAction=""OnQuickInsert"" />
           <button id=""btnEditMolecule""
                   label=""구조식 편집""
                   screentip=""선택된 분자 구조식 편집""
@@ -44,6 +51,13 @@ public class SmilesRibbon : ExcelRibbon
                   imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopySmiles"" />
+          <button id=""btnCopyMoleculeInfo""
+                  label=""분자 정보 복사""
+                  screentip=""화학식 및 분자량(MW) 정보 복사""
+                  supertip=""선택된 셀 또는 분자 구조식의 화학식(Formula), 분자량(MW), 정밀 질량(Exact Mass)을 계산하여 표시하고 클립보드에 복사합니다.""
+                  imageMso=""Info""
+                  size=""large""
+                  onAction=""OnCopyMoleculeInfo"" />
           <button id=""btnOpenDiagnostics""
                   label=""진단 (Diagnostics)""
                   screentip=""SMILES2IMG 로그 및 진단 창""
@@ -66,6 +80,11 @@ public class SmilesRibbon : ExcelRibbon
               label=""SMILES 복사 (추출)""
               imageMso=""Copy""
               onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextCopyInfoCell""
+              label=""분자 정보 (화학식·분자량) 복사""
+              imageMso=""Info""
+              onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextInsertMolecule""
               label=""분자 구조식 삽입 (셀 수식)...""
@@ -90,6 +109,11 @@ public class SmilesRibbon : ExcelRibbon
               imageMso=""Copy""
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
+      <button id=""btnContextListCopyInfoCell""
+              label=""분자 정보 (화학식·분자량) 복사""
+              imageMso=""Info""
+              onAction=""OnCopyMoleculeInfo""
+              insertBeforeMso=""Cut"" />
       <button id=""btnContextListInsertMolecule""
               label=""분자 구조식 삽입 (셀 수식)...""
               imageMso=""EquationInsertNew""
@@ -113,6 +137,11 @@ public class SmilesRibbon : ExcelRibbon
               imageMso=""Copy""
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
+      <button id=""btnContextPictureCopyInfo""
+              label=""분자 정보 (화학식·분자량) 복사""
+              imageMso=""Info""
+              onAction=""OnCopyMoleculeInfo""
+              insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureCopyKet""
               label=""캔버스 데이터(KET) 복사""
               imageMso=""SaveObjectAs""
@@ -130,6 +159,11 @@ public class SmilesRibbon : ExcelRibbon
               label=""SMILES 복사 (추출)""
               imageMso=""Copy""
               onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextShapeCopyInfo""
+              label=""분자 정보 (화학식·분자량) 복사""
+              imageMso=""Info""
+              onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeCopyKet""
               label=""캔버스 데이터(KET) 복사""
@@ -158,6 +192,14 @@ public class SmilesRibbon : ExcelRibbon
         });
     }
 
+    public void OnQuickInsert(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            KetcherEditor.QuickInsertCommand();
+        });
+    }
+
     public void OnEditMolecule(IRibbonControl control)
     {
         ExcelAsyncUtil.QueueAsMacro(() =>
@@ -179,6 +221,14 @@ public class SmilesRibbon : ExcelRibbon
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
             KetcherEditor.CopySelectedMoleculeKetCommand();
+        });
+    }
+
+    public void OnCopyMoleculeInfo(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            KetcherEditor.CopySelectedMoleculeInfoCommand();
         });
     }
 

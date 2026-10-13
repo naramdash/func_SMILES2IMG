@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.IO.Compression;
+using System.Reflection;
+using System.Security.Cryptography;
 
 namespace Smiles2Img;
 
@@ -27,14 +29,17 @@ public static class KetcherAssetManager
 
         var indexPath = Path.Combine(targetDir, "index.html");
         var manifestPath = Path.Combine(targetDir, ".version");
-        var currentVersion = typeof(KetcherAssetManager).Assembly.GetName().Version?.ToString() ?? "1.0.0.0";
 
-        var needsExtract = !File.Exists(indexPath) || !File.Exists(manifestPath) || File.ReadAllText(manifestPath).Trim() != currentVersion;
+        var assembly = typeof(KetcherAssetManager).Assembly;
+        var currentVersion = GetBundleFingerprint(assembly);
+
+        var needsExtract = !File.Exists(indexPath) ||
+                           !File.Exists(manifestPath) ||
+                           !string.Equals(File.ReadAllText(manifestPath).Trim(), currentVersion, StringComparison.OrdinalIgnoreCase);
 
         if (needsExtract)
         {
             Directory.CreateDirectory(targetDir);
-            var assembly = typeof(KetcherAssetManager).Assembly;
             using var stream = assembly.GetManifestResourceStream("Smiles2Img.Ketcher.zip");
             if (stream != null)
             {
@@ -55,6 +60,34 @@ public static class KetcherAssetManager
 
         cachedFolder = targetDir;
         return targetDir;
+    }
+
+    public static string GetBundleFingerprint(Assembly? assembly = null)
+    {
+        assembly ??= typeof(KetcherAssetManager).Assembly;
+        var asmVersion = assembly.GetName().Version?.ToString() ?? "1.0.0.0";
+        try
+        {
+            using var stream = assembly.GetManifestResourceStream("Smiles2Img.Ketcher.zip");
+            if (stream == null) return asmVersion;
+
+            var zipLength = stream.Length;
+            using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
+            var indexEntry = archive.GetEntry("index.html");
+            if (indexEntry != null)
+            {
+                using var entryStream = indexEntry.Open();
+                using var sha = SHA256.Create();
+                var hashBytes = sha.ComputeHash(entryStream);
+                var hashHex = BitConverter.ToString(hashBytes).Replace("-", "").Substring(0, 16);
+                return $"{asmVersion}-{zipLength}-{hashHex}";
+            }
+            return $"{asmVersion}-{zipLength}";
+        }
+        catch
+        {
+            return asmVersion;
+        }
     }
 }
 

@@ -32,6 +32,7 @@ public sealed class KetcherForm : Form
     public string? ResultKet { get; private set; }
     public string? ResultMolfile { get; private set; }
     public byte[]? ResultPngBytes { get; private set; }
+    public string ResultBackground { get; private set; } = "transparent";
 
     public KetcherForm(string cellAddress, string initialStructure)
     {
@@ -145,10 +146,10 @@ public sealed class KetcherForm : Form
             {
                 string buttonText = cellAddress switch
                 {
-                    "Word" => "문서에 적용 (Enter)",
-                    "PowerPoint" => "슬라이드에 적용 (Enter)",
-                    "Canvas" => "시트에 적용 (Enter)",
-                    _ => "셀에 적용 (Enter)"
+                    "Word" => "문서에 적용 (Ctrl+Enter)",
+                    "PowerPoint" => "슬라이드에 적용 (Ctrl+Enter)",
+                    "Canvas" => "시트에 적용 (Ctrl+Enter)",
+                    _ => "셀에 적용 (Ctrl+Enter)"
                 };
                 string badgeText = cellAddress switch
                 {
@@ -183,6 +184,8 @@ public sealed class KetcherForm : Form
                             ResultKet = ketStr;
                         if (dict.TryGetValue("molfile", out var m) && m is string molStr)
                             ResultMolfile = molStr;
+                        if (dict.TryGetValue("background", out var bg) && bg is string bgStr && !string.IsNullOrWhiteSpace(bgStr))
+                            ResultBackground = bgStr.Trim();
                         if (dict.TryGetValue("imageBase64", out var img) && img is string imgBase64 && !string.IsNullOrWhiteSpace(imgBase64))
                         {
                             try { ResultPngBytes = Convert.FromBase64String(imgBase64); } catch { }

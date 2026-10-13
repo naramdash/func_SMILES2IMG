@@ -294,6 +294,162 @@ public static class KetcherEditor
         }
     }
 
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "분자 정보(화학식·분자량) 복사")]
+    public static void CopySelectedMoleculeInfoCommand()
+    {
+        try
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            var targetShape = GetSelectedShape(app);
+            string? targetData = null;
+
+            if (targetShape != null)
+            {
+                targetData = ExtractSmiles(targetShape) ?? ExtractStructure(targetShape);
+            }
+            else if (app.ActiveCell is Excel.Range cell)
+            {
+                targetData = ExtractSmilesFromCell(cell);
+            }
+
+            var info = MoleculeRenderer.TryGetMoleculeInfo(targetData);
+            if (info == null)
+            {
+                MessageBox.Show(
+                    "선택된 셀 또는 이미지에서 화학식/분자량 정보를 계산할 수 없습니다.\n먼저 분자 구조식 셀이나 이미지를 선택해 주세요.",
+                    "SMILES for Excel",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            Clipboard.SetText(info.FormatClipboardSummary());
+            MessageBox.Show(
+                $"클립보드에 분자 물성 정보가 복사되었습니다:\n\n{info.FormatDisplayMessage()}",
+                "분자 정보 (화학식 · 분자량)",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "분자 정보 계산 중 오류가 발생했습니다: " + ex.Message,
+                "SMILES for Excel",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "클립보드 SMILES/KET 즉시 삽입")]
+    public static void QuickInsertCommand()
+    {
+        try
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            if (app.ActiveSheet is not Excel.Worksheet sheet) return;
+
+            string? rawInput = null;
+            if (Clipboard.ContainsText())
+            {
+                rawInput = Clipboard.GetText()?.Trim();
+            }
+
+            // Fallback to current cell plain text if clipboard doesn't have valid structure
+            if (app.ActiveCell is Excel.Range activeCell)
+            {
+                string cellFormula = Convert.ToString((object?)activeCell.Formula) ?? "";
+                string cellVal = Convert.ToString((object?)activeCell.Value2)?.Trim() ?? "";
+                if (!cellFormula.StartsWith("=", StringComparison.Ordinal) && !string.IsNullOrEmpty(cellVal) && IsLikelySmiles(cellVal))
+                {
+                    if (string.IsNullOrEmpty(rawInput) || !MoleculeRenderer.TryRenderStructure(rawInput, RenderOptions.Default, out _, out _, out _))
+                    {
+                        rawInput = cellVal;
+                    }
+                }
+            }
+
+            if (!MoleculeRenderer.TryRenderStructure(rawInput, RenderOptions.Default, out var pngBytes, out var ket, out var smiles) || pngBytes == null)
+            {
+                MessageBox.Show(
+                    "클립보드(또는 활성 셀)에서 유효한 SMILES 또는 KET 구조식 데이터를 찾을 수 없습니다.\n먼저 SMILES 문자열(예: CC(=O)Oc1ccccc1C(=O)O)을 복사한 후 실행해 주세요.",
+                    "SMILES for Excel",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            // If it's a single molecule SMILES (and not a KET canvas / reaction), insert as cell formula!
+            if (string.IsNullOrEmpty(ket) && !string.IsNullOrEmpty(smiles) && !smiles!.Contains(">") && app.ActiveCell is Excel.Range targetCell)
+            {
+                try
+                {
+                    if (Convert.ToDouble(targetCell.RowHeight) < 85) targetCell.RowHeight = 95;
+                    if (Convert.ToDouble(targetCell.ColumnWidth) < 16) targetCell.ColumnWidth = 20;
+                }
+                catch { }
+
+                var funcName = CellImages.NativeImagesUnsupported ? "SMILES2IMG.FLOAT" : "SMILES2IMG";
+                var escaped = smiles.Replace("\"", "\"\"");
+                targetCell.Formula = $"={funcName}(\"{escaped}\")";
+                return;
+            }
+
+            // Otherwise (KET canvas or reaction), insert as floating canvas shape
+            var tempFile = Path.Combine(Path.GetTempPath(), $"structure_{Guid.NewGuid():N}.png");
+            try
+            {
+                File.WriteAllBytes(tempFile, pngBytes);
+                float left = 100f;
+                float top = 100f;
+                float width = 300f;
+                float height = 200f;
+
+                if (app.ActiveCell is Excel.Range cellPos)
+                {
+                    left = (float)Convert.ToDouble(cellPos.Left);
+                    top = (float)Convert.ToDouble(cellPos.Top);
+                }
+
+                try
+                {
+                    using var ms = new MemoryStream(pngBytes);
+                    using var img = System.Drawing.Image.FromStream(ms);
+                    float aspect = img.Width / (float)img.Height;
+                    width = Math.Max(200f, Math.Min(400f, img.Width));
+                    height = width / aspect;
+                }
+                catch { }
+
+                var shape = sheet.Shapes.AddPicture(
+                    Filename: tempFile,
+                    LinkToFile: MsoTriState.msoFalse,
+                    SaveWithDocument: MsoTriState.msoTrue,
+                    Left: left,
+                    Top: top,
+                    Width: width,
+                    Height: height);
+
+                shape.AlternativeText = !string.IsNullOrEmpty(ket) ? KetPrefix + ket : SmilesPrefix + (smiles ?? "");
+                shape.Title = !string.IsNullOrEmpty(smiles) ? SmilesPrefix + smiles : "Molecule Canvas";
+                shape.Placement = Excel.XlPlacement.xlMoveAndSize;
+                shape.LockAspectRatio = MsoTriState.msoTrue;
+                shape.Select();
+            }
+            finally
+            {
+                try { if (File.Exists(tempFile)) File.Delete(tempFile); } catch { }
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "클립보드 구조식 즉시 삽입 중 오류가 발생했습니다: " + ex.Message,
+                "SMILES for Excel",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+
     public static void EditSelectedMolecule(Excel.Application app)
     {
         var shape = GetSelectedShape(app);
@@ -835,11 +991,13 @@ public static class KetcherEditor
         var pngBytes = form.ResultPngBytes;
         if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
 
+        var opts = new RenderOptions { Background = form.ResultBackground };
+
         if (!string.IsNullOrWhiteSpace(ket))
         {
             try
             {
-                pngBytes = MoleculeRenderer.RenderKet(ket!);
+                pngBytes = MoleculeRenderer.RenderKet(ket!, opts);
                 if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
             }
             catch { }
@@ -849,7 +1007,7 @@ public static class KetcherEditor
         {
             try
             {
-                pngBytes = MoleculeRenderer.Render(smiles!, RenderOptions.Default);
+                pngBytes = MoleculeRenderer.Render(smiles!, opts);
                 if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
             }
             catch { }

@@ -8,6 +8,29 @@ namespace Smiles2Img.Rendering;
 [Serializable]
 public sealed class InvalidSmilesException(string message) : Exception(message);
 
+public sealed class MoleculeInfo
+{
+    public string Formula { get; set; } = "";
+    public double MolecularWeight { get; set; }
+    public double ExactMass { get; set; }
+    public string Smiles { get; set; } = "";
+    public bool IsReaction { get; set; }
+
+    public string FormatClipboardSummary()
+    {
+        if (IsReaction)
+            return $"Reaction SMILES: {Smiles}";
+        return $"Formula: {Formula} | MW: {MolecularWeight:F2} g/mol | Exact Mass: {ExactMass:F4} | SMILES: {Smiles}";
+    }
+
+    public string FormatDisplayMessage()
+    {
+        if (IsReaction)
+            return $"[반응식 (Reaction)]\n\n• 반응 SMILES: {Smiles}";
+        return $"• 화학식 (Formula): {Formula}\n• 분자량 (Molecular Weight): {MolecularWeight:F2} g/mol\n• 정밀 질량 (Exact Mass): {ExactMass:F4}\n• 표준 SMILES: {Smiles}";
+    }
+}
+
 public static class MoleculeRenderer
 {
     private const int RingTopology = 10;
@@ -125,6 +148,159 @@ public static class MoleculeRenderer
         {
             return renderer.renderToBuffer(obj);
         }
+    }
+
+    public static MoleculeInfo? TryGetMoleculeInfo(string? structureOrSmiles)
+    {
+        if (string.IsNullOrWhiteSpace(structureOrSmiles)) return null;
+        var input = structureOrSmiles!.Trim();
+        string? fallbackSmiles = null;
+
+        var smilesIdx = input.IndexOf("\nSMILES:", StringComparison.OrdinalIgnoreCase);
+        if (smilesIdx >= 0)
+        {
+            fallbackSmiles = input.Substring(smilesIdx + 8).Trim();
+            input = input.Substring(0, smilesIdx).Trim();
+        }
+
+        if (input.StartsWith("KET:", StringComparison.OrdinalIgnoreCase))
+            input = input.Substring(4).Trim();
+        else if (input.StartsWith("SMILES:", StringComparison.OrdinalIgnoreCase))
+            input = input.Substring(7).Trim();
+
+        if (string.IsNullOrWhiteSpace(input))
+            input = fallbackSmiles ?? "";
+
+        if (string.IsNullOrWhiteSpace(input)) return null;
+
+        var result = TryGetMoleculeInfoCore(input);
+        if (result == null && !string.IsNullOrWhiteSpace(fallbackSmiles))
+            result = TryGetMoleculeInfoCore(fallbackSmiles!);
+        return result;
+    }
+
+    private static MoleculeInfo? TryGetMoleculeInfoCore(string input)
+    {
+        try
+        {
+            using var indigo = new Indigo();
+            try
+            {
+                using var mol = indigo.loadMolecule(input);
+                if (mol.countAtoms() > 0)
+                {
+                    var rawFormula = "";
+                    try { rawFormula = mol.grossFormula()?.Replace(" ", "") ?? ""; } catch { }
+                    double mw = 0;
+                    try { mw = mol.molecularWeight(); } catch { }
+                    double exact = 0;
+                    try { exact = mol.monoisotopicMass(); } catch { }
+                    var canSmiles = "";
+                    try { canSmiles = mol.canonicalSmiles() ?? ""; } catch { try { canSmiles = mol.smiles() ?? ""; } catch { } }
+
+                    return new MoleculeInfo
+                    {
+                        Formula = rawFormula,
+                        MolecularWeight = mw,
+                        ExactMass = exact,
+                        Smiles = canSmiles,
+                        IsReaction = false
+                    };
+                }
+            }
+            catch { }
+
+            try
+            {
+                using var rxn = indigo.loadReaction(input);
+                var rxnSmiles = "";
+                try { rxnSmiles = rxn.smiles() ?? ""; } catch { }
+                if (!string.IsNullOrEmpty(rxnSmiles))
+                {
+                    return new MoleculeInfo
+                    {
+                        Smiles = rxnSmiles,
+                        IsReaction = true
+                    };
+                }
+            }
+            catch { }
+        }
+        catch { }
+
+        return null;
+    }
+
+    public static bool TryRenderStructure(string? rawInput, RenderOptions? options, out byte[]? pngBytes, out string? ket, out string? smiles)
+    {
+        pngBytes = null;
+        ket = null;
+        smiles = null;
+
+        if (string.IsNullOrWhiteSpace(rawInput)) return false;
+        var input = rawInput!.Trim();
+        string? embeddedSmiles = null;
+
+        var smilesIdx = input.IndexOf("\nSMILES:", StringComparison.OrdinalIgnoreCase);
+        if (smilesIdx >= 0)
+        {
+            embeddedSmiles = input.Substring(smilesIdx + 8).Trim();
+            input = input.Substring(0, smilesIdx).Trim();
+        }
+
+        if (input.StartsWith("KET:", StringComparison.OrdinalIgnoreCase))
+            input = input.Substring(4).Trim();
+        else if (input.StartsWith("SMILES:", StringComparison.OrdinalIgnoreCase))
+            input = input.Substring(7).Trim();
+
+        if (string.IsNullOrWhiteSpace(input)) return false;
+
+        options ??= RenderOptions.Default;
+
+        // 1. Check if input is KET JSON
+        if (input.StartsWith("{", StringComparison.Ordinal) && input.Contains("\"root\""))
+        {
+            try
+            {
+                pngBytes = RenderKet(input, options);
+                if (pngBytes != null && pngBytes.Length > 0)
+                {
+                    ket = input;
+                    smiles = !string.IsNullOrWhiteSpace(embeddedSmiles)
+                        ? embeddedSmiles
+                        : (TryGetMoleculeInfo(input)?.Smiles ?? "");
+                    return true;
+                }
+            }
+            catch { }
+        }
+
+        // 2. Try standard SMILES rendering
+        try
+        {
+            pngBytes = Render(input, options);
+            if (pngBytes != null && pngBytes.Length > 0)
+            {
+                smiles = Normalize(input);
+                return true;
+            }
+        }
+        catch { }
+
+        // 3. Try Reaction SMILES or Molfile via RenderKet
+        try
+        {
+            pngBytes = RenderKet(input, options);
+            if (pngBytes != null && pngBytes.Length > 0)
+            {
+                var info = TryGetMoleculeInfo(input);
+                smiles = info?.Smiles ?? input;
+                return true;
+            }
+        }
+        catch { }
+
+        return false;
     }
 
     // Expose explicit H only on stereocenters whose non-H bonds are all part of rings

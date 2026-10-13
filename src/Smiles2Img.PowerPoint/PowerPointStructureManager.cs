@@ -384,6 +384,121 @@ public static class PowerPointStructureManager
         }
     }
 
+    public static void QuickInsertFromClipboard(MSPowerPoint.Application app)
+    {
+        try
+        {
+            if (app.Presentations.Count == 0)
+            {
+                var pres = app.Presentations.Add();
+                pres.Slides.Add(1, MSPowerPoint.PpSlideLayout.ppLayoutBlank);
+            }
+            else if (app.ActivePresentation.Slides.Count == 0)
+            {
+                app.ActivePresentation.Slides.Add(1, MSPowerPoint.PpSlideLayout.ppLayoutBlank);
+            }
+
+            var slide = GetActiveSlide(app);
+            if (slide == null)
+            {
+                MessageBox.Show(
+                    "활성화된 슬라이드가 없습니다.\n분자 구조식을 삽입할 슬라이드를 먼저 선택해 주세요.",
+                    "SMILES for PowerPoint",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            // 1. Check if text is selected inside a slide text frame
+            try
+            {
+                var sel = app.ActiveWindow?.Selection;
+                if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionText && sel.TextRange != null)
+                {
+                    var selectedText = sel.TextRange.Text?.Trim();
+                    if (!string.IsNullOrWhiteSpace(selectedText) &&
+                        MoleculeRenderer.TryRenderStructure(selectedText, RenderOptions.Default, out var selPng, out var selKet, out var selSmiles) &&
+                        selPng != null)
+                    {
+                        InsertMoleculeAsPicture(app, slide, selKet, selSmiles ?? "", selPng);
+                        return;
+                    }
+                }
+            }
+            catch { }
+
+            // 2. Check Windows Clipboard
+            if (Clipboard.ContainsText())
+            {
+                var clipText = Clipboard.GetText()?.Trim();
+                if (MoleculeRenderer.TryRenderStructure(clipText, RenderOptions.Default, out var clipPng, out var clipKet, out var clipSmiles) && clipPng != null)
+                {
+                    InsertMoleculeAsPicture(app, slide, clipKet, clipSmiles ?? "", clipPng);
+                    return;
+                }
+            }
+
+            MessageBox.Show(
+                "클립보드(또는 선택된 텍스트)에서 유효한 SMILES 또는 KET 구조식 데이터를 찾을 수 없습니다.\n먼저 SMILES 문자열(예: CC(=O)Oc1ccccc1C(=O)O)을 복사한 후 실행해 주세요.",
+                "SMILES for PowerPoint",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "클립보드 구조식 즉시 삽입 중 오류가 발생했습니다:\n" + ex.Message,
+                "SMILES for PowerPoint",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+
+    public static void CopySelectedMoleculeInfo(MSPowerPoint.Application app)
+    {
+        try
+        {
+            var sel = app.ActiveWindow?.Selection;
+            string? targetData = null;
+
+            if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 0)
+            {
+                var shape = sel.ShapeRange[1];
+                targetData = ExtractSmiles(shape) ?? ExtractStructure(shape);
+            }
+            else if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionText && sel.TextRange != null)
+            {
+                targetData = sel.TextRange.Text?.Trim();
+            }
+
+            var info = MoleculeRenderer.TryGetMoleculeInfo(targetData);
+            if (info == null)
+            {
+                MessageBox.Show(
+                    "선택된 분자 구조식에서 화학식/분자량 정보를 계산할 수 없습니다.\n먼저 슬라이드에서 분자 구조식 이미지를 클릭하여 선택해 주세요.",
+                    "SMILES for PowerPoint",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            Clipboard.SetText(info.FormatClipboardSummary());
+            MessageBox.Show(
+                $"클립보드에 분자 물성 정보가 복사되었습니다:\n\n{info.FormatDisplayMessage()}",
+                "분자 정보 (화학식 · 분자량)",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "분자 정보 계산 중 오류가 발생했습니다:\n" + ex.Message,
+                "SMILES for PowerPoint",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+
     private static string? ExtractSmilesFromText(params string?[] texts)
     {
         foreach (var text in texts)
@@ -403,11 +518,13 @@ public static class PowerPointStructureManager
         var pngBytes = form.ResultPngBytes;
         if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
 
+        var opts = new RenderOptions { Background = form.ResultBackground };
+
         if (!string.IsNullOrWhiteSpace(ket))
         {
             try
             {
-                pngBytes = MoleculeRenderer.RenderKet(ket!);
+                pngBytes = MoleculeRenderer.RenderKet(ket!, opts);
                 if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
             }
             catch { }
@@ -417,7 +534,7 @@ public static class PowerPointStructureManager
         {
             try
             {
-                pngBytes = MoleculeRenderer.Render(smiles!, RenderOptions.Default);
+                pngBytes = MoleculeRenderer.Render(smiles!, opts);
                 if (pngBytes != null && pngBytes.Length > 0) return pngBytes;
             }
             catch { }

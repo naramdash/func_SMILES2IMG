@@ -271,20 +271,44 @@ internal static class Program
             Check(!KetcherEditor.IsLikelySmiles("Hello world"), "Ketcher rejects plain text");
             Check(!KetcherEditor.IsLikelySmiles(""), "Ketcher rejects empty string");
 
+            var fingerprint = KetcherAssetManager.GetBundleFingerprint();
+            Check(!string.IsNullOrWhiteSpace(fingerprint) && fingerprint.Contains("-"), "Ketcher bundle fingerprint is generated");
             var ketcherFolder = KetcherAssetManager.EnsureKetcherFolder();
             Check(Directory.Exists(ketcherFolder), "Ketcher folder exists");
             Check(File.Exists(Path.Combine(ketcherFolder, "index.html")), "Ketcher index.html exists");
             var indexContent = File.ReadAllText(Path.Combine(ketcherFolder, "index.html"));
             Check(indexContent.Contains("getCanvasSvg"), "Ketcher index.html includes getCanvasSvg");
             Check(indexContent.Contains("calculateCanvasBBox"), "Ketcher index.html includes calculateCanvasBBox");
-            Console.WriteLine("PASS Ketcher editor SMILES validation and offline asset extraction");
+            Check(indexContent.Contains("toggleBackground"), "Ketcher index.html includes toggleBackground");
+            Console.WriteLine("PASS Ketcher editor SMILES validation, fingerprint, and offline asset extraction");
 
             // Test native KET rendering
-            var sampleKet = "{\"root\":{\"nodes\":[{\"type\":\"molecule\",\"atoms\":[{\"label\":\"C\",\"location\":[0,0,0]},{\"label\":\"O\",\"location\":[1,0,0]}],\"bonds\":[{\"type\":1,\"atoms\":[0,1]}]}]}}";
+            var sampleKet = "{\"root\":{\"nodes\":[{\"$ref\":\"mol0\"}]},\"mol0\":{\"type\":\"molecule\",\"atoms\":[{\"label\":\"C\",\"location\":[0,0,0]},{\"label\":\"O\",\"location\":[1,0,0]}],\"bonds\":[{\"type\":1,\"atoms\":[0,1]}]}}";
             var ketPng = MoleculeRenderer.RenderKet(sampleKet);
             Check(ketPng != null && ketPng.Length > 100, "MoleculeRenderer renders KET data directly");
             Check(ketPng!.Take(8).SequenceEqual(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }), "KET PNG signature");
             Console.WriteLine("PASS Native KET rendering fallback");
+
+            // Test MoleculeInfo calculation (Formula, Molecular Weight, Exact Mass, Canonical SMILES)
+            var aspirinInfo = MoleculeRenderer.TryGetMoleculeInfo("CC(=O)Oc1ccccc1C(=O)O");
+            Check(aspirinInfo != null, "TryGetMoleculeInfo succeeds for Aspirin SMILES");
+            Check(aspirinInfo!.Formula == "C9H8O4", "Aspirin formula is C9H8O4, got: " + aspirinInfo.Formula);
+            Check(Math.Abs(aspirinInfo.MolecularWeight - 180.16) < 0.1, "Aspirin MW ~ 180.16, got: " + aspirinInfo.MolecularWeight);
+            Check(Math.Abs(aspirinInfo.ExactMass - 180.0423) < 0.01, "Aspirin Exact Mass ~ 180.0423, got: " + aspirinInfo.ExactMass);
+            Check(!string.IsNullOrEmpty(aspirinInfo.Smiles), "Aspirin canonical SMILES non-empty");
+
+            var ketInfo = MoleculeRenderer.TryGetMoleculeInfo(sampleKet);
+            Check(ketInfo != null && ketInfo.Formula == "CH4O", "TryGetMoleculeInfo succeeds for methanol KET, got: " + (ketInfo?.Formula ?? "null"));
+            Console.WriteLine("PASS MoleculeInfo calculation (Formula, MW, ExactMass)");
+
+            // Test TryRenderStructure (Quick Paste helper)
+            Check(MoleculeRenderer.TryRenderStructure("c1ccccc1", null, out var quickSmilesPng, out var quickKet, out var quickSmiles)
+                  && quickSmilesPng != null && quickSmilesPng.Length > 100 && !string.IsNullOrEmpty(quickSmiles),
+                  "TryRenderStructure renders SMILES");
+            Check(MoleculeRenderer.TryRenderStructure(sampleKet, null, out var quickKetPng, out var quickKetOut, out _)
+                  && quickKetPng != null && quickKetPng.Length > 100 && quickKetOut == sampleKet,
+                  "TryRenderStructure renders KET");
+            Console.WriteLine("PASS TryRenderStructure for Quick Paste");
             return 0;
         }
         catch (Exception error) { Console.Error.WriteLine(error); return 1; }

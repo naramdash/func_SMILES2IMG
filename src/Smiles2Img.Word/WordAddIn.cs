@@ -68,6 +68,13 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   imageMso=""EquationInsertNew""
                   size=""large""
                   onAction=""OnInsertMolecule"" />
+          <button id=""btnQuickInsert""
+                  label=""클립보드 즉시 삽입""
+                  screentip=""클립보드 또는 선택된 SMILES/KET 즉시 삽입""
+                  supertip=""에디터를 열지 않고 클립보드나 문서 내 선택된 SMILES/KET 문자열을 즉시 분자 구조식 이미지로 변환하여 삽입합니다.""
+                  imageMso=""Paste""
+                  size=""large""
+                  onAction=""OnQuickInsert"" />
           <button id=""btnEditMolecule""
                   label=""구조식 편집""
                   screentip=""선택된 분자 구조식 편집""
@@ -82,6 +89,13 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopySmiles"" />
+          <button id=""btnCopyMoleculeInfo""
+                  label=""분자 정보 복사""
+                  screentip=""화학식 및 분자량(MW) 정보 복사""
+                  supertip=""선택된 분자 구조식의 화학식(Formula), 분자량(MW), 정밀 질량(Exact Mass)을 계산하여 표시하고 클립보드에 복사합니다.""
+                  imageMso=""Info""
+                  size=""large""
+                  onAction=""OnCopyMoleculeInfo"" />
         </group>
       </tab>
     </tabs>
@@ -97,6 +111,11 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               label=""SMILES 복사 (추출)""
               imageMso=""Copy""
               onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextInlineCopyInfo""
+              label=""분자 정보 (화학식·분자량) 복사""
+              imageMso=""Info""
+              onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextInlineCopyKet""
               label=""캔버스 데이터(KET) 복사""
@@ -116,6 +135,11 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               imageMso=""Copy""
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
+      <button id=""btnContextPictureCopyInfo""
+              label=""분자 정보 (화학식·분자량) 복사""
+              imageMso=""Info""
+              onAction=""OnCopyMoleculeInfo""
+              insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureCopyKet""
               label=""캔버스 데이터(KET) 복사""
               imageMso=""SaveObjectAs""
@@ -134,12 +158,25 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               imageMso=""Copy""
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
+      <button id=""btnContextShapeCopyInfo""
+              label=""분자 정보 (화학식·분자량) 복사""
+              imageMso=""Info""
+              onAction=""OnCopyMoleculeInfo""
+              insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeCopyKet""
               label=""캔버스 데이터(KET) 복사""
               imageMso=""SaveObjectAs""
               onAction=""OnCopyKet""
               insertBeforeMso=""Cut"" />
       <menuSeparator id=""sepContextShape"" insertBeforeMso=""Cut"" />
+    </contextMenu>
+    <contextMenu idMso=""ContextMenuText"">
+      <button id=""btnContextTextQuickInsert""
+              label=""선택/클립보드 SMILES → 구조식 삽입""
+              imageMso=""EquationInsertNew""
+              onAction=""OnQuickInsert""
+              insertBeforeMso=""Cut"" />
+      <menuSeparator id=""sepContextText"" insertBeforeMso=""Cut"" />
     </contextMenu>
   </contextMenus>
 </customUI>";
@@ -154,6 +191,12 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
     {
         if (wordApp == null) return;
         WordStructureManager.InsertMolecule(wordApp);
+    }
+
+    public void OnQuickInsert(IRibbonControl control)
+    {
+        if (wordApp == null) return;
+        WordStructureManager.QuickInsertFromSelectionOrClipboard(wordApp);
     }
 
     public void OnEditMolecule(IRibbonControl control)
@@ -172,5 +215,11 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
     {
         if (wordApp == null) return;
         WordStructureManager.CopySelectedMoleculeKet(wordApp);
+    }
+
+    public void OnCopyMoleculeInfo(IRibbonControl control)
+    {
+        if (wordApp == null) return;
+        WordStructureManager.CopySelectedMoleculeInfo(wordApp);
     }
 }
