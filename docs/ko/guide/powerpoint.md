@@ -25,7 +25,7 @@
 상단 리본 메뉴의 `[SMILES]` 탭에서 슬라이드 원클릭 삽입, 클립보드 즉시 변환, 시스템 진단을 원스톱으로 제공합니다:
 
 <p align="center">
-  <img src="/ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/powerpoint-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
 1. **✏️ 구조식 삽입 (`Ctrl+Shift+K`):** 오프라인 Ketcher 에디터에서 구조식이나 화학 반응식을 그린 뒤 <kbd>Ctrl</kbd> + <kbd>Enter</kbd>(또는 적용 버튼)를 누르면 현재 슬라이드 정중앙에 고해상도 그림으로 자동 배치됩니다.
@@ -42,7 +42,7 @@
 슬라이드 위 분자 도형이나 빈 슬라이드 캔버스에서 우클릭을 하면 깔끔한 화학 전용 서브메뉴가 나타납니다:
 
 <p align="center">
-  <img src="/context-menu-guide.png" alt="Chemical Structure Context Menu in PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/powerpoint-context-menu-guide.png" alt="Chemical Structure Context Menu in PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
 ### A. 슬라이드의 화학 분자 도형을 우클릭한 경우

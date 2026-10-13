@@ -25,7 +25,7 @@
 상단 리본 메뉴의 `[SMILES]` 탭에서 화학 구조식 삽입, 0.1초 텍스트 치환, 진단 창을 원클릭으로 조작할 수 있습니다:
 
 <p align="center">
-  <img src="/ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/word-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
 1. **✏️ 구조식 삽입 (`Ctrl+Shift+K`):** 100% 로컬 오프라인 구동되는 Ketcher 2D 화학 에디터를 열고 분자식이나 반응식을 그린 뒤 <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (또는 적용 버튼)를 누르면 커서 위치에 즉시 삽입됩니다.
@@ -42,7 +42,7 @@
 워드 본문 또는 표 안에서 마우스 우클릭을 하면 깔끔하게 분리된 `Chemical Structure` 서브메뉴가 나타납니다:
 
 <p align="center">
-  <img src="/context-menu-guide.png" alt="Chemical Structure Context Menu in Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/word-context-menu-guide.png" alt="Chemical Structure Context Menu in Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
 ### A. 삽입된 화학 그림을 우클릭한 경우

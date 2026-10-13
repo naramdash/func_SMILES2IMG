@@ -26,7 +26,7 @@ All core chemical operations in Excel are integrated natively into the Ribbon ta
 The custom `[SMILES]` Ribbon tab provides one-click access to all chemical structure operations without needing to remember formula syntax or keyboard shortcuts:
 
 <p align="center">
-  <img src="/ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Office" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/excel-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Excel" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
 * **✏️ Insert Structure (`Ctrl+Shift+K`):** Launches the offline Ketcher 2D editor. Draw structures, reactions, or functional groups, then press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to insert directly into the active cell.
@@ -41,7 +41,7 @@ The custom `[SMILES]` Ribbon tab provides one-click access to all chemical struc
 Right-click anywhere in your worksheet to access contextual chemical actions cleanly separated from standard Excel paste options:
 
 <p align="center">
-  <img src="/context-menu-guide.png" alt="Chemical Structure Context Menu in Excel" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/excel-context-menu-guide.png" alt="Chemical Structure Context Menu in Excel" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
 ### Case A: Right-Clicking a Molecule Cell

@@ -25,7 +25,7 @@ Crafting scientific slides, seminar presentations, and conference decks with che
 The custom `[SMILES]` tab on PowerPoint's ribbon provides one-click slide insertion and clipboard parsing:
 
 <p align="center">
-  <img src="/ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/powerpoint-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
 1. **✏️ Insert Structure (`Ctrl+Shift+K`):** Launches Ketcher. Draw your molecule or multi-step reaction, then click **Apply** (<kbd>Ctrl</kbd> + <kbd>Enter</kbd>) to place it directly at the center of the active slide.
@@ -42,7 +42,7 @@ The custom `[SMILES]` tab on PowerPoint's ribbon provides one-click slide insert
 Right-click any chemical shape or blank presentation slide area:
 
 <p align="center">
-  <img src="/context-menu-guide.png" alt="Chemical Structure Context Menu in PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/powerpoint-context-menu-guide.png" alt="Chemical Structure Context Menu in PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
 ### Case A: Right-Clicking an Existing Chemical Shape

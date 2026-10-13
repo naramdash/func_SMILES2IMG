@@ -26,7 +26,7 @@
 수식 문법이나 단축키를 외우지 않아도 상단 리본 메뉴의 **[SMILES]** 탭에서 모든 화학 기능을 원클릭으로 조작할 수 있습니다:
 
 <p align="center">
-  <img src="/ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Office" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/excel-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Office" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
 * **✏️ 구조식 삽입 (`Ctrl+Shift+K`):** 100% 로컬 오프라인 구동되는 Ketcher 2D 화학 에디터를 실행합니다. 구조식이나 화학 반응식을 자유롭게 그린 후 <kbd>Ctrl</kbd> + <kbd>Enter</kbd>를 누르면 현재 선택된 셀에 즉시 삽입됩니다.
@@ -41,7 +41,7 @@
 엑셀 워크시트 어디에서든 마우스 우클릭을 하면, 엑셀 기본 붙여넣기 옵션과 명확하게 분리된 `Chemical Structure` 서브메뉴를 통해 스마트한 화학 기능에 접근할 수 있습니다:
 
 <p align="center">
-  <img src="/context-menu-guide.png" alt="Chemical Structure Context Menu in Excel" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/excel-context-menu-guide.png" alt="Chemical Structure Context Menu in Excel" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
 ### A. 화학 구조식 셀을 우클릭한 경우

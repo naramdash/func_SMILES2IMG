@@ -25,7 +25,7 @@ All chemical workflows in Microsoft Word are designed to behave naturally like t
 The `[SMILES]` tab on Word's ribbon provides one-click access to structure drawing, instant text replacement, and diagnostics:
 
 <p align="center">
-  <img src="/ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/word-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
 1. **✏️ Insert Structure (`Ctrl+Shift+K`):** Launches the offline Ketcher 2D editor. Draw your molecule or multi-step reaction, then press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (or click **Apply**) to insert it as an inline picture at the current cursor position.
@@ -42,7 +42,7 @@ The `[SMILES]` tab on Word's ribbon provides one-click access to structure drawi
 Right-click any chemical structure picture or paragraph in your Word document:
 
 <p align="center">
-  <img src="/context-menu-guide.png" alt="Chemical Structure Context Menu in Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/word-context-menu-guide.png" alt="Chemical Structure Context Menu in Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
 ### Case A: Right-Clicking an Existing Chemical Picture
