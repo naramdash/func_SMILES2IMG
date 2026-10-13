@@ -79,10 +79,6 @@
 
 단일 분자뿐 아니라 반응 화살표, 촉매($H_2SO_4$), 반응 온도(55 °C), 시간, 플러스 기호(`+`)가 포함된 전체 유기 합성 반응식을 셀 안에 통째로 보존하려면 `=KET2IMG` 수식을 사용하세요:
 
-<p align="center">
-  <img src="/reaction-scheme-guide.png" alt="Multi-Component Reaction Scheme with KET2IMG" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
-
 ```text
 =KET2IMG(A2)
 ```
@@ -134,10 +130,6 @@
 ## 🔍 내장 진단 창 및 화학 엔진 실시간 로그
 
 수식에 에러가 나거나 추가 기능의 구동 상태를 점검하고 싶을 때 리본 메뉴의 **[SMILES] ➔ [설정 및 진단 (Settings & Diagnostics)]**을 클릭하세요:
-
-<p align="center">
-  <img src="/diagnostics-guide.png" alt="SMILES Diagnostics and Chemical Engine Log" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
 
 * **EPAM Indigo 엔진 로딩 상태:** C++ 네이티브 화학 엔진 초기화 성공 여부 및 버전 정보를 확인합니다.
 * **WebView2 및 Ketcher 캐시 검증:** 로컬에 캐시된 69개 에디터 파일의 SHA256 해시 무결성을 실시간 검증합니다.

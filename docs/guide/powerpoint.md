@@ -76,10 +76,6 @@ Double-click any molecule shape on your slide or press <kbd>Ctrl</kbd> + <kbd>Sh
 
 Present complex chemical mechanisms, catalytic cycles, and organic synthesis pathways directly on your slides:
 
-<p align="center">
-  <img src="/reaction-scheme-guide.png" alt="Reaction Schemes on PowerPoint Slides" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
-
 * **Reaction Schemes Preserved:** Full reaction schemes with arrows, catalysts, and reagents are stored losslessly inside `Shape.Tags['KET']`.
 * **In-Place Re-editing:** Double-clicking the slide shape reopens the reaction canvas in Ketcher, preserving all arrows and conditions for quick layout adjustments before presentations.
 
@@ -88,10 +84,6 @@ Present complex chemical mechanisms, catalytic cycles, and organic synthesis pat
 ## 🔍 Built-In Diagnostics Console
 
 Click **[SMILES] ➔ [Settings & Diagnostics]** to view system health and engine logs:
-
-<p align="center">
-  <img src="/diagnostics-guide.png" alt="SMILES Diagnostics Console in PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
 
 * Confirms PowerPoint COM Add-in registration and Indigo engine readiness.
 * Verifies offline Ketcher assets and rasterization performance metrics.

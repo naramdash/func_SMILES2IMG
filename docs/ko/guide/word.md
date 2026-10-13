@@ -77,10 +77,6 @@
 
 화살표, 촉매 조건 텍스트, 플러스 기호(`+`)가 포함된 다단계 유기 합성 경로도 워드 문서에 깔끔하게 삽입할 수 있습니다:
 
-<p align="center">
-  <img src="/reaction-scheme-guide.png" alt="Reaction Scheme and Lossless Storage" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
-
 * **전체 반응 경로 무손실 보존:** 반응 화살표, 시약($H_2SO_4$), 반응 온도(55 °C) 등이 워드 문서의 도형 속성(`AlternativeText`)에 무손실 저장됩니다.
 * **더블 클릭 제자리 수정:** 논문 투고 전 반응 조건이나 수율을 수정해야 할 때, 더블 클릭만으로 전체 반응 스킴이 Ketcher에 열려 손쉽게 수정할 수 있습니다.
 
@@ -89,10 +85,6 @@
 ## 🔍 내장 진단 콘솔 (Diagnostics)
 
 리본 메뉴의 **[SMILES] ➔ [설정 및 진단]**을 클릭하여 추가 기능 구동 상태를 점검할 수 있습니다:
-
-<p align="center">
-  <img src="/diagnostics-guide.png" alt="SMILES Diagnostics Console in Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
 
 * Word COM Add-in 등록 상태 및 C++ Indigo 화학 엔진 초기화 상태를 확인합니다.
 * 로컬 캐시 파일 무결성을 점검하고 실시간 렌더링 소요 시간 벤치마크를 모니터링합니다.

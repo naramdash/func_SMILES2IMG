@@ -77,10 +77,6 @@ Double-click any chemical structure picture inside Word or press <kbd>Ctrl</kbd>
 
 For reaction schemes, organic syntheses, and schemes with arrows and catalyst annotations:
 
-<p align="center">
-  <img src="/reaction-scheme-guide.png" alt="Reaction Scheme and Lossless Storage" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
-
 * **Full Scheme Preservation:** Reaction arrows, catalyst conditions, and plus signs are stored losslessly inside the document's shape metadata (`AlternativeText`).
 * **Double-Click Re-editing:** Double-clicking the reaction scheme in your Word document reopens Ketcher with the full reaction graph intact—enabling painless updates before journal submission.
 
@@ -89,10 +85,6 @@ For reaction schemes, organic syntheses, and schemes with arrows and catalyst an
 ## 🔍 Built-In Diagnostics Console
 
 Click **[SMILES] ➔ [Settings & Diagnostics]** to inspect engine health:
-
-<p align="center">
-  <img src="/diagnostics-guide.png" alt="SMILES Diagnostics Console in Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
 
 * Confirms EPAM Indigo C++ native library initialization and COM add-in registration.
 * Validates WebView2 runtime and offline Ketcher bundle assets.

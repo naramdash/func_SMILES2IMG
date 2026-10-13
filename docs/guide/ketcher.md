@@ -21,10 +21,6 @@
 
 Draw complete chemical reaction schemes with multiple reactants, reagents, catalysts, reaction arrows, and final products:
 
-<p align="center">
-  <img src="/reaction-scheme-guide.png" alt="Multi-Component Reaction Scheme" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
-
 * **Lossless Storage:** Ketcher's native `KET` format stores 2D layout coordinates, reaction arrows, catalyst labels (e.g. $H_2SO_4$, 55 °C), and text notes with zero degradation.
 * **Double-Click In-Place Re-editing:** Double-clicking the reaction cell or image re-opens Ketcher with all reaction arrows, plus signs, and conditions fully editable.
 

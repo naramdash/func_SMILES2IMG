@@ -79,10 +79,6 @@ Double-clicking any chemical cell or pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd>
 
 For multi-step organic reaction pathways involving reagents, catalysts, temperatures, yields, and plus signs (`+`), use the dedicated `=KET2IMG` formula:
 
-<p align="center">
-  <img src="/reaction-scheme-guide.png" alt="Multi-Component Reaction Scheme with KET2IMG" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
-
 ```text
 =KET2IMG(A2)
 ```
@@ -133,10 +129,6 @@ Options can be combined freely using spaces, commas, semicolons, or pipe symbols
 ## 🔍 Built-In Diagnostics & Chemical Engine Log
 
 If a chemical formula returns an error or you wish to verify add-in engine health, click **[SMILES] ➔ [Settings & Diagnostics]**:
-
-<p align="center">
-  <img src="/diagnostics-guide.png" alt="SMILES Diagnostics and Chemical Engine Log" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
 
 * **EPAM Indigo Engine Status:** Confirms native C++ chemistry engine initialization and version.
 * **WebView2 & Ketcher Cache Validation:** Verifies SHA256 hashes of embedded offline Ketcher editor assets (69 cached local files).

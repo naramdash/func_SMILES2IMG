@@ -76,10 +76,6 @@
 
 학술 세미나에서 다단계 반응 메커니즘, 촉매 순환 주기, 합성 경로를 슬라이드에 표현할 때도 완벽하게 지원됩니다:
 
-<p align="center">
-  <img src="/reaction-scheme-guide.png" alt="Reaction Schemes on PowerPoint Slides" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
-
 * **반응식 무손실 보존:** 반응 화살표, 촉매 조건($H_2SO_4$, 55 °C), 중간체 및 부산물 구조가 파워포인트 도형 메타데이터(`Shape.Tags['KET']`)에 온전히 유지됩니다.
 * **슬라이드 제자리 수정:** 발표 직전 반응물이나 시약을 수정해야 할 때, 슬라이드에서 더블 클릭하면 Ketcher에 전체 반응 경로가 그대로 열려 즉시 수정할 수 있습니다.
 
@@ -88,10 +84,6 @@
 ## 🔍 내장 진단 콘솔 (Diagnostics)
 
 리본 메뉴의 **[SMILES] ➔ [설정 및 진단]**을 클릭하여 추가 기능 구동 상태를 점검할 수 있습니다:
-
-<p align="center">
-  <img src="/diagnostics-guide.png" alt="SMILES Diagnostics Console in PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
 
 * PowerPoint COM Add-in 등록 상태 및 C++ Indigo 화학 엔진 상태를 확인합니다.
 * WebView2 런타임 및 오프라인 Ketcher 번들 파일 무결성을 점검합니다.

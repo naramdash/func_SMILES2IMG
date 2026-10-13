@@ -21,10 +21,6 @@
 
 반응물, 반응 화살표, 시약, 촉매, 최종 생성물이 모두 포함된 유기 합성 반응식을 손쉽게 그릴 수 있습니다:
 
-<p align="center">
-  <img src="/reaction-scheme-guide.png" alt="Multi-Component Reaction Scheme" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
-
 * **무손실 좌표 및 텍스트 보존:** Ketcher 고유의 `KET` 포맷은 반응 화살표, 촉매 조건 텍스트($H_2SO_4$, 55 °C), 2D 공간 좌표 레이아웃을 100% 무손실 상태로 보존합니다.
 * **더블 클릭 제자리 수정:** 반응식 셀이나 이미지를 더블 클릭하면 Ketcher에 반응 화살표와 텍스트 주석이 그대로 다시 열려 언제든 조건이나 반응물을 제자리에서 수정할 수 있습니다.
 
