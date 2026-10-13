@@ -1,6 +1,6 @@
 # 📗 SMILES for Excel — 초간편 사용법 완벽 가이드
 
-[🏠 메인 홈으로](../README.KR.md) · [📘 Word 가이드](WORD_GUIDE.md) · [📙 PowerPoint 가이드](POWERPOINT_GUIDE.md)
+[🏠 메인 홈으로](../README.md) · [📘 Word 가이드](WORD_GUIDE.md) · [📙 PowerPoint 가이드](POWERPOINT_GUIDE.md)
 
 ---
 

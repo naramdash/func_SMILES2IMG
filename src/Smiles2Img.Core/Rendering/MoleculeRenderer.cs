@@ -26,8 +26,8 @@ public sealed class MoleculeInfo
     public string FormatDisplayMessage()
     {
         if (IsReaction)
-            return $"[반응식 (Reaction)]\n\n• 반응 SMILES: {Smiles}";
-        return $"• 화학식 (Formula): {Formula}\n• 분자량 (Molecular Weight): {MolecularWeight:F2} g/mol\n• 정밀 질량 (Exact Mass): {ExactMass:F4}\n• 표준 SMILES: {Smiles}";
+            return $"[Reaction]\n\n• Reaction SMILES: {Smiles}";
+        return $"• Formula: {Formula}\n• Molecular Weight (MW): {MolecularWeight:F2} g/mol\n• Exact Mass: {ExactMass:F4}\n• Canonical SMILES: {Smiles}";
     }
 }
 

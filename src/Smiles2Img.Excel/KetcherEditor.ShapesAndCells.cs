@@ -34,7 +34,7 @@ public static partial class KetcherEditor
             }
 
             MessageBox.Show(
-                "선택된 개체는 SMILES/KET 분자 구조식 이미지가 아닙니다.",
+                "The selected object is not a SMILES or KET molecular structure image.",
                 "SMILES for Excel",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
@@ -71,7 +71,7 @@ public static partial class KetcherEditor
         catch (Exception ex)
         {
             MessageBox.Show(
-                "분자 구조식 편집 중 오류가 발생했습니다:\n" + ex.Message,
+                "An error occurred while editing structure:\n" + ex.Message,
                 "SMILES for Excel",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
@@ -100,7 +100,7 @@ public static partial class KetcherEditor
         catch (Exception ex)
         {
             MessageBox.Show(
-                "캔버스 구조식 삽입 중 오류가 발생했습니다:\n" + ex.Message,
+                "An error occurred while inserting canvas structure:\n" + ex.Message,
                 "SMILES for Excel",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
@@ -445,7 +445,7 @@ public static partial class KetcherEditor
         catch (Exception ex)
         {
             MessageBox.Show(
-                "에디터 실행 중 오류가 발생했습니다: " + ex.Message,
+                "An error occurred while launching editor: " + ex.Message,
                 "SMILES2IMG Ketcher",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);

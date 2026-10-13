@@ -32,7 +32,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
         }
         catch (Exception ex)
         {
-            MessageBox.Show("SMILES for Word 초기화 실패:\n" + ex.Message, "SMILES2IMG", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("Failed to initialize SMILES for Word:\n" + ex.Message, "SMILES2IMG", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
     }
 
@@ -60,39 +60,39 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
   <ribbon>
     <tabs>
       <tab id=""tabSmiles"" label=""SMILES"">
-        <group id=""grpMolecules"" label=""분자 구조식 (Structure)"">
+        <group id=""grpMolecules"" label=""Chemical Structures"">
           <button id=""btnInsertMolecule""
-                  label=""분자 구조식 삽입""
-                  screentip=""EPAM Ketcher 분자 에디터""
-                  supertip=""Ketcher 웹 에디터를 열어 화학 구조식을 그리고 현재 커서 위치에 삽입합니다.""
+                  label=""Insert Structure""
+                  screentip=""EPAM Ketcher Molecule Editor""
+                  supertip=""Open Ketcher web editor to draw chemical structures and insert into the document.""
                   imageMso=""EquationInsertNew""
                   size=""large""
                   onAction=""OnInsertMolecule"" />
           <button id=""btnQuickInsert""
-                  label=""클립보드 즉시 삽입""
-                  screentip=""클립보드 또는 선택된 SMILES/KET 즉시 삽입""
-                  supertip=""에디터를 열지 않고 클립보드나 문서 내 선택된 SMILES/KET 문자열을 즉시 분자 구조식 이미지로 변환하여 삽입합니다.""
+                  label=""Quick Insert""
+                  screentip=""Quick Insert from Clipboard or Selection""
+                  supertip=""Convert SMILES or KET directly into a molecular structure image without opening the editor.""
                   imageMso=""Paste""
                   size=""large""
                   onAction=""OnQuickInsert"" />
           <button id=""btnEditMolecule""
-                  label=""구조식 편집""
-                  screentip=""선택된 분자 구조식 편집""
-                  supertip=""선택된 분자 이미지를 Ketcher 에디터로 다시 불러와 수정합니다.""
+                  label=""Edit Structure""
+                  screentip=""Edit Selected Structure""
+                  supertip=""Load the selected molecule image back into the Ketcher editor for editing.""
                   imageMso=""PictureEditProperties""
                   size=""large""
                   onAction=""OnEditMolecule"" />
           <button id=""btnCopySmiles""
-                  label=""SMILES 복사""
-                  screentip=""선택된 분자 구조식의 SMILES 복사""
-                  supertip=""선택된 분자 이미지에서 SMILES 문자열을 추출하여 클립보드에 복사합니다.""
+                  label=""Copy SMILES""
+                  screentip=""Copy SMILES of Selected Molecule""
+                  supertip=""Extract SMILES string from the selected molecule and copy it to the clipboard.""
                   imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopySmiles"" />
           <button id=""btnCopyMoleculeInfo""
-                  label=""분자 정보 복사""
-                  screentip=""화학식 및 분자량(MW) 정보 복사""
-                  supertip=""선택된 분자 구조식의 화학식(Formula), 분자량(MW), 정밀 질량(Exact Mass)을 계산하여 표시하고 클립보드에 복사합니다.""
+                  label=""Copy Molecule Info""
+                  screentip=""Copy Formula and Molecular Weight""
+                  supertip=""Calculate and copy chemical formula, molecular weight (MW), and exact mass to clipboard.""
                   imageMso=""Info""
                   size=""large""
                   onAction=""OnCopyMoleculeInfo"" />
@@ -103,22 +103,22 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
   <contextMenus>
     <contextMenu idMso=""ContextMenuInlinePicture"">
       <button id=""btnContextInlineEdit""
-              label=""분자 구조식 편집 (Ketcher)...""
+              label=""Edit Structure (Ketcher)...""
               imageMso=""PictureEditProperties""
               onAction=""OnEditMolecule""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextInlineCopySmiles""
-              label=""SMILES 복사 (추출)""
+              label=""Copy SMILES""
               imageMso=""Copy""
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextInlineCopyInfo""
-              label=""분자 정보 (화학식·분자량) 복사""
+              label=""Copy Molecule Info (Formula/MW)""
               imageMso=""Info""
               onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextInlineCopyKet""
-              label=""캔버스 데이터(KET) 복사""
+              label=""Copy Canvas Data (KET)""
               imageMso=""SaveObjectAs""
               onAction=""OnCopyKet""
               insertBeforeMso=""Cut"" />
@@ -126,22 +126,22 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
     </contextMenu>
     <contextMenu idMso=""ContextMenuPicture"">
       <button id=""btnContextPictureEdit""
-              label=""분자 구조식 편집 (Ketcher)...""
+              label=""Edit Structure (Ketcher)...""
               imageMso=""PictureEditProperties""
               onAction=""OnEditMolecule""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureCopySmiles""
-              label=""SMILES 복사 (추출)""
+              label=""Copy SMILES""
               imageMso=""Copy""
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureCopyInfo""
-              label=""분자 정보 (화학식·분자량) 복사""
+              label=""Copy Molecule Info (Formula/MW)""
               imageMso=""Info""
               onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureCopyKet""
-              label=""캔버스 데이터(KET) 복사""
+              label=""Copy Canvas Data (KET)""
               imageMso=""SaveObjectAs""
               onAction=""OnCopyKet""
               insertBeforeMso=""Cut"" />
@@ -149,22 +149,22 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
     </contextMenu>
     <contextMenu idMso=""ContextMenuShape"">
       <button id=""btnContextShapeEdit""
-              label=""분자 구조식 편집 (Ketcher)...""
+              label=""Edit Structure (Ketcher)...""
               imageMso=""PictureEditProperties""
               onAction=""OnEditMolecule""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeCopySmiles""
-              label=""SMILES 복사 (추출)""
+              label=""Copy SMILES""
               imageMso=""Copy""
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeCopyInfo""
-              label=""분자 정보 (화학식·분자량) 복사""
+              label=""Copy Molecule Info (Formula/MW)""
               imageMso=""Info""
               onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeCopyKet""
-              label=""캔버스 데이터(KET) 복사""
+              label=""Copy Canvas Data (KET)""
               imageMso=""SaveObjectAs""
               onAction=""OnCopyKet""
               insertBeforeMso=""Cut"" />
@@ -172,7 +172,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
     </contextMenu>
     <contextMenu idMso=""ContextMenuText"">
       <button id=""btnContextTextQuickInsert""
-              label=""선택/클립보드 SMILES → 구조식 삽입""
+              label=""Insert Structure from Clipboard/Selection""
               imageMso=""EquationInsertNew""
               onAction=""OnQuickInsert""
               insertBeforeMso=""Cut"" />

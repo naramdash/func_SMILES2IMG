@@ -43,12 +43,12 @@ public sealed class KetcherForm : Form
 
         string titleContext = this.cellAddress switch
         {
-            "Word" => "Word 문서",
-            "PowerPoint" => "PowerPoint 슬라이드",
-            "" => "분자 구조식",
+            "Word" => "Word Document",
+            "PowerPoint" => "PowerPoint Slide",
+            "" => "Chemical Structure",
             _ => $"Excel [{this.cellAddress}]"
         };
-        Text = $"EPAM Ketcher 분자 에디터 - {titleContext}";
+        Text = $"EPAM Ketcher Molecular Editor - {titleContext}";
         Width = 1040;
         Height = 720;
         StartPosition = FormStartPosition.CenterScreen;
@@ -99,7 +99,7 @@ public sealed class KetcherForm : Form
                 env = await CoreWebView2Environment.CreateAsync(null, procUserDataFolder, null);
                 await webView.EnsureCoreWebView2Async(env);
             }
-            catch (Exception ex) when (ex.HResult == unchecked((int)0x800700AA) || ex.Message.Contains("0x800700AA") || ex.Message.Contains("사용 중"))
+            catch (Exception ex) when (ex.HResult == unchecked((int)0x800700AA) || ex.Message.Contains("0x800700AA") || ex.Message.IndexOf("in use", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 // Fallback to a dedicated unique session directory if locked by an orphaned browser process
                 string fallbackFolder = Path.Combine(Path.GetTempPath(), "Smiles2Img_WV2_" + procName + "_" + Guid.NewGuid().ToString("N"));
@@ -125,12 +125,12 @@ public sealed class KetcherForm : Form
             string msg = ex.Message;
             if (ex is DllNotFoundException || ex.GetType().Name.Contains("WebView2"))
             {
-                msg += "\n\n(Microsoft Edge WebView2 런타임이 설치되어 있는지 확인해 주세요.)";
+                msg += "\n\n(Please verify that the Microsoft Edge WebView2 Runtime is installed.)";
             }
             MessageBox.Show(
                 this,
-                "Ketcher 웹 에디터를 초기화하는 중 오류가 발생했습니다:\n" + msg,
-                "SMILES2IMG 에디터 오류",
+                "An error occurred while initializing Ketcher web editor:\n" + msg,
+                "SMILES2IMG Editor Error",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
             Close();
@@ -148,17 +148,17 @@ public sealed class KetcherForm : Form
             {
                 string buttonText = cellAddress switch
                 {
-                    "Word" => "문서에 적용 (Ctrl+Enter)",
-                    "PowerPoint" => "슬라이드에 적용 (Ctrl+Enter)",
-                    "Canvas" => "시트에 적용 (Ctrl+Enter)",
-                    _ => "셀에 적용 (Ctrl+Enter)"
+                    "Word" => "Apply to Document (Ctrl+Enter)",
+                    "PowerPoint" => "Apply to Slide (Ctrl+Enter)",
+                    "Canvas" => "Apply to Sheet (Ctrl+Enter)",
+                    _ => "Apply to Cell (Ctrl+Enter)"
                 };
                 string badgeText = cellAddress switch
                 {
-                    "Word" => "Word 문서 (커서 위치)",
-                    "PowerPoint" => "PowerPoint (현재 슬라이드)",
-                    "Canvas" => "Excel 시트 (캔버스 형태)",
-                    _ => string.IsNullOrEmpty(cellAddress) ? "분자 구조식" : $"셀: {cellAddress}"
+                    "Word" => "Word Document (Cursor)",
+                    "PowerPoint" => "PowerPoint (Active Slide)",
+                    "Canvas" => "Excel Sheet (Canvas)",
+                    _ => string.IsNullOrEmpty(cellAddress) ? "Chemical Structure" : $"Cell: {cellAddress}"
                 };
 
                 var script = $@"

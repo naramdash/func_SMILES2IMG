@@ -129,7 +129,7 @@ public static partial class KetcherEditor
         catch { }
     }
 
-    [ExcelCommand(ShortCut = "^+K", MenuName = "SMILES2IMG", MenuText = "분자 구조식 삽입/편집 (Ctrl+Shift+K)")]
+    [ExcelCommand(ShortCut = "^+K", MenuName = "SMILES2IMG", MenuText = "Insert/Edit Structure (Ctrl+Shift+K)")]
     public static void OpenKetcherCommand()
     {
         try
@@ -152,7 +152,7 @@ public static partial class KetcherEditor
         }
     }
 
-    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "캔버스 구조식 삽입 (KET)")]
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Insert Canvas Structure (KET)")]
     public static void InsertCanvasMoleculeCommand()
     {
         try
@@ -166,7 +166,7 @@ public static partial class KetcherEditor
         }
     }
 
-    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "구조식 편집")]
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Edit Structure")]
     public static void EditSelectedMoleculeCommand()
     {
         try
@@ -180,7 +180,7 @@ public static partial class KetcherEditor
         }
     }
 
-    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "SMILES 복사 (추출)")]
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy SMILES")]
     public static void CopySelectedMoleculeSmilesCommand()
     {
         try
@@ -197,7 +197,7 @@ public static partial class KetcherEditor
             if (string.IsNullOrEmpty(smiles))
             {
                 MessageBox.Show(
-                    "선택된 개체 또는 셀에서 SMILES 구조식을 찾을 수 없습니다.\n분자 구조식 이미지 또는 수식 셀을 선택해 주세요.",
+                    "No SMILES structure found in selected object or cell.\nPlease select a molecular structure image or formula cell.",
                     "SMILES for Excel",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -206,22 +206,22 @@ public static partial class KetcherEditor
 
             Clipboard.SetText(smiles!);
             MessageBox.Show(
-                $"클립보드에 SMILES가 복사되었습니다:\n\n{smiles}",
-                "SMILES 추출 완료",
+                $"SMILES copied to clipboard:\n\n{smiles}",
+                "SMILES Copied",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
         }
         catch (Exception ex)
         {
             MessageBox.Show(
-                "SMILES 추출 중 오류가 발생했습니다: " + ex.Message,
+                "An error occurred while copying SMILES: " + ex.Message,
                 "SMILES for Excel",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
     }
 
-    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "캔버스 데이터(KET) 복사")]
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy Canvas Data (KET)")]
     public static void CopySelectedMoleculeKetCommand()
     {
         try
@@ -233,7 +233,7 @@ public static partial class KetcherEditor
             if (string.IsNullOrEmpty(ket))
             {
                 MessageBox.Show(
-                    "선택된 이미지에서 캔버스 구조식(KET)을 찾을 수 없습니다.",
+                    "No canvas structure (KET) found in the selected image.",
                     "SMILES for Excel",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -242,22 +242,22 @@ public static partial class KetcherEditor
 
             Clipboard.SetText(ket!);
             MessageBox.Show(
-                "클립보드에 캔버스 데이터(KET)가 복사되었습니다.",
-                "KET 복사 완료",
+                "Canvas data (KET) copied to clipboard.",
+                "KET Copied",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
         }
         catch (Exception ex)
         {
             MessageBox.Show(
-                "캔버스 데이터 복사 중 오류가 발생했습니다: " + ex.Message,
+                "An error occurred while copying canvas data: " + ex.Message,
                 "SMILES for Excel",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
     }
 
-    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "분자 정보(화학식·분자량) 복사")]
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy Molecule Info (Formula & MW)")]
     public static void CopySelectedMoleculeInfoCommand()
     {
         try
@@ -275,7 +275,7 @@ public static partial class KetcherEditor
             if (info == null)
             {
                 MessageBox.Show(
-                    "선택된 셀 또는 이미지에서 화학식/분자량 정보를 계산할 수 없습니다.\n먼저 분자 구조식 셀이나 이미지를 선택해 주세요.",
+                    "Cannot calculate formula/molecular weight for the selected cell or image.\nPlease select a molecular structure cell or image.",
                     "SMILES for Excel",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -284,22 +284,22 @@ public static partial class KetcherEditor
 
             Clipboard.SetText(info.FormatClipboardSummary());
             MessageBox.Show(
-                $"클립보드에 분자 물성 정보가 복사되었습니다:\n\n{info.FormatDisplayMessage()}",
-                "분자 정보 (화학식 · 분자량)",
+                $"Molecular property information copied to clipboard:\n\n{info.FormatDisplayMessage()}",
+                "Molecule Info (Formula & MW)",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
         }
         catch (Exception ex)
         {
             MessageBox.Show(
-                "분자 정보 계산 중 오류가 발생했습니다: " + ex.Message,
+                "An error occurred while calculating molecule info: " + ex.Message,
                 "SMILES for Excel",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
     }
 
-    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "클립보드 SMILES/KET 즉시 삽입")]
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Quick Paste SMILES/KET")]
     public static void QuickInsertCommand()
     {
         try
@@ -324,7 +324,7 @@ public static partial class KetcherEditor
             if (!MoleculeRenderer.TryRenderStructure(rawInput, RenderOptions.Default, out var pngBytes, out var ket, out var smiles) || pngBytes == null)
             {
                 MessageBox.Show(
-                    "클립보드(또는 활성 셀)에서 유효한 SMILES 또는 KET 구조식 데이터를 찾을 수 없습니다.\n먼저 SMILES 문자열(예: CC(=O)Oc1ccccc1C(=O)O)을 복사한 후 실행해 주세요.",
+                    "No valid SMILES or KET structure data found on clipboard (or active cell).\nPlease copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) and try again.",
                     "SMILES for Excel",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -351,7 +351,7 @@ public static partial class KetcherEditor
         catch (Exception ex)
         {
             MessageBox.Show(
-                "클립보드 구조식 즉시 삽입 중 오류가 발생했습니다: " + ex.Message,
+                "An error occurred during quick paste: " + ex.Message,
                 "SMILES for Excel",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);

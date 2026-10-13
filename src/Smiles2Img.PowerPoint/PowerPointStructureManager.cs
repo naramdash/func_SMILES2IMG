@@ -17,7 +17,7 @@ public static class PowerPointStructureManager
             if (slide == null)
             {
                 MessageBox.Show(
-                    "활성화된 슬라이드가 없습니다.\n분자 구조식을 삽입할 슬라이드를 먼저 선택해 주세요.",
+                    "No active slide found.\nPlease select a slide to insert the molecule structure first.",
                     "SMILES for PowerPoint",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -40,7 +40,7 @@ public static class PowerPointStructureManager
         catch (Exception ex)
         {
             MessageBox.Show(
-                "분자 구조식 삽입 중 오류가 발생했습니다:\n" + ex.Message,
+                "An error occurred while inserting molecule:\n" + ex.Message,
                 "SMILES for PowerPoint",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
@@ -57,11 +57,11 @@ public static class PowerPointStructureManager
                 if (sel == null || sel.Type != MSPowerPoint.PpSelectionType.ppSelectionShapes || sel.ShapeRange.Count == 0)
                 {
                     MessageBox.Show(
-                        "선택된 분자 구조식 이미지를 찾을 수 없습니다.\n먼저 편집하려는 구조식 그림을 클릭하여 선택해 주세요.",
+                        "No molecular structure image selected.\nPlease select a molecular structure picture first.",
                         "SMILES for PowerPoint",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
-                    return;
+                        return;
                 }
 
                 targetShape = sel.ShapeRange[1];
@@ -71,7 +71,7 @@ public static class PowerPointStructureManager
             if (string.IsNullOrEmpty(currentStructure))
             {
                 MessageBox.Show(
-                    "선택된 개체는 SMILES/KET 분자 구조식 이미지가 아닙니다.",
+                    "The selected object is not a SMILES/KET molecule structure image.",
                     "SMILES for PowerPoint",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -94,7 +94,7 @@ public static class PowerPointStructureManager
         catch (Exception ex)
         {
             MessageBox.Show(
-                "분자 구조식 편집 중 오류가 발생했습니다:\n" + ex.Message,
+                "An error occurred while editing molecule:\n" + ex.Message,
                 "SMILES for PowerPoint",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
@@ -240,7 +240,7 @@ public static class PowerPointStructureManager
             if (sel == null || sel.Type != MSPowerPoint.PpSelectionType.ppSelectionShapes || sel.ShapeRange.Count == 0)
             {
                 MessageBox.Show(
-                    "선택된 이미지에서 SMILES 구조식을 찾을 수 없습니다.\n먼저 분자 구조식 이미지를 클릭하여 선택해 주세요.",
+                    "Could not find SMILES structure from the selected image.\nPlease select a molecular structure picture first.",
                     "SMILES for PowerPoint",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -251,7 +251,7 @@ public static class PowerPointStructureManager
             if (string.IsNullOrEmpty(smiles))
             {
                 MessageBox.Show(
-                    "선택된 이미지에서 SMILES 구조식을 찾을 수 없습니다.\n먼저 분자 구조식 이미지를 클릭하여 선택해 주세요.",
+                    "Could not find SMILES structure from the selected image.\nPlease select a molecular structure picture first.",
                     "SMILES for PowerPoint",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -260,15 +260,15 @@ public static class PowerPointStructureManager
 
             Clipboard.SetText(smiles!);
             MessageBox.Show(
-                $"클립보드에 SMILES가 복사되었습니다:\n\n{smiles}",
-                "SMILES 추출 완료",
+                $"SMILES copied to clipboard:\n\n{smiles}",
+                "SMILES Extracted",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
         }
         catch (Exception ex)
         {
             MessageBox.Show(
-                "SMILES 추출 중 오류가 발생했습니다:\n" + ex.Message,
+                "An error occurred while extracting SMILES:\n" + ex.Message,
                 "SMILES for PowerPoint",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
@@ -283,7 +283,7 @@ public static class PowerPointStructureManager
             if (sel == null || sel.Type != MSPowerPoint.PpSelectionType.ppSelectionShapes || sel.ShapeRange.Count == 0)
             {
                 MessageBox.Show(
-                    "선택된 분자 구조식 이미지를 찾을 수 없습니다.\n먼저 분자 구조식 이미지를 클릭하여 선택해 주세요.",
+                    "No molecular structure image selected.\nPlease select a molecular structure picture first.",
                     "SMILES for PowerPoint",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -294,7 +294,7 @@ public static class PowerPointStructureManager
             if (string.IsNullOrEmpty(ket))
             {
                 MessageBox.Show(
-                    "선택된 이미지에서 캔버스 구조식(KET)을 찾을 수 없습니다.",
+                    "Could not find canvas structure (KET) from the selected image.",
                     "SMILES for PowerPoint",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -303,15 +303,15 @@ public static class PowerPointStructureManager
 
             Clipboard.SetText(ket!);
             MessageBox.Show(
-                "클립보드에 캔버스 데이터(KET)가 복사되었습니다.",
-                "KET 복사 완료",
+                "Canvas data (KET) copied to clipboard.",
+                "KET Copied",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
         }
         catch (Exception ex)
         {
             MessageBox.Show(
-                "캔버스 데이터 복사 중 오류가 발생했습니다:\n" + ex.Message,
+                "An error occurred while copying canvas data:\n" + ex.Message,
                 "SMILES for PowerPoint",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
@@ -326,7 +326,7 @@ public static class PowerPointStructureManager
             if (slide == null)
             {
                 MessageBox.Show(
-                    "활성화된 슬라이드가 없습니다.\n분자 구조식을 삽입할 슬라이드를 먼저 선택해 주세요.",
+                    "No active slide found.\nPlease select a slide to insert the molecule structure first.",
                     "SMILES for PowerPoint",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -363,7 +363,7 @@ public static class PowerPointStructureManager
             }
 
             MessageBox.Show(
-                "클립보드(또는 선택된 텍스트)에서 유효한 SMILES 또는 KET 구조식 데이터를 찾을 수 없습니다.\n먼저 SMILES 문자열(예: CC(=O)Oc1ccccc1C(=O)O)을 복사한 후 실행해 주세요.",
+                "No valid SMILES or KET structure data found in clipboard or selected text.\nPlease copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) first.",
                 "SMILES for PowerPoint",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
@@ -371,7 +371,7 @@ public static class PowerPointStructureManager
         catch (Exception ex)
         {
             MessageBox.Show(
-                "클립보드 구조식 즉시 삽입 중 오류가 발생했습니다:\n" + ex.Message,
+                "An error occurred while inserting structure from clipboard:\n" + ex.Message,
                 "SMILES for PowerPoint",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
@@ -399,7 +399,7 @@ public static class PowerPointStructureManager
             if (info == null)
             {
                 MessageBox.Show(
-                    "선택된 분자 구조식에서 화학식/분자량 정보를 계산할 수 없습니다.\n먼저 슬라이드에서 분자 구조식 이미지를 클릭하여 선택해 주세요.",
+                    "Could not calculate formula/molecular weight from the selected structure.\nPlease select a molecular structure picture on the slide first.",
                     "SMILES for PowerPoint",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -408,15 +408,15 @@ public static class PowerPointStructureManager
 
             Clipboard.SetText(info.FormatClipboardSummary());
             MessageBox.Show(
-                $"클립보드에 분자 물성 정보가 복사되었습니다:\n\n{info.FormatDisplayMessage()}",
-                "분자 정보 (화학식 · 분자량)",
+                $"Molecular properties copied to clipboard:\n\n{info.FormatDisplayMessage()}",
+                "Molecule Info (Formula / MW)",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
         }
         catch (Exception ex)
         {
             MessageBox.Show(
-                "분자 정보 계산 중 오류가 발생했습니다:\n" + ex.Message,
+                "An error occurred while calculating molecule info:\n" + ex.Message,
                 "SMILES for PowerPoint",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
