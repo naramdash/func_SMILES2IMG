@@ -221,13 +221,13 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               label=""Insert / Edit Structure...""
               imageMso=""EquationInsertNew""
               onAction=""OnInsertMolecule""
-              insertBeforeMso=""Cut"" />
+              insertBeforeMso=""PasteGalleryMini"" />
       <button id=""btnContextPptFrameQuickInsert""
               label=""Paste Structure""
               imageMso=""Paste""
               onAction=""OnQuickInsert""
-              insertBeforeMso=""Cut"" />
-      <menuSeparator id=""sepContextPptFrame"" insertBeforeMso=""Cut"" />
+              insertBeforeMso=""PasteGalleryMini"" />
+      <menuSeparator id=""sepContextPptFrame"" insertBeforeMso=""PasteGalleryMini"" />
     </contextMenu>
     <contextMenu idMso=""ContextMenuText"">
       <button id=""btnContextPptTextInsert""
