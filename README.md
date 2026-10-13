@@ -26,6 +26,7 @@
   - 📗 [Excel 사용법 가이드](docs/EXCEL_GUIDE.md)
   - 📘 [Word 사용법 가이드](docs/WORD_GUIDE.md)
   - 📙 [PowerPoint 사용법 가이드](docs/POWERPOINT_GUIDE.md)
+- [🎥 핵심 기능 가이드 영상 (3분 완성)](#-핵심-기능-가이드-영상-3분-완성)
 - [🚀 빠른 시작 (통합 오피스 슈트 설치 방법)](#-빠른-시작-통합-오피스-슈트-설치-방법)
 - [💡 Excel 사용 방법 및 수식 IntelliSense](#-excel-사용-방법-및-수식-intellisense)
 - [📝 Word 및 PowerPoint 사용 방법](#-word-및-powerpoint-사용-방법)
@@ -42,17 +43,29 @@
 
 ## ✨ 지원 애플리케이션 및 주요 기능
 
-| 애플리케이션 | 주요 기능 | 지원 방식 | 사용 가이드 |
+| 애플리케이션 | 주요 기능 | 지원 방식 | 사용 가이드 & 영상 |
 | :--- | :--- | :--- | :---: |
-| **Microsoft Excel** | • `=SMILES2IMG("CCO")` & `=KET2IMG(A2)` 네이티브 인셀 이미지<br>• `=SMILES2IMG.FLOAT("CCO")` & `=KET2IMG.FLOAT(A2)` 플로팅 그림<br>• **캔버스 구조식 삽입 (KET)**: 반응식, 화살표, 플러스 기호, 텍스트 주석이 포함된 캔버스 삽입<br>• **클립보드 즉시 삽입 / 분자 정보(화학식·분자량) 복사 / 우클릭 컨텍스트 메뉴**<br>• **셀 또는 캔버스 그림 더블 클릭 시 Ketcher 에디터 즉시 팝업 및 재편집** | Excel-DNA Standalone XLL (32/64비트) | 📗 [**Excel 가이드**](docs/EXCEL_GUIDE.md) |
-| **Microsoft Word** | • 상단 리본 메뉴 **`[SMILES]`** 탭 & **우클릭 컨텍스트 메뉴** 제공<br>• **네이티브 KET 캔버스 저장**: 반응식, 화살표, 텍스트 주석, 복수 분자 2D 좌표 100% 보존<br>• **클립보드/선택 텍스트 즉시 삽입** & **SMILES / KET / 화학식·분자량(MW) 복사**<br>• **문서 내 분자 그림 더블 클릭 시 Ketcher 에디터로 즉시 불러와 제자리 수정** | Office COM Add-in (`.dll`, HKCU 무권한 등록) | 📘 [**Word 가이드**](docs/WORD_GUIDE.md) |
-| **Microsoft PowerPoint** | • 상단 리본 메뉴 **`[SMILES]`** 탭 & **우클릭 컨텍스트 메뉴** 제공<br>• **네이티브 KET 캔버스 저장**: 고해상도 슬라이드 렌더링 및 **투명/흰색 배경 토글** 지원<br>• **클립보드 즉시 삽입** & **SMILES / KET / 화학식·분자량(MW) 복사**<br>• **슬라이드 분자 그림 더블 클릭 시 Ketcher 에디터로 즉시 불러와 크기·좌표 유지 수정** | Office COM Add-in (`.dll`, HKCU 무권한 등록) | 📙 [**PowerPoint 가이드**](docs/POWERPOINT_GUIDE.md) |
+| **Microsoft Excel** | • `=SMILES2IMG("CCO")` & `=KET2IMG(A2)` 네이티브 인셀 이미지<br>• `=SMILES2IMG.FLOAT("CCO")` & `=KET2IMG.FLOAT(A2)` 플로팅 그림<br>• **캔버스 구조식 삽입 (KET)**: 반응식, 화살표, 플러스 기호, 텍스트 주석이 포함된 캔버스 삽입<br>• **클립보드 즉시 삽입 / 분자 정보(화학식·분자량) 복사 / 우클릭 컨텍스트 메뉴**<br>• **셀 또는 캔버스 그림 더블 클릭 시 Ketcher 에디터 즉시 팝업 및 재편집** | Excel-DNA Standalone XLL (32/64비트) | 📗 [**Excel 가이드**](docs/EXCEL_GUIDE.md)<br>🎬 [**3분 가이드 영상**](assets/videos/excel-guide-video.mp4) |
+| **Microsoft Word** | • 상단 리본 메뉴 **`[SMILES]`** 탭 & **우클릭 컨텍스트 메뉴** 제공<br>• **네이티브 KET 캔버스 저장**: 반응식, 화살표, 텍스트 주석, 복수 분자 2D 좌표 100% 보존<br>• **클립보드/선택 텍스트 즉시 삽입** & **SMILES / KET / 화학식·분자량(MW) 복사**<br>• **문서 내 분자 그림 더블 클릭 시 Ketcher 에디터로 즉시 불러와 제자리 수정** | Office COM Add-in (`.dll`, HKCU 무권한 등록) | 📘 [**Word 가이드**](docs/WORD_GUIDE.md)<br>🎬 [**3분 가이드 영상**](assets/videos/word-guide-video.mp4) |
+| **Microsoft PowerPoint** | • 상단 리본 메뉴 **`[SMILES]`** 탭 & **우클릭 컨텍스트 메뉴** 제공<br>• **네이티브 KET 캔버스 저장**: 고해상도 슬라이드 렌더링 및 **투명/흰색 배경 토글** 지원<br>• **클립보드 즉시 삽입** & **SMILES / KET / 화학식·분자량(MW) 복사**<br>• **슬라이드 분자 그림 더블 클릭 시 Ketcher 에디터로 즉시 불러와 크기·좌표 유지 수정** | Office COM Add-in (`.dll`, HKCU 무권한 등록) | 📙 [**PowerPoint 가이드**](docs/POWERPOINT_GUIDE.md)<br>🎬 [**3분 가이드 영상**](assets/videos/powerpoint-guide-video.mp4) |
 
 <br>
 
 <p align="center">
   <img src="assets/workflow-ketcher.png" alt="4-Step Interactive Workflow" width="100%" />
 </p>
+
+---
+
+## 🎥 핵심 기능 가이드 영상 (3분 완성)
+
+이미 설치된 환경에서 각 프로그램별 핵심 기능과 실전 팁을 빠르게 습득할 수 있는 1080p 고해상도 영상입니다 (한국어 자막 및 편집 완료).
+
+| 프로그램 | 영상 바로가기 | 러닝타임 | 주요 학습 내용 |
+| :--- | :--- | :---: | :--- |
+| **Microsoft Excel** | [🎬 **Excel 핵심 기능 영상 (excel-guide-video.mp4)**](assets/videos/excel-guide-video.mp4) | 1분 56초 | • 인셀 수식 `=SMILES2IMG(A2)` 입력 & 드래그 채우기<br>• 8대 도메인 스타일(`bw`, `num`, `stereo`, 다크모드)<br>• 더블 클릭 Ketcher 에디터 연동 & 반응식 수식(`=KET2IMG`) |
+| **Microsoft Word** | [🎬 **Word 핵심 기능 영상 (word-guide-video.mp4)**](assets/videos/word-guide-video.mp4) | 1분 54초 | • 상단 리본 `[SMILES]` 탭 & 인라인 구조식 삽입<br>• 본문 텍스트 드래그 0.1초 즉시 치환(`Quick Insert`)<br>• 표 서식 유지 더블 클릭 제자리 수정 & 무손실 KET 반응식 |
+| **Microsoft PowerPoint** | [🎬 **PowerPoint 핵심 기능 영상 (powerpoint-guide-video.mp4)**](assets/videos/powerpoint-guide-video.mp4) | 1분 55초 | • 슬라이드 중앙 고해상도 화학 구조식 자동 배치<br>• 다크 테마 발표 최적화 `[투명 배경]` 토글<br>• 도형 더블 클릭 제자리 수정 & 복합 반응식 카드 보존 |
 
 ---
 
@@ -370,6 +383,11 @@ func_SMILES2IMG/
 │       ├── Word/                       # 32비트 Word COM 추가 기능 바이너리
 │       ├── PowerPoint/                 # 32비트 PowerPoint COM 추가 기능 바이너리
 │       └── Smiles2Img-Office-x86.zip   # 32비트 Office 슈트 배포용 아카이브
+├── assets/                             # 쇼케이스 이미지 및 가이드 영상 에셋
+│   └── videos/                         # 어플리케이션별 3분 핵심 기능 가이드 영상 (.mp4)
+│       ├── excel-guide-video.mp4       # Excel 3분 마스터 영상 (1분 56초)
+│       ├── word-guide-video.mp4        # Word 3분 마스터 영상 (1분 54초)
+│       └── powerpoint-guide-video.mp4  # PowerPoint 3분 마스터 영상 (1분 55초)
 ├── tests/                              # 자동화 테스트 슈트
 │   ├── Excel-Smoke.ps1                 # 실제 Excel COM 프로세스 구동 E2E 테스트
 │   ├── Excel-365-FeatureTests.ps1      # Excel 365 실전 신규 스타일 및 풀옵션 통합 테스트
