@@ -45,11 +45,11 @@
 
 ## ✨ Supported Applications & Key Features
 
-| Application | Features | Integration Model | User Guide & Video |
+| Application | Key Features | Integration Model | User Guide & Video |
 | :--- | :--- | :--- | :---: |
-| **Microsoft Excel** | [🎬 **Excel Core Features Video (excel-guide-video.mp4)**](assets/videos/excel-guide-video.mp4) | 1m 56s | • In-cell `=SMILES2IMG(A2)` formula & drag-fill<br>• 8 chemical domain styles (`bw`, `num`, `stereo`, dark mode)<br>• Double-click Ketcher 2D editor & reaction schemes (`=KET2IMG`) |
-| **Microsoft Word** | [🎬 **Word Core Features Video (word-guide-video.mp4)**](assets/videos/word-guide-video.mp4) | 1m 54s | • Ribbon `[SMILES]` tab & inline structure insertion<br>• Drag text 0.1s instant replacement (`Quick Insert`)<br>• Table layout-preserving double-click editing & lossless KET reaction equations |
-| **Microsoft PowerPoint** | [🎬 **PowerPoint Core Features Video (powerpoint-guide-video.mp4)**](assets/videos/powerpoint-guide-video.mp4) | 1m 55s | • Centered high-res 2D chemical structure placement<br>• Dark theme presentation `[Transparent Background]` toggle<br>• Double-click in-place editing & multi-step reaction cards |
+| **Microsoft Excel** | • In-cell `=SMILES2IMG("CCO")` & `=KET2IMG(A2)` native images<br>• Floating `=SMILES2IMG.FLOAT("CCO")` for legacy Excel<br>• **Canvas Chemical Scheme (KET)**: Reactions, arrows, plus signs, annotations<br>• **Quick Insert / Clipboard / Formula & MW Calculation / Context Menu**<br>• **Double-click cell or canvas to pop up Ketcher editor and re-edit in place** | Excel-DNA Standalone XLL (32/64-bit) | 📗 [**Excel Guide**](docs/EXCEL_GUIDE.md)<br>🎬 [**Watch Video**](#excel-video) |
+| **Microsoft Word** | • Ribbon **`[SMILES]`** tab & **Right-Click Context Menu**<br>• **Lossless KET Canvas Persistence**: Reactions, arrows, annotations 100% preserved<br>• **Quick Insert from clipboard / selection** & **Copy SMILES / KET / MW**<br>• **Double-click inline molecular image to re-edit in place via Ketcher** | Office COM Add-in (`.dll`, HKCU non-admin) | 📘 [**Word Guide**](docs/WORD_GUIDE.md)<br>🎬 [**Watch Video**](#word-video) |
+| **Microsoft PowerPoint** | • Ribbon **`[SMILES]`** tab & **Right-Click Context Menu**<br>• **Lossless KET Canvas Persistence**: High-res slide rendering & **Transparent/White background toggle**<br>• **Quick Insert from clipboard / selection** & **Copy SMILES / KET / MW**<br>• **Double-click slide shape to re-edit in place via Ketcher maintaining size and position** | Office COM Add-in (`.dll`, HKCU non-admin) | 📙 [**PowerPoint Guide**](docs/POWERPOINT_GUIDE.md)<br>🎬 [**Watch Video**](#powerpoint-video) |
 
 ---
 
@@ -59,18 +59,48 @@
   <img src="assets/workflow-ketcher.png" alt="4-Step Interactive Workflow" width="100%" />
 </p>
 
-
 ---
 
 ## 🎥 3-Minute Video Walkthroughs
 
-High-definition (1080p) video guides to master the core features of each Office application in under 3 minutes (assuming already installed, with full subtitles and editing):
+High-definition (1080p, 30fps) edited video walkthroughs with full subtitles demonstrating core features, in-cell formulas, right-click actions, and Ketcher 2D editing in under 3 minutes for each Office application:
 
-| Application | Video Link | Duration | Key Topics Covered |
-| :--- | :--- | :---: | :--- |
-| **Microsoft Excel** | [🎬 **Excel Core Features Video (excel-guide-video.mp4)**](assets/videos/excel-guide-video.mp4) | 1m 56s | • In-cell `=SMILES2IMG(A2)` formula & drag-fill<br>• 8 chemical domain styles (`bw`, `num`, `stereo`, dark mode)<br>• Double-click Ketcher 2D editor & reaction schemes (`=KET2IMG`) |
-| **Microsoft Word** | [🎬 **Word Core Features Video (word-guide-video.mp4)**](assets/videos/word-guide-video.mp4) | 1m 54s | • Ribbon `[SMILES]` tab & inline structure insertion<br>• Drag text 0.1s instant replacement (`Quick Insert`)<br>• Table layout-preserving double-click editing & lossless KET reaction equations |
-| **Microsoft PowerPoint** | [🎬 **PowerPoint Core Features Video (powerpoint-guide-video.mp4)**](assets/videos/powerpoint-guide-video.mp4) | 1m 55s | • Centered high-res 2D chemical structure placement<br>• Dark theme presentation `[Transparent Background]` toggle<br>• Double-click in-place editing & multi-step reaction cards |
+<a id="excel-video"></a>
+### 📗 Microsoft Excel Walkthrough (1m 56s)
+
+<p align="center">
+  <video src="assets/videos/excel-guide-video.mp4" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <a href="assets/videos/excel-guide-video.mp4">🎬 Excel Core Features Video (assets/videos/excel-guide-video.mp4)</a>
+  </video>
+</p>
+
+* **Topics:** Native in-cell `=SMILES2IMG(A2)` formula & drag-fill • 8 chemical domain styles (`bw`, `num`, `stereo`, dark mode) • Double-click Ketcher 2D editor & reaction schemes (`=KET2IMG`) • Real-time formula & molecular weight copy • Complete guide: [📘 Excel User Guide](docs/EXCEL_GUIDE.md)
+
+---
+
+<a id="word-video"></a>
+### 📘 Microsoft Word Walkthrough (1m 54s)
+
+<p align="center">
+  <video src="assets/videos/word-guide-video.mp4" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <a href="assets/videos/word-guide-video.mp4">🎬 Word Core Features Video (assets/videos/word-guide-video.mp4)</a>
+  </video>
+</p>
+
+* **Topics:** Ribbon `[SMILES]` tab & inline structure insertion • Drag text 0.1s instant replacement (`Quick Insert`) • Table layout-preserving double-click editing • Lossless KET reaction schemes & annotations • Right-click SMILES/MW calculation • Complete guide: [📘 Word User Guide](docs/WORD_GUIDE.md)
+
+---
+
+<a id="powerpoint-video"></a>
+### 📙 Microsoft PowerPoint Walkthrough (1m 55s)
+
+<p align="center">
+  <video src="assets/videos/powerpoint-guide-video.mp4" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <a href="assets/videos/powerpoint-guide-video.mp4">🎬 PowerPoint Core Features Video (assets/videos/powerpoint-guide-video.mp4)</a>
+  </video>
+</p>
+
+* **Topics:** Centered high-resolution 2D chemical structure placement • Dark theme presentation `[Transparent Background]` toggle • Text box 0.1s Quick Insert • Double-click in-place editing & multi-step reaction cards • Complete guide: [📙 PowerPoint User Guide](docs/POWERPOINT_GUIDE.md)
 
 ---
 

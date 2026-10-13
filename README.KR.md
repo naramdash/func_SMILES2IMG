@@ -1,4 +1,4 @@
-﻿# SMILES for Microsoft Office Suite — 화학 분자 구조식 자동 렌더러 & 에디터 (Excel · Word · PowerPoint)
+# SMILES for Microsoft Office Suite — 화학 분자 구조식 자동 렌더러 & 에디터 (Excel · Word · PowerPoint)
 
 [English](README.md) | **한국어**
 
@@ -47,9 +47,9 @@
 
 | 애플리케이션 | 주요 기능 | 지원 방식 | 사용 가이드 & 영상 |
 | :--- | :--- | :--- | :---: |
-| **Microsoft Excel** | • `=SMILES2IMG("CCO")` & `=KET2IMG(A2)` 네이티브 인셀 이미지<br>• `=SMILES2IMG.FLOAT("CCO")` & `=KET2IMG.FLOAT(A2)` 플로팅 그림<br>• **캔버스 구조식 삽입 (KET)**: 반응식, 화살표, 플러스 기호, 텍스트 주석이 포함된 캔버스 삽입<br>• **클립보드 즉시 삽입 / 분자 정보(화학식·분자량) 복사 / 우클릭 컨텍스트 메뉴**<br>• **셀 또는 캔버스 그림 더블 클릭 시 Ketcher 에디터 즉시 팝업 및 재편집** | Excel-DNA Standalone XLL (32/64비트) | 📗 [**Excel 가이드**](docs/EXCEL_GUIDE.md)<br>🎬 [**3분 가이드 영상**](assets/videos/excel-guide-video.mp4) |
-| **Microsoft Word** | • 상단 리본 메뉴 **`[SMILES]`** 탭 & **우클릭 컨텍스트 메뉴** 제공<br>• **네이티브 KET 캔버스 저장**: 반응식, 화살표, 텍스트 주석, 복수 분자 2D 좌표 100% 보존<br>• **클립보드/선택 텍스트 즉시 삽입** & **SMILES / KET / 화학식·분자량(MW) 복사**<br>• **문서 내 분자 그림 더블 클릭 시 Ketcher 에디터로 즉시 불러와 제자리 수정** | Office COM Add-in (`.dll`, HKCU 무권한 등록) | 📘 [**Word 가이드**](docs/WORD_GUIDE.md)<br>🎬 [**3분 가이드 영상**](assets/videos/word-guide-video.mp4) |
-| **Microsoft PowerPoint** | • 상단 리본 메뉴 **`[SMILES]`** 탭 & **우클릭 컨텍스트 메뉴** 제공<br>• **네이티브 KET 캔버스 저장**: 고해상도 슬라이드 렌더링 및 **투명/흰색 배경 토글** 지원<br>• **클립보드 즉시 삽입** & **SMILES / KET / 화학식·분자량(MW) 복사**<br>• **슬라이드 분자 그림 더블 클릭 시 Ketcher 에디터로 즉시 불러와 크기·좌표 유지 수정** | Office COM Add-in (`.dll`, HKCU 무권한 등록) | 📙 [**PowerPoint 가이드**](docs/POWERPOINT_GUIDE.md)<br>🎬 [**3분 가이드 영상**](assets/videos/powerpoint-guide-video.mp4) |
+| **Microsoft Excel** | • `=SMILES2IMG("CCO")` & `=KET2IMG(A2)` 네이티브 인셀 이미지<br>• `=SMILES2IMG.FLOAT("CCO")` & `=KET2IMG.FLOAT(A2)` 플로팅 그림<br>• **캔버스 구조식 삽입 (KET)**: 반응식, 화살표, 플러스 기호, 텍스트 주석이 포함된 캔버스 삽입<br>• **클립보드 즉시 삽입 / 분자 정보(화학식·분자량) 복사 / 우클릭 컨텍스트 메뉴**<br>• **셀 또는 캔버스 그림 더블 클릭 시 Ketcher 에디터 즉시 팝업 및 재편집** | Excel-DNA Standalone XLL (32/64비트) | 📗 [**Excel 가이드**](docs/EXCEL_GUIDE.md)<br>🎬 [**영상 시청**](#excel-video) |
+| **Microsoft Word** | • 상단 리본 메뉴 **`[SMILES]`** 탭 & **우클릭 컨텍스트 메뉴** 제공<br>• **네이티브 KET 캔버스 저장**: 반응식, 화살표, 텍스트 주석, 복수 분자 2D 좌표 100% 보존<br>• **클립보드/선택 텍스트 즉시 삽입** & **SMILES / KET / 화학식·분자량(MW) 복사**<br>• **문서 내 분자 그림 더블 클릭 시 Ketcher 에디터로 즉시 불러와 제자리 수정** | Office COM Add-in (`.dll`, HKCU 무권한 등록) | 📘 [**Word 가이드**](docs/WORD_GUIDE.md)<br>🎬 [**영상 시청**](#word-video) |
+| **Microsoft PowerPoint** | • 상단 리본 메뉴 **`[SMILES]`** 탭 & **우클릭 컨텍스트 메뉴** 제공<br>• **네이티브 KET 캔버스 저장**: 고해상도 슬라이드 렌더링 및 **투명/흰색 배경 토글** 지원<br>• **클립보드 즉시 삽입** & **SMILES / KET / 화학식·분자량(MW) 복사**<br>• **슬라이드 분자 그림 더블 클릭 시 Ketcher 에디터로 즉시 불러와 크기·좌표 유지 수정** | Office COM Add-in (`.dll`, HKCU 무권한 등록) | 📙 [**PowerPoint 가이드**](docs/POWERPOINT_GUIDE.md)<br>🎬 [**영상 시청**](#powerpoint-video) |
 
 <br>
 
@@ -63,11 +63,42 @@
 
 이미 설치된 환경에서 각 프로그램별 핵심 기능과 실전 팁을 빠르게 습득할 수 있는 1080p 고해상도 영상입니다 (한국어 자막 및 편집 완료).
 
-| 프로그램 | 영상 바로가기 | 러닝타임 | 주요 학습 내용 |
-| :--- | :--- | :---: | :--- |
-| **Microsoft Excel** | [🎬 **Excel 핵심 기능 영상 (excel-guide-video.mp4)**](assets/videos/excel-guide-video.mp4) | 1분 56초 | • 인셀 수식 `=SMILES2IMG(A2)` 입력 & 드래그 채우기<br>• 8대 도메인 스타일(`bw`, `num`, `stereo`, 다크모드)<br>• 더블 클릭 Ketcher 에디터 연동 & 반응식 수식(`=KET2IMG`) |
-| **Microsoft Word** | [🎬 **Word 핵심 기능 영상 (word-guide-video.mp4)**](assets/videos/word-guide-video.mp4) | 1분 54초 | • 상단 리본 `[SMILES]` 탭 & 인라인 구조식 삽입<br>• 본문 텍스트 드래그 0.1초 즉시 치환(`Quick Insert`)<br>• 표 서식 유지 더블 클릭 제자리 수정 & 무손실 KET 반응식 |
-| **Microsoft PowerPoint** | [🎬 **PowerPoint 핵심 기능 영상 (powerpoint-guide-video.mp4)**](assets/videos/powerpoint-guide-video.mp4) | 1분 55초 | • 슬라이드 중앙 고해상도 화학 구조식 자동 배치<br>• 다크 테마 발표 최적화 `[투명 배경]` 토글<br>• 도형 더블 클릭 제자리 수정 & 복합 반응식 카드 보존 |
+<a id="excel-video"></a>
+### 📗 Microsoft Excel 핵심 기능 가이드 (1분 56초)
+
+<p align="center">
+  <video src="assets/videos/excel-guide-video.mp4" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <a href="assets/videos/excel-guide-video.mp4">🎬 Excel 핵심 기능 가이드 영상 재생하기 (assets/videos/excel-guide-video.mp4)</a>
+  </video>
+</p>
+
+* **주요 학습 내용:** 네이티브 인셀 수식 `=SMILES2IMG(A2)` 입력 & 드래그 채우기 • 8대 도메인 스타일(`bw`, `num`, `stereo`, 다크모드) • 더블 클릭 Ketcher 에디터 연동 & 반응식 수식(`=KET2IMG`) • 원클릭 화학식/분자량 복사 • 상세 가이드: [📗 Excel 가이드](docs/EXCEL_GUIDE.md)
+
+---
+
+<a id="word-video"></a>
+### 📘 Microsoft Word 핵심 기능 가이드 (1분 54초)
+
+<p align="center">
+  <video src="assets/videos/word-guide-video.mp4" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <a href="assets/videos/word-guide-video.mp4">🎬 Word 핵심 기능 가이드 영상 재생하기 (assets/videos/word-guide-video.mp4)</a>
+  </video>
+</p>
+
+* **주요 학습 내용:** 상단 리본 `[SMILES]` 탭 & 인라인 구조식 삽입 • 본문 텍스트 드래그 0.1초 즉시 치환(`Quick Insert`) • 표 서식 유지 더블 클릭 제자리 수정 • 무손실 KET 반응식 영구 보존 • 우클릭 화학식/분자량 산출 • 상세 가이드: [📘 Word 가이드](docs/WORD_GUIDE.md)
+
+---
+
+<a id="powerpoint-video"></a>
+### 📙 Microsoft PowerPoint 핵심 기능 가이드 (1분 55초)
+
+<p align="center">
+  <video src="assets/videos/powerpoint-guide-video.mp4" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <a href="assets/videos/powerpoint-guide-video.mp4">🎬 PowerPoint 핵심 기능 가이드 영상 재생하기 (assets/videos/powerpoint-guide-video.mp4)</a>
+  </video>
+</p>
+
+* **주요 학습 내용:** 슬라이드 중앙 고해상도 화학 구조식 자동 배치 • 다크 테마 발표 최적화 `[투명 배경]` 토글 • 텍스트 상자 0.1초 치환(`Quick Insert`) • 도형 더블 클릭 제자리 수정 & 복합 반응식 카드 보존 • 상세 가이드: [📙 PowerPoint 가이드](docs/POWERPOINT_GUIDE.md)
 
 ---
 
