@@ -130,6 +130,25 @@ public static class MoleculeRenderer
         return trimmed;
     }
 
+    public static string? TryConvertToSmiles(string? input)
+    {
+        if (string.IsNullOrWhiteSpace(input)) return null;
+        var trimmed = input!.Trim();
+
+        if (trimmed.StartsWith("SMILES:", StringComparison.OrdinalIgnoreCase))
+            return trimmed.Substring(7).Trim();
+
+        if (IsKet(trimmed))
+        {
+            var info = TryGetMoleculeInfo(trimmed);
+            if (!string.IsNullOrEmpty(info?.Smiles))
+                return info!.Smiles;
+            return null;
+        }
+
+        return trimmed;
+    }
+
     public static byte[]? RenderKet(string ket, RenderOptions? options = null)
     {
         if (string.IsNullOrWhiteSpace(ket)) return null;

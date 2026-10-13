@@ -338,7 +338,13 @@ internal static class Program
             var compact = StructureMetadata.CompactKet(prettyKet);
             Check(!compact.Contains("\n") && !compact.Contains("  ") && compact.Contains("\"root\""), "CompactKet minifies JSON without newlines");
             Check(StructureMetadata.CompactKet(null) == "", "CompactKet handles null");
-            Console.WriteLine("PASS StructureMetadata shared helper and CompactKet");
+
+            // Test KET to SMILES conversion
+            var convertedSmiles = MoleculeRenderer.TryConvertToSmiles(sampleKet);
+            Check(convertedSmiles == "CO", "TryConvertToSmiles converts methanol KET to CO, got: " + convertedSmiles);
+            var smilesFromKetAlt = StructureMetadata.ExtractSmiles($"KET:{sampleKet}");
+            Check(smilesFromKetAlt == "CO", "ExtractSmiles converts KET without SMILES tag to CO, got: " + smilesFromKetAlt);
+            Console.WriteLine("PASS StructureMetadata shared helper, CompactKet, and KET-to-SMILES conversion");
 
             // Live WebView2 + Ketcher E2E Test (1: SMILES -> KET + Transparent Canvas PNG)
             string? e2eKet = null;

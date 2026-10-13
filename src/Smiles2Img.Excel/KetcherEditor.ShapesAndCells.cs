@@ -219,6 +219,14 @@ public static partial class KetcherEditor
         if (!string.IsNullOrWhiteSpace(alt) && IsLikelySmiles(alt!.Trim()))
             return alt.Trim();
 
+        var structStr = ExtractStructure(shape);
+        if (!string.IsNullOrWhiteSpace(structStr))
+        {
+            var smiles = MoleculeRenderer.TryConvertToSmiles(structStr);
+            if (!string.IsNullOrWhiteSpace(smiles))
+                return smiles;
+        }
+
         return null;
     }
 
@@ -236,10 +244,10 @@ public static partial class KetcherEditor
                 var match = FormulaRefPattern.Match(formula);
                 if (match.Success)
                 {
+                    string? rawData = null;
                     if (match.Groups["literal"].Success)
-                        return match.Groups["literal"].Value.Replace("\"\"", "\"").Trim();
-
-                    if (match.Groups["ref"].Success)
+                        rawData = match.Groups["literal"].Value.Replace("\"\"", "\"").Trim();
+                    else if (match.Groups["ref"].Success)
                     {
                         var refAddr = match.Groups["ref"].Value;
                         try
@@ -247,9 +255,17 @@ public static partial class KetcherEditor
                             var sheet = (Excel.Worksheet)cell.Parent;
                             var app = (Excel.Application)sheet.Application;
                             Excel.Range refCell = refAddr.Contains("!") ? (Excel.Range)app.Range[refAddr] : (Excel.Range)sheet.Range[refAddr];
-                            return (Convert.ToString(refCell.Value2) ?? "").Trim();
+                            rawData = (Convert.ToString(refCell.Value2) ?? "").Trim();
                         }
                         catch { }
+                    }
+
+                    if (!string.IsNullOrEmpty(rawData))
+                    {
+                        var smiles = MoleculeRenderer.TryConvertToSmiles(rawData);
+                        if (!string.IsNullOrEmpty(smiles))
+                            return smiles;
+                        return rawData;
                     }
                 }
             }

@@ -65,6 +65,19 @@ public static class StructureMetadata
             if (match.Success)
                 return match.Groups["smiles"].Value.Trim();
         }
+
+        foreach (var text in texts)
+        {
+            if (string.IsNullOrWhiteSpace(text)) continue;
+            var trimmed = text!.Trim();
+            if (MoleculeRenderer.IsKet(trimmed))
+            {
+                var converted = MoleculeRenderer.TryConvertToSmiles(trimmed);
+                if (!string.IsNullOrEmpty(converted))
+                    return converted;
+            }
+        }
+
         return null;
     }
 
