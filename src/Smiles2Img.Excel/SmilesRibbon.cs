@@ -15,39 +15,34 @@ public class SmilesRibbon : ExcelRibbon
   <ribbon>
     <tabs>
       <tab id=""tabSmiles"" label=""SMILES"">
-        <group id=""grpMolecules"" label=""Molecular Structures"">
+        <group id=""grpInsertMolecules"" label=""Insert Structure"">
           <button id=""btnInsertMolecule""
-                  label=""Insert Structure (SMILES)""
-                  screentip=""EPAM Ketcher Molecular Editor (Ctrl+Shift+K)""
-                  supertip=""Opens the EPAM Ketcher editor to sketch chemical structures and insert them into the active cell as formulas (=SMILES2IMG).""
+                  label=""Insert (SMILES)""
+                  screentip=""Insert / Edit Structure (SMILES2IMG) (Ctrl+Shift+K)""
+                  supertip=""Opens Ketcher editor to sketch chemical structures and insert them into the active cell as formulas (=SMILES2IMG).""
                   imageMso=""EquationInsertNew""
                   size=""large""
                   onAction=""OnInsertMolecule"" />
           <button id=""btnInsertKetMolecule""
-                  label=""Insert Structure (KET)""
-                  screentip=""Insert Structure/Reaction (KET2IMG)""
-                  supertip=""Opens the EPAM Ketcher editor to sketch chemical structures, reactions, and canvases and insert them into the active cell as formulas (=KET2IMG).""
+                  label=""Insert (KET)""
+                  screentip=""Insert / Edit Structure (KET2IMG)""
+                  supertip=""Opens Ketcher editor to sketch chemical structures, reactions, and canvases and insert them into the active cell as formulas (=KET2IMG).""
                   imageMso=""SmartArtInsert""
                   size=""large""
                   onAction=""OnInsertKetMolecule"" />
-          <button id=""btnInsertCanvasMolecule""
-                  label=""Insert Canvas (Floating)""
-                  screentip=""Insert Freehand Canvas Structure on Sheet""
-                  supertip=""Opens the EPAM Ketcher editor to draw reactions, arrows, and multi-molecule canvases as high-resolution sheet images.""
-                  imageMso=""PictureInsertFromFile""
-                  size=""normal""
-                  onAction=""OnInsertCanvasMolecule"" />
           <button id=""btnQuickInsert""
-                  label=""Quick Paste""
-                  screentip=""Quick Paste SMILES/KET from Clipboard""
+                  label=""Quick Insert""
+                  screentip=""Quick Insert from Clipboard""
                   supertip=""Instantly converts clipboard SMILES or KET data into a structure image without opening the editor.""
                   imageMso=""Paste""
                   size=""large""
                   onAction=""OnQuickInsert"" />
+        </group>
+        <group id=""grpStructureTools"" label=""Structure Tools"">
           <button id=""btnEditMolecule""
                   label=""Edit Structure""
                   screentip=""Edit Selected Structure""
-                  supertip=""Reloads the selected formula cell (=SMILES2IMG, =KET2IMG) or sheet canvas image back into Ketcher for editing.""
+                  supertip=""Reloads the selected formula cell (=SMILES2IMG, =KET2IMG) or structure image back into Ketcher for editing.""
                   imageMso=""PictureEditProperties""
                   size=""large""
                   onAction=""OnEditMolecule"" />
@@ -60,17 +55,19 @@ public class SmilesRibbon : ExcelRibbon
                   onAction=""OnCopySmiles"" />
           <button id=""btnCopyMoleculeInfo""
                   label=""Copy Molecule Info""
-                  screentip=""Calculate &amp; Copy Formula, MW, Exact Mass""
-                  supertip=""Calculates chemical formula, molecular weight (MW), and exact mass, displays properties, and copies them to the clipboard.""
+                  screentip=""Copy Formula &amp; Molecular Weight""
+                  supertip=""Calculates chemical formula, molecular weight (MW), and exact mass, and copies them to the clipboard.""
                   imageMso=""Info""
                   size=""large""
                   onAction=""OnCopyMoleculeInfo"" />
+        </group>
+        <group id=""grpDiagnostics"" label=""Diagnostics"">
           <button id=""btnOpenDiagnostics""
                   label=""Diagnostics""
                   screentip=""SMILES2IMG Diagnostics &amp; Log""
                   supertip=""Displays parser logs and add-in diagnostic information.""
                   imageMso=""MacroSecurity""
-                  size=""normal""
+                  size=""large""
                   onAction=""OnShowDiagnostics"" />
         </group>
       </tab>

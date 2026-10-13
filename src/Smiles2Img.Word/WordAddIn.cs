@@ -60,7 +60,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
   <ribbon>
     <tabs>
       <tab id=""tabSmiles"" label=""SMILES"">
-        <group id=""grpMolecules"" label=""Chemical Structures"">
+        <group id=""grpInsertMolecules"" label=""Insert Structure"">
           <button id=""btnInsertMolecule""
                   label=""Insert Structure""
                   screentip=""EPAM Ketcher Molecule Editor""
@@ -75,6 +75,8 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   imageMso=""Paste""
                   size=""large""
                   onAction=""OnQuickInsert"" />
+        </group>
+        <group id=""grpStructureTools"" label=""Structure Tools"">
           <button id=""btnEditMolecule""
                   label=""Edit Structure""
                   screentip=""Edit Selected Structure""
@@ -91,7 +93,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnCopySmiles"" />
           <button id=""btnCopyMoleculeInfo""
                   label=""Copy Molecule Info""
-                  screentip=""Copy Formula and Molecular Weight""
+                  screentip=""Copy Formula &amp; Molecular Weight""
                   supertip=""Calculate and copy chemical formula, molecular weight (MW), and exact mass to clipboard.""
                   imageMso=""Info""
                   size=""large""
@@ -113,7 +115,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextInlineCopyInfo""
-              label=""Copy Molecule Info (Formula/MW)""
+              label=""Copy Molecule Info (Formula &amp; MW)""
               imageMso=""Info""
               onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
@@ -136,7 +138,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureCopyInfo""
-              label=""Copy Molecule Info (Formula/MW)""
+              label=""Copy Molecule Info (Formula &amp; MW)""
               imageMso=""Info""
               onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
@@ -159,7 +161,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeCopyInfo""
-              label=""Copy Molecule Info (Formula/MW)""
+              label=""Copy Molecule Info (Formula &amp; MW)""
               imageMso=""Info""
               onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
