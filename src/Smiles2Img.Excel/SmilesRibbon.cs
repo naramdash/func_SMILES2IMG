@@ -43,7 +43,7 @@ public class SmilesRibbon : ExcelRibbon
                   label=""Edit Structure""
                   screentip=""Edit Selected Structure""
                   supertip=""Reloads the selected formula cell (=SMILES2IMG, =KET2IMG) or structure image back into Ketcher for editing.""
-                  imageMso=""PictureEditProperties""
+                  imageMso=""DesignMode""
                   size=""large""
                   onAction=""OnEditMolecule"" />
           <button id=""btnCopySmiles""
@@ -123,7 +123,7 @@ public class SmilesRibbon : ExcelRibbon
     <contextMenu idMso=""ContextMenuPicture"">
       <button id=""btnContextPictureEditMolecule""
               label=""Edit Structure (Ketcher)...""
-              imageMso=""PictureEditProperties""
+              imageMso=""DesignMode""
               onAction=""OnEditMolecule""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureCopySmiles""
@@ -146,7 +146,7 @@ public class SmilesRibbon : ExcelRibbon
     <contextMenu idMso=""ContextMenuShape"">
       <button id=""btnContextShapeEditMolecule""
               label=""Edit Structure (Ketcher)...""
-              imageMso=""PictureEditProperties""
+              imageMso=""DesignMode""
               onAction=""OnEditMolecule""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeCopySmiles""

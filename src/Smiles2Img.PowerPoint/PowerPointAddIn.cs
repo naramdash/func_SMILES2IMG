@@ -148,7 +148,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   label=""Edit Structure""
                   screentip=""Edit Selected Structure""
                   supertip=""Load the selected molecule image back into the Ketcher editor for editing.""
-                  imageMso=""PictureEditProperties""
+                  imageMso=""DesignMode""
                   size=""large""
                   onAction=""OnEditMolecule"" />
           <button id=""btnCopySmiles""
@@ -173,7 +173,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
     <contextMenu idMso=""ContextMenuPicture"">
       <button id=""btnContextPptPictureEdit""
               label=""Edit Structure (Ketcher)...""
-              imageMso=""PictureEditProperties""
+              imageMso=""DesignMode""
               onAction=""OnEditMolecule""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPptPictureCopySmiles""
@@ -196,7 +196,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
     <contextMenu idMso=""ContextMenuShape"">
       <button id=""btnContextPptShapeEdit""
               label=""Edit Structure (Ketcher)...""
-              imageMso=""PictureEditProperties""
+              imageMso=""DesignMode""
               onAction=""OnEditMolecule""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPptShapeCopySmiles""
