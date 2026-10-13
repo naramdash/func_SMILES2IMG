@@ -71,10 +71,15 @@ public class SmilesRibbon : ExcelRibbon
   </ribbon>
   <contextMenus>
     <contextMenu idMso=""ContextMenuCell"">
-      <button id=""btnContextEditMoleculeCell""
-              label=""Edit Structure (Ketcher)...""
-              imageMso=""PictureEditProperties""
-              onAction=""OnEditMolecule""
+      <button id=""btnContextInsertMolecule""
+              label=""Insert / Edit Structure (SMILES2IMG)...""
+              imageMso=""EquationInsertNew""
+              onAction=""OnInsertMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextInsertCanvasMolecule""
+              label=""Insert Canvas Structure (KET2IMG)...""
+              imageMso=""SmartArtInsert""
+              onAction=""OnInsertCanvasMolecule""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextCopySmilesCell""
               label=""Copy SMILES""
@@ -86,23 +91,18 @@ public class SmilesRibbon : ExcelRibbon
               imageMso=""Info""
               onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
-      <button id=""btnContextInsertMolecule""
-              label=""Insert Structure (Formula)...""
-              imageMso=""EquationInsertNew""
-              onAction=""OnInsertMolecule""
-              insertBeforeMso=""Cut"" />
-      <button id=""btnContextInsertCanvasMolecule""
-              label=""Insert Canvas Structure (KET)...""
-              imageMso=""SmartArtInsert""
-              onAction=""OnInsertCanvasMolecule""
-              insertBeforeMso=""Cut"" />
       <menuSeparator id=""sepContextMolecule"" insertBeforeMso=""Cut"" />
     </contextMenu>
     <contextMenu idMso=""ContextMenuListRange"">
-      <button id=""btnContextListEditMoleculeCell""
-              label=""Edit Structure (Ketcher)...""
-              imageMso=""PictureEditProperties""
-              onAction=""OnEditMolecule""
+      <button id=""btnContextListInsertMolecule""
+              label=""Insert / Edit Structure (SMILES2IMG)...""
+              imageMso=""EquationInsertNew""
+              onAction=""OnInsertMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextListInsertCanvasMolecule""
+              label=""Insert Canvas Structure (KET2IMG)...""
+              imageMso=""SmartArtInsert""
+              onAction=""OnInsertCanvasMolecule""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextListCopySmilesCell""
               label=""Copy SMILES""
@@ -113,16 +113,6 @@ public class SmilesRibbon : ExcelRibbon
               label=""Copy Molecule Info (Formula &amp; MW)""
               imageMso=""Info""
               onAction=""OnCopyMoleculeInfo""
-              insertBeforeMso=""Cut"" />
-      <button id=""btnContextListInsertMolecule""
-              label=""Insert Structure (Formula)...""
-              imageMso=""EquationInsertNew""
-              onAction=""OnInsertMolecule""
-              insertBeforeMso=""Cut"" />
-      <button id=""btnContextListInsertCanvasMolecule""
-              label=""Insert Canvas Structure (KET)...""
-              imageMso=""SmartArtInsert""
-              onAction=""OnInsertCanvasMolecule""
               insertBeforeMso=""Cut"" />
       <menuSeparator id=""sepContextListMolecule"" insertBeforeMso=""Cut"" />
     </contextMenu>
