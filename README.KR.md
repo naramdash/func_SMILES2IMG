@@ -9,18 +9,6 @@
 [![EPAM Ketcher](https://img.shields.io/badge/EPAM%20Ketcher-v3.18.0-blueviolet.svg)](https://lifescience.opensource.epam.com/ketcher/)
 [![Office Suite Installer](https://img.shields.io/badge/Installer-Unified%20Office%20Suite-brightgreen.svg)](#-빠른-설치-quick-install)
 
-> **SMILES 화학 구조식 문자열을 Microsoft Office(Excel, Word, PowerPoint)에 고해상도 분자 이미지로 즉시 삽입하고, 내장된 Ketcher 웹 에디터로 자유롭게 그리고 수정할 수 있는 통합 오피스 추가 기능(Office Suite Add-in)입니다.**  
-> 외부 웹 서버나 클라우드 전송 없이, PC 로컬에서 100% 오프라인으로 안전하고 빠르게 렌더링되며 관리자 권한(Admin) 없이 간편하게 설치됩니다.
-
-<p align="center">
-  <img src="assets/excel-showcase.png" alt="SMILES for Excel Showcase" width="100%" />
-</p>
-
-<p align="center">
-  <img src="assets/word-showcase.png" alt="SMILES for Word Showcase" width="49%" />
-  <img src="assets/powerpoint-showcase.png" alt="SMILES for PowerPoint Showcase" width="49%" />
-</p>
-
 ---
 
 ## ⚡ 빠른 설치 (Quick Install)
@@ -43,6 +31,20 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 > **Windows 11「스마트 앱 컨트롤 (Smart App Control)」관련 안내**  
 > 엑셀 실행 시 `#NAME?` 오류가 발생하거나 `'Smiles2Img-AddIn64-packed.xll의 파일 형식 및 확장명이 일치하지 않습니다'`라는 보안 경고가 나타난다면, Windows 11의 **스마트 앱 컨트롤 (Smart App Control)**이 오픈소스 추가 기능을 차단한 것입니다.  
 > 👉 파일이 깨진 것이 아니며, **[자주 묻는 질문(FAQ)](#-자주-묻는-질문-faq)**의 안내에 따라 **스마트 앱 컨트롤**을 **'꺼짐(Off)'**으로 설정하시면 즉시 정상 작동합니다. (실시간 바이러스 백신 감시는 100% 안전하게 유지됩니다)
+
+---
+
+> **SMILES 화학 구조식 문자열을 Microsoft Office(Excel, Word, PowerPoint)에 고해상도 분자 이미지로 즉시 삽입하고, 내장된 Ketcher 웹 에디터로 자유롭게 그리고 수정할 수 있는 통합 오피스 추가 기능(Office Suite Add-in)입니다.**  
+> 외부 웹 서버나 클라우드 전송 없이, PC 로컬에서 100% 오프라인으로 안전하고 빠르게 렌더링되며 관리자 권한(Admin) 없이 간편하게 설치됩니다.
+
+<p align="center">
+  <img src="assets/excel-showcase.png" alt="SMILES for Excel Showcase" width="100%" />
+</p>
+
+<p align="center">
+  <img src="assets/word-showcase.png" alt="SMILES for Word Showcase" width="49%" />
+  <img src="assets/powerpoint-showcase.png" alt="SMILES for PowerPoint Showcase" width="49%" />
+</p>
 
 ---
 
