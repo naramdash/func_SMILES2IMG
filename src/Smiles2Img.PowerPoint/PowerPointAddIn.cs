@@ -242,6 +242,19 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               insertBeforeMso=""Cut"" />
       <menuSeparator id=""sepContextPptText"" insertBeforeMso=""Cut"" />
     </contextMenu>
+    <contextMenu idMso=""ContextMenuTable"">
+      <button id=""btnContextPptTableInsert""
+              label=""Insert / Edit Structure...""
+              imageMso=""EquationInsertNew""
+              onAction=""OnInsertMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPptTableQuickInsert""
+              label=""Paste Structure""
+              imageMso=""Paste""
+              onAction=""OnQuickInsert""
+              insertBeforeMso=""Cut"" />
+      <menuSeparator id=""sepContextPptTable"" insertBeforeMso=""Cut"" />
+    </contextMenu>
   </contextMenus>
 </customUI>";
     }
