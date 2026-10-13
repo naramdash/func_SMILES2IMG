@@ -75,10 +75,11 @@ public class SmilesRibbon : ExcelRibbon
   </ribbon>
   <contextMenus>
     <contextMenu idMso=""ContextMenuCell"">
+      <menuSeparator id=""sepContextCellPre"" insertAfterMso=""PasteSpecialDialog"" />
       <menu id=""menuContextExcelCell""
             label=""Chemical Structure""
             imageMso=""EquationInsertNew""
-            insertAfterMso=""PasteGalleryMini"">
+            insertAfterMso=""PasteSpecialDialog"">
         <button id=""btnContextInsertMolecule""
                 label=""Insert / Edit Structure (SMILES2IMG)...""
                 imageMso=""EquationInsertNew""
@@ -105,13 +106,14 @@ public class SmilesRibbon : ExcelRibbon
                 imageMso=""Copy""
                 onAction=""OnCopyMoleculeInfo"" />
       </menu>
-      <menuSeparator id=""sepContextMolecule"" insertAfterMso=""PasteGalleryMini"" />
+      <menuSeparator id=""sepContextMolecule"" insertAfterMso=""PasteSpecialDialog"" />
     </contextMenu>
     <contextMenu idMso=""ContextMenuListRange"">
+      <menuSeparator id=""sepContextListPre"" insertAfterMso=""PasteSpecialDialog"" />
       <menu id=""menuContextExcelList""
             label=""Chemical Structure""
             imageMso=""EquationInsertNew""
-            insertAfterMso=""PasteGalleryMini"">
+            insertAfterMso=""PasteSpecialDialog"">
         <button id=""btnContextListInsertMolecule""
                 label=""Insert / Edit Structure (SMILES2IMG)...""
                 imageMso=""EquationInsertNew""
@@ -138,7 +140,7 @@ public class SmilesRibbon : ExcelRibbon
                 imageMso=""Copy""
                 onAction=""OnCopyMoleculeInfo"" />
       </menu>
-      <menuSeparator id=""sepContextListMolecule"" insertAfterMso=""PasteGalleryMini"" />
+      <menuSeparator id=""sepContextListMolecule"" insertAfterMso=""PasteSpecialDialog"" />
     </contextMenu>
     <contextMenu idMso=""ContextMenuPicture"">
       <button id=""btnContextPictureEditMolecule""
