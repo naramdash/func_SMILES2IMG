@@ -2,8 +2,13 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Xml.Linq;
 using ExcelDna.Integration;
+using Smiles2Img;
 using Smiles2Img.Rendering;
+using Smiles2Img.Word;
+using Smiles2Img.PowerPoint;
 
 namespace Smiles2Img.Tests;
 
@@ -399,9 +404,121 @@ internal static class Program
                 Console.WriteLine($"PASS E2E WebView2 Ketcher #2 (KET Round-Trip + White BG PNG: {form2.ResultPngBytes!.Length} bytes)");
             }
 
+            // Live WebView2 + Ketcher E2E Test (3: Complex Molecule Caffeine -> KET & Molecular Properties)
+            using (var form3 = new KetcherForm("Excel", "Cn1cnc2c1c(=O)n(C)c(=O)n2C")
+            {
+                AutoApplyAfterLoadForTest = true,
+                ToggleWhiteBackgroundForTest = false
+            })
+            {
+                var dr3 = form3.ShowDialog();
+                Check(dr3 == System.Windows.Forms.DialogResult.OK, "E2E KetcherForm #3 returned DialogResult.OK");
+                Check(!string.IsNullOrWhiteSpace(form3.ResultKet) && form3.ResultKet!.Contains("\"root\""), "E2E KetcherForm #3 returned valid KET JSON");
+                var caffeineInfo = MoleculeRenderer.TryGetMoleculeInfo(form3.ResultKet!);
+                Check(caffeineInfo != null && caffeineInfo.Formula == "C8H10N4O2", $"E2E KetcherForm #3 caffeine formula is C8H10N4O2, got: {caffeineInfo?.Formula}");
+                Check(Math.Abs((caffeineInfo?.MolecularWeight ?? 0) - 194.19) < 0.2, $"E2E KetcherForm #3 caffeine MW ~ 194.19, got: {caffeineInfo?.MolecularWeight}");
+                Check(form3.ResultPngBytes != null && form3.ResultPngBytes.Length > 500, "E2E KetcherForm #3 captured canvas PNG bytes");
+                File.WriteAllBytes("output/samples/e2e_ketcher_caffeine.png", form3.ResultPngBytes!);
+                Console.WriteLine($"PASS E2E WebView2 Ketcher #3 (Caffeine KET + Formula {caffeineInfo?.Formula} + MW {caffeineInfo?.MolecularWeight:F2})");
+            }
+
+            // In-Cell formula generation & escaping tests
+            var testSmiles = "CC(=O)Oc1ccccc1C(=O)O";
+            var escapedSmiles = testSmiles.Replace("\"", "\"\"");
+            var smilesFormula = $"=SMILES2IMG(\"{escapedSmiles}\")";
+            Check(smilesFormula == "=SMILES2IMG(\"CC(=O)Oc1ccccc1C(=O)O\")", "SMILES in-cell formula generation");
+
+            var compactSampleKet = StructureMetadata.CompactKet(sampleKet);
+            var escapedKet = compactSampleKet.Replace("\"", "\"\"");
+            var ketFormula = $"=KET2IMG(\"{escapedKet}\")";
+            Check(ketFormula.StartsWith("=KET2IMG(\"") && ketFormula.Contains("\"\"root\"\"") && !ketFormula.Contains("\n"),
+                "KET in-cell formula generation with compact JSON and escaped double quotes");
+            Console.WriteLine("PASS In-Cell formula generation and JSON escaping");
+
+            // Office Ribbon & Context Menu XML and reflection callback validation
+            var excelRibbon = new SmilesRibbon();
+            var excelXml = excelRibbon.GetCustomUI("");
+            ValidateRibbonXml(excelXml, typeof(SmilesRibbon), "Excel");
+            var excelDoc = XDocument.Parse(excelXml);
+            Check(excelDoc.Descendants().Any(e => (string?)e.Attribute("id") == "menuContextExcelCell" &&
+                                                   (string?)e.Attribute("insertAfterMso") == "PasteGalleryMini"),
+                "Excel ContextMenuCell contains menuContextExcelCell anchored after PasteGalleryMini");
+            Check(excelDoc.Descendants().Any(e => (string?)e.Attribute("id") == "sepContextCellPre" &&
+                                                   (string?)e.Attribute("insertAfterMso") == "PasteGalleryMini"),
+                "Excel ContextMenuCell contains sepContextCellPre anchored after PasteGalleryMini");
+            Check(excelDoc.Descendants().Any(e => (string?)e.Attribute("id") == "sepContextMolecule" &&
+                                                   (string?)e.Attribute("insertAfterMso") == "PasteGalleryMini"),
+                "Excel ContextMenuCell contains sepContextMolecule anchored after PasteGalleryMini");
+            Check(excelDoc.Descendants().Any(e => (string?)e.Attribute("id") == "menuContextExcelList" &&
+                                                   (string?)e.Attribute("insertAfterMso") == "PasteGalleryMini"),
+                "Excel ContextMenuListRange contains menuContextExcelList anchored after PasteGalleryMini");
+            Check(excelDoc.Descendants().Any(e => (string?)e.Attribute("idMso") == "ContextMenuPicture" &&
+                                                   e.Descendants().Any(b => (string?)b.Attribute("insertBeforeMso") == "Cut")),
+                "Excel ContextMenuPicture has items anchored before Cut");
+            Console.WriteLine("PASS Excel Ribbon & Context Menu XML and callbacks reflection");
+
+            var wordAddIn = new WordAddIn();
+            var wordXml = wordAddIn.GetCustomUI("");
+            ValidateRibbonXml(wordXml, typeof(WordAddIn), "Word");
+            var wordDoc = XDocument.Parse(wordXml);
+            Check(wordDoc.Descendants().Any(e => (string?)e.Attribute("id") == "menuContextWordText" &&
+                                                 (string?)e.Attribute("insertAfterMso") == "PasteGalleryMini"),
+                "Word ContextMenuText contains menuContextWordText anchored after PasteGalleryMini");
+            Check(wordDoc.Descendants().Any(e => (string?)e.Attribute("id") == "sepContextText" &&
+                                                 (string?)e.Attribute("insertAfterMso") == "PasteGalleryMini"),
+                "Word ContextMenuText contains sepContextText anchored after PasteGalleryMini");
+            Check(wordDoc.Descendants().Any(e => (string?)e.Attribute("idMso") == "ContextMenuPicture" &&
+                                                 e.Descendants().Any(b => (string?)b.Attribute("insertBeforeMso") == "Cut")),
+                "Word ContextMenuPicture has items anchored before Cut");
+            Console.WriteLine("PASS Word Ribbon & Context Menu XML and callbacks reflection");
+
+            var pptAddIn = new PowerPointAddIn();
+            var pptXml = pptAddIn.GetCustomUI("");
+            ValidateRibbonXml(pptXml, typeof(PowerPointAddIn), "PowerPoint");
+            var pptDoc = XDocument.Parse(pptXml);
+            Check(pptDoc.Descendants().Any(e => (string?)e.Attribute("id") == "menuContextPptFrame" &&
+                                                (string?)e.Attribute("insertAfterMso") == "PasteGalleryMini"),
+                "PowerPoint ContextMenuFrame contains menuContextPptFrame anchored after PasteGalleryMini");
+            Check(pptDoc.Descendants().Any(e => (string?)e.Attribute("id") == "menuContextPptText" &&
+                                                (string?)e.Attribute("insertAfterMso") == "PasteGalleryMini"),
+                "PowerPoint ContextMenuText contains menuContextPptText anchored after PasteGalleryMini");
+            Check(pptDoc.Descendants().Any(e => (string?)e.Attribute("id") == "menuContextPptTable" &&
+                                                (string?)e.Attribute("insertAfterMso") == "PasteGalleryMini"),
+                "PowerPoint ContextMenuTable contains menuContextPptTable anchored after PasteGalleryMini");
+            Check(pptDoc.Descendants().Any(e => (string?)e.Attribute("idMso") == "ContextMenuPicture" &&
+                                                e.Descendants().Any(b => (string?)b.Attribute("insertBeforeMso") == "Cut")),
+                "PowerPoint ContextMenuPicture has items anchored before Cut");
+            Console.WriteLine("PASS PowerPoint Ribbon & Context Menu XML and callbacks reflection");
+
             return 0;
         }
         catch (Exception error) { Console.Error.WriteLine(error); return 1; }
+    }
+
+    private static void ValidateRibbonXml(string xml, Type addInType, string appName)
+    {
+        Check(!string.IsNullOrWhiteSpace(xml), $"{appName} Ribbon XML is non-empty");
+        var doc = XDocument.Parse(xml);
+        Check(doc.Root != null, $"{appName} XML has root element");
+
+        var onActions = doc.Descendants()
+            .Select(e => (string?)e.Attribute("onAction"))
+            .Where(a => !string.IsNullOrEmpty(a))
+            .Distinct()
+            .ToList();
+
+        foreach (var action in onActions)
+        {
+            var method = addInType.GetMethod(action!, BindingFlags.Public | BindingFlags.Instance);
+            Check(method != null, $"{appName} onAction callback '{action}' must exist on {addInType.Name}");
+        }
+
+        var allIds = doc.Descendants()
+            .Select(e => (string?)e.Attribute("id"))
+            .Where(id => !string.IsNullOrEmpty(id))
+            .ToList();
+        var duplicates = allIds.GroupBy(x => x).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
+        Check(duplicates.Count == 0, $"{appName} duplicate control IDs: {string.Join(", ", duplicates)}");
     }
 
     private static void Check(bool condition, string message)

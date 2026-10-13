@@ -45,6 +45,16 @@
         "resolved": "4.3.0",
         "contentHash": "P+MBhIM0YX+JqROuf7i306ZLJEjQYA9uUyRDE+OqwUI5sh41e2ZbPQV3LfAPh+29cmceE1pUffXsGfR4eMY3KA=="
       },
+      "Microsoft.Office.Interop.PowerPoint": {
+        "type": "Transitive",
+        "resolved": "15.0.4420.1018",
+        "contentHash": "3XkJAqbYq93MqqSOPusNE+6Tve5yBkbE92n9W8f+k8Z9AzXeoTMqMYqhZMrzVOp4saHhMMbOD78JkCjvk+qIzw=="
+      },
+      "Microsoft.Office.Interop.Word": {
+        "type": "Transitive",
+        "resolved": "15.0.4797.1004",
+        "contentHash": "lavTOrMGK/o/t3+gGr7JuVrL8XDdnS0DwPLcYv/StOiysXO4L0C36IXTVtEJo1Mh9Aoxo9a8dgGcPi+faTlv0g=="
+      },
       "Microsoft.Web.WebView2": {
         "type": "Transitive",
         "resolved": "1.0.4258.31",
@@ -69,6 +79,21 @@
         "dependencies": {
           "Indigo.Net": "[1.49.0-rc.2, )",
           "Microsoft.Web.WebView2": "[1.0.4258.31, )"
+        }
+      },
+      "smiles2img.powerpoint": {
+        "type": "Project",
+        "dependencies": {
+          "ExcelDna.Interop": "[16.0.0, )",
+          "Microsoft.Office.Interop.PowerPoint": "[15.0.4420.1018, )",
+          "Smiles2Img.Core": "[1.4.0, )"
+        }
+      },
+      "smiles2img.word": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.Office.Interop.Word": "[15.0.4797.1004, )",
+          "Smiles2Img.Core": "[1.4.0, )"
         }
       }
     },

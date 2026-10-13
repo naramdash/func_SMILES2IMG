@@ -11,6 +11,8 @@
     <Reference Include="System.Windows.Forms" />
     <ProjectReference Include="../src/Smiles2Img.Core/Smiles2Img.Core.csproj" />
     <ProjectReference Include="../src/Smiles2Img.Excel/Smiles2Img.Excel.csproj" />
+    <ProjectReference Include="../src/Smiles2Img.Word/Smiles2Img.Word.csproj" />
+    <ProjectReference Include="../src/Smiles2Img.PowerPoint/Smiles2Img.PowerPoint.csproj" />
     <PackageReference Include="Indigo.Net" Version="1.49.0-rc.2" GeneratePathProperty="true" />
   </ItemGroup>
   <Target Name="CopyNativeLibraries" AfterTargets="Build">
