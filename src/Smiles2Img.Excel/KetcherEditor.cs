@@ -352,19 +352,31 @@ public static partial class KetcherEditor
                 return;
             }
 
-            if (string.IsNullOrEmpty(ket) && !string.IsNullOrEmpty(smiles) && !smiles!.Contains(">") && app.ActiveCell is Excel.Range targetCell)
+            if (app.ActiveCell is Excel.Range targetCell)
             {
-                try
-                {
-                    if (Convert.ToDouble(targetCell.RowHeight) < 85) targetCell.RowHeight = 95;
-                    if (Convert.ToDouble(targetCell.ColumnWidth) < 16) targetCell.ColumnWidth = 20;
-                }
-                catch { }
+                var isKet = !string.IsNullOrEmpty(ket);
+                var dataToWrite = isKet ? StructureMetadata.CompactKet(ket) : smiles;
 
-                var funcName = CellImages.NativeImagesUnsupported ? "SMILES2IMG.FLOAT" : "SMILES2IMG";
-                var escaped = smiles.Replace("\"", "\"\"");
-                targetCell.Formula = $"={funcName}(\"{escaped}\")";
-                return;
+                if (!string.IsNullOrEmpty(dataToWrite))
+                {
+                    var escaped = dataToWrite!.Replace("\"", "\"\"");
+                    if (escaped.Length <= 8000)
+                    {
+                        try
+                        {
+                            if (Convert.ToDouble(targetCell.RowHeight) < 85) targetCell.RowHeight = 95;
+                            if (Convert.ToDouble(targetCell.ColumnWidth) < 16) targetCell.ColumnWidth = 20;
+                        }
+                        catch { }
+
+                        var funcName = isKet
+                            ? (CellImages.NativeImagesUnsupported ? "KET2IMG.FLOAT" : "KET2IMG")
+                            : (CellImages.NativeImagesUnsupported ? "SMILES2IMG.FLOAT" : "SMILES2IMG");
+
+                        targetCell.Formula = $"={funcName}(\"{escaped}\")";
+                        return;
+                    }
+                }
             }
 
             InsertCanvasShapeOnSheet(app, sheet, ket, smiles, pngBytes);
