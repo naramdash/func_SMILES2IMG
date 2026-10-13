@@ -129,8 +129,19 @@ public static partial class KetcherEditor
         catch { }
     }
 
-    [ExcelCommand(ShortCut = "^+K", MenuName = "SMILES2IMG", MenuText = "Insert/Edit Structure (Ctrl+Shift+K)")]
+    [ExcelCommand(ShortCut = "^+K", MenuName = "SMILES2IMG", MenuText = "Insert/Edit Structure (SMILES2IMG) (Ctrl+Shift+K)")]
     public static void OpenKetcherCommand()
+    {
+        OpenKetcherWithPreference(preferKet: false);
+    }
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Insert/Edit Structure (KET2IMG)")]
+    public static void OpenKetcherKetCommand()
+    {
+        OpenKetcherWithPreference(preferKet: true);
+    }
+
+    private static void OpenKetcherWithPreference(bool? preferKet)
     {
         try
         {
@@ -144,7 +155,7 @@ public static partial class KetcherEditor
 
             if (app.ActiveCell is not Excel.Range activeCell) return;
             var sheet = (Excel.Worksheet)app.ActiveSheet;
-            OpenEditor(sheet, activeCell.Address);
+            OpenEditor(sheet, activeCell.Address, preferKet);
         }
         catch (Exception ex)
         {

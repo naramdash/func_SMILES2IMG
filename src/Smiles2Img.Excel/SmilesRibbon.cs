@@ -17,18 +17,25 @@ public class SmilesRibbon : ExcelRibbon
       <tab id=""tabSmiles"" label=""SMILES"">
         <group id=""grpMolecules"" label=""Molecular Structures"">
           <button id=""btnInsertMolecule""
-                  label=""Insert Structure""
+                  label=""Insert Structure (SMILES)""
                   screentip=""EPAM Ketcher Molecular Editor (Ctrl+Shift+K)""
-                  supertip=""Opens the EPAM Ketcher editor to sketch chemical structures and insert them into the active cell as formulas (=SMILES2IMG or =KET2IMG).""
+                  supertip=""Opens the EPAM Ketcher editor to sketch chemical structures and insert them into the active cell as formulas (=SMILES2IMG).""
                   imageMso=""EquationInsertNew""
                   size=""large""
                   onAction=""OnInsertMolecule"" />
-          <button id=""btnInsertCanvasMolecule""
-                  label=""Insert Canvas (KET)""
-                  screentip=""Insert Freehand Canvas Structure (KET)""
-                  supertip=""Opens the EPAM Ketcher editor to draw reactions, arrows, and multi-molecule canvases as high-resolution sheet images.""
+          <button id=""btnInsertKetMolecule""
+                  label=""Insert Structure (KET)""
+                  screentip=""Insert Structure/Reaction (KET2IMG)""
+                  supertip=""Opens the EPAM Ketcher editor to sketch chemical structures, reactions, and canvases and insert them into the active cell as formulas (=KET2IMG).""
                   imageMso=""SmartArtInsert""
                   size=""large""
+                  onAction=""OnInsertKetMolecule"" />
+          <button id=""btnInsertCanvasMolecule""
+                  label=""Insert Canvas (Floating)""
+                  screentip=""Insert Freehand Canvas Structure on Sheet""
+                  supertip=""Opens the EPAM Ketcher editor to draw reactions, arrows, and multi-molecule canvases as high-resolution sheet images.""
+                  imageMso=""PictureInsertFromFile""
+                  size=""normal""
                   onAction=""OnInsertCanvasMolecule"" />
           <button id=""btnQuickInsert""
                   label=""Quick Paste""
@@ -76,10 +83,10 @@ public class SmilesRibbon : ExcelRibbon
               imageMso=""EquationInsertNew""
               onAction=""OnInsertMolecule""
               insertBeforeMso=""Cut"" />
-      <button id=""btnContextInsertCanvasMolecule""
-              label=""Insert Canvas Structure (KET2IMG)...""
+      <button id=""btnContextInsertKetMolecule""
+              label=""Insert / Edit Structure (KET2IMG)...""
               imageMso=""SmartArtInsert""
-              onAction=""OnInsertCanvasMolecule""
+              onAction=""OnInsertKetMolecule""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextCopySmilesCell""
               label=""Copy SMILES""
@@ -99,10 +106,10 @@ public class SmilesRibbon : ExcelRibbon
               imageMso=""EquationInsertNew""
               onAction=""OnInsertMolecule""
               insertBeforeMso=""Cut"" />
-      <button id=""btnContextListInsertCanvasMolecule""
-              label=""Insert Canvas Structure (KET2IMG)...""
+      <button id=""btnContextListInsertKetMolecule""
+              label=""Insert / Edit Structure (KET2IMG)...""
               imageMso=""SmartArtInsert""
-              onAction=""OnInsertCanvasMolecule""
+              onAction=""OnInsertKetMolecule""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextListCopySmilesCell""
               label=""Copy SMILES""
@@ -171,6 +178,14 @@ public class SmilesRibbon : ExcelRibbon
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
             KetcherEditor.OpenKetcherCommand();
+        });
+    }
+
+    public void OnInsertKetMolecule(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            KetcherEditor.OpenKetcherKetCommand();
         });
     }
 

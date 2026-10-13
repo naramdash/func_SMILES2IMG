@@ -334,7 +334,11 @@ internal static class Program
             Check(StructureMetadata.ExtractStructure($"KET:{sampleKet}\nSMILES:CO") == sampleKet, "StructureMetadata strips trailing SMILES tag from KET");
             var fitBounds = StructureMetadata.FitReplacementBounds(100f, 100f, 200f, 200f, quickSmilesPng!);
             Check(fitBounds.Width > 0 && fitBounds.Height > 0, "StructureMetadata FitReplacementBounds computes valid geometry");
-            Console.WriteLine("PASS StructureMetadata shared helper");
+            var prettyKet = "{\n  \"root\": {\n    \"nodes\": [\n      {\"type\": \"atom\"}\n    ]\n  }\n}";
+            var compact = StructureMetadata.CompactKet(prettyKet);
+            Check(!compact.Contains("\n") && !compact.Contains("  ") && compact.Contains("\"root\""), "CompactKet minifies JSON without newlines");
+            Check(StructureMetadata.CompactKet(null) == "", "CompactKet handles null");
+            Console.WriteLine("PASS StructureMetadata shared helper and CompactKet");
 
             // Live WebView2 + Ketcher E2E Test (1: SMILES -> KET + Transparent Canvas PNG)
             string? e2eKet = null;

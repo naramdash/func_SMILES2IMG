@@ -149,6 +149,21 @@ public static class StructureMetadata
         }
     }
 
+    public static string CompactKet(string? ket)
+    {
+        if (string.IsNullOrWhiteSpace(ket)) return "";
+        try
+        {
+            var serializer = new System.Web.Script.Serialization.JavaScriptSerializer { MaxJsonLength = int.MaxValue };
+            var obj = serializer.DeserializeObject(ket!);
+            return serializer.Serialize(obj);
+        }
+        catch
+        {
+            return ket!.Trim();
+        }
+    }
+
     private static string StripTrailingSmilesTag(string ketText)
     {
         var smilesIdx = ketText.IndexOf("\nSMILES:", StringComparison.OrdinalIgnoreCase);
