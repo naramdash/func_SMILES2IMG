@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#107C41" />
+      <stop offset="50%" stop-color="#185ABD" />
+      <stop offset="100%" stop-color="#C43E1C" />
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+  </defs>
+  <!-- Background Shield/Rounded Hexagon -->
+  <rect x="8" y="8" width="112" height="112" rx="28" fill="url(#grad1)" opacity="0.12" />
+  <rect x="8" y="8" width="112" height="112" rx="28" fill="none" stroke="url(#grad1)" stroke-width="3" opacity="0.4" />
+  
+  <!-- Hexagonal Chemical Ring -->
+  <polygon points="64,26 94,43 94,77 64,94 34,77 34,43" fill="none" stroke="#2563eb" stroke-width="5" stroke-linejoin="round" />
+  <!-- Inner Resonance Ring -->
+  <circle cx="64" cy="60" r="19" fill="none" stroke="#10b981" stroke-width="3.5" stroke-dasharray="6,4" />
+
+  <!-- Functional Group Bonds & Atoms -->
+  <!-- Top Node (Double Bond Oxygen) -->
+  <line x1="64" y1="26" x2="64" y2="14" stroke="#dc2626" stroke-width="4.5" stroke-linecap="round" />
+  <circle cx="64" cy="14" r="6" fill="#dc2626" />
+
+  <!-- Right Node (Nitrogen) -->
+  <circle cx="94" cy="43" r="5.5" fill="#2563eb" />
+  <!-- Right Bottom Node -->
+  <circle cx="94" cy="77" r="5.5" fill="#107c41" />
+  
+  <!-- Bottom Node (Methyl Branch) -->
+  <line x1="64" y1="94" x2="64" y2="108" stroke="#475569" stroke-width="4" stroke-linecap="round" />
+  <circle cx="64" cy="108" r="5" fill="#475569" />
+
+  <!-- Left Bottom Node -->
+  <circle cx="34" cy="77" r="5.5" fill="#185abd" />
+  <!-- Left Top Node -->
+  <circle cx="34" cy="43" r="5.5" fill="#c43e1c" />
+</svg>

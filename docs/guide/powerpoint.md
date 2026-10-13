@@ -10,8 +10,10 @@
 > Covers slide center auto-placement, transparent background toggles for dark templates, 0.1s text box substitution, aspect-ratio preserving double-click edits, and multi-step reaction equations.
 
 <p align="center">
-  <video src="https://github.com/user-attachments/assets/b7ac8c3f-cc06-4820-8df6-1593d07ccb97" controls="controls" width="100%" style="max-width: 800px; border-radius: 8px;">
-    <a href="https://github.com/user-attachments/assets/b7ac8c3f-cc06-4820-8df6-1593d07ccb97">🎬 Watch PowerPoint 3-Minute Video Walkthrough</a>
+  <video controls="controls" width="100%" style="max-width: 800px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);" poster="/powerpoint-showcase.png">
+    <source src="/videos/powerpoint-guide-video.mp4" type="video/mp4" />
+    <source src="https://github.com/user-attachments/assets/b7ac8c3f-cc06-4820-8df6-1593d07ccb97" type="video/mp4" />
+    <a href="/videos/powerpoint-guide-video.mp4">🎬 Watch PowerPoint 3-Minute Video Walkthrough</a>
   </video>
 </p>
 

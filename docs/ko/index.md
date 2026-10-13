@@ -6,7 +6,7 @@ hero:
   text: "화학 분자 구조식 자동 렌더러 & 2D 에디터"
   tagline: "고해상도 2D 화학 구조식 자동 렌더링, 실시간 인셀 수식, 더블 클릭 제자리 수정, 무손실 반응식 KET 캔버스 — Microsoft Excel, Word, PowerPoint 100% 로컬 오프라인 구동."
   image:
-    src: /excel-showcase.png
+    src: /logo.svg
     alt: SMILES for Office
   actions:
     - theme: brand
@@ -48,4 +48,18 @@ PowerShell을 열고 아래 명령어를 실행하면 오피스 전체에 원클
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
-> **시스템 요구사항:** Windows 10/11, Microsoft Office (Excel / Word / PowerPoint 2016–365, 32비트/64비트 호환), WebView2 Runtime.
+::: tip 💡 간편한 업데이트
+나중에 최신 버전이 출시되었을 때도 동일한 명령어를 실행하면 최신 버전으로 자동 업그레이드됩니다!
+:::
+
+---
+
+## 🖼️ 오피스 프로그램별 주요 화면
+
+<p align="center">
+  <img src="/excel-showcase.png" alt="Microsoft Excel Showcase" width="100%" style="border-radius: 8px; margin-bottom: 16px;" />
+</p>
+
+| [📗 Microsoft Excel 가이드](/ko/guide/excel) | [📘 Microsoft Word 가이드](/ko/guide/word) | [📙 Microsoft PowerPoint 가이드](/ko/guide/powerpoint) |
+| :---: | :---: | :---: |
+| 네이티브 인셀 수식(`=SMILES2IMG`), 행/열 연동, 정렬/필터 지원 | 문장 흐름을 따르는 인라인 그림, 표 셀 서식 완벽 보존 | 슬라이드 정중앙 원클릭 배치, 다크 테마 투명 배경 지원 |

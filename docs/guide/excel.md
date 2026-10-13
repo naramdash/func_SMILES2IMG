@@ -10,8 +10,10 @@
 > Covers in-cell formula entry, chemical styling options, offline Ketcher 2D editor workflows, reaction formulas (`=KET2IMG`), and one-click property calculation.
 
 <p align="center">
-  <video src="https://github.com/user-attachments/assets/e566a830-55d5-4ff5-8030-344d8b8ce7b6" controls="controls" width="100%" style="max-width: 800px; border-radius: 8px;">
-    <a href="https://github.com/user-attachments/assets/e566a830-55d5-4ff5-8030-344d8b8ce7b6">🎬 Watch Excel 3-Minute Video Walkthrough</a>
+  <video controls="controls" width="100%" style="max-width: 800px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);" poster="/excel-showcase.png">
+    <source src="/videos/excel-guide-video.mp4" type="video/mp4" />
+    <source src="https://github.com/user-attachments/assets/e566a830-55d5-4ff5-8030-344d8b8ce7b6" type="video/mp4" />
+    <a href="/videos/excel-guide-video.mp4">🎬 Watch Excel 3-Minute Video Walkthrough</a>
   </video>
 </p>
 
@@ -73,7 +75,7 @@ Options can be combined freely using spaces, commas, semicolons, or pipe symbols
 | `bw` / `monochrome` | High-contrast black-and-white line art (ACS / USPTO patent standard) | `=SMILES2IMG(A2, "", "bw")` |
 | `colored` | Standard IUPAC element color-coded atoms | `=SMILES2IMG(A2, "", "colored")` |
 | `num` / `numbers` | Displays atom index numbers (ideal for NMR/MS peak assignments) | `=SMILES2IMG(A2, "", "num")` |
-| `stereo` | Forces CIP stereochemistry labels ($R/S$, $E/Z$) | `=SMILES2IMG(A2, "", "stereo")` |
+| `stereo` | Forces CIP stereochemistry labels (*R/S*, *E/Z*) | `=SMILES2IMG(A2, "", "stereo")` |
 | `d=2.0` / `d=1.5` | High-DPI supersampling multiplier for ultra-sharp rasterization | `=SMILES2IMG(A2, "", "d=2.0")` |
 | `flip` / `flipv` | Flips structure horizontally or vertically | `=SMILES2IMG(A2, "", "flip")` |
 | `rot90` / `rot180` | Rotates molecule in 90-degree increments | `=SMILES2IMG(A2, "", "rot90")` |

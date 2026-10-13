@@ -46,7 +46,7 @@ Complete reference for Excel worksheet functions provided by **SMILES for Micros
 | `bw` / `monochrome` | Mode | Black-and-white line art (ACS / patent specification) | `"bw"` |
 | `colored` | Mode | Standard IUPAC CPK element color scheme | `"colored"` |
 | `num` / `numbers` | Label | Display 1-based atom indices for NMR/MS assignments | `"num"` |
-| `stereo` | Label | Force CIP stereochemistry annotations ($R/S$, $E/Z$) | `"stereo"` |
+| `stereo` | Label | Force CIP stereochemistry annotations (*R/S*, *E/Z*) | `"stereo"` |
 | `d=<float>` | Quality | Supersampling resolution multiplier (e.g. `d=1.5`, `d=2.0`) | `"d=2.0"` |
 | `flip` | Transform | Flips molecular coordinates horizontally | `"flip"` |
 | `flipv` | Transform | Flips molecular coordinates vertically | `"flipv"` |

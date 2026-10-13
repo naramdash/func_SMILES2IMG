@@ -10,8 +10,10 @@
 > Covers ribbon controls, 0.1s Quick Insert text substitution, table cell layout preservation during double-click editing, lossless reaction equation storage, and molecular weight calculation.
 
 <p align="center">
-  <video src="https://github.com/user-attachments/assets/e34fc58a-b320-480e-8e83-876356796b6e" controls="controls" width="100%" style="max-width: 800px; border-radius: 8px;">
-    <a href="https://github.com/user-attachments/assets/e34fc58a-b320-480e-8e83-876356796b6e">🎬 Watch Word 3-Minute Video Walkthrough</a>
+  <video controls="controls" width="100%" style="max-width: 800px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);" poster="/word-showcase.png">
+    <source src="/videos/word-guide-video.mp4" type="video/mp4" />
+    <source src="https://github.com/user-attachments/assets/e34fc58a-b320-480e-8e83-876356796b6e" type="video/mp4" />
+    <a href="/videos/word-guide-video.mp4">🎬 Watch Word 3-Minute Video Walkthrough</a>
   </video>
 </p>
 

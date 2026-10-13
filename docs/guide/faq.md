@@ -39,4 +39,4 @@ Images scale automatically to preserve aspect ratios without clipping. Increase 
 
 ### Q. Excel blocks or refuses to load the XLL add-in.
 Web downloads are marked by Windows with a `Zone.Identifier` stream. Right-click the `.xll` file, select **Properties**, check **Unblock** at the bottom, and click **OK**.
-Alternatively, run the [One-Line Quick Install](../guide/getting-started) command, which removes security blocks automatically.
+Alternatively, run the [One-Line Quick Install](./getting-started) command, which removes security blocks automatically.

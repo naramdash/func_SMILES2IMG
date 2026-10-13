@@ -46,7 +46,7 @@
 | `bw` / `monochrome` | 모드 | 특허청 및 ACS 논문용 흑백 선화 모드 | `"bw"` |
 | `colored` | 모드 | IUPAC 표준 CPK 원소 색상 표기 | `"colored"` |
 | `num` / `numbers` | 라벨 | NMR/MS 피크 지정을 위한 원자 번호(1-based) 표기 | `"num"` |
-| `stereo` | 라벨 | CIP 입체화학 라벨 ($R/S$, $E/Z$) 강제 표기 | `"stereo"` |
+| `stereo` | 라벨 | CIP 입체화학 라벨 (*R/S*, *E/Z*) 강제 표기 | `"stereo"` |
 | `d=<float>` | 품질 | 슈퍼샘플링 해상도 배율 (예: `d=1.5`, `d=2.0`) | `"d=2.0"` |
 | `flip` | 변형 | 구조식 좌우(수평) 반전 | `"flip"` |
 | `flipv` | 변형 | 구조식 상하(수직) 반전 | `"flipv"` |

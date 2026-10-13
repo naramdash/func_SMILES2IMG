@@ -6,7 +6,7 @@ hero:
   text: "Chemical Structure Renderer & 2D Editor"
   tagline: "High-resolution 2D chemical structure rendering, real-time in-cell formulas, seamless double-click editing, and lossless KET reaction canvases across Excel, Word, and PowerPoint — 100% offline & local."
   image:
-    src: /excel-showcase.png
+    src: /logo.svg
     alt: SMILES for Office
   actions:
     - theme: brand
@@ -42,10 +42,24 @@ features:
 
 ## ⚡ Quick Install
 
-Install the entire suite in seconds via PowerShell:
+Install the entire suite in seconds via **PowerShell**:
 
 ```powershell
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
-> **Requirements:** Windows 10/11, Microsoft Office (Excel / Word / PowerPoint 2016–365, 32-bit or 64-bit), and WebView2 Runtime.
+::: tip 💡 Automatic Upgrade
+Running this exact command anytime upgrades your installation to the latest release!
+:::
+
+---
+
+## 🖼️ Application Showcase
+
+<p align="center">
+  <img src="/excel-showcase.png" alt="Microsoft Excel Showcase" width="100%" style="border-radius: 8px; margin-bottom: 16px;" />
+</p>
+
+| [📗 Microsoft Excel](/guide/excel) | [📘 Microsoft Word](/guide/word) | [📙 Microsoft PowerPoint](/guide/powerpoint) |
+| :---: | :---: | :---: |
+| Native in-cell formulas (`=SMILES2IMG`), cell resizing, sorting & filtering | Inline shapes flowing with paragraphs, table cell preservation | Center slide auto-placement, dark theme transparent background |

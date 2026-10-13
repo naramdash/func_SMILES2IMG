@@ -7,6 +7,10 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
 
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/func_SMILES2IMG/logo.svg' }]
+  ],
+
   locales: {
     root: {
       label: 'English',
@@ -16,9 +20,15 @@ export default defineConfig({
       themeConfig: {
         nav: [
           { text: 'Guide', link: '/guide/getting-started' },
-          { text: 'Excel', link: '/guide/excel' },
-          { text: 'Word', link: '/guide/word' },
-          { text: 'PowerPoint', link: '/guide/powerpoint' },
+          {
+            text: 'Office Apps',
+            items: [
+              { text: 'Microsoft Excel', link: '/guide/excel' },
+              { text: 'Microsoft Word', link: '/guide/word' },
+              { text: 'Microsoft PowerPoint', link: '/guide/powerpoint' }
+            ]
+          },
+          { text: 'Ketcher Editor', link: '/guide/ketcher' },
           { text: 'Formula Reference', link: '/reference/formula' },
           { text: 'FAQ', link: '/guide/faq' },
           {
@@ -31,8 +41,7 @@ export default defineConfig({
             text: 'Getting Started',
             items: [
               { text: 'Overview & Installation', link: '/guide/getting-started' },
-              { text: 'Ketcher 2D Editor', link: '/guide/ketcher' },
-              { text: 'Troubleshooting & FAQ', link: '/guide/faq' }
+              { text: 'Ketcher 2D Editor', link: '/guide/ketcher' }
             ]
           },
           {
@@ -47,6 +56,12 @@ export default defineConfig({
             text: 'Reference',
             items: [
               { text: 'Excel Formulas & Options', link: '/reference/formula' }
+            ]
+          },
+          {
+            text: 'Help & Support',
+            items: [
+              { text: 'Troubleshooting & FAQ', link: '/guide/faq' }
             ]
           }
         ],
@@ -69,9 +84,15 @@ export default defineConfig({
       themeConfig: {
         nav: [
           { text: '시작 가이드', link: '/ko/guide/getting-started' },
-          { text: 'Excel', link: '/ko/guide/excel' },
-          { text: 'Word', link: '/ko/guide/word' },
-          { text: 'PowerPoint', link: '/ko/guide/powerpoint' },
+          {
+            text: '오피스 프로그램',
+            items: [
+              { text: 'Microsoft Excel', link: '/ko/guide/excel' },
+              { text: 'Microsoft Word', link: '/ko/guide/word' },
+              { text: 'Microsoft PowerPoint', link: '/ko/guide/powerpoint' }
+            ]
+          },
+          { text: 'Ketcher 에디터', link: '/ko/guide/ketcher' },
           { text: '수식 레퍼런스', link: '/ko/reference/formula' },
           { text: '자주 묻는 질문', link: '/ko/guide/faq' },
           {
@@ -84,8 +105,7 @@ export default defineConfig({
             text: '시작하기',
             items: [
               { text: '개요 및 빠른 설치', link: '/ko/guide/getting-started' },
-              { text: 'Ketcher 2D 에디터', link: '/ko/guide/ketcher' },
-              { text: '문제 해결 및 FAQ', link: '/ko/guide/faq' }
+              { text: 'Ketcher 2D 에디터', link: '/ko/guide/ketcher' }
             ]
           },
           {
@@ -100,6 +120,12 @@ export default defineConfig({
             text: '상세 레퍼런스',
             items: [
               { text: '엑셀 함수 & 옵션 규격', link: '/ko/reference/formula' }
+            ]
+          },
+          {
+            text: '고객 지원',
+            items: [
+              { text: '문제 해결 및 FAQ', link: '/ko/guide/faq' }
             ]
           }
         ],
@@ -116,6 +142,7 @@ export default defineConfig({
   },
 
   themeConfig: {
+    logo: '/logo.svg',
     socialLinks: [
       { icon: 'github', link: 'https://github.com/naramdash/func_SMILES2IMG' }
     ],

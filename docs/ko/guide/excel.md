@@ -10,8 +10,10 @@
 > 인셀 수식 입력, 전문 화학 스타일링, 오프라인 Ketcher 에디터 연동, 화학 반응식(`=KET2IMG`), 원클릭 물성 정보 복사까지 한눈에 확인하세요.
 
 <p align="center">
-  <video src="https://github.com/user-attachments/assets/e566a830-55d5-4ff5-8030-344d8b8ce7b6" controls="controls" width="100%" style="max-width: 800px; border-radius: 8px;">
-    <a href="https://github.com/user-attachments/assets/e566a830-55d5-4ff5-8030-344d8b8ce7b6">🎬 Excel 핵심 기능 3분 마스터 동영상 재생하기</a>
+  <video controls="controls" width="100%" style="max-width: 800px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);" poster="/excel-showcase.png">
+    <source src="/videos/excel-guide-video.mp4" type="video/mp4" />
+    <source src="https://github.com/user-attachments/assets/e566a830-55d5-4ff5-8030-344d8b8ce7b6" type="video/mp4" />
+    <a href="/videos/excel-guide-video.mp4">🎬 Excel 핵심 기능 3분 마스터 동영상 재생하기</a>
   </video>
 </p>
 
@@ -73,7 +75,7 @@
 | `bw` / `monochrome` | 특허청/ACS 논문용 100% 흑백 선화 모드 | `=SMILES2IMG(A2, "", "bw")` |
 | `colored` | 원소별 표준 색상 강조 모드 (기본값) | `=SMILES2IMG(A2, "", "colored")` |
 | `num` / `numbers` | 원자 인덱스 번호 표기 (NMR 피크 매핑에 필수) | `=SMILES2IMG(A2, "", "num")` |
-| `stereo` | 입체화학 라벨($R/S$, $E/Z$) 강제 표시 | `=SMILES2IMG(A2, "", "stereo")` |
+| `stereo` | 입체화학 라벨(*R/S*, *E/Z*) 강제 표시 | `=SMILES2IMG(A2, "", "stereo")` |
 | `d=2.0` / `d=1.5` | 고해상도 슈퍼샘플링 배율 (초고선명 인쇄용) | `=SMILES2IMG(A2, "", "d=2.0")` |
 | `flip` / `flipv` | 좌우 / 상하 구조식 반전 | `=SMILES2IMG(A2, "", "flip")` |
 | `rot90` / `rot180` | 90도 / 180도 분자 회전 | `=SMILES2IMG(A2, "", "rot90")` |
