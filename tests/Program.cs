@@ -310,6 +310,16 @@ internal static class Program
                   "TryRenderStructure renders KET");
             Console.WriteLine("PASS TryRenderStructure for Quick Paste");
 
+            // Test StructureMetadata shared helper
+            var formattedAlt = StructureMetadata.FormatAlternativeText(sampleKet, "CO");
+            var formattedTitle = StructureMetadata.FormatTitle("CO");
+            Check(StructureMetadata.ExtractStructure(formattedAlt, formattedTitle) == sampleKet, "StructureMetadata extracts KET from AltText");
+            Check(StructureMetadata.ExtractSmiles(formattedTitle, formattedAlt) == "CO", "StructureMetadata extracts SMILES from Title");
+            Check(StructureMetadata.ExtractStructure($"KET:{sampleKet}\nSMILES:CO") == sampleKet, "StructureMetadata strips trailing SMILES tag from KET");
+            var fitBounds = StructureMetadata.FitReplacementBounds(100f, 100f, 200f, 200f, quickSmilesPng!);
+            Check(fitBounds.Width > 0 && fitBounds.Height > 0, "StructureMetadata FitReplacementBounds computes valid geometry");
+            Console.WriteLine("PASS StructureMetadata shared helper");
+
             // Live WebView2 + Ketcher E2E Test (1: SMILES -> KET + Transparent Canvas PNG)
             string? e2eKet = null;
             using (var form1 = new KetcherForm("PowerPoint", "CC(=O)Oc1ccccc1C(=O)O")

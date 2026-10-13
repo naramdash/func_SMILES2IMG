@@ -1,19 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
     <AssemblyName>Smiles2Img</AssemblyName>
     <RootNamespace>Smiles2Img</RootNamespace>
     <ExcelDnaAddInName>SMILES2IMG</ExcelDnaAddInName>
     <ExcelDnaCreate32BitAddIn>true</ExcelDnaCreate32BitAddIn>
     <ExcelDnaCreate64BitAddIn>true</ExcelDnaCreate64BitAddIn>
     <ExcelDnaPackNativeLibraryDependencies>false</ExcelDnaPackNativeLibraryDependencies>
-    <DistributionRoot Condition="'$(DistributionRoot)' == ''">$(MSBuildProjectDirectory)/../../dist</DistributionRoot>
-    <Version>1.4.0</Version>
-    <AssemblyVersion>1.4.0.0</AssemblyVersion>
-    <FileVersion>1.4.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,7 +29,7 @@
 
   <Target Name="CreateDistribution" AfterTargets="ExcelDnaPack">
     <ItemGroup>
-      <Notice Include="$(MSBuildProjectDirectory)/../../THIRD_PARTY_NOTICES.md" />
+      <Notice Include="$(MSBuildThisFileDirectory)../../THIRD_PARTY_NOTICES.md" />
     </ItemGroup>
     <MakeDir Directories="$(DistributionRoot)/x86;$(DistributionRoot)/x64" />
     <Copy SourceFiles="$(TargetDir)publish/Smiles2Img-AddIn-packed.xll;@(Notice)" DestinationFolder="$(DistributionRoot)/x86" SkipUnchangedFiles="true" />

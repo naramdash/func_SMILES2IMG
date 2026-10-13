@@ -1,18 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-    <LangVersion>12</LangVersion>
-    <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
     <AssemblyName>Smiles2Img.PowerPoint</AssemblyName>
     <RootNamespace>Smiles2Img.PowerPoint</RootNamespace>
     <Platforms>AnyCPU</Platforms>
     <NoWarn>$(NoWarn);1762</NoWarn>
-    <DistributionRoot Condition="'$(DistributionRoot)' == ''">$(MSBuildProjectDirectory)/../../dist</DistributionRoot>
-    <Version>1.4.0</Version>
-    <AssemblyVersion>1.4.0.0</AssemblyVersion>
-    <FileVersion>1.4.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,5 +29,4 @@
     <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(DistributionRoot)/x64/PowerPoint" SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(OutputFiles)" DestinationFolder="$(DistributionRoot)/x86/PowerPoint" SkipUnchangedFiles="true" />
   </Target>
-
 </Project>
