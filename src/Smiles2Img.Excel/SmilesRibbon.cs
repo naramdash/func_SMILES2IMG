@@ -50,14 +50,14 @@ public class SmilesRibbon : ExcelRibbon
                   label=""Copy KET""
                   screentip=""Copy Canvas Data (KET)""
                   supertip=""Extracts or converts the selected formula cell or molecule image into native Ketcher JSON (KET) and copies it to the clipboard.""
-                  imageMso=""SaveObjectAs""
+                  imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopyKet"" />
           <button id=""btnCopyMoleculeInfo""
                   label=""Copy Molecule Info""
                   screentip=""Copy Formula &amp; Molecular Weight""
                   supertip=""Calculates chemical formula, molecular weight (MW), and exact mass, and copies them to the clipboard.""
-                  imageMso=""Info""
+                  imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopyMoleculeInfo"" />
         </group>
@@ -92,12 +92,12 @@ public class SmilesRibbon : ExcelRibbon
               insertBeforeMso=""Cut"" />
       <button id=""btnContextCopyKetCell""
               label=""Copy Canvas Data (KET)""
-              imageMso=""SaveObjectAs""
+              imageMso=""Copy""
               onAction=""OnCopyKet""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextCopyInfoCell""
               label=""Copy Molecule Info (Formula &amp; MW)""
-              imageMso=""Info""
+              imageMso=""Copy""
               onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
       <menuSeparator id=""sepContextMolecule"" insertBeforeMso=""Cut"" />
@@ -120,12 +120,12 @@ public class SmilesRibbon : ExcelRibbon
               insertBeforeMso=""Cut"" />
       <button id=""btnContextListCopyKetCell""
               label=""Copy Canvas Data (KET)""
-              imageMso=""SaveObjectAs""
+              imageMso=""Copy""
               onAction=""OnCopyKet""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextListCopyInfoCell""
               label=""Copy Molecule Info (Formula &amp; MW)""
-              imageMso=""Info""
+              imageMso=""Copy""
               onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
       <menuSeparator id=""sepContextListMolecule"" insertBeforeMso=""Cut"" />
@@ -141,15 +141,15 @@ public class SmilesRibbon : ExcelRibbon
               imageMso=""Copy""
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
-      <button id=""btnContextPictureCopyInfo""
-              label=""Copy Molecule Info (Formula &amp; MW)""
-              imageMso=""Info""
-              onAction=""OnCopyMoleculeInfo""
-              insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureCopyKet""
               label=""Copy Canvas Data (KET)""
-              imageMso=""SaveObjectAs""
+              imageMso=""Copy""
               onAction=""OnCopyKet""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPictureCopyInfo""
+              label=""Copy Molecule Info (Formula &amp; MW)""
+              imageMso=""Copy""
+              onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
       <menuSeparator id=""sepContextPicMolecule"" insertBeforeMso=""Cut"" />
     </contextMenu>
@@ -164,15 +164,15 @@ public class SmilesRibbon : ExcelRibbon
               imageMso=""Copy""
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
-      <button id=""btnContextShapeCopyInfo""
-              label=""Copy Molecule Info (Formula &amp; MW)""
-              imageMso=""Info""
-              onAction=""OnCopyMoleculeInfo""
-              insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeCopyKet""
               label=""Copy Canvas Data (KET)""
-              imageMso=""SaveObjectAs""
+              imageMso=""Copy""
               onAction=""OnCopyKet""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextShapeCopyInfo""
+              label=""Copy Molecule Info (Formula &amp; MW)""
+              imageMso=""Copy""
+              onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
       <menuSeparator id=""sepContextShapeMolecule"" insertBeforeMso=""Cut"" />
     </contextMenu>

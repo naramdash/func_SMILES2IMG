@@ -155,14 +155,14 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   label=""Copy KET""
                   screentip=""Copy Canvas Data (KET)""
                   supertip=""Extracts or converts the selected molecule image into native Ketcher JSON (KET) and copies it to the clipboard.""
-                  imageMso=""SaveObjectAs""
+                  imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopyKet"" />
           <button id=""btnCopyMoleculeInfo""
                   label=""Copy Molecule Info""
                   screentip=""Copy Formula &amp; Molecular Weight""
                   supertip=""Calculate and copy chemical formula, molecular weight (MW), and exact mass to clipboard.""
-                  imageMso=""Info""
+                  imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopyMoleculeInfo"" />
         </group>
@@ -181,15 +181,15 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               imageMso=""Copy""
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
-      <button id=""btnContextPptPictureCopyInfo""
-              label=""Copy Molecule Info (Formula &amp; MW)""
-              imageMso=""Info""
-              onAction=""OnCopyMoleculeInfo""
-              insertBeforeMso=""Cut"" />
       <button id=""btnContextPptPictureCopyKet""
               label=""Copy Canvas Data (KET)""
-              imageMso=""SaveObjectAs""
+              imageMso=""Copy""
               onAction=""OnCopyKet""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPptPictureCopyInfo""
+              label=""Copy Molecule Info (Formula &amp; MW)""
+              imageMso=""Copy""
+              onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
       <menuSeparator id=""sepContextPptPicture"" insertBeforeMso=""Cut"" />
     </contextMenu>
@@ -204,15 +204,15 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               imageMso=""Copy""
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
-      <button id=""btnContextPptShapeCopyInfo""
-              label=""Copy Molecule Info (Formula &amp; MW)""
-              imageMso=""Info""
-              onAction=""OnCopyMoleculeInfo""
-              insertBeforeMso=""Cut"" />
       <button id=""btnContextPptShapeCopyKet""
               label=""Copy Canvas Data (KET)""
-              imageMso=""SaveObjectAs""
+              imageMso=""Copy""
               onAction=""OnCopyKet""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPptShapeCopyInfo""
+              label=""Copy Molecule Info (Formula &amp; MW)""
+              imageMso=""Copy""
+              onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
       <menuSeparator id=""sepContextPptShape"" insertBeforeMso=""Cut"" />
     </contextMenu>
