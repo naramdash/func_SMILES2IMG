@@ -69,8 +69,8 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   size=""large""
                   onAction=""OnInsertMolecule"" />
           <button id=""btnQuickInsert""
-                  label=""Quick Insert""
-                  screentip=""Quick Insert from Clipboard or Selection""
+                  label=""Paste Structure""
+                  screentip=""Paste Structure from Clipboard""
                   supertip=""Convert SMILES or KET directly into a molecular structure image without opening the editor.""
                   imageMso=""Paste""
                   size=""large""

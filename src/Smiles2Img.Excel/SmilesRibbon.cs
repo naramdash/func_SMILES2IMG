@@ -31,8 +31,8 @@ public class SmilesRibbon : ExcelRibbon
                   size=""large""
                   onAction=""OnInsertKetMolecule"" />
           <button id=""btnQuickInsert""
-                  label=""Quick Insert""
-                  screentip=""Quick Insert from Clipboard""
+                  label=""Paste Structure""
+                  screentip=""Paste Structure from Clipboard""
                   supertip=""Instantly converts clipboard SMILES or KET data into a structure image without opening the editor.""
                   imageMso=""Paste""
                   size=""large""

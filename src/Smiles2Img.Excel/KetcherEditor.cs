@@ -310,7 +310,7 @@ public static partial class KetcherEditor
         }
     }
 
-    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Quick Paste SMILES/KET")]
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Paste Structure")]
     public static void QuickInsertCommand()
     {
         try
