@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: "func_SMILES2IMG"
-  text: "화학 분자 구조식 자동 렌더러 & 2D 에디터"
-  tagline: "고해상도 2D 화학 구조식 자동 렌더링, 실시간 인셀 수식, 더블 클릭 제자리 수정, 무손실 반응식 KET 캔버스 — Microsoft Excel, Word, PowerPoint 100% 로컬 오프라인 구동."
+  text: "무료 오픈소스 오피스 화학 구조식 추가 기능"
+  tagline: "Microsoft Excel, Word, PowerPoint를 위한 100% 오프라인 무료 오픈소스 화학 추가 기능. 고해상도 2D 화학 구조식 자동 렌더링, 실시간 인셀 수식, 더블 클릭 제자리 수정, 무손실 반응식 KET 캔버스 지원."
   actions:
     - theme: brand
       text: 시작 가이드

@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: "func_SMILES2IMG"
-  text: "Chemical Structure Renderer & 2D Editor"
-  tagline: "High-resolution 2D chemical structure rendering, real-time in-cell formulas, seamless double-click editing, and lossless KET reaction canvases across Excel, Word, and PowerPoint — 100% offline & local."
+  text: "Free & Open-Source Office Chemical Add-in"
+  tagline: "Free, open-source 2D chemical structure rendering, real-time in-cell formulas, seamless double-click editing, and lossless KET reaction canvases across Excel, Word, and PowerPoint — 100% offline & local."
   actions:
     - theme: brand
       text: Get Started

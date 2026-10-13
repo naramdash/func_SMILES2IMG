@@ -1,14 +1,15 @@
-# SMILES for Microsoft Office Suite — Chemical Structure Renderer & Editor (Excel · Word · PowerPoint)
+# func_SMILES2IMG — Free & Open-Source Office Chemical Add-in Suite (Excel · Word · PowerPoint)
 
 [![Platform](https://img.shields.io/badge/Platform-Windows%20Office%20(Excel%20%7C%20Word%20%7C%20PowerPoint)-blue.svg)](https://naramdash.github.io/func_SMILES2IMG/guide/getting-started)
+[![License](https://img.shields.io/badge/License-MIT-success.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/Documentation-GitHub%20Pages-informational.svg)](https://naramdash.github.io/func_SMILES2IMG/)
 [![Framework](https://img.shields.io/badge/.NET%20Framework-4.8-512BD4.svg)](https://dotnet.microsoft.com/)
 [![Excel-DNA](https://img.shields.io/badge/Excel--DNA-1.9.0-green.svg)](https://excel-dna.net/)
 [![EPAM Indigo](https://img.shields.io/badge/EPAM%20Indigo-1.49.0--rc.2-orange.svg)](https://lifescience.opensource.epam.com/indigo/)
 [![EPAM Ketcher](https://img.shields.io/badge/EPAM%20Ketcher-v3.18.0-blueviolet.svg)](https://lifescience.opensource.epam.com/ketcher/)
 
-> **A unified Microsoft Office add-in suite (Excel, Word, PowerPoint) that renders high-resolution 2D chemical structures directly from SMILES strings and provides interactive structure sketching via EPAM Ketcher.**  
-> 100% local and offline execution without external web requests, cloud services, or administrative privileges.
+> **A 100% free and open-source Microsoft Office add-in suite (Excel, Word, PowerPoint) to render publication-quality 2D chemical structures directly from SMILES/KET strings and sketch molecules interactively via embedded EPAM Ketcher.**  
+> 100% local and offline execution without external web requests, cloud subscriptions, or administrative privileges.
 
 ---
 

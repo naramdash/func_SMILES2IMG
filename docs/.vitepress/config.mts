@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: 'func_SMILES2IMG',
-  description: 'Chemical Structure Renderer & 2D Editor for Microsoft Excel, Word, and PowerPoint',
+  description: 'Free & Open-Source Chemical Structure Add-in Suite for Microsoft Excel, Word, and PowerPoint',
   base: '/func_SMILES2IMG/',
   cleanUrls: true,
   lastUpdated: true,
@@ -14,7 +14,7 @@ export default defineConfig({
       label: 'English',
       lang: 'en',
       title: 'func_SMILES2IMG',
-      description: 'Chemical Structure Renderer & 2D Editor for Microsoft Excel, Word, and PowerPoint',
+      description: 'Free & Open-Source Chemical Structure Add-in Suite for Microsoft Excel, Word, and PowerPoint',
       themeConfig: {
         nav: [
           { text: 'Guide', link: '/guide/getting-started' },
@@ -78,7 +78,7 @@ export default defineConfig({
       lang: 'ko',
       link: '/ko/',
       title: 'func_SMILES2IMG',
-      description: 'Microsoft Excel, Word, PowerPoint용 화학 분자 구조식 자동 렌더러 & 에디터',
+      description: 'Microsoft Excel, Word, PowerPoint용 무료 오픈소스 화학 구조식 렌더러 & 에디터 추가 기능',
       themeConfig: {
         nav: [
           { text: '시작 가이드', link: '/ko/guide/getting-started' },
