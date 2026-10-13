@@ -46,7 +46,7 @@
 
 | 애플리케이션 | 주요 기능 | 지원 방식 | 사용 가이드 |
 | :--- | :--- | :--- | :---: |
-| **Microsoft Excel** | • `=SMILES2IMG("CCO")` 네이티브 인셀 이미지 & `=SMILES2IMG.FLOAT("CCO")` 플로팅 그림<br>• **캔버스 구조식 삽입 (KET)**: 반응식, 화살표, 플러스 기호, 텍스트 주석이 포함된 캔버스 삽입<br>• **클립보드 즉시 삽입 / 분자 정보(화학식·분자량) 복사 / 우클릭 컨텍스트 메뉴**<br>• **셀 또는 캔버스 그림 더블 클릭 시 Ketcher 에디터 즉시 팝업 및 재편집** | Excel-DNA Standalone XLL (32/64비트) | 📗 [**Excel 가이드**](docs/EXCEL_GUIDE.md) |
+| **Microsoft Excel** | • `=SMILES2IMG("CCO")` & `=KET2IMG(A2)` 네이티브 인셀 이미지<br>• `=SMILES2IMG.FLOAT("CCO")` & `=KET2IMG.FLOAT(A2)` 플로팅 그림<br>• **캔버스 구조식 삽입 (KET)**: 반응식, 화살표, 플러스 기호, 텍스트 주석이 포함된 캔버스 삽입<br>• **클립보드 즉시 삽입 / 분자 정보(화학식·분자량) 복사 / 우클릭 컨텍스트 메뉴**<br>• **셀 또는 캔버스 그림 더블 클릭 시 Ketcher 에디터 즉시 팝업 및 재편집** | Excel-DNA Standalone XLL (32/64비트) | 📗 [**Excel 가이드**](docs/EXCEL_GUIDE.md) |
 | **Microsoft Word** | • 상단 리본 메뉴 **`[SMILES]`** 탭 & **우클릭 컨텍스트 메뉴** 제공<br>• **네이티브 KET 캔버스 저장**: 반응식, 화살표, 텍스트 주석, 복수 분자 2D 좌표 100% 보존<br>• **클립보드/선택 텍스트 즉시 삽입** & **SMILES / KET / 화학식·분자량(MW) 복사**<br>• **문서 내 분자 그림 더블 클릭 시 Ketcher 에디터로 즉시 불러와 제자리 수정** | Office COM Add-in (`.dll`, HKCU 무권한 등록) | 📘 [**Word 가이드**](docs/WORD_GUIDE.md) |
 | **Microsoft PowerPoint** | • 상단 리본 메뉴 **`[SMILES]`** 탭 & **우클릭 컨텍스트 메뉴** 제공<br>• **네이티브 KET 캔버스 저장**: 고해상도 슬라이드 렌더링 및 **투명/흰색 배경 토글** 지원<br>• **클립보드 즉시 삽입** & **SMILES / KET / 화학식·분자량(MW) 복사**<br>• **슬라이드 분자 그림 더블 클릭 시 Ketcher 에디터로 즉시 불러와 크기·좌표 유지 수정** | Office COM Add-in (`.dll`, HKCU 무권한 등록) | 📙 [**PowerPoint 가이드**](docs/POWERPOINT_GUIDE.md) |
 
@@ -65,14 +65,14 @@
 | 항목 | 필요한 환경 |
 | :--- | :--- |
 | Windows | Windows 10 또는 11; Windows 11 권장 |
-| Excel (인셀 이미지 모드) | 네이티브 셀 내 이미지 기능을 지원하는 **Excel 2024 이상** 및 **Microsoft 365 데스크톱** (`=SMILES2IMG`) |
-| Excel (플로팅 이미지 모드) | 셀 크기에 연동되는 플로팅 그림을 지원하는 **Excel 2016, 2019, 2021** (`=SMILES2IMG.FLOAT`) |
+| Excel (인셀 이미지 모드) | 네이티브 셀 내 이미지 기능을 지원하는 **Excel 2024 이상** 및 **Microsoft 365 데스크톱** (`=SMILES2IMG`, `=KET2IMG`) |
+| Excel (플로팅 이미지 모드) | 셀 크기에 연동되는 플로팅 그림을 지원하는 **Excel 2016, 2019, 2021** (`=SMILES2IMG.FLOAT`, `=KET2IMG.FLOAT`) |
 | 런타임 | **.NET Framework 4.8 이상** |
 | Excel 비트수 | **32비트·64비트 모두** 배포 파일 제공; Excel 비트수에 맞는 XLL 선택 |
 
 **하나의 XLL 파일로 Excel 2016부터 최신 Microsoft 365까지 모두 지원합니다:**
-* **Excel 2024 / Microsoft 365:** `=SMILES2IMG(A2)`를 사용하면 Excel의 네이티브 '셀에 그림 배치' 기능으로 셀 안에 이미지가 쏙 들어갑니다.
-* **Excel 2016 / 2019 / 2021:** 인셀 이미지를 미지원하는 구버전에서는 `=SMILES2IMG.FLOAT(A2)`를 사용합니다. 셀 위에 분자 그림이 배치되며, 셀 이동 및 행/열 크기 변경에 연동(`xlMoveAndSize`)됩니다. 만약 구버전에서 실수로 `SMILES2IMG`를 호출하더라도 오류 대신 `Needs Excel 2024/365: use SMILES2IMG.FLOAT`라는 친절한 안내 문구가 표시됩니다.
+* **Excel 2024 / Microsoft 365:** `=SMILES2IMG(A2)` 또는 `=KET2IMG(A2)`를 사용하면 Excel의 네이티브 '셀에 그림 배치' 기능으로 셀 안에 이미지가 쏙 들어갑니다.
+* **Excel 2016 / 2019 / 2021:** 인셀 이미지를 미지원하는 구버전에서는 `=SMILES2IMG.FLOAT(A2)` 또는 `=KET2IMG.FLOAT(A2)`를 사용합니다. 셀 위에 분자 그림이 배치되며, 셀 이동 및 행/열 크기 변경에 연동(`xlMoveAndSize`)됩니다. 만약 구버전에서 실수로 `SMILES2IMG`를 호출하더라도 오류 대신 `Needs Excel 2024/365: use SMILES2IMG.FLOAT`라는 친절한 안내 문구가 표시됩니다.
 * 이 추가 기능은 Windows 데스크톱 Excel 전용이며, Mac용 Excel과 웹용 Excel에서는 XLL을 로드할 수 없습니다. 다운로드한 XLL을 사용하기 위해 개발용 **.NET SDK를 설치할 필요는 없습니다.**
 
 ### ⚡ 방법 A: 원클릭 자동 설치 및 업데이트 (가장 추천)
@@ -348,8 +348,8 @@ func_SMILES2IMG/
 │   │   ├── Editor/                     # EPAM Ketcher v3.18.0 WebView2 Form, SHA256 에셋 관리자 & StructureMetadata
 │   │   └── COM/                        # Office 공통 COM 인터페이스 (IDTExtensibility2, IRibbonExtensibility)
 │   ├── Smiles2Img.Excel/               # Excel-DNA 독립형 XLL 추가 기능 (net48)
-│   │   ├── Functions.cs                # =SMILES2IMG 인셀 함수 (Excel 2024 / M365)
-│   │   ├── FloatFunctions.cs           # =SMILES2IMG.FLOAT 플로팅 함수 (Excel 2016-2021)
+│   │   ├── Functions.cs                # =SMILES2IMG 및 =KET2IMG 인셀 함수 (Excel 2024 / M365)
+│   │   ├── FloatFunctions.cs           # =SMILES2IMG.FLOAT 및 =KET2IMG.FLOAT 플로팅 함수 (Excel 2016-2021)
 │   │   ├── CellImages.cs               # 인셀 이미지 캐시 관리
 │   │   ├── FloatingPictures.cs         # 셀 크기 연동 플로팅 이미지 관리
 │   │   ├── SmilesRibbon.cs             # [SMILES] 리본 탭 및 마우스 우클릭 컨텍스트 메뉴 핸들러

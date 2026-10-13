@@ -46,7 +46,7 @@
 
 | Application | Features | Integration Model | User Guide |
 | :--- | :--- | :--- | :---: |
-| **Microsoft Excel** | • `=SMILES2IMG("CCO")` native in-cell images & `=SMILES2IMG.FLOAT("CCO")` cell-anchored shapes<br>• **Canvas Structure (KET)**: insert reactions, arrows, and multi-structure canvases on sheets<br>• **Quick Paste / Molecule Info (Formula & MW) / Right-Click Context Menus**<br>• **Double-click cell or canvas shape to edit in Ketcher** | Standalone Excel-DNA XLL (32/64-bit) | 📗 [**Excel Guide**](docs/EXCEL_GUIDE.md) |
+| **Microsoft Excel** | • `=SMILES2IMG("CCO")` & `=KET2IMG(A2)` native in-cell images<br>• `=SMILES2IMG.FLOAT("CCO")` & `=KET2IMG.FLOAT(A2)` cell-anchored shapes<br>• **Canvas Structure (KET)**: insert reactions, arrows, and multi-structure canvases on sheets<br>• **Quick Paste / Molecule Info (Formula & MW) / Right-Click Context Menus**<br>• **Double-click cell or canvas shape to edit in Ketcher** | Standalone Excel-DNA XLL (32/64-bit) | 📗 [**Excel Guide**](docs/EXCEL_GUIDE.md) |
 | **Microsoft Word** | • Native ribbon tab **`[SMILES]`** & **Right-Click Context Menus**<br>• **Full KET Canvas Storage**: preserves reactions, arrows, pluses, text annotations, and 2D coordinates<br>• **Quick Paste from Clipboard / Selected Text** & **Copy SMILES / KET / Formula & MW**<br>• **Double-click any molecule image to re-open Ketcher and update in-place** | Office COM Add-in (`.dll`, per-user HKCU registration) | 📘 [**Word Guide**](docs/WORD_GUIDE.md) |
 | **Microsoft PowerPoint** | • Native ribbon tab **`[SMILES]`** & **Right-Click Context Menus**<br>• **Full KET Canvas Storage**: high-DPI slide rendering with transparent or white background toggle<br>• **Quick Paste from Clipboard** & **Copy SMILES / KET / Formula & MW**<br>• **Double-click any molecule on a slide to re-open Ketcher and update in-place** | Office COM Add-in (`.dll`, per-user HKCU registration) | 📙 [**PowerPoint Guide**](docs/POWERPOINT_GUIDE.md) |
 
@@ -65,14 +65,14 @@
 | Component | Requirement |
 | :--- | :--- |
 | Windows | Windows 10 or 11; Windows 11 recommended |
-| Excel (In-Cell Image mode) | **Excel 2024 or later** & **Microsoft 365 Desktop** with native 'Place in Cell' (`=SMILES2IMG`) |
-| Excel (Floating Shape mode) | **Excel 2016, 2019, 2021** with cell-anchored shape support (`=SMILES2IMG.FLOAT`) |
+| Excel (In-Cell Image mode) | **Excel 2024 or later** & **Microsoft 365 Desktop** with native 'Place in Cell' (`=SMILES2IMG`, `=KET2IMG`) |
+| Excel (Floating Shape mode) | **Excel 2016, 2019, 2021** with cell-anchored shape support (`=SMILES2IMG.FLOAT`, `=KET2IMG.FLOAT`) |
 | Runtime | **.NET Framework 4.8 or later** |
 | Excel architecture | Both **32-bit and 64-bit** packages are provided; choose the XLL matching Excel's bitness |
 
 **A single XLL package supports Excel 2016 through the latest Microsoft 365:**
-* **Excel 2024 / Microsoft 365:** Use `=SMILES2IMG(A2)` for native in-cell images that live directly inside worksheet cells.
-* **Excel 2016 / 2019 / 2021:** Use `=SMILES2IMG.FLOAT(A2)` for floating molecular pictures that automatically move and resize with their cells (`xlMoveAndSize`). If `=SMILES2IMG` is inadvertently called on an older Excel build, it cleanly displays `Needs Excel 2024/365: use SMILES2IMG.FLOAT` instead of cryptic error codes.
+* **Excel 2024 / Microsoft 365:** Use `=SMILES2IMG(A2)` or `=KET2IMG(A2)` for native in-cell images that live directly inside worksheet cells.
+* **Excel 2016 / 2019 / 2021:** Use `=SMILES2IMG.FLOAT(A2)` or `=KET2IMG.FLOAT(A2)` for floating molecular pictures that automatically move and resize with their cells (`xlMoveAndSize`). If `=SMILES2IMG` is inadvertently called on an older Excel build, it cleanly displays `Needs Excel 2024/365: use SMILES2IMG.FLOAT` instead of cryptic error codes.
 * The add-in runs only in Windows desktop Excel; Excel for Mac and Excel for the web cannot load this XLL. The **.NET SDK is needed only for development/building**, not for using the downloaded XLL.
 
 ### ⚡ Method A: One-Click Automatic Installer & Updater (Recommended)
@@ -349,8 +349,8 @@ func_SMILES2IMG/
 │   │   ├── Editor/                     # EPAM Ketcher v3.18.0 WebView2 Form, SHA256 asset manager & StructureMetadata
 │   │   └── COM/                        # Shared Office COM interfaces (IDTExtensibility2, IRibbonExtensibility)
 │   ├── Smiles2Img.Excel/               # Excel-DNA standalone XLL add-in (net48)
-│   │   ├── Functions.cs                # =SMILES2IMG in-cell UDF (Excel 2024 / M365)
-│   │   ├── FloatFunctions.cs           # =SMILES2IMG.FLOAT floating UDF (Excel 2016-2021)
+│   │   ├── Functions.cs                # =SMILES2IMG & =KET2IMG in-cell UDFs (Excel 2024 / M365)
+│   │   ├── FloatFunctions.cs           # =SMILES2IMG.FLOAT & =KET2IMG.FLOAT floating UDFs (Excel 2016-2021)
 │   │   ├── CellImages.cs               # In-cell image cache manager
 │   │   ├── FloatingPictures.cs         # Cell-anchored floating shape manager
 │   │   ├── SmilesRibbon.cs             # [SMILES] ribbon tab & right-click context menu handlers
