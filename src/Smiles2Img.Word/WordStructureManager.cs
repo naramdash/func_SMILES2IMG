@@ -283,12 +283,14 @@ public static class WordStructureManager
             if (sel.InlineShapes.Count > 0)
             {
                 var targetInline = sel.InlineShapes[1];
-                ket = ExtractStructure(targetInline.AlternativeText, targetInline.Title);
+                var raw = ExtractStructure(targetInline.AlternativeText, targetInline.Title);
+                ket = MoleculeRenderer.TryConvertToKet(raw);
             }
             else if (sel.ShapeRange.Count > 0)
             {
                 var targetShape = sel.ShapeRange[1];
-                ket = ExtractStructure(targetShape.AlternativeText, targetShape.Title);
+                var raw = ExtractStructure(targetShape.AlternativeText, targetShape.Title);
+                ket = MoleculeRenderer.TryConvertToKet(raw);
             }
 
             if (string.IsNullOrEmpty(ket))

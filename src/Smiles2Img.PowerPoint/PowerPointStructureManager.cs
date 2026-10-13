@@ -301,7 +301,8 @@ public static class PowerPointStructureManager
                 return;
             }
 
-            var ket = ExtractStructure(sel.ShapeRange[1]);
+            var raw = ExtractStructure(sel.ShapeRange[1]);
+            var ket = MoleculeRenderer.TryConvertToKet(raw);
             if (string.IsNullOrEmpty(ket))
             {
                 MessageBox.Show(

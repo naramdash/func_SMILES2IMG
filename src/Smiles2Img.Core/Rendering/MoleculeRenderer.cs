@@ -149,6 +149,48 @@ public static class MoleculeRenderer
         return trimmed;
     }
 
+    public static string? TryConvertToKet(string? input)
+    {
+        if (string.IsNullOrWhiteSpace(input)) return null;
+        var trimmed = input!.Trim();
+
+        if (trimmed.StartsWith("KET:", StringComparison.OrdinalIgnoreCase))
+            trimmed = trimmed.Substring(4).Trim();
+
+        if (IsKet(trimmed))
+            return StructureMetadata.CompactKet(trimmed);
+
+        if (trimmed.StartsWith("SMILES:", StringComparison.OrdinalIgnoreCase))
+            trimmed = trimmed.Substring(7).Trim();
+
+        try
+        {
+            using var indigo = new Indigo();
+            IndigoObject? obj = null;
+            try
+            {
+                obj = indigo.loadMolecule(trimmed);
+            }
+            catch
+            {
+                try { obj = indigo.loadReaction(trimmed); } catch { }
+            }
+
+            if (obj != null)
+            {
+                using (obj)
+                {
+                    var json = obj.json();
+                    if (!string.IsNullOrWhiteSpace(json))
+                        return StructureMetadata.CompactKet(json);
+                }
+            }
+        }
+        catch { }
+
+        return null;
+    }
+
     public static byte[]? RenderKet(string ket, RenderOptions? options = null)
     {
         if (string.IsNullOrWhiteSpace(ket)) return null;

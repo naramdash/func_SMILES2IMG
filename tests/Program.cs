@@ -344,7 +344,13 @@ internal static class Program
             Check(convertedSmiles == "CO", "TryConvertToSmiles converts methanol KET to CO, got: " + convertedSmiles);
             var smilesFromKetAlt = StructureMetadata.ExtractSmiles($"KET:{sampleKet}");
             Check(smilesFromKetAlt == "CO", "ExtractSmiles converts KET without SMILES tag to CO, got: " + smilesFromKetAlt);
-            Console.WriteLine("PASS StructureMetadata shared helper, CompactKet, and KET-to-SMILES conversion");
+
+            // Test SMILES to KET and KET conversion
+            var convertedKetFromSmiles = MoleculeRenderer.TryConvertToKet("CCO");
+            Check(!string.IsNullOrEmpty(convertedKetFromSmiles) && convertedKetFromSmiles!.Contains("\"root\""), "TryConvertToKet converts CCO SMILES to valid KET JSON");
+            var convertedKetFromKet = MoleculeRenderer.TryConvertToKet(sampleKet);
+            Check(!string.IsNullOrEmpty(convertedKetFromKet) && convertedKetFromKet!.Contains("\"root\""), "TryConvertToKet processes sampleKet properly");
+            Console.WriteLine("PASS StructureMetadata shared helper, CompactKet, KET-to-SMILES & SMILES-to-KET conversion");
 
             // Live WebView2 + Ketcher E2E Test (1: SMILES -> KET + Transparent Canvas PNG)
             string? e2eKet = null;

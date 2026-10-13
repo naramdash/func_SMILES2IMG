@@ -151,6 +151,13 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopySmiles"" />
+          <button id=""btnCopyKet""
+                  label=""Copy KET""
+                  screentip=""Copy Canvas Data (KET)""
+                  supertip=""Extracts or converts the selected molecule image into native Ketcher JSON (KET) and copies it to the clipboard.""
+                  imageMso=""SaveObjectAs""
+                  size=""large""
+                  onAction=""OnCopyKet"" />
           <button id=""btnCopyMoleculeInfo""
                   label=""Copy Molecule Info""
                   screentip=""Copy Formula &amp; Molecular Weight""

@@ -239,12 +239,22 @@ public static partial class KetcherEditor
         {
             var app = (Excel.Application)ExcelDnaUtil.Application;
             var targetShape = GetSelectedShape(app);
-            var ket = targetShape != null ? ExtractStructure(targetShape) : null;
+            string? ket = null;
+
+            if (targetShape != null)
+            {
+                var structStr = ExtractStructure(targetShape);
+                ket = MoleculeRenderer.TryConvertToKet(structStr);
+            }
+            else if (app.ActiveCell is Excel.Range cell)
+            {
+                ket = ExtractKetFromCell(cell);
+            }
 
             if (string.IsNullOrEmpty(ket))
             {
                 MessageBox.Show(
-                    "No canvas structure (KET) found in the selected image.",
+                    "No canvas structure (KET) found in the selected object or cell.\nPlease select a molecular structure image or formula cell.",
                     "SMILES for Excel",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);

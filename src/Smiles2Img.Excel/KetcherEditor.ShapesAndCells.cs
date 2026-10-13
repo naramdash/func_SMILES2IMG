@@ -278,6 +278,56 @@ public static partial class KetcherEditor
         return null;
     }
 
+    public static string? ExtractKetFromCell(Excel.Range cell)
+    {
+        try
+        {
+            string formula = Convert.ToString((object?)cell.Formula) ?? "";
+            string val = Convert.ToString((object?)cell.Value2) ?? "";
+
+            if (!string.IsNullOrEmpty(formula) &&
+                (formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0))
+            {
+                var match = FormulaRefPattern.Match(formula);
+                if (match.Success)
+                {
+                    string? rawData = null;
+                    if (match.Groups["literal"].Success)
+                        rawData = match.Groups["literal"].Value.Replace("\"\"", "\"").Trim();
+                    else if (match.Groups["ref"].Success)
+                    {
+                        var refAddr = match.Groups["ref"].Value;
+                        try
+                        {
+                            var sheet = (Excel.Worksheet)cell.Parent;
+                            var app = (Excel.Application)sheet.Application;
+                            Excel.Range refCell = refAddr.Contains("!") ? (Excel.Range)app.Range[refAddr] : (Excel.Range)sheet.Range[refAddr];
+                            rawData = (Convert.ToString(refCell.Value2) ?? "").Trim();
+                        }
+                        catch { }
+                    }
+
+                    if (!string.IsNullOrEmpty(rawData))
+                    {
+                        var ket = MoleculeRenderer.TryConvertToKet(rawData);
+                        if (!string.IsNullOrEmpty(ket))
+                            return ket;
+                        return rawData;
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(val))
+            {
+                return MoleculeRenderer.TryConvertToKet(val);
+            }
+        }
+        catch { }
+
+        return null;
+    }
+
     internal static Excel.Shape? GetSelectedShape(Excel.Application app)
     {
         try

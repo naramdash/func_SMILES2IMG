@@ -46,6 +46,13 @@ public class SmilesRibbon : ExcelRibbon
                   imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopySmiles"" />
+          <button id=""btnCopyKet""
+                  label=""Copy KET""
+                  screentip=""Copy Canvas Data (KET)""
+                  supertip=""Extracts or converts the selected formula cell or molecule image into native Ketcher JSON (KET) and copies it to the clipboard.""
+                  imageMso=""SaveObjectAs""
+                  size=""large""
+                  onAction=""OnCopyKet"" />
           <button id=""btnCopyMoleculeInfo""
                   label=""Copy Molecule Info""
                   screentip=""Copy Formula &amp; Molecular Weight""
@@ -83,6 +90,11 @@ public class SmilesRibbon : ExcelRibbon
               imageMso=""Copy""
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
+      <button id=""btnContextCopyKetCell""
+              label=""Copy Canvas Data (KET)""
+              imageMso=""SaveObjectAs""
+              onAction=""OnCopyKet""
+              insertBeforeMso=""Cut"" />
       <button id=""btnContextCopyInfoCell""
               label=""Copy Molecule Info (Formula &amp; MW)""
               imageMso=""Info""
@@ -105,6 +117,11 @@ public class SmilesRibbon : ExcelRibbon
               label=""Copy SMILES""
               imageMso=""Copy""
               onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextListCopyKetCell""
+              label=""Copy Canvas Data (KET)""
+              imageMso=""SaveObjectAs""
+              onAction=""OnCopyKet""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextListCopyInfoCell""
               label=""Copy Molecule Info (Formula &amp; MW)""
