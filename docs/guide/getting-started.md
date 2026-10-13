@@ -1,0 +1,75 @@
+# Getting Started & Installation
+
+Welcome to **SMILES for Microsoft Office Suite** — an all-in-one chemical structure rendering and visual editing solution for Microsoft Excel, Microsoft Word, and Microsoft PowerPoint.
+
+---
+
+## ⚡ Quick Install (Recommended)
+
+Open **PowerShell** (no Administrator privileges required for standard user installs) and run:
+
+```powershell
+irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+```
+
+### What the Automated Installer Does
+1. **Detects Office Environment:** Automatically checks whether your Office installation is 32-bit (`x86`) or 64-bit (`x64`) and detects installed apps (Excel, Word, PowerPoint).
+2. **Downloads Latest Binaries:** Fetches the unified release suite from GitHub Releases.
+3. **Places in Safe Add-in Directory:** Installs to `%APPDATA%\Microsoft\AddIns\Smiles2Img`.
+4. **Removes Security Flags:** Runs `Unblock-File` to strip Windows download block flags (`Zone.Identifier`).
+5. **Registers Add-ins:**
+   - Registers Excel XLL add-in under `HKCU\Software\Microsoft\Office\<ver>\Excel\Options\OPEN`.
+   - Registers Word COM Add-in (`Smiles2Img.WordAddin`) in `HKCU\Software\Microsoft\Office\Word\Addins`.
+   - Registers PowerPoint COM Add-in (`Smiles2Img.PowerPointAddin`) in `HKCU\Software\Microsoft\Office\PowerPoint\Addins`.
+
+---
+
+## 📊 Runtime Requirements
+
+| Component | Required Version | Notes |
+| :--- | :--- | :--- |
+| **Operating System** | Windows 10 / Windows 11 | 32-bit & 64-bit architectures supported |
+| **Microsoft Office** | Office 2016 / 2019 / 2021 / 2024 / Microsoft 365 | Desktop desktop versions (Click-to-Run or MSI) |
+| **.NET Framework** | .NET Framework 4.8 or newer | Pre-installed on Windows 10 (1903+) & Windows 11 |
+| **Microsoft Edge WebView2** | Evergreen Runtime | Powers the offline Ketcher 2D molecular editor (pre-installed on Windows 10/11) |
+
+---
+
+## 🛡️ Windows 11 Smart App Control
+
+If your Windows 11 system has **Smart App Control (SAC)** enabled in strict enforcement mode, you may see a notification stating *"The file format and extension do not match"* or Excel formulas evaluating to `#NAME?`.
+
+::: tip Rest Assured
+Turning off Smart App Control **never disables Microsoft Defender Antivirus**. Real-time cloud-delivered virus and threat protection remains **100% active**.
+:::
+
+### Solution (Takes 10 Seconds)
+1. Open Windows **Settings** (`Win + I`) ➔ **Privacy & security** ➔ **Windows Security**.
+2. Click **App & browser control** ➔ **Smart App Control settings**.
+3. Toggle the setting to **Off**.
+4. Restart Excel / Word / PowerPoint. The add-in loads immediately.
+
+---
+
+## 🖐️ Manual Installation
+
+If your IT policies restrict running remote PowerShell web scripts:
+
+1. Download the latest `Smiles2Img-vX.X.X.zip` package from [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases).
+2. Right-click the downloaded `.zip` file ➔ **Properties** ➔ check **Unblock** ➔ click **OK**.
+3. Extract the contents to `%APPDATA%\Microsoft\AddIns\Smiles2Img`.
+4. Run `install.ps1` locally inside PowerShell:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File install.ps1
+   ```
+
+---
+
+## 🗑️ Uninstallation
+
+To cleanly remove all add-in registrations and cached files:
+
+```powershell
+irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex
+```
+Or run `uninstall.ps1` locally from `%APPDATA%\Microsoft\AddIns\Smiles2Img`.

@@ -1,0 +1,28 @@
+{
+  "name": "func_smiles2img-docs",
+  "version": "1.0.0",
+  "description": "SMILES for Microsoft Office Suite Documentation",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naramdash/func_SMILES2IMG.git"
+  },
+  "keywords": [
+    "smiles",
+    "chemistry",
+    "office",
+    "excel",
+    "word",
+    "powerpoint",
+    "ketcher"
+  ],
+  "author": "naramdash",
+  "license": "MIT",
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  }
+}
