@@ -9,6 +9,20 @@
 [![EPAM Ketcher](https://img.shields.io/badge/EPAM%20Ketcher-v3.18.0-blueviolet.svg)](https://lifescience.opensource.epam.com/ketcher/)
 [![Office Suite Installer](https://img.shields.io/badge/Installer-Unified%20Office%20Suite-brightgreen.svg)](#-quick-install)
 
+> **A unified Microsoft Office add-in suite (Excel, Word, PowerPoint) that renders high-resolution 2D chemical structures directly from SMILES strings and provides interactive structure sketching via EPAM Ketcher.**  
+> 100% local and offline execution without external web requests, cloud services, or administrative privileges.
+
+<p align="center">
+  <img src="assets/excel-showcase.png" alt="SMILES for Excel Showcase" width="100%" />
+</p>
+
+<p align="center">
+  <img src="assets/word-showcase.png" alt="SMILES for Word Showcase" width="49%" />
+  <img src="assets/powerpoint-showcase.png" alt="SMILES for PowerPoint Showcase" width="49%" />
+</p>
+
+---
+
 ## ⚡ Quick Install
 
 Open **PowerShell** and run this single command to automatically install, configure security, and register the add-in across the entire Microsoft Office suite (Excel, Word, PowerPoint):
@@ -29,32 +43,6 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 > **Windows 11「Smart App Control」Notice**  
 > If Excel displays `#NAME?` or warns that `'The file format and extension of Smiles2Img-AddIn64-packed.xll do not match'`, Windows 11 **Smart App Control** has blocked the unsigned XLL add-in.  
 > 👉 The file is NOT corrupted. Follow the instructions in the **[FAQ section](#-frequently-asked-questions-faq)** to set **Smart App Control** to **'Off'**. (Real-time Microsoft Defender Antivirus protection remains 100% active).
-
----
-
-https://github.com/user-attachments/assets/e34fc58a-b320-480e-8e83-876356796b6e
-
-
-
-https://github.com/user-attachments/assets/b7ac8c3f-cc06-4820-8df6-1593d07ccb97
-
-
-
-https://github.com/user-attachments/assets/e566a830-55d5-4ff5-8030-344d8b8ce7b6
-
-
-
-> **A unified Microsoft Office add-in suite (Excel, Word, PowerPoint) that renders high-resolution 2D chemical structures directly from SMILES strings and provides interactive structure sketching via EPAM Ketcher.**  
-> 100% local and offline execution without external web requests, cloud services, or administrative privileges.
-
-<p align="center">
-  <img src="assets/excel-showcase.png" alt="SMILES for Excel Showcase" width="100%" />
-</p>
-
-<p align="center">
-  <img src="assets/word-showcase.png" alt="SMILES for Word Showcase" width="49%" />
-  <img src="assets/powerpoint-showcase.png" alt="SMILES for PowerPoint Showcase" width="49%" />
-</p>
 
 ---
 
@@ -105,8 +93,8 @@ High-definition (1080p, 30fps) edited video walkthroughs with full subtitles dem
 ### 📗 Microsoft Excel Walkthrough (1m 56s)
 
 <p align="center">
-  <video src="assets/videos/excel-guide-video.mp4" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-    <a href="assets/videos/excel-guide-video.mp4">🎬 Excel Core Features Video (assets/videos/excel-guide-video.mp4)</a>
+  <video src="https://github.com/user-attachments/assets/e566a830-55d5-4ff5-8030-344d8b8ce7b6" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <a href="https://github.com/user-attachments/assets/e566a830-55d5-4ff5-8030-344d8b8ce7b6">🎬 Excel Core Features Video (excel-guide-video.mp4)</a>
   </video>
 </p>
 
@@ -118,8 +106,8 @@ High-definition (1080p, 30fps) edited video walkthroughs with full subtitles dem
 ### 📘 Microsoft Word Walkthrough (1m 54s)
 
 <p align="center">
-  <video src="assets/videos/word-guide-video.mp4" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-    <a href="assets/videos/word-guide-video.mp4">🎬 Word Core Features Video (assets/videos/word-guide-video.mp4)</a>
+  <video src="https://github.com/user-attachments/assets/e34fc58a-b320-480e-8e83-876356796b6e" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <a href="https://github.com/user-attachments/assets/e34fc58a-b320-480e-8e83-876356796b6e">🎬 Word Core Features Video (word-guide-video.mp4)</a>
   </video>
 </p>
 
@@ -131,8 +119,8 @@ High-definition (1080p, 30fps) edited video walkthroughs with full subtitles dem
 ### 📙 Microsoft PowerPoint Walkthrough (1m 55s)
 
 <p align="center">
-  <video src="assets/videos/powerpoint-guide-video.mp4" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-    <a href="assets/videos/powerpoint-guide-video.mp4">🎬 PowerPoint Core Features Video (assets/videos/powerpoint-guide-video.mp4)</a>
+  <video src="https://github.com/user-attachments/assets/b7ac8c3f-cc06-4820-8df6-1593d07ccb97" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <a href="https://github.com/user-attachments/assets/b7ac8c3f-cc06-4820-8df6-1593d07ccb97">🎬 PowerPoint Core Features Video (powerpoint-guide-video.mp4)</a>
   </video>
 </p>
 

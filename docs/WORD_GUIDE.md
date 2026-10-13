@@ -10,8 +10,8 @@
 > 상단 리본 메뉴 활용, 드래그 텍스트 0.1초 즉시 치환(Quick Insert), 표 레이아웃 유지 더블 클릭 제자리 수정, 무손실 KET 반응식 보존, 우클릭 분자량 계산까지 단계별로 확인하세요.
 
 <p align="center">
-  <video src="../assets/videos/word-guide-video.mp4" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-    <a href="../assets/videos/word-guide-video.mp4">🎬 Word 핵심 기능 3분 마스터 동영상 재생하기 (word-guide-video.mp4)</a>
+  <video src="https://github.com/user-attachments/assets/e34fc58a-b320-480e-8e83-876356796b6e" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <a href="https://github.com/user-attachments/assets/e34fc58a-b320-480e-8e83-876356796b6e">🎬 Word 핵심 기능 3분 마스터 동영상 재생하기 (word-guide-video.mp4)</a>
   </video>
 </p>
 

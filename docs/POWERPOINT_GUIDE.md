@@ -10,8 +10,8 @@
 > 슬라이드 중앙 원클릭 배치, 다크 테마 발표를 위한 [투명 배경] 토글, 텍스트 상자 0.1초 치환, 슬라이드 레이아웃 유지 더블 클릭 제자리 수정, 다단계 반응식 보존까지 단계별로 확인하세요.
 
 <p align="center">
-  <video src="../assets/videos/powerpoint-guide-video.mp4" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-    <a href="../assets/videos/powerpoint-guide-video.mp4">🎬 PowerPoint 핵심 기능 3분 마스터 동영상 재생하기 (powerpoint-guide-video.mp4)</a>
+  <video src="https://github.com/user-attachments/assets/b7ac8c3f-cc06-4820-8df6-1593d07ccb97" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <a href="https://github.com/user-attachments/assets/b7ac8c3f-cc06-4820-8df6-1593d07ccb97">🎬 PowerPoint 핵심 기능 3분 마스터 동영상 재생하기 (powerpoint-guide-video.mp4)</a>
   </video>
 </p>
 

@@ -10,8 +10,8 @@
 > 인셀 수식 입력, 전문 화학 스타일링, 오프라인 Ketcher 에디터 연동, 화학 반응식(`=KET2IMG`), 원클릭 물성 정보 복사까지 한눈에 확인하세요.
 
 <p align="center">
-  <video src="../assets/videos/excel-guide-video.mp4" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-    <a href="../assets/videos/excel-guide-video.mp4">🎬 Excel 핵심 기능 3분 마스터 동영상 재생하기 (excel-guide-video.mp4)</a>
+  <video src="https://github.com/user-attachments/assets/e566a830-55d5-4ff5-8030-344d8b8ce7b6" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <a href="https://github.com/user-attachments/assets/e566a830-55d5-4ff5-8030-344d8b8ce7b6">🎬 Excel 핵심 기능 3분 마스터 동영상 재생하기 (excel-guide-video.mp4)</a>
   </video>
 </p>
 

@@ -91,8 +91,8 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 ### 📗 Microsoft Excel 핵심 기능 가이드 (1분 56초)
 
 <p align="center">
-  <video src="assets/videos/excel-guide-video.mp4" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-    <a href="assets/videos/excel-guide-video.mp4">🎬 Excel 핵심 기능 가이드 영상 재생하기 (assets/videos/excel-guide-video.mp4)</a>
+  <video src="https://github.com/user-attachments/assets/e566a830-55d5-4ff5-8030-344d8b8ce7b6" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <a href="https://github.com/user-attachments/assets/e566a830-55d5-4ff5-8030-344d8b8ce7b6">🎬 Excel 핵심 기능 가이드 영상 재생하기 (excel-guide-video.mp4)</a>
   </video>
 </p>
 
@@ -104,8 +104,8 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 ### 📘 Microsoft Word 핵심 기능 가이드 (1분 54초)
 
 <p align="center">
-  <video src="assets/videos/word-guide-video.mp4" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-    <a href="assets/videos/word-guide-video.mp4">🎬 Word 핵심 기능 가이드 영상 재생하기 (assets/videos/word-guide-video.mp4)</a>
+  <video src="https://github.com/user-attachments/assets/e34fc58a-b320-480e-8e83-876356796b6e" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <a href="https://github.com/user-attachments/assets/e34fc58a-b320-480e-8e83-876356796b6e">🎬 Word 핵심 기능 가이드 영상 재생하기 (word-guide-video.mp4)</a>
   </video>
 </p>
 
@@ -117,8 +117,8 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 ### 📙 Microsoft PowerPoint 핵심 기능 가이드 (1분 55초)
 
 <p align="center">
-  <video src="assets/videos/powerpoint-guide-video.mp4" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-    <a href="assets/videos/powerpoint-guide-video.mp4">🎬 PowerPoint 핵심 기능 가이드 영상 재생하기 (assets/videos/powerpoint-guide-video.mp4)</a>
+  <video src="https://github.com/user-attachments/assets/b7ac8c3f-cc06-4820-8df6-1593d07ccb97" controls="controls" width="100%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <a href="https://github.com/user-attachments/assets/b7ac8c3f-cc06-4820-8df6-1593d07ccb97">🎬 PowerPoint 핵심 기능 가이드 영상 재생하기 (powerpoint-guide-video.mp4)</a>
   </video>
 </p>
 
