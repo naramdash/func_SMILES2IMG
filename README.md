@@ -7,7 +7,7 @@
 [![Excel-DNA](https://img.shields.io/badge/Excel--DNA-1.9.0-green.svg)](https://excel-dna.net/)
 [![EPAM Indigo](https://img.shields.io/badge/EPAM%20Indigo-1.49.0--rc.2-orange.svg)](https://lifescience.opensource.epam.com/indigo/)
 [![EPAM Ketcher](https://img.shields.io/badge/EPAM%20Ketcher-v3.18.0-blueviolet.svg)](https://lifescience.opensource.epam.com/ketcher/)
-[![Office Suite Installer](https://img.shields.io/badge/Installer-Unified%20Office%20Suite-brightgreen.svg)](#-quick-start-installation)
+[![Office Suite Installer](https://img.shields.io/badge/Installer-Unified%20Office%20Suite-brightgreen.svg)](#-quick-install)
 
 > **A unified Microsoft Office add-in suite (Excel, Word, PowerPoint) that renders high-resolution 2D chemical structures directly from SMILES strings and provides interactive structure sketching via EPAM Ketcher.**  
 > 100% local and offline execution without external web requests, cloud services, or administrative privileges.
@@ -23,13 +23,37 @@
 
 ---
 
+## ⚡ Quick Install
+
+Open **PowerShell** and run this single command to automatically install, configure security, and register the add-in across the entire Microsoft Office suite (Excel, Word, PowerPoint):
+
+```powershell
+irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+```
+
+> **What the installer automates:**  
+> 1. Detects your Office bitness (32-bit vs. 64-bit) and installed Office applications (Excel, Word, PowerPoint)  
+> 2. Downloads and places the unified suite (Excel XLL, Word COM DLL, PowerPoint COM DLL) in `%APPDATA%\Microsoft\AddIns\Smiles2Img`  
+> 3. Unblocks files (`Unblock-File`) to remove Windows security flags automatically  
+> 4. Registers Excel, Word, and PowerPoint add-ins in HKCU registry (no admin rights required, loads automatically on start)  
+> 💡 **Future Updates:** Running this exact command again in the future automatically upgrades to the latest release!  
+> 🗑️ **Uninstallation:** Run `irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex` anytime to cleanly remove all files and registry entries.
+
+> [!IMPORTANT]
+> **Windows 11「Smart App Control」Notice**  
+> If Excel displays `#NAME?` or warns that `'The file format and extension of Smiles2Img-AddIn64-packed.xll do not match'`, Windows 11 **Smart App Control** has blocked the unsigned XLL add-in.  
+> 👉 The file is NOT corrupted. Follow the instructions in the **[FAQ section](#-frequently-asked-questions-faq)** to set **Smart App Control** to **'Off'**. (Real-time Microsoft Defender Antivirus protection remains 100% active).
+
+---
+
 ## 📑 Table of Contents
+- [⚡ Quick Install](#-quick-install)
 - [✨ Supported Applications & Key Features](#-supported-applications--key-features)
   - 📗 [Excel User Guide](docs/EXCEL_GUIDE.md)
   - 📘 [Word User Guide](docs/WORD_GUIDE.md)
   - 📙 [PowerPoint User Guide](docs/POWERPOINT_GUIDE.md)
 - [🎥 3-Minute Video Walkthroughs](#-3-minute-video-walkthroughs)
-- [🚀 Quick Start (Unified Suite Installation)](#-quick-start-unified-suite-installation)
+- [🚀 Detailed Installation & Requirements](#-detailed-installation--requirements)
 - [💡 Excel Usage & Real-Time IntelliSense](#-excel-usage--real-time-intellisense)
 - [📝 Word & PowerPoint Usage](#-word--powerpoint-usage)
 - [📖 Function Syntax & Parameter Specification (Excel)](#-function-syntax--parameter-specification-excel)
@@ -104,9 +128,9 @@ High-definition (1080p, 30fps) edited video walkthroughs with full subtitles dem
 
 ---
 
-## 🚀 Quick Start (Installation)
+## 🚀 Detailed Installation & Requirements
 
-### Runtime requirements
+### 📊 Runtime requirements
 
 | Component | Requirement |
 | :--- | :--- |
@@ -121,30 +145,9 @@ High-definition (1080p, 30fps) edited video walkthroughs with full subtitles dem
 * **Excel 2016 / 2019 / 2021:** Use `=SMILES2IMG.FLOAT(A2)` or `=KET2IMG.FLOAT(A2)` for floating molecular pictures that automatically move and resize with their cells (`xlMoveAndSize`). If `=SMILES2IMG` is inadvertently called on an older Excel build, it cleanly displays `Needs Excel 2024/365: use SMILES2IMG.FLOAT` instead of cryptic error codes.
 * The add-in runs only in Windows desktop Excel; Excel for Mac and Excel for the web cannot load this XLL. The **.NET SDK is needed only for development/building**, not for using the downloaded XLL.
 
-### ⚡ Method A: One-Click Automatic Installer & Updater (Recommended)
-
-Open PowerShell and run this **single command** to install, register, or update the entire Microsoft Office Suite (Excel, Word, PowerPoint) automatically:
-
-```powershell
-irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
-```
-
-> **What the installer automates:**  
-> 1. Detects your Office bitness (32-bit vs. 64-bit) and installed applications  
-> 2. Downloads and installs the entire Office Suite (Excel XLL, Word COM DLL, PowerPoint COM DLL) in `%APPDATA%\Microsoft\AddIns\Smiles2Img`  
-> 3. Unblocks all files (`Unblock-File`) to remove Windows security flags  
-> 4. Registers add-ins across Excel, Word, and PowerPoint for seamless auto-loading (HKCU registry, zero admin rights needed)  
-> 💡 **Future Updates:** Running this exact command again in the future automatically upgrades your SMILES Office Suite to the latest release!  
-> 🗑️ **Uninstallation:** To uninstall anytime, simply run `irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex`.
-
-> [!IMPORTANT]
-> **Windows 11「Smart App Control (스마트 앱 컨트롤)」Notice**  
-> If Excel displays `#NAME?` or warns that `'The file format and extension of Smiles2Img-AddIn64-packed.xll do not match'`, Windows 11 **Smart App Control (스마트 앱 컨트롤)** has blocked the unsigned XLL add-in.  
-> 👉 The file is NOT corrupted. Follow the instructions in the **[FAQ section](#-frequently-asked-questions-faq)** to set **Smart App Control** to **'Off'**. (Real-time Microsoft Defender Antivirus protection remains 100% active).
-
 ---
 
-### 🖐️ Method B: Manual Step-by-Step Installation
+### 🖐️ Manual Step-by-Step Installation
 
 #### Step 1: Check your Office bitness (32-bit vs. 64-bit)
 1. In Excel, Word, or PowerPoint, go to **[File] → [Account] → [About Excel / Word / PowerPoint]**.

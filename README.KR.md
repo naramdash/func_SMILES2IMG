@@ -7,7 +7,7 @@
 [![Excel-DNA](https://img.shields.io/badge/Excel--DNA-1.9.0-green.svg)](https://excel-dna.net/)
 [![EPAM Indigo](https://img.shields.io/badge/EPAM%20Indigo-1.49.0--rc.2-orange.svg)](https://lifescience.opensource.epam.com/indigo/)
 [![EPAM Ketcher](https://img.shields.io/badge/EPAM%20Ketcher-v3.18.0-blueviolet.svg)](https://lifescience.opensource.epam.com/ketcher/)
-[![Office Suite Installer](https://img.shields.io/badge/Installer-Unified%20Office%20Suite-brightgreen.svg)](#-빠른-시작-설치-방법)
+[![Office Suite Installer](https://img.shields.io/badge/Installer-Unified%20Office%20Suite-brightgreen.svg)](#-빠른-설치-quick-install)
 
 > **SMILES 화학 구조식 문자열을 Microsoft Office(Excel, Word, PowerPoint)에 고해상도 분자 이미지로 즉시 삽입하고, 내장된 Ketcher 웹 에디터로 자유롭게 그리고 수정할 수 있는 통합 오피스 추가 기능(Office Suite Add-in)입니다.**  
 > 외부 웹 서버나 클라우드 전송 없이, PC 로컬에서 100% 오프라인으로 안전하고 빠르게 렌더링되며 관리자 권한(Admin) 없이 간편하게 설치됩니다.
@@ -23,13 +23,37 @@
 
 ---
 
+## ⚡ 빠른 설치 (Quick Install)
+
+PowerShell을 열고 아래 명령어 **한 줄만 실행**하면 Microsoft Office 전체(Excel, Word, PowerPoint)에 대한 설치, 보안 해제, 레지스트리 등록이 모두 자동으로 완료됩니다:
+
+```powershell
+irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+```
+
+> **스크립트가 자동으로 처리하는 내용:**  
+> 1. 내 Office 비트수(32비트 vs 64비트) 및 설치된 프로그램(Excel, Word, PowerPoint) 자동 감지  
+> 2. `%APPDATA%\Microsoft\AddIns\Smiles2Img` 안전 폴더로 통합 오피스 슈트(Excel XLL, Word COM DLL, PowerPoint COM DLL) 자동 다운로드 및 배치  
+> 3. Windows 보안 차단(`Unblock-File`) 일괄 자동 해제  
+> 4. Excel, Word, PowerPoint 레지스트리 자동 등록 (관리자 권한 불필요, 실행 시 자동 로드)  
+> 💡 **최신 버전 업데이트:** 이미 설치되어 있는 상태에서 위 명령어를 다시 실행하면, 최신 버전으로 안전하게 자동 업데이트됩니다.  
+> 🗑️ **삭제 방법:** 언제든 PowerShell에서 `irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex`를 실행하면 모든 파일과 등록 정보가 깔끔하게 제거됩니다.
+
+> [!IMPORTANT]
+> **Windows 11「스마트 앱 컨트롤 (Smart App Control)」관련 안내**  
+> 엑셀 실행 시 `#NAME?` 오류가 발생하거나 `'Smiles2Img-AddIn64-packed.xll의 파일 형식 및 확장명이 일치하지 않습니다'`라는 보안 경고가 나타난다면, Windows 11의 **스마트 앱 컨트롤 (Smart App Control)**이 오픈소스 추가 기능을 차단한 것입니다.  
+> 👉 파일이 깨진 것이 아니며, **[자주 묻는 질문(FAQ)](#-자주-묻는-질문-faq)**의 안내에 따라 **스마트 앱 컨트롤**을 **'꺼짐(Off)'**으로 설정하시면 즉시 정상 작동합니다. (실시간 바이러스 백신 감시는 100% 안전하게 유지됩니다)
+
+---
+
 ## 📑 목차
+- [⚡ 빠른 설치 (Quick Install)](#-빠른-설치-quick-install)
 - [✨ 지원 애플리케이션 및 주요 기능](#-지원-애플리케이션-및-주요-기능)
   - 📗 [Excel 사용법 가이드](docs/EXCEL_GUIDE.md)
   - 📘 [Word 사용법 가이드](docs/WORD_GUIDE.md)
   - 📙 [PowerPoint 사용법 가이드](docs/POWERPOINT_GUIDE.md)
 - [🎥 핵심 기능 가이드 영상 (3분 완성)](#-핵심-기능-가이드-영상-3분-완성)
-- [🚀 빠른 시작 (통합 오피스 슈트 설치 방법)](#-빠른-시작-통합-오피스-슈트-설치-방법)
+- [🚀 상세 설치 방법 및 요구사항](#-상세-설치-방법-및-요구사항)
 - [💡 Excel 사용 방법 및 수식 IntelliSense](#-excel-사용-방법-및-수식-intellisense)
 - [📝 Word 및 PowerPoint 사용 방법](#-word-및-powerpoint-사용-방법)
 - [📖 함수 구문 및 인자 규격 (Excel)](#-함수-구문-및-인자-규격-excel)
@@ -102,9 +126,9 @@
 
 ---
 
-## 🚀 빠른 시작 (설치 방법)
+## 🚀 상세 설치 방법 및 요구사항
 
-### 실행 요구사항
+### 📊 실행 요구사항
 
 | 항목 | 필요한 환경 |
 | :--- | :--- |
@@ -119,30 +143,9 @@
 * **Excel 2016 / 2019 / 2021:** 인셀 이미지를 미지원하는 구버전에서는 `=SMILES2IMG.FLOAT(A2)` 또는 `=KET2IMG.FLOAT(A2)`를 사용합니다. 셀 위에 분자 그림이 배치되며, 셀 이동 및 행/열 크기 변경에 연동(`xlMoveAndSize`)됩니다. 만약 구버전에서 실수로 `SMILES2IMG`를 호출하더라도 오류 대신 `Needs Excel 2024/365: use SMILES2IMG.FLOAT`라는 친절한 안내 문구가 표시됩니다.
 * 이 추가 기능은 Windows 데스크톱 Excel 전용이며, Mac용 Excel과 웹용 Excel에서는 XLL을 로드할 수 없습니다. 다운로드한 XLL을 사용하기 위해 개발용 **.NET SDK를 설치할 필요는 없습니다.**
 
-### ⚡ 방법 A: 원클릭 자동 설치 및 업데이트 (가장 추천)
-
-PowerShell을 열고 아래 명령어 **한 줄만 실행**하면 Microsoft Office 전체(Excel, Word, PowerPoint)에 대한 설치, 보안 해제, 레지스트리 등록이 모두 자동으로 완료됩니다:
-
-```powershell
-irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
-```
-
-> **스크립트가 자동으로 처리하는 내용:**  
-> 1. 내 Office 비트수(32비트 vs 64비트) 및 설치된 프로그램(Excel, Word, PowerPoint) 자동 감지  
-> 2. `%APPDATA%\Microsoft\AddIns\Smiles2Img` 안전 폴더로 통합 오피스 슈트(Excel XLL, Word COM DLL, PowerPoint COM DLL) 자동 다운로드 및 배치  
-> 3. Windows 보안 차단(`Unblock-File`) 일괄 자동 해제  
-> 4. Excel, Word, PowerPoint 레지스트리 자동 등록 (관리자 권한 불필요, 실행 시 자동 로드)  
-> 💡 **최신 버전 업데이트:** 이미 설치되어 있는 상태에서 위 명령어를 다시 실행하면, 최신 버전으로 안전하게 자동 업데이트됩니다.  
-> 🗑️ **삭제 방법:** 언제든 PowerShell에서 `irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex`를 실행하면 모든 파일과 등록 정보가 깔끔하게 제거됩니다.
-
-> [!IMPORTANT]
-> **Windows 11「스마트 앱 컨트롤 (Smart App Control)」관련 안내**  
-> 엑셀 실행 시 `#NAME?` 오류가 발생하거나 `'Smiles2Img-AddIn64-packed.xll의 파일 형식 및 확장명이 일치하지 않습니다'`라는 보안 경고가 나타난다면, Windows 11의 **스마트 앱 컨트롤 (Smart App Control)**이 오픈소스 추가 기능을 차단한 것입니다.  
-> 👉 파일이 깨진 것이 아니며, **[자주 묻는 질문(FAQ)](#-자주-묻는-질문-faq)**의 안내에 따라 **스마트 앱 컨트롤**을 **'꺼짐(Off)'**으로 설정하시면 즉시 정상 작동합니다. (실시간 바이러스 백신 감시는 100% 안전하게 유지됩니다)
-
 ---
 
-### 🖐️ 방법 B: 수동 설치 (단계별 안내)
+### 🖐️ 수동 설치 방법 (단계별 안내)
 
 #### 1단계: 내 Office 비트수(32비트 vs 64비트) 확인
 1. Excel, Word 또는 PowerPoint 실행 후 **[파일] → [계정] → [Excel / Word / PowerPoint 정보]** 클릭
