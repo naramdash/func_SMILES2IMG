@@ -17,22 +17,9 @@ export default defineConfig({
       description: 'Free & Open-Source Chemical Structure Add-in Suite for Microsoft Excel, Word, and PowerPoint',
       themeConfig: {
         nav: [
-          { text: 'Guide', link: '/guide/getting-started' },
-          {
-            text: 'Office Apps',
-            items: [
-              { text: 'Microsoft Excel', link: '/guide/excel' },
-              { text: 'Microsoft Word', link: '/guide/word' },
-              { text: 'Microsoft PowerPoint', link: '/guide/powerpoint' }
-            ]
-          },
-          { text: 'Ketcher Editor', link: '/guide/ketcher' },
-          { text: 'Formula Reference', link: '/reference/formula' },
-          { text: 'FAQ', link: '/guide/faq' },
-          {
-            text: 'Releases',
-            link: 'https://github.com/naramdash/func_SMILES2IMG/releases'
-          }
+          { text: 'Guide', link: '/guide/getting-started', activeMatch: '^/guide/' },
+          { text: 'Reference', link: '/reference/formula', activeMatch: '^/reference/' },
+          { text: 'v1.5.0', link: 'https://github.com/naramdash/func_SMILES2IMG/releases' }
         ],
         sidebar: [
           {
@@ -81,22 +68,9 @@ export default defineConfig({
       description: 'Microsoft Excel, Word, PowerPoint용 무료 오픈소스 화학 구조식 렌더러 & 에디터 추가 기능',
       themeConfig: {
         nav: [
-          { text: '시작 가이드', link: '/ko/guide/getting-started' },
-          {
-            text: '오피스 프로그램',
-            items: [
-              { text: 'Microsoft Excel', link: '/ko/guide/excel' },
-              { text: 'Microsoft Word', link: '/ko/guide/word' },
-              { text: 'Microsoft PowerPoint', link: '/ko/guide/powerpoint' }
-            ]
-          },
-          { text: 'Ketcher 에디터', link: '/ko/guide/ketcher' },
-          { text: '수식 레퍼런스', link: '/ko/reference/formula' },
-          { text: '자주 묻는 질문', link: '/ko/guide/faq' },
-          {
-            text: '릴리스',
-            link: 'https://github.com/naramdash/func_SMILES2IMG/releases'
-          }
+          { text: '가이드', link: '/ko/guide/getting-started', activeMatch: '^/ko/guide/' },
+          { text: '수식 레퍼런스', link: '/ko/reference/formula', activeMatch: '^/ko/reference/' },
+          { text: 'v1.5.0', link: 'https://github.com/naramdash/func_SMILES2IMG/releases' }
         ],
         sidebar: [
           {
