@@ -5,8 +5,8 @@
 [![Platform](https://img.shields.io/badge/Platform-Windows%20Office%20(Excel%20%7C%20Word%20%7C%20PowerPoint)-blue.svg)](#runtime-requirements)
 [![Framework](https://img.shields.io/badge/.NET%20Framework-4.8-512BD4.svg)](https://dotnet.microsoft.com/)
 [![Excel-DNA](https://img.shields.io/badge/Excel--DNA-1.9.0-green.svg)](https://excel-dna.net/)
-[![EPAM Indigo](https://img.shields.io/badge/EPAM%20Indigo-1.48.0--rc.1-orange.svg)](https://lifescience.opensource.epam.com/indigo/)
-[![EPAM Ketcher](https://img.shields.io/badge/EPAM%20Ketcher-v3.1.0-blueviolet.svg)](https://lifescience.opensource.epam.com/ketcher/)
+[![EPAM Indigo](https://img.shields.io/badge/EPAM%20Indigo-1.49.0--rc.2-orange.svg)](https://lifescience.opensource.epam.com/indigo/)
+[![EPAM Ketcher](https://img.shields.io/badge/EPAM%20Ketcher-v3.18.0-blueviolet.svg)](https://lifescience.opensource.epam.com/ketcher/)
 [![Office Suite Installer](https://img.shields.io/badge/Installer-Unified%20Office%20Suite-brightgreen.svg)](#-quick-start-installation)
 
 > **A unified Microsoft Office add-in suite (Excel, Word, PowerPoint) that renders high-resolution 2D chemical structures directly from SMILES strings and provides interactive structure sketching via EPAM Ketcher.**  
@@ -323,23 +323,26 @@ sequenceDiagram
 ```text
 func_SMILES2IMG/
 ├── Smiles2Img.sln                      # Visual Studio / .NET unified solution file
+├── Directory.Build.props               # Shared version (1.4.0), TFM (net48), and compiler configuration
 ├── src/
 │   ├── Smiles2Img.Core/                # Shared rendering & Ketcher editor core (net48)
-│   │   ├── Rendering/                  # EPAM Indigo C++ wrapper, ACS standards, color/option parsers
-│   │   ├── Editor/                     # EPAM Ketcher WebView2 editor Form & offline asset manager
+│   │   ├── Rendering/                  # EPAM Indigo 1.49.0-rc.2 wrapper, ACS standards, color/option parsers
+│   │   ├── Editor/                     # EPAM Ketcher v3.18.0 WebView2 Form, SHA256 asset manager & StructureMetadata
 │   │   └── COM/                        # Shared Office COM interfaces (IDTExtensibility2, IRibbonExtensibility)
 │   ├── Smiles2Img.Excel/               # Excel-DNA standalone XLL add-in (net48)
 │   │   ├── Functions.cs                # =SMILES2IMG in-cell UDF (Excel 2024 / M365)
 │   │   ├── FloatFunctions.cs           # =SMILES2IMG.FLOAT floating UDF (Excel 2016-2021)
 │   │   ├── CellImages.cs               # In-cell image cache manager
 │   │   ├── FloatingPictures.cs         # Cell-anchored floating shape manager
-│   │   └── KetcherEditor.cs            # Double-click cell & context menu Ketcher handlers
+│   │   ├── SmilesRibbon.cs             # [SMILES] ribbon tab & right-click context menu handlers
+│   │   ├── KetcherEditor.cs            # Ketcher commands, quick paste, molecule info & double-click hooks
+│   │   └── KetcherEditor.ShapesAndCells.cs # KET canvas shape & formula cell extraction/insertion helpers
 │   ├── Smiles2Img.Word/                # Word COM add-in DLL (net48)
 │   │   ├── WordAddIn.cs                # IDTExtensibility2 + IRibbonExtensibility implementation
-│   │   └── WordStructureManager.cs     # Inline structure image insertion, replacement & double-click
+│   │   └── WordStructureManager.cs     # Inline structure image insertion, replacement, quick paste & double-click
 │   └── Smiles2Img.PowerPoint/          # PowerPoint COM add-in DLL (net48)
-│       ├── PowerPointAddIn.cs          # IDTExtensibility2 + IRibbonExtensibility implementation
-│       └── PowerPointStructureManager.cs # Slide structure shape insertion, replacement & double-click
+│       ├── PowerPointAddIn.cs          # IDTExtensibility2 + IRibbonExtensibility + Win32 double-click hook
+│       └── PowerPointStructureManager.cs # Slide structure shape insertion, replacement, quick paste & metadata
 ├── dist/                               # Distribution output directory
 │   ├── x64/
 │   │   ├── Smiles2Img-AddIn64-packed.xll # 64-bit standalone Excel XLL
@@ -355,9 +358,10 @@ func_SMILES2IMG/
 │   ├── Excel-Smoke.ps1                 # Full COM automation E2E smoke tests
 │   ├── Excel-365-FeatureTests.ps1      # Live Excel 365 new styles & full-option tests
 │   ├── Excel-DeepStressTests.ps1       # Bulk rendering & edge-case stress test
-│   ├── Program.cs                      # Headless unit test runner
+│   ├── Program.cs                      # Unit tests + live WebView2/Ketcher v3.18.0 E2E round-trip runner
 │   └── Smiles2Img.Tests.csproj
 ├── scripts/
+│   ├── Test-OfficeE2E.ps1              # Unified Word, PowerPoint, and Excel COM Add-in E2E test suite
 │   ├── Package-Release.ps1             # Release archive packaging script
 │   └── Generate-Showcase-Workbook.ps1  # Showcase workbook generator
 ├── install.ps1                         # Unified Office Suite one-click installer
@@ -392,15 +396,22 @@ The resulting packed XLLs in `dist/x64/` and `dist/x86/` contain all dependencie
 
 ## 🧪 Automated Testing & Verification
 
-### 1. Headless Unit Tests (Excel not required)
-Verifies molecule rendering, chiral hydrogen retention, transforms, and alpha transparency in headless console mode:
+### 1. Core Unit Tests + Live WebView2 Ketcher E2E Tests (Office not required)
+Verifies molecule rendering, chiral hydrogen retention, transforms, alpha transparency, molecule properties (`Formula`, `MW`, `Exact Mass`), and live WebView2 + EPAM Ketcher v3.18.0 round-trip (`SMILES` $\leftrightarrow$ `KET` + Transparent/White PNG export):
 
 ```powershell
 dotnet build tests/Smiles2Img.Tests.csproj -c Release --no-restore --tl:off
 & tests/bin/Release/net48/Smiles2Img.Tests.exe
 ```
 
-### 2. Excel COM E2E Automation Smoke Tests (Runs live Excel)
+### 2. Unified Office Suite COM E2E Tests (Word + PowerPoint + Excel)
+Launches live instances of **Microsoft Word, PowerPoint, and Excel** to verify COM add-in registration, `KET` + `SMILES` metadata round-tripping (`AlternativeText`, `Title`, `Tags`), aspect-ratio preserving in-place updates, and formula evaluation:
+
+```powershell
+powershell -NoProfile -STA -ExecutionPolicy Bypass -File scripts/Test-OfficeE2E.ps1
+```
+
+### 3. Excel COM E2E Automation Smoke Tests (Runs live Excel)
 Automates an actual background Excel instance to test full lifecycle reliability:
 
 ```powershell
@@ -413,7 +424,7 @@ powershell -NoProfile -STA -ExecutionPolicy Bypass -File tests/Excel-Smoke.ps1
 * Workbook saving, reopening, and cache restoration
 * Automatic orphaned cache cleanup when formulas are deleted
 
-### 3. Excel 365 Real-World Feature & Bulk Stress Tests
+### 4. Excel 365 Real-World Feature & Bulk Stress Tests
 Validates modern delimiters, ultimate full-option formulas, and 20+ concurrent complex molecules:
 
 ```powershell

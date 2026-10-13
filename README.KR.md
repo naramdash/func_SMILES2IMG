@@ -5,8 +5,8 @@
 [![Platform](https://img.shields.io/badge/Platform-Windows%20Office%20(Excel%20%7C%20Word%20%7C%20PowerPoint)-blue.svg)](#실행-요구사항)
 [![Framework](https://img.shields.io/badge/.NET%20Framework-4.8-512BD4.svg)](https://dotnet.microsoft.com/)
 [![Excel-DNA](https://img.shields.io/badge/Excel--DNA-1.9.0-green.svg)](https://excel-dna.net/)
-[![EPAM Indigo](https://img.shields.io/badge/EPAM%20Indigo-1.48.0--rc.1-orange.svg)](https://lifescience.opensource.epam.com/indigo/)
-[![EPAM Ketcher](https://img.shields.io/badge/EPAM%20Ketcher-v3.1.0-blueviolet.svg)](https://lifescience.opensource.epam.com/ketcher/)
+[![EPAM Indigo](https://img.shields.io/badge/EPAM%20Indigo-1.49.0--rc.2-orange.svg)](https://lifescience.opensource.epam.com/indigo/)
+[![EPAM Ketcher](https://img.shields.io/badge/EPAM%20Ketcher-v3.18.0-blueviolet.svg)](https://lifescience.opensource.epam.com/ketcher/)
 [![Office Suite Installer](https://img.shields.io/badge/Installer-Unified%20Office%20Suite-brightgreen.svg)](#-빠른-시작-설치-방법)
 
 > **SMILES 화학 구조식 문자열을 Microsoft Office(Excel, Word, PowerPoint)에 고해상도 분자 이미지로 즉시 삽입하고, 내장된 Ketcher 웹 에디터로 자유롭게 그리고 수정할 수 있는 통합 오피스 추가 기능(Office Suite Add-in)입니다.**  
@@ -322,23 +322,26 @@ sequenceDiagram
 ```text
 func_SMILES2IMG/
 ├── Smiles2Img.sln                      # Visual Studio / .NET 통합 솔루션 파일
+├── Directory.Build.props               # 공통 버전(1.4.0), 타깃 프레임워크(net48) 및 컴파일러 설정
 ├── src/
 │   ├── Smiles2Img.Core/                # 공통 렌더링 및 에디터 코어 라이브러리 (net48)
-│   │   ├── Rendering/                  # EPAM Indigo C++ 래퍼, ACS 표준 렌더러, 색상/옵션 파서
-│   │   ├── Editor/                     # EPAM Ketcher WebView2 분자 에디터 Form 및 에셋 관리자
+│   │   ├── Rendering/                  # EPAM Indigo 1.49.0-rc.2 래퍼, ACS 표준 렌더러, 색상/옵션 파서
+│   │   ├── Editor/                     # EPAM Ketcher v3.18.0 WebView2 Form, SHA256 에셋 관리자 & StructureMetadata
 │   │   └── COM/                        # Office 공통 COM 인터페이스 (IDTExtensibility2, IRibbonExtensibility)
 │   ├── Smiles2Img.Excel/               # Excel-DNA 독립형 XLL 추가 기능 (net48)
 │   │   ├── Functions.cs                # =SMILES2IMG 인셀 함수 (Excel 2024 / M365)
 │   │   ├── FloatFunctions.cs           # =SMILES2IMG.FLOAT 플로팅 함수 (Excel 2016-2021)
 │   │   ├── CellImages.cs               # 인셀 이미지 캐시 관리
 │   │   ├── FloatingPictures.cs         # 셀 크기 연동 플로팅 이미지 관리
-│   │   └── KetcherEditor.cs            # 셀 더블 클릭 및 우클릭 메뉴 Ketcher 연동
+│   │   ├── SmilesRibbon.cs             # [SMILES] 리본 탭 및 마우스 우클릭 컨텍스트 메뉴 핸들러
+│   │   ├── KetcherEditor.cs            # Ketcher 명령, 클립보드 즉시 삽입, 분자 정보 복사 및 더블 클릭 훅
+│   │   └── KetcherEditor.ShapesAndCells.cs # KET 캔버스 도형 및 수식 셀 추출/삽입 헬퍼
 │   ├── Smiles2Img.Word/                # Word COM 추가 기능 DLL (net48)
 │   │   ├── WordAddIn.cs                # IDTExtensibility2 + IRibbonExtensibility 구현체
-│   │   └── WordStructureManager.cs     # 인라인 분자 그림 삽입, 교체 및 더블 클릭 핸들러
+│   │   └── WordStructureManager.cs     # 인라인 분자 그림 삽입, 교체, 즉시 삽입 및 더블 클릭 핸들러
 │   └── Smiles2Img.PowerPoint/          # PowerPoint COM 추가 기능 DLL (net48)
-│       ├── PowerPointAddIn.cs          # IDTExtensibility2 + IRibbonExtensibility 구현체
-│       └── PowerPointStructureManager.cs # 슬라이드 분자 개체 삽입, 교체 및 더블 클릭 핸들러
+│       ├── PowerPointAddIn.cs          # IDTExtensibility2 + IRibbonExtensibility + Win32 더블 클릭 훅
+│       └── PowerPointStructureManager.cs # 슬라이드 분자 개체 삽입, 교체, 즉시 삽입 및 메타데이터 관리
 ├── dist/                               # 배포용 산출물 디렉터리
 │   ├── x64/
 │   │   ├── Smiles2Img-AddIn64-packed.xll # 64비트 Excel용 완전 독립형 XLL
@@ -354,9 +357,10 @@ func_SMILES2IMG/
 │   ├── Excel-Smoke.ps1                 # 실제 Excel COM 프로세스 구동 E2E 테스트
 │   ├── Excel-365-FeatureTests.ps1      # Excel 365 실전 신규 스타일 및 풀옵션 통합 테스트
 │   ├── Excel-DeepStressTests.ps1       # 대량 분자 동시 렌더링 스트레스 테스트
-│   ├── Program.cs                      # 헤드리스 단위 테스트 (렌더링 무결성 검증)
+│   ├── Program.cs                      # 코어 단위 테스트 + 실제 WebView2/Ketcher v3.18.0 E2E 왕복 테스트
 │   └── Smiles2Img.Tests.csproj
 ├── scripts/
+│   ├── Test-OfficeE2E.ps1              # Word, PowerPoint, Excel 통합 COM 추가 기능 E2E 테스트 스크립트
 │   ├── Package-Release.ps1             # 릴리스용 ZIP 아카이브 패키징 스크립트
 │   └── Generate-Showcase-Workbook.ps1  # 쇼케이스 엑셀 워크북 생성기
 ├── install.ps1                         # Office Suite 통합 원클릭 설치 스크립트
@@ -391,15 +395,22 @@ powershell -ExecutionPolicy Bypass -File scripts\Package-Release.ps1
 
 ## 🧪 자동화 테스트 및 검증
 
-### 1. 헤드리스 단위 테스트 (Excel 불필요)
-화학 구조 렌더링, 수소 보존, 변환 매개변수, 투명 배경 픽셀 유효성을 헤드리스 콘솔에서 검증합니다:
+### 1. 코어 단위 테스트 + 실제 WebView2 Ketcher E2E 테스트 (Office 불필요)
+화학 구조 렌더링, 수소 보존, 변환 매개변수, 투명 배경 픽셀 유효성, 분자 물리화학 정보(`Formula`, `MW`, `Exact Mass`) 및 실제 WebView2 + EPAM Ketcher v3.18.0 양방향 왕복(`SMILES` $\leftrightarrow$ `KET` + 투명/흰색 PNG 추출)을 검증합니다:
 
 ```powershell
 dotnet build tests/Smiles2Img.Tests.csproj -c Release --no-restore --tl:off
 & tests/bin/Release/net48/Smiles2Img.Tests.exe
 ```
 
-### 2. Excel COM E2E 자동화 스모크 테스트 (실제 Excel 구동)
+### 2. 통합 Office Suite COM E2E 자동화 테스트 (Word + PowerPoint + Excel)
+실제 **Microsoft Word, PowerPoint, Excel** 프로세스를 구동하여 COM 추가 기능 로드, `KET` + `SMILES` 메타데이터 보존(`AlternativeText`, `Title`, `Tags`), 종횡비 유지 제자리 교체, 수식 계산을 일괄 검증합니다:
+
+```powershell
+powershell -NoProfile -STA -ExecutionPolicy Bypass -File scripts/Test-OfficeE2E.ps1
+```
+
+### 3. Excel COM E2E 자동화 스모크 테스트 (실제 Excel 구동)
 실제 Excel 인스턴스를 백그라운드로 띄워 전체 라이프사이클을 검증합니다:
 
 ```powershell
@@ -412,7 +423,7 @@ powershell -NoProfile -STA -ExecutionPolicy Bypass -File tests/Excel-Smoke.ps1
 * 통합문서 저장, 재오픈 후 이미지 유지 검증
 * 수식 셀 삭제 시 캐시 이미지 자동 정리 검증
 
-### 3. Excel 365 실전 신규 기능 및 대량 스트레스 테스트
+### 4. Excel 365 실전 신규 기능 및 대량 스트레스 테스트
 Excel Desktop 365 환경에서 신규 복합 스타일, 풀옵션 수식, 그리고 20개 이상의 분자 일괄 처리를 검증합니다:
 
 ```powershell
