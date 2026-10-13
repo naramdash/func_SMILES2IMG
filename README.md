@@ -127,12 +127,14 @@ From the [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases
 ## 💡 Excel Usage & Real-Time IntelliSense
  
 Type formula in any worksheet cell to insert a molecular rendering:
-* **Excel 2024 / M365:** `=SMILES2IMG(A2)` (In-cell native image)
-* **Excel 2016 / 2019 / 2021:** `=SMILES2IMG.FLOAT(A2)` (Cell-anchored floating picture)
+* **Excel 2024 / M365 (In-Cell Native):** `=SMILES2IMG(A2)` or `=KET2IMG(A2)`
+* **Excel 2016 / 2019 / 2021 (Cell-Anchored Shape):** `=SMILES2IMG.FLOAT(A2)` or `=KET2IMG.FLOAT(A2)`
  
 ```excel
 =SMILES2IMG(A2)
 =SMILES2IMG.FLOAT(A2)
+=KET2IMG(A2)
+=KET2IMG.FLOAT(A2)
 ```
  
 ```text
@@ -147,10 +149,23 @@ Type formula in any worksheet cell to insert a molecular rendering:
 │ SMILES2IMG.FLOAT(smiles, [background], [style], [transform])                           │
 │ [Excel 2016+] Places a molecular structure picture over the cell (moves/sizes)...      │
 └────────────────────────────────────────────────────────────────────────────────────────┘
+
+=KET2IMG(
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│ KET2IMG(ket, [background], [style], [transform])                                       │
+│ [Excel 2024 / Microsoft 365] Renders native Ketcher KET canvas format in-cell...      │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+
+=KET2IMG.FLOAT(
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│ KET2IMG.FLOAT(ket, [background], [style], [transform])                                 │
+│ [Excel 2016+] Places a Ketcher KET canvas picture over the cell (moves/sizes)...       │
+└────────────────────────────────────────────────────────────────────────────────────────┘
 ```
  
 > [!TIP]
-> • **Real-time formula tooltips (ExcelDna.IntelliSense):** As you type `=SMILES2IMG(` or `=SMILES2IMG.FLOAT(`, Excel displays native-style tooltips highlighting the active argument in bold with clear English descriptions.  
+> • **Real-time formula tooltips (ExcelDna.IntelliSense):** As you type `=SMILES2IMG(`, `=KET2IMG(`, or their `.FLOAT` variants, Excel displays native-style tooltips highlighting the active argument in bold with clear English descriptions.  
+> • **Native Ketcher KET Format (`=KET2IMG`):** Store complex chemical reactions, reaction arrows, plus signs, atom coordinates, and text labels directly in cells using `=KET2IMG(A2)`. Double-clicking the image cell re-opens Ketcher with the full reaction canvas intact and updates cell `A2` upon clicking Apply! *(Note: `=SMILES2IMG(A2)` also automatically detects KET data and renders seamlessly).*  
 > • **Row/Column resizing (FLOAT mode):** Pictures placed by `SMILES2IMG.FLOAT` move and stretch with cell rows and columns (`xlMoveAndSize`). If row heights or column widths are manually altered and you wish to cleanly restore their exact aspect ratios, click **[SMILES] → [Refit floating images]** on the ribbon menu.  
 > • **Cell sizing:** For optimal bond resolution and readability, increase the row height (e.g., 80–120 pt) and column width (e.g., 25–40).  
 > • **🧬 Built-in EPAM Ketcher Molecular Editor (Structure Cells & Canvas Mode):**  
@@ -193,13 +208,15 @@ Upon launching Word or PowerPoint, a **`[SMILES]`** tab appears at the end of th
 ```excel
 =SMILES2IMG(smiles, [background], [style], [transform])
 =SMILES2IMG.FLOAT(smiles, [background], [style], [transform])
+=KET2IMG(ket, [background], [style], [transform])
+=KET2IMG.FLOAT(ket, [background], [style], [transform])
 ```
  
-*(Both functions accept identical parameters and default values.)*
+*(All functions accept identical styling and transform parameters and default values.)*
 
 | Order | Argument | Type | Required | Default | Allowed Values & Description |
 | :---: | :--- | :---: | :---: | :---: | :--- |
-| **1** | **`smiles`** | String | **Required** | - | A valid SMILES string (1–2000 chars) or a cell reference (e.g., `A2`, `"CCO"`). |
+| **1** | **`smiles` / `ket`** | String | **Required** | - | A valid SMILES string (e.g. `"CCO"`) or native Ketcher KET JSON string (`KET:{...}` or `{...}`), or a cell reference (e.g., `A2`). |
 | **2** | **`background`** | String | Optional | `"trans"` | **Background canvas styling (case-insensitive):**<br>• `"trans"`, `"transparent"`, `"nobg"`: Transparent canvas (default, blends with cell fills & zebra tables)<br>• `"white"`: Opaque white canvas background<br>• CSS color names: `"yellow"`, `"lightblue"`, `"lightgray"`, `"aliceblue"`, `"cornsilk"`, `"pink"`, etc. (140+ CSS names)<br>• Hex colors: `"#FFFF00"` or `"FFFF00"` (3- or 6-digit hex) |
 | **3** | **`style`** | String / Bool | Optional | `"color"` | **Chemical rendering style & domain options (combinable with spaces or pipes `|`):**<br>• **Single Style Tokens:**<br>  - Standard CPK colors: `"color"`, `"cpk"`, `TRUE`, `1` *(default: Oxygen=red, Nitrogen=blue, Sulfur=gold)*<br>  - Monochrome line art: `"bw"`, `"mono"`, `"black"`, `FALSE`, `0` *(patent line art & ACS journal print)*<br>  - Atom numbering: `"num"`, `"idx"`, `"number"` *(sequential 1, 2, 3... indices for NMR peaks & mechanisms)*<br>  - Stereochemistry labels: `"stereo"`, `"chiral"`, `"ext"` *(explicit R/S and E/Z annotations)*<br>  - Explicit hydrogens: `"h"`, `"hydrogens"`, `"unfoldh"` *(unfolds and draws all C-H bonds)*<br>  - Skeletal carbon letters: `"all-c"`, `"carbon"` *(explicit "C" text on every backbone vertex)*<br>  - Dark mode white ink: `"white"`, `"light"` *(crisp pure-white lines on dark presentation sheets)*<br>  - Custom ink color: `"ink=#RRGGBB"`, `"ink=navy"` *(brand/corporate theme line color)*<br>• **String Combination Examples (using spaces or pipes `|`):**<br>  - Patent numbered drawings: `"bw num"` *(or `"bw|num"`)*<br>  - Journal monochrome chiral: `"bw stereo"` *(or `"bw|stereo"`)*<br>  - Reaction mechanism tracking: `"num h"` *(or `"num|h"`)*<br>  - Dark mode chiral structure: `"white stereo"` *(or `"white|stereo"`)*<br>  - Dark mode full composite: `"white stereo num h"`<br>• **⭐ Ultimate Full-Option String Example (All Style Capabilities Active):**<br>  - `"bw num stereo h all-c"`<br>  - *(or with pipe delimiters: `"bw|num|stereo|h|all-c"`)* |
 | **4** | **`transform`** | String | Optional | `""` | **2D coordinate transforms (case-insensitive, combinable with spaces):**<br>• `flip`: Horizontal flip (matches textbook/reference ring orientation)<br>• `flipy`: Vertical flip<br>• `rot90`, `rot180`, `rot270`: Clockwise rotation by 90-degree increments<br>• **Composite chaining examples:** `"flip rot90"` (flipped horizontally and rotated 90°), `"rot180"` |
@@ -246,6 +263,8 @@ Upon launching Word or PowerPoint, a **`[SMILES]`** tab appears at the end of th
 | **Orientation & Alignment** | **Rotate Long Chains 90°** | `=SMILES2IMG(A2, , , "rot90")` | Rotates elongated linear chains by 90° to fit narrow vertical table columns |
 | **Orientation & Alignment** | **Rotate 180°** | `=SMILES2IMG(A2, , , "rot180")` | Inverts molecule upside-down |
 | **Multi-Combination** | **White Bg + B/W + Flipped** | `=SMILES2IMG(A2, "white", "bw", "flip")` | Clean white canvas + monochrome ink + horizontal flip |
+| **Canvas Reaction (KET)** | **In-Cell Chemical Reaction** | `=KET2IMG(A2)` | Native Ketcher KET reaction / multi-structure rendering in-cell |
+| **Canvas Reaction (KET)** | **Floating Chemical Reaction** | `=KET2IMG.FLOAT(A2)` | Cell-anchored Ketcher KET reaction picture |
 | **Excel 2016/2019/2021 Mode** | **Floating Shape (Legacy Excel)** | `=SMILES2IMG.FLOAT(A2)` | Cell-anchored floating shape (`xlMoveAndSize`) on Excel 2016, 2019, 2021 |
 | **Excel 2016/2019/2021 Mode** | **Floating Patent Drawing** | `=SMILES2IMG.FLOAT(A2, , "bw num")` | Floating picture mode with patent monochrome numbering |
 | **Excel 2016/2019/2021 Mode** | **Floating Dark Mode** | `=SMILES2IMG.FLOAT(A2, "#1e1e1e", "white stereo")` | Floating picture mode with dark background and white bonds |

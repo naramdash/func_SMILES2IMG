@@ -127,12 +127,14 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 ## 💡 Excel 사용 방법 및 수식 IntelliSense
  
 Excel 워크시트의 셀에 수식을 입력하면 즉시 분자 이미지가 삽입됩니다:
-* **Excel 2024 / M365:** `=SMILES2IMG(A2)` (인셀 이미지)
-* **Excel 2016 / 2019 / 2021:** `=SMILES2IMG.FLOAT(A2)` (셀 연동 플로팅 이미지)
+* **Excel 2024 / M365 (네이티브 인셀):** `=SMILES2IMG(A2)` 또는 `=KET2IMG(A2)`
+* **Excel 2016 / 2019 / 2021 (셀 연동 플로팅):** `=SMILES2IMG.FLOAT(A2)` 또는 `=KET2IMG.FLOAT(A2)`
  
 ```excel
 =SMILES2IMG(A2)
 =SMILES2IMG.FLOAT(A2)
+=KET2IMG(A2)
+=KET2IMG.FLOAT(A2)
 ```
  
 ```text
@@ -147,10 +149,23 @@ Excel 워크시트의 셀에 수식을 입력하면 즉시 분자 이미지가 �
 │ SMILES2IMG.FLOAT(smiles, [background], [style], [transform])                           │
 │ [Excel 2016+] Places a molecular structure picture over the cell (moves/sizes)...      │
 └────────────────────────────────────────────────────────────────────────────────────────┘
+
+=KET2IMG(
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│ KET2IMG(ket, [background], [style], [transform])                                       │
+│ [Excel 2024 / Microsoft 365] Renders native Ketcher KET canvas format in-cell...      │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+
+=KET2IMG.FLOAT(
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│ KET2IMG.FLOAT(ket, [background], [style], [transform])                                 │
+│ [Excel 2016+] Places a Ketcher KET canvas picture over the cell (moves/sizes)...       │
+└────────────────────────────────────────────────────────────────────────────────────────┘
 ```
  
 > [!TIP]
 > • **실시간 수식 툴팁 (ExcelDna.IntelliSense 내장):** 수식을 타이핑하면 엑셀 기본 내장 함수와 동일하게 지원 버전 및 현재 입력 중인 인자가 **굵은 글씨**로 강조되며 풍선도움말이 표시됩니다.  
+> • **Ketcher 네이티브 KET 셀 수식 지원 (`=KET2IMG`):** 반응 화살표, 플러스(`+`), 복수 분자, 좌표, 텍스트가 포함된 원본 Ketcher 캔버스 데이터를 셀에 보존하고 `=KET2IMG(A2)`로 인셀 이미지화할 수 있습니다. 수식 셀을 더블 클릭하면 원본 반응식 그대로 Ketcher가 열려 수정 후 적용 시 셀 값이 동기화됩니다! *(참고: `=SMILES2IMG(A2)` 또한 KET 포맷을 자동 감지하여 렌더링합니다).*  
 > • **행/열 크기 연동 (FLOAT 모드):** `SMILES2IMG.FLOAT`로 생성된 이미지는 셀과 함께 크기가 조절(`xlMoveAndSize`)됩니다. 만약 행 높이나 열 너비를 크게 변경한 후 비율을 원래대로 깔끔하게 맞추고 싶다면, 리본 메뉴의 **[SMILES] → [Refit floating images]**를 누르면 활성 시트의 모든 분자 그림이 셀 중앙에 완벽한 종횡비로 자동 재배치됩니다.  
 > • **가독성 최적화:** 분자 구조의 미세 결합선이 선명하게 보이도록 행 높이(예: 80~120pt)와 열 너비(예: 25~40)를 넉넉하게 늘려주시는 것을 권장합니다.  
 > • **🧬 EPAM Ketcher 내장 분자 구조식 편집기 (셀 수식 & KET 캔버스 모드):**  
@@ -193,13 +208,15 @@ Office 프로그램을 실행하면 리본 맨 끝에 **`[SMILES]`** 탭이 생�
 ```excel
 =SMILES2IMG(smiles, [background], [style], [transform])
 =SMILES2IMG.FLOAT(smiles, [background], [style], [transform])
+=KET2IMG(ket, [background], [style], [transform])
+=KET2IMG.FLOAT(ket, [background], [style], [transform])
 ```
  
-*(두 함수 모두 전달하는 인자 형식과 기본값이 100% 동일합니다.)*
+*(모든 함수는 동일한 스타일 및 변환 인자 규격을 공유합니다.)*
 
 | 순서 | 인자명 | 타입 | 필수 여부 | 기본값 | 허용 값 및 세부 설명 |
 | :---: | :--- | :---: | :---: | :---: | :--- |
-| **1** | **`smiles`** | 문자열 | **필수** | - | 1~2000자의 SMILES 문자열 또는 해당 문자열이 들어있는 셀 참조 (예: `A2`, `"CCO"`) |
+| **1** | **`smiles` / `ket`** | 문자열 | **필수** | - | 분자 SMILES 문자열(예: `"CCO"`) 또는 Ketcher 네이티브 KET JSON 포맷 문자열(`KET:{...}` 또는 `{...}`), 또는 해당 데이터가 있는 참조 셀(`A2`) |
 | **2** | **`background`** | 문자열 | 선택 | `"trans"` | **배경 캔버스 스타일 설정 (대소문자 무관):**<br>• `"trans"`, `"transparent"`, `"nobg"`: 셀 채우기 색상/표 줄무늬가 그대로 비치는 투명 캔버스 (기본값)<br>• `"white"`: 흰색 불투명 캔버스 배경<br>• CSS 색상명: `"yellow"`, `"lightblue"`, `"lightgray"`, `"aliceblue"`, `"cornsilk"`, `"pink"` 등 140+ CSS 표준 색상명<br>• 16진수 색상: `"#FFFF00"` 또는 `"FFFF00"` 등 3/6자리 Hex 색상 |
 | **3** | **`style`** | 문자열 / 불리언 | 선택 | `"color"` | **화학 도메인 렌더링 스타일 & 복합 옵션 (띄어쓰기 또는 파이프 `|` 결합):**<br>• **단일 스타일 토큰:**<br>  - 원소 기본 컬러: `"color"`, `"cpk"`, `TRUE`, `1` *(기본값: 산소=빨강, 질소=파랑, 황=황갈색 등)*<br>  - 흑백 단색 선화: `"bw"`, `"mono"`, `"black"`, `FALSE`, `0` *(특허청 KIPO/USPTO 출원 및 학술지 인쇄)*<br>  - 원자 번호 표기: `"num"`, `"idx"`, `"number"` *(NMR chemical shift 피크 귀속 및 메커니즘용 1, 2, 3...)*<br>  - 입체화학 라벨: `"stereo"`, `"chiral"`, `"ext"` *(비대칭 탄소 R/S, 이중결합 E/Z 절대배열 라벨)*<br>  - 모든 수소 전개: `"h"`, `"hydrogens"`, `"unfoldh"` *(입체 장애 및 활성 수소 확인용 C-H 결합선 전개)*<br>  - 골격 탄소 기호: `"all-c"`, `"carbon"` *(생략선 대신 모든 꺾임점에 문자 "C" 명시)*<br>  - 다크모드 잉크: `"white"`, `"light"` *(어두운 배경 시트 발표용 선명한 순백색 결합선)*<br>  - 커스텀 잉크: `"ink=#RRGGBB"`, `"ink=navy"` *(기업 CI/브랜드 테마 결합선 색상)*<br>• **스트링 조합 예제 (공백 또는 파이프 `|` 사용):**<br>  - 특허용 흑백 번호 도면: `"bw num"` *(또는 `"bw|num"`)*<br>  - 학술지용 단색 입체식: `"bw stereo"` *(또는 `"bw|stereo"`)*<br>  - 반응 메커니즘 추적: `"num h"` *(또는 `"num|h"`)*<br>  - 다크모드 입체 구조: `"white stereo"` *(또는 `"white|stereo"`)*<br>  - 다크모드 복합 전개: `"white stereo num h"`<br>• **⭐ 모든 옵션을 다 썼을 때의 풀옵션 스트링 예제:**<br>  - `"bw num stereo h all-c"`<br>  - *(또는 파이프 버전: `"bw|num|stereo|h|all-c"`)* |
 | **4** | **`transform`** | 문자열 | 선택 | `""` | **2D 좌표 기하학적 변환 (대소문자 무관, 공백으로 복합 결합 가능):**<br>• `flip`: 좌우 반전 (교과서/화학 DB 표준 고리 배치로 전환)<br>• `flipy`: 상하 반전<br>• `rot90`, `rot180`, `rot270`: 시계 방향 90° 단위 회전<br>• **복합 변환 예시:** `"flip rot90"` (좌우 반전 후 90도 회전), `"rot180"` |
@@ -246,6 +263,8 @@ Office 프로그램을 실행하면 리본 맨 끝에 **`[SMILES]`** 탭이 생�
 | **방향 및 정렬 조정** | **긴 사슬 90도 회전** | `=SMILES2IMG(A2, , , "rot90")` | 세로로 긴 분자를 좁은 열 너비에 맞게 90도 시계방향 회전 |
 | **방향 및 정렬 조정** | **180도 회전** | `=SMILES2IMG(A2, , , "rot180")` | 상하좌우 완전 반전 |
 | **다중 복합 지정** | **흰 배경 + 흑백 + 반전** | `=SMILES2IMG(A2, "white", "bw", "flip")` | 흰색 캔버스 + 단색 잉크 + 좌우 반전 조합 |
+| **캔버스 반응식 (KET)** | **인셀 화학 반응식 삽입** | `=KET2IMG(A2)` | Ketcher 반응식, 화살표, 텍스트가 포함된 KET 데이터를 인셀 이미지로 렌더링 |
+| **캔버스 반응식 (KET)** | **플로팅 화학 반응식 삽입** | `=KET2IMG.FLOAT(A2)` | 구버전 호환 셀 연동 플로팅 반응식 이미지 삽입 |
 | **구버전 호환 (FLOAT 모드)**| **구버전 플로팅 이미지 기본** | `=SMILES2IMG.FLOAT(A2)` | Excel 2016, 2019, 2021 환경에서 셀 연동 플로팅 그림 삽입 (`xlMoveAndSize`) |
 | **구버전 호환 (FLOAT 모드)**| **구버전 특허 도면 렌더링** | `=SMILES2IMG.FLOAT(A2, , "bw num")` | 구버전 엑셀에서 특허용 흑백 번호 도면 배치 |
 | **구버전 호환 (FLOAT 모드)**| **구버전 다크모드 렌더링** | `=SMILES2IMG.FLOAT(A2, "#1e1e1e", "white stereo")` | 구버전 엑셀에서 다크 배경 및 흰색 분자선 배치 |

@@ -113,9 +113,27 @@ public static class MoleculeRenderer
         return renderer.renderToBuffer(molecule);
     }
 
+    public static bool IsKet(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return false;
+        var trimmed = text!.Trim();
+        return trimmed.StartsWith("KET:", StringComparison.OrdinalIgnoreCase) ||
+               (trimmed.StartsWith("{") && (trimmed.Contains("\"root\"") || trimmed.Contains("\"nodes\"")));
+    }
+
+    public static string CleanKet(string? ket)
+    {
+        if (string.IsNullOrWhiteSpace(ket)) return "";
+        var trimmed = ket!.Trim();
+        if (trimmed.StartsWith("KET:", StringComparison.OrdinalIgnoreCase))
+            return trimmed.Substring(4).Trim();
+        return trimmed;
+    }
+
     public static byte[]? RenderKet(string ket, RenderOptions? options = null)
     {
         if (string.IsNullOrWhiteSpace(ket)) return null;
+        var cleanKet = CleanKet(ket);
         options ??= new RenderOptions();
         using var indigo = new Indigo();
         using var renderer = new IndigoRenderer(indigo);
@@ -135,17 +153,24 @@ public static class MoleculeRenderer
         IndigoObject? obj = null;
         try
         {
-            obj = indigo.loadMolecule(ket);
+            obj = indigo.loadMolecule(cleanKet);
         }
         catch
         {
-            try { obj = indigo.loadReaction(ket); } catch { }
+            try { obj = indigo.loadReaction(cleanKet); } catch { }
         }
 
         if (obj == null) return null;
 
         using (obj)
         {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(options.Transform))
+                    ApplyTransform(obj, options.Transform);
+            }
+            catch { }
+
             return renderer.renderToBuffer(obj);
         }
     }

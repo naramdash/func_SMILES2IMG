@@ -282,12 +282,28 @@ internal static class Program
             Check(indexContent.Contains("toggleBackground"), "Ketcher index.html includes toggleBackground");
             Console.WriteLine("PASS Ketcher editor SMILES validation, fingerprint, and offline asset extraction");
 
-            // Test native KET rendering
+            // Test native KET rendering & KET2IMG functions
             var sampleKet = "{\"root\":{\"nodes\":[{\"$ref\":\"mol0\"}]},\"mol0\":{\"type\":\"molecule\",\"atoms\":[{\"label\":\"C\",\"location\":[0,0,0]},{\"label\":\"O\",\"location\":[1,0,0]}],\"bonds\":[{\"type\":1,\"atoms\":[0,1]}]}}";
+            Check(MoleculeRenderer.IsKet(sampleKet), "MoleculeRenderer.IsKet identifies KET JSON");
+            Check(MoleculeRenderer.IsKet("KET:" + sampleKet), "MoleculeRenderer.IsKet identifies KET: prefix");
+            Check(!MoleculeRenderer.IsKet("CCO"), "MoleculeRenderer.IsKet rejects SMILES");
+            Check(MoleculeRenderer.CleanKet("KET:" + sampleKet) == sampleKet, "MoleculeRenderer.CleanKet strips prefix");
+
             var ketPng = MoleculeRenderer.RenderKet(sampleKet);
             Check(ketPng != null && ketPng.Length > 100, "MoleculeRenderer renders KET data directly");
             Check(ketPng!.Take(8).SequenceEqual(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }), "KET PNG signature");
-            Console.WriteLine("PASS Native KET rendering fallback");
+
+            var ketOptPng = MoleculeRenderer.RenderKet(sampleKet, new RenderOptions { Background = "white", Transform = "flip" });
+            Check(ketOptPng != null && ketOptPng.Length > 100, "MoleculeRenderer renders KET with options");
+
+            var ketAttr = typeof(Functions).GetMethod(nameof(Functions.KetImg))!.GetCustomAttributes(typeof(ExcelFunctionAttribute), false)
+                .Cast<ExcelFunctionAttribute>().Single();
+            Check(ketAttr.Name == "KET2IMG" && ketAttr.IsMacroType, "KET2IMG function registration");
+
+            var ketFloatAttr = typeof(FloatFunctions).GetMethod(nameof(FloatFunctions.KetImgFloat))!.GetCustomAttributes(typeof(ExcelFunctionAttribute), false)
+                .Cast<ExcelFunctionAttribute>().Single();
+            Check(ketFloatAttr.Name == "KET2IMG.FLOAT" && ketFloatAttr.IsMacroType, "KET2IMG.FLOAT function registration");
+            Console.WriteLine("PASS Native KET rendering, IsKet, and KET2IMG function registration");
 
             // Test MoleculeInfo calculation (Formula, Molecular Weight, Exact Mass, Canonical SMILES)
             var aspirinInfo = MoleculeRenderer.TryGetMoleculeInfo("CC(=O)Oc1ccccc1C(=O)O");

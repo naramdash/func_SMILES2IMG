@@ -18,7 +18,7 @@ namespace Smiles2Img;
 public static partial class KetcherEditor
 {
     private static readonly Regex FormulaRefPattern = new(
-        @"SMILES2IMG(?:\.FLOAT)?\s*\(\s*(?:""(?<literal>[^""]*)""|(?<ref>(?:'[^']+'!)?[^,)\s]+))",
+        @"(?:SMILES2IMG|KET2IMG)(?:\.FLOAT)?\s*\(\s*(?:""(?<literal>[^""]*)""|(?<ref>(?:'[^']+'!)?[^,)\s]+))",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     public static void EditSelectedMolecule(Excel.Application app)
@@ -229,7 +229,9 @@ public static partial class KetcherEditor
             string formula = Convert.ToString((object?)cell.Formula) ?? "";
             string val = Convert.ToString((object?)cell.Value2) ?? "";
 
-            if (!string.IsNullOrEmpty(formula) && formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (!string.IsNullOrEmpty(formula) &&
+                (formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0))
             {
                 var match = FormulaRefPattern.Match(formula);
                 if (match.Success)
@@ -299,7 +301,8 @@ public static partial class KetcherEditor
             string formula = Convert.ToString((object?)cell.Formula) ?? "";
 
             bool isStructureCell = !string.IsNullOrEmpty(formula) &&
-                                   formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0;
+                                   (formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                    formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0);
 
             if (isStructureCell)
             {
@@ -326,8 +329,10 @@ public static partial class KetcherEditor
             var targetCellToWrite = cell;
             var initialSmiles = "";
             var isFormulaLiteral = false;
+            bool isKetFunction = formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            if (!string.IsNullOrEmpty(formula) && formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (!string.IsNullOrEmpty(formula) &&
+                (formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 || isKetFunction))
             {
                 var match = FormulaRefPattern.Match(formula);
                 if (match.Success)
@@ -367,9 +372,27 @@ public static partial class KetcherEditor
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultSmiles) || !string.IsNullOrWhiteSpace(form.ResultKet)))
             {
                 var newSmiles = form.ResultSmiles?.Trim();
-                var newKet = form.ResultKet;
+                var newKet = form.ResultKet?.Trim();
 
-                if (!string.IsNullOrEmpty(newSmiles))
+                if (isKetFunction)
+                {
+                    var dataToWrite = !string.IsNullOrEmpty(newKet) ? newKet : newSmiles;
+                    if (targetCellToWrite != cell)
+                    {
+                        targetCellToWrite.Value2 = dataToWrite;
+                    }
+                    else if (isFormulaLiteral && !string.IsNullOrEmpty(dataToWrite))
+                    {
+                        var escaped = dataToWrite!.Replace("\"", "\"\"");
+                        var updatedFormula = FormulaRefPattern.Replace(formula, m =>
+                        {
+                            var prefix = m.Value.Substring(0, m.Value.IndexOf('"'));
+                            return prefix + "\"" + escaped + "\"";
+                        }, 1);
+                        cell.Formula = updatedFormula;
+                    }
+                }
+                else if (!string.IsNullOrEmpty(newSmiles))
                 {
                     if (isFormulaLiteral)
                     {
@@ -392,11 +415,29 @@ public static partial class KetcherEditor
                 }
                 else if (!string.IsNullOrEmpty(newKet))
                 {
-                    var newPngBytes = StructureMetadata.ResolvePngBytes(form, newKet, null);
-                    if (newPngBytes != null)
+                    if (targetCellToWrite != cell)
                     {
-                        var app = (Excel.Application)sheet.Application;
-                        InsertCanvasShapeOnSheet(app, sheet, newKet, null, newPngBytes, cell);
+                        targetCellToWrite.Value2 = newKet;
+                        var funcName = CellImages.NativeImagesUnsupported ? "KET2IMG.FLOAT" : "KET2IMG";
+                        cell.Formula = $"={funcName}({targetCellToWrite.Address})";
+                    }
+                    else
+                    {
+                        var escaped = newKet!.Replace("\"", "\"\"");
+                        if (escaped.Length <= 2000)
+                        {
+                            var funcName = CellImages.NativeImagesUnsupported ? "KET2IMG.FLOAT" : "KET2IMG";
+                            cell.Formula = $"={funcName}(\"{escaped}\")";
+                        }
+                        else
+                        {
+                            var newPngBytes = StructureMetadata.ResolvePngBytes(form, newKet, null);
+                            if (newPngBytes != null)
+                            {
+                                var app = (Excel.Application)sheet.Application;
+                                InsertCanvasShapeOnSheet(app, sheet, newKet, null, newPngBytes, cell);
+                            }
+                        }
                     }
                 }
             }

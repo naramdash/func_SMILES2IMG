@@ -160,8 +160,20 @@ try {
     if ($shape.Placement -ne 1) { throw "Expected Placement = xlMoveAndSize (1)" }
     Write-Host "  -> PASS: Shape is correctly configured with xlMoveAndSize (Placement: 1)" -ForegroundColor Green
 
-    # Test Case 6: Save workbook, verify no file corruption, and reload
-    Write-Host "`n[Test 6] Saving workbook with embedded molecular rich-data and reopening" -ForegroundColor Yellow
+    # Test Case 6: KET2IMG In-cell and KET2IMG.FLOAT
+    Write-Host "`n[Test 6] KET2IMG: In-cell and Floating Ketcher Canvas Rendering" -ForegroundColor Yellow
+    Invoke-Excel { $sheet.Range('A7').Value2 = '{"root":{"nodes":[{"$ref":"mol0"}]},"mol0":{"type":"molecule","atoms":[{"label":"C","location":[0,0,0]},{"label":"O","location":[1,0,0]}],"bonds":[{"type":1,"atoms":[0,1]}]}}' }
+    Invoke-Excel { $sheet.Range('B7').Formula = '=KET2IMG(A7)' }
+    Invoke-Excel { $sheet.Range('C7').Formula = '=KET2IMG.FLOAT(A7)' }
+    Invoke-Excel { $excel.Calculate() }
+    Wait-ForResult { (Get-CellRichImage 'B7') -ne $null } "In-cell image for B7 (=KET2IMG)"
+    $imgKet = Get-CellRichImage 'B7'
+    Write-Host "  -> PASS: Generated in-cell image for KET2IMG (${($imgKet.Width)}x${($imgKet.Height)}, $($imgKet.Length) bytes)" -ForegroundColor Green
+    Wait-ForResult { $sheet.Shapes.Count -ge 2 } "Floating shape for C7 (=KET2IMG.FLOAT)"
+    Write-Host "  -> PASS: Floating shape created for KET2IMG.FLOAT" -ForegroundColor Green
+
+    # Test Case 7: Save workbook, verify no file corruption, and reload
+    Write-Host "`n[Test 7] Saving workbook with embedded molecular rich-data and reopening" -ForegroundColor Yellow
     $testSavePath = Join-Path ([IO.Path]::GetTempPath()) ("Smiles2Img_FullTest_" + [Guid]::NewGuid().ToString('N') + ".xlsx")
     Invoke-Excel { $workbook.SaveAs($testSavePath, 51) }
     Invoke-Excel { $workbook.Close($false) }
