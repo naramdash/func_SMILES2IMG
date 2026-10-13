@@ -1,51 +1,94 @@
 # SMILES for Microsoft Excel
 
-**SMILES for Microsoft Excel** renders high-resolution 2D chemical structure graphics directly inside worksheet cells with instant in-cell formula recalculation and seamless double-click editing.
+**SMILES for Microsoft Excel** renders high-resolution 2D chemical structure graphics directly inside worksheet cells with instant in-cell formula recalculation, comprehensive ribbon commands, and seamless double-click editing.
 
 ---
 
-## 🎥 3-Minute Video Walkthrough
+## 🌟 Visual Feature Walkthrough
 
-> 💡 **Master all core features in under 2 minutes (1080p with English & Korean subtitles).**  
-> Covers in-cell formula entry, chemical styling options, offline Ketcher 2D editor workflows, reaction formulas (`=KET2IMG`), and one-click property calculation.
-
-<p align="center">
-  <video controls="controls" width="100%" style="max-width: 800px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);" poster="/excel-showcase.png">
-    <source src="/videos/excel-guide-video.mp4" type="video/mp4" />
-    <source src="https://github.com/user-attachments/assets/e566a830-55d5-4ff5-8030-344d8b8ce7b6" type="video/mp4" />
-    <a href="/videos/excel-guide-video.mp4">🎬 Watch Excel 3-Minute Video Walkthrough</a>
-  </video>
-</p>
-
-<details>
-<summary><b>⏱️ Video Chapters & Timeline</b></summary>
-
-| Time | Chapter | Highlights |
-| :---: | :--- | :--- |
-| **00:00** | **Overview & Architecture** | Native in-cell images, 100% offline local rendering, auto-scaling with row/column size |
-| **00:13** | **Step 1: In-Cell Formulas** | Enter `=SMILES2IMG(A2)` and fill down hundreds of compounds instantly |
-| **00:28** | **Step 2: Chemical Styling** | Monochrome patent line art (`bw`), NMR peak indices (`num`), stereochemistry (`stereo`), dark mode & rotations |
-| **00:44** | **Step 3: Ketcher 2D Editor** | Shortcut `Ctrl+Shift+K` or right-click to open Ketcher and apply edits directly back to cell |
-| **01:00** | **Step 4: Chemical Reactions** | Multi-component reactions with arrows and annotations using `=KET2IMG(A2)` |
-| **01:15** | **Step 5: Quick Insert & Properties** | Clipboard paste and instant Chemical Formula / MW calculation via context menus |
-| **01:30** | **Summary & Checklist** | Best practices for research spreadsheets and publication tables |
-
-</details>
-
----
-
-## 🌟 Core Highlights
+All core chemical operations in Excel are integrated natively into the Ribbon tab, right-click context menus, and worksheet formula engine:
 
 <p align="center">
-  <img src="/excel-showcase.png" alt="SMILES for Excel Showcase" width="100%" />
+  <img src="/excel-showcase.png" alt="SMILES for Excel Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-::: tip Quick Summary
-1. **Draw in an Empty Cell:** Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>, draw structure, and press <kbd>Ctrl</kbd> + <kbd>Enter</kbd>.
-2. **Formula Mass Insertion:** Type `=SMILES2IMG(A2)` or `=KET2IMG(A2)` and drag down.
-3. **Quick Insert from Clipboard:** Copy SMILES/KET and click **[SMILES] ➔ [Insert from Clipboard]**.
-4. **Edit Anytime:** Double-click the cell to open the Ketcher editor, or right-click to copy molecular properties.
+::: tip Quick Start Checklist
+1. **Draw in an Empty Cell:** Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>, draw your molecule or reaction in Ketcher, and press <kbd>Ctrl</kbd> + <kbd>Enter</kbd>.
+2. **Formula Batch Insertion:** Type `=SMILES2IMG(A2)` or `=KET2IMG(A2)` and drag down across hundreds of rows.
+3. **Quick Insert from Clipboard:** Copy any SMILES/KET text and click **[SMILES] ➔ [Insert from Clipboard]**.
+4. **Edit Anytime:** Double-click the cell to re-edit in Ketcher, or right-click to copy molecular properties (Formula, MW, Exact Mass).
 :::
+
+---
+
+## 📑 Dedicated Office Ribbon: `[SMILES]` Tab
+
+The custom `[SMILES]` Ribbon tab provides one-click access to all chemical structure operations without needing to remember formula syntax or keyboard shortcuts:
+
+<p align="center">
+  <img src="/ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Office" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
+
+* **✏️ Insert Structure (`Ctrl+Shift+K`):** Launches the offline Ketcher 2D editor. Draw structures, reactions, or functional groups, then press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to insert directly into the active cell.
+* **⚡ Quick Insert:** Converts highlighted SMILES strings into rendered structures in 0.1s. If an empty cell is selected, it automatically reads the clipboard.
+* **📋 Insert from Clipboard:** Parses clipboard text as SMILES or Ketcher KET and creates an in-cell chemical structure immediately.
+* **🔍 Settings & Diagnostics:** Opens the real-time engine health monitor, verifying Indigo engine loading, WebView2 bundle integrity, and formula recalculation logs.
+
+---
+
+## 🖱️ Redesigned Context Menu: `Chemical Structure`
+
+Right-click anywhere in your worksheet to access contextual chemical actions cleanly separated from standard Excel paste options:
+
+<p align="center">
+  <img src="/context-menu-guide.png" alt="Chemical Structure Context Menu in Excel" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
+
+### Case A: Right-Clicking a Molecule Cell
+When right-clicking a cell containing a chemical structure or formula:
+* **✏️ Edit Structure in Ketcher:** Opens the Ketcher editor with the current molecule or reaction graph loaded for in-place modification.
+* **📋 Copy SMILES / Copy Molfile (KET):** Copies clean chemical notations to the clipboard.
+* **🔬 Copy Molecular Formula:** Calculates the standard Hill-notation formula (e.g., `C8H10N4O2`).
+* **⚖️ Copy Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g., `194.19`).
+* **🎯 Copy Exact Mass:** Copies high-resolution monoisotopic mass (e.g., `194.0804`).
+
+### Case B: Right-Clicking an Empty Cell
+When right-clicking an empty cell or blank worksheet space:
+* **✏️ Insert Structure in Ketcher:** Launches Ketcher to draw a new chemical structure and place it directly into the selected cell.
+* **📋 Paste from Clipboard:** Automatically detects chemical notation in the clipboard and inserts it as a rendered molecule.
+
+---
+
+## 🧪 Ketcher 2D Molecule & Reaction Editor
+
+Double-clicking any chemical cell or pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> opens the embedded, 100% offline Ketcher 2D chemical structure editor:
+
+<p align="center">
+  <img src="/ketcher-guide.png" alt="Embedded Ketcher 2D Editor Window" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
+
+### Key Ketcher Features
+* **Live Molecular Property Banner:** As you draw bonds and functional groups, the top status bar calculates **Formula**, **Molecular Weight (MW)**, and **Exact Mass** in real time.
+* **Background Transparency Toggle:** Switch between **[Background: White]** and **[Background: Transparent]** with a single click. Transparent mode generates alpha-channel PNGs that look stunning on dark spreadsheet themes and presentations.
+* **Full Organic & Inorganic Toolkit:** Periodic table atom picker, standard rings (benzene, cyclopentane, cyclohexane), stereo bonds (wedges/hashes), reaction arrows, and catalyst text.
+* **Keyboard Hotkeys:** Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to apply changes immediately to Excel, or <kbd>Esc</kbd> to discard.
+
+---
+
+## 🔬 Lossless Reaction Canvases: `=KET2IMG`
+
+For multi-step organic reaction pathways involving reagents, catalysts, temperatures, yields, and plus signs (`+`), use the dedicated `=KET2IMG` formula:
+
+<p align="center">
+  <img src="/reaction-scheme-guide.png" alt="Multi-Component Reaction Scheme with KET2IMG" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
+
+```text
+=KET2IMG(A2)
+```
+
+* **Lossless Coordinate Preservation:** Unlike SMILES which only stores molecular connectivity, Ketcher's native `KET` format stores 2D layout coordinates, reaction arrows, catalysts, and text notes with zero degradation.
+* **Double-Click Re-editing:** Double-clicking the reaction cell re-opens Ketcher with the entire reaction scheme, allowing you to edit reaction conditions and yields in place.
 
 ---
 
@@ -55,14 +98,14 @@ Depending on your Microsoft Excel version, two distinct formula modes are availa
 
 ### 1. `=SMILES2IMG(smiles_or_ket, [bg], [options])`
 * **Target:** **Microsoft 365** and **Excel 2024+**
-* Embeds real **native in-cell pictures** directly into cell contents.
+* Embeds real **native in-cell pictures** directly into worksheet cell contents.
 * Moves, sorts, filters, and auto-scales with row height and column width.
-* Can be referenced by standard Excel formulas and formatting rules.
+* Can be referenced by standard Excel lookup functions, formulas, and conditional formatting rules.
 
 ### 2. `=SMILES2IMG.FLOAT(smiles_or_ket, [bg], [options])`
 * **Target:** **Excel 2016 / 2019 / 2021** (or when floating shapes are explicitly desired)
 * Inserts floating picture shapes locked to cell coordinates (`xlMoveAndSize`).
-* Automatically recalculates, replaces existing shapes without orphan clutter, and moves/resizes with cell boundaries.
+* Recalculates automatically, replaces existing shapes without orphan clutter, and moves/resizes with cell boundaries.
 
 ---
 
@@ -82,29 +125,20 @@ Options can be combined freely using spaces, commas, semicolons, or pipe symbols
 | `w=300 h=200` | Custom pixel dimensions for floating images | `=SMILES2IMG.FLOAT(A2, "", "w=300 h=200")` |
 
 <p align="center">
-  <img src="/excel-matrix-showcase.png" alt="Excel Matrix Styling Showcase" width="100%" />
+  <img src="/excel-matrix-showcase.png" alt="Excel Matrix Styling Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
 ---
 
-## 🧪 Lossless Reaction Canvases: `=KET2IMG`
+## 🔍 Built-In Diagnostics & Chemical Engine Log
 
-For multi-component organic syntheses involving reaction arrows, catalysts, yields, and plus signs:
+If a chemical formula returns an error or you wish to verify add-in engine health, click **[SMILES] ➔ [Settings & Diagnostics]**:
 
-```text
-=KET2IMG(A2)
-```
-* **Lossless Preservation:** The full reaction graph and coordinate layout in KET format are preserved in the cell formula.
-* **Double-Click In-Place Re-editing:** Double-clicking the cell opens Ketcher with all reaction arrows, plus signs, and notes fully editable.
+<p align="center">
+  <img src="/diagnostics-guide.png" alt="SMILES Diagnostics and Chemical Engine Log" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
 
----
-
-## 📋 Context Menu & Molecular Property Extraction
-
-Right-click any cell containing chemical structure formulas or text:
-
-* **Chemical Structure ➔ Edit Structure in Ketcher:** Launches the offline editor.
-* **Chemical Structure ➔ Copy SMILES / Copy KET:** Extracts exact structure strings to the clipboard.
-* **Chemical Structure ➔ Copy Molecular Formula:** Calculates Hill-system chemical formula (e.g. `C8H10N4O2`).
-* **Chemical Structure ➔ Copy Molecular Weight (MW):** Calculates molecular weight in g/mol (e.g. `194.19`).
-* **Chemical Structure ➔ Copy Exact Mass:** High-resolution monoisotopic mass (e.g. `194.0804`).
+* **EPAM Indigo Engine Status:** Confirms native C++ chemistry engine initialization and version.
+* **WebView2 & Ketcher Cache Validation:** Verifies SHA256 hashes of embedded offline Ketcher editor assets (69 cached local files).
+* **Instant Error Explanation:** When a formula encounters an invalid chemical string (e.g., unclosed rings or impossible valencies), the log displays the exact Indigo parser error message alongside the `#VALUE!` cell indicator.
+* **Performance Timing:** Displays rasterization benchmark timings (typically 1.5–3.0 ms per molecule).

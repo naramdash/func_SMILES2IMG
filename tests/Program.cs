@@ -15,11 +15,16 @@ namespace Smiles2Img.Tests;
 internal static class Program
 {
     [STAThread]
-    private static int Main()
+    private static int Main(string[] args)
     {
         try
         {
             NativeIndigo.Initialize(AppDomain.CurrentDomain.BaseDirectory);
+            if (args != null && args.Length > 0 && args[0] == "--generate-docs")
+            {
+                DocScreenshots.GenerateAll(AppDomain.CurrentDomain.BaseDirectory.Contains("tests") ? "." : ".");
+                return 0;
+            }
             Console.WriteLine("Process: " + (Environment.Is64BitProcess ? "x64" : "x86"));
             var samples = new[] { "CCO", "c1ccccc1", "C[C@H](O)C(=O)O", "[NH4+].[Cl-]", "CC(=O)Oc1ccccc1C(=O)O", "Cn1cnc2c1c(=O)n(C)c(=O)n2C" };
             foreach (var smiles in samples)

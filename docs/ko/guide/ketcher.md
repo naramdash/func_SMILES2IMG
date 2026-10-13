@@ -7,13 +7,26 @@
 ## 🌟 주요 기능 및 특징
 
 <p align="center">
-  <img src="/ketcher-guide.png" alt="Ketcher 에디터 인터페이스" width="100%" />
+  <img src="/ketcher-guide.png" alt="Ketcher 에디터 인터페이스" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
 * **100% 로컬 오프라인 보안:** 외부 인터넷 연결이나 클라우드 전송 없이 내 컴퓨터 안에서 안전하게 실행됩니다. 연구 기밀 화합물도 완벽히 보호됩니다.
 * **전문 화학 구조 그리기:** 단일·이중·삼중·방향족 결합, 쐐기/점선 입체화학 결합(Wedge/Hash), 주기율표 전체 원소, 벤젠/사이클로펜탄 등 고리 템플릿.
 * **유기화학 반응식(Reaction Scheme) 지원:** 반응 화살표, 플러스 기호(+), 촉매 및 반응 조건 텍스트 주석을 자유롭게 배치할 수 있습니다.
-* **실시간 분자 물성 계산:** 구조식을 그리는 즉시 화학식(Formula), 분자량(MW, g/mol), 정밀 질량(Exact Mass)이 상단에 실시간 계산됩니다.
+* **실시간 분자 물성 계산:** 구조식을 그리는 즉시 화학식(Formula), 분자량(MW, g/mol), 정밀 질량(Exact Mass)이 상단 상태 바에 실시간 계산됩니다.
+
+---
+
+## 🔬 다단계 화학 반응식 & 합성 경로: `=KET2IMG`
+
+반응물, 반응 화살표, 시약, 촉매, 최종 생성물이 모두 포함된 유기 합성 반응식을 손쉽게 그릴 수 있습니다:
+
+<p align="center">
+  <img src="/reaction-scheme-guide.png" alt="Multi-Component Reaction Scheme" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
+
+* **무손실 좌표 및 텍스트 보존:** Ketcher 고유의 `KET` 포맷은 반응 화살표, 촉매 조건 텍스트($H_2SO_4$, 55 °C), 2D 공간 좌표 레이아웃을 100% 무손실 상태로 보존합니다.
+* **더블 클릭 제자리 수정:** 반응식 셀이나 이미지를 더블 클릭하면 Ketcher에 반응 화살표와 텍스트 주석이 그대로 다시 열려 언제든 조건이나 반응물을 제자리에서 수정할 수 있습니다.
 
 ---
 
@@ -31,12 +44,12 @@
 ## 🎨 작업 흐름 & 투명 배경 설정
 
 <p align="center">
-  <img src="/workflow-ketcher.png" alt="Ketcher 작업 흐름" width="100%" />
+  <img src="/workflow-ketcher.png" alt="Ketcher 작업 흐름" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
 ### 1. Ketcher 실행 방법
-* **Excel:** 셀을 선택하고 단축키 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누르거나, 우클릭 ➔ **Chemical Structure ➔ Ketcher로 구조 편집**을 선택합니다.
-* **Word / PowerPoint:** 상단 리본 `[SMILES]` 탭에서 **[구조식 삽입]**을 누르거나 기존 그림을 더블 클릭합니다.
+* **Excel:** 셀을 선택하고 단축키 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누르거나, 우클릭 ➔ **Chemical Structure ➔ Edit Structure in Ketcher**를 선택합니다.
+* **Word / PowerPoint:** 상단 리본 `[SMILES]` 탭에서 **[Insert Structure]**를 누르거나 기존 그림을 더블 클릭합니다.
 
 ### 2. 분자 및 반응식 그리기
 * 왼쪽 툴바에서 결합 종류 및 템플릿(벤젠환, 고리 화합물 등)을 선택합니다.

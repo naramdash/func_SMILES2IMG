@@ -14,7 +14,7 @@
 
 ## 📖 User Documentation
 
-Complete user manuals, video tutorials, parameter recipes, and guides for Excel, Word, and PowerPoint are hosted on our documentation site:
+Complete user manuals, visual walkthroughs, parameter recipes, and guides for Excel, Word, and PowerPoint are hosted on our documentation site:
 
 👉 **[Online Documentation Site (English & 한국어)](https://naramdash.github.io/func_SMILES2IMG/)**
 
@@ -127,8 +127,7 @@ func_SMILES2IMG/
 │       ├── Word/                       # 32-bit Word COM add-in binaries
 │       ├── PowerPoint/                 # 32-bit PowerPoint COM add-in binaries
 │       └── Smiles2Img-Office-x86.zip   # 32-bit unified Office Suite package
-├── assets/                             # Visual showcase assets & demo videos
-│   └── videos/                         # 3-minute core feature guide videos (.mp4)
+├── assets/                             # Visual showcase assets & documentation screenshots
 ├── tests/                              # Automated test suites
 │   ├── Excel-Smoke.ps1                 # Full COM automation E2E smoke tests
 │   ├── Excel-365-FeatureTests.ps1      # Live Excel 365 new styles & full-option tests
