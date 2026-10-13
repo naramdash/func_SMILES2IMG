@@ -129,7 +129,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
       <tab id=""tabSmiles"" label=""SMILES"">
         <group id=""grpInsertMolecules"" label=""Insert Structure"">
           <button id=""btnInsertMolecule""
-                  label=""Insert Structure""
+                  label=""Insert / Edit Structure""
                   screentip=""EPAM Ketcher Molecule Editor""
                   supertip=""Open Ketcher web editor to draw chemical structures and insert into the current slide.""
                   imageMso=""EquationInsertNew""
@@ -144,13 +144,6 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnQuickInsert"" />
         </group>
         <group id=""grpStructureTools"" label=""Structure Tools"">
-          <button id=""btnEditMolecule""
-                  label=""Edit Structure""
-                  screentip=""Edit Selected Structure""
-                  supertip=""Load the selected molecule image back into the Ketcher editor for editing.""
-                  imageMso=""DesignMode""
-                  size=""large""
-                  onAction=""OnEditMolecule"" />
           <button id=""btnCopySmiles""
                   label=""Copy SMILES""
                   screentip=""Copy SMILES of Selected Molecule""

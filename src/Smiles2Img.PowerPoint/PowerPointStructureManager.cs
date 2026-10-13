@@ -13,6 +13,17 @@ public static class PowerPointStructureManager
     {
         try
         {
+            var sel = app.ActiveWindow?.Selection;
+            if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 0)
+            {
+                var targetShape = sel.ShapeRange[1];
+                if (!string.IsNullOrEmpty(ExtractStructure(targetShape)))
+                {
+                    EditSelectedMolecule(app, targetShape);
+                    return;
+                }
+            }
+
             var slide = EnsureActiveSlide(app);
             if (slide == null)
             {

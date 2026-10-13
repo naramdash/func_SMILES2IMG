@@ -12,6 +12,21 @@ public static class WordStructureManager
     {
         try
         {
+            var sel = app.Selection;
+            if (sel != null)
+            {
+                if (sel.InlineShapes.Count > 0 && !string.IsNullOrEmpty(ExtractStructure(sel.InlineShapes[1].AlternativeText, sel.InlineShapes[1].Title)))
+                {
+                    EditSelectedMolecule(app);
+                    return;
+                }
+                if (sel.ShapeRange.Count > 0 && !string.IsNullOrEmpty(ExtractStructure(sel.ShapeRange[1].AlternativeText, sel.ShapeRange[1].Title)))
+                {
+                    EditSelectedMolecule(app);
+                    return;
+                }
+            }
+
             if (app.Documents.Count == 0)
             {
                 app.Documents.Add();

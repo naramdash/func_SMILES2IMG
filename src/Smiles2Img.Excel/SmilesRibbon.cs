@@ -17,14 +17,14 @@ public class SmilesRibbon : ExcelRibbon
       <tab id=""tabSmiles"" label=""SMILES"">
         <group id=""grpInsertMolecules"" label=""Insert Structure"">
           <button id=""btnInsertMolecule""
-                  label=""Insert (SMILES)""
+                  label=""Insert / Edit (SMILES)""
                   screentip=""Insert / Edit Structure (SMILES2IMG) (Ctrl+Shift+K)""
                   supertip=""Opens Ketcher editor to sketch chemical structures and insert them into the active cell as formulas (=SMILES2IMG).""
                   imageMso=""EquationInsertNew""
                   size=""large""
                   onAction=""OnInsertMolecule"" />
           <button id=""btnInsertKetMolecule""
-                  label=""Insert (KET)""
+                  label=""Insert / Edit (KET)""
                   screentip=""Insert / Edit Structure (KET2IMG)""
                   supertip=""Opens Ketcher editor to sketch chemical structures, reactions, and canvases and insert them into the active cell as formulas (=KET2IMG).""
                   imageMso=""SmartArtInsert""
@@ -39,13 +39,6 @@ public class SmilesRibbon : ExcelRibbon
                   onAction=""OnQuickInsert"" />
         </group>
         <group id=""grpStructureTools"" label=""Structure Tools"">
-          <button id=""btnEditMolecule""
-                  label=""Edit Structure""
-                  screentip=""Edit Selected Structure""
-                  supertip=""Reloads the selected formula cell (=SMILES2IMG, =KET2IMG) or structure image back into Ketcher for editing.""
-                  imageMso=""DesignMode""
-                  size=""large""
-                  onAction=""OnEditMolecule"" />
           <button id=""btnCopySmiles""
                   label=""Copy SMILES""
                   screentip=""Copy Canonical SMILES""

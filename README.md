@@ -236,9 +236,8 @@ The same high-performance chemical rendering pipeline (EPAM Indigo) and 2D sketc
 
 ### 1. Ribbon Menu: `[SMILES]` Tab & Right-Click Context Menus
 Upon launching Word or PowerPoint, a **`[SMILES]`** tab appears at the end of the ribbon alongside right-click picture/shape context menu actions:
-* **[분자 구조식 삽입 (Insert Structure)]**: Opens the 100% offline Ketcher editor. Sketch molecules, chemical reactions, reaction arrows, and text labels, choose **Transparent or White background**, and press **`Ctrl+Enter`** to insert a high-resolution PNG at your cursor position (Word) or slide (PowerPoint).
-* **[클립보드 즉시 삽입 (Quick Paste)]**: Instantly converts any SMILES or KET string in your clipboard (or selected text in Word/PowerPoint) into a rendered structure image in 0.1s without opening the editor.
-* **[구조식 편집 (Edit Structure)]**: Reloads the selected structure's full KET canvas (or SMILES) back into Ketcher for modifications.
+* **[구조식 삽입 및 편집 (Insert / Edit Structure)]**: Opens the 100% offline Ketcher editor to sketch new chemical structures or edit the selected structure. Sketch molecules, chemical reactions, reaction arrows, and text labels, choose **Transparent or White background**, and press **`Ctrl+Enter`** to insert/update a high-resolution PNG at your cursor position (Word) or slide (PowerPoint).
+* **[구조식 붙여넣기 (Paste Structure)]**: Instantly converts any SMILES or KET string in your clipboard (or selected text in Word/PowerPoint) into a rendered structure image in 0.1s without opening the editor.
 * **[SMILES 복사 (Copy SMILES)] & [분자 정보 복사 (Copy Formula & MW)]**: Extracts the canonical SMILES string, or calculates and copies the **Chemical Formula, Molecular Weight (g/mol), and Monoisotopic Exact Mass** directly to the clipboard.
 
 ### 2. Double-Click to Edit (Seamless In-Place Replacement)
