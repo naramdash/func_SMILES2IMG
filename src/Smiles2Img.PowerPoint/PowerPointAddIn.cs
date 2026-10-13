@@ -221,39 +221,39 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               label=""Insert / Edit Structure...""
               imageMso=""EquationInsertNew""
               onAction=""OnInsertMolecule""
-              insertBeforeMso=""PasteGalleryMini"" />
+              insertAfterMso=""PasteGalleryMini"" />
       <button id=""btnContextPptFrameQuickInsert""
               label=""Paste Structure""
               imageMso=""Paste""
               onAction=""OnQuickInsert""
-              insertBeforeMso=""PasteGalleryMini"" />
-      <menuSeparator id=""sepContextPptFrame"" insertBeforeMso=""PasteGalleryMini"" />
+              insertAfterMso=""PasteGalleryMini"" />
+      <menuSeparator id=""sepContextPptFrame"" insertAfterMso=""PasteGalleryMini"" />
     </contextMenu>
     <contextMenu idMso=""ContextMenuText"">
       <button id=""btnContextPptTextInsert""
               label=""Insert / Edit Structure...""
               imageMso=""EquationInsertNew""
               onAction=""OnInsertMolecule""
-              insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
       <button id=""btnContextPptTextQuickInsert""
               label=""Paste Structure""
               imageMso=""Paste""
               onAction=""OnQuickInsert""
-              insertBeforeMso=""Cut"" />
-      <menuSeparator id=""sepContextPptText"" insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
+      <menuSeparator id=""sepContextPptText"" insertAfterMso=""PasteGalleryMini"" />
     </contextMenu>
     <contextMenu idMso=""ContextMenuTable"">
       <button id=""btnContextPptTableInsert""
               label=""Insert / Edit Structure...""
               imageMso=""EquationInsertNew""
               onAction=""OnInsertMolecule""
-              insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
       <button id=""btnContextPptTableQuickInsert""
               label=""Paste Structure""
               imageMso=""Paste""
               onAction=""OnQuickInsert""
-              insertBeforeMso=""Cut"" />
-      <menuSeparator id=""sepContextPptTable"" insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
+      <menuSeparator id=""sepContextPptTable"" insertAfterMso=""PasteGalleryMini"" />
     </contextMenu>
   </contextMenus>
 </customUI>";

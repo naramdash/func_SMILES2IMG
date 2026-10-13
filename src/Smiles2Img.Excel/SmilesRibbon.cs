@@ -79,56 +79,56 @@ public class SmilesRibbon : ExcelRibbon
               label=""Insert / Edit Structure (SMILES2IMG)...""
               imageMso=""EquationInsertNew""
               onAction=""OnInsertMolecule""
-              insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
       <button id=""btnContextInsertKetMolecule""
               label=""Insert / Edit Structure (KET2IMG)...""
               imageMso=""SmartArtInsert""
               onAction=""OnInsertKetMolecule""
-              insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
       <button id=""btnContextCopySmilesCell""
               label=""Copy SMILES""
               imageMso=""Copy""
               onAction=""OnCopySmiles""
-              insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
       <button id=""btnContextCopyKetCell""
               label=""Copy Canvas Data (KET)""
               imageMso=""Copy""
               onAction=""OnCopyKet""
-              insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
       <button id=""btnContextCopyInfoCell""
               label=""Copy Molecule Info (Formula &amp; MW)""
               imageMso=""Copy""
               onAction=""OnCopyMoleculeInfo""
-              insertBeforeMso=""Cut"" />
-      <menuSeparator id=""sepContextMolecule"" insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
+      <menuSeparator id=""sepContextMolecule"" insertAfterMso=""PasteGalleryMini"" />
     </contextMenu>
     <contextMenu idMso=""ContextMenuListRange"">
       <button id=""btnContextListInsertMolecule""
               label=""Insert / Edit Structure (SMILES2IMG)...""
               imageMso=""EquationInsertNew""
               onAction=""OnInsertMolecule""
-              insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
       <button id=""btnContextListInsertKetMolecule""
               label=""Insert / Edit Structure (KET2IMG)...""
               imageMso=""SmartArtInsert""
               onAction=""OnInsertKetMolecule""
-              insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
       <button id=""btnContextListCopySmilesCell""
               label=""Copy SMILES""
               imageMso=""Copy""
               onAction=""OnCopySmiles""
-              insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
       <button id=""btnContextListCopyKetCell""
               label=""Copy Canvas Data (KET)""
               imageMso=""Copy""
               onAction=""OnCopyKet""
-              insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
       <button id=""btnContextListCopyInfoCell""
               label=""Copy Molecule Info (Formula &amp; MW)""
               imageMso=""Copy""
               onAction=""OnCopyMoleculeInfo""
-              insertBeforeMso=""Cut"" />
-      <menuSeparator id=""sepContextListMolecule"" insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
+      <menuSeparator id=""sepContextListMolecule"" insertAfterMso=""PasteGalleryMini"" />
     </contextMenu>
     <contextMenu idMso=""ContextMenuPicture"">
       <button id=""btnContextPictureEditMolecule""

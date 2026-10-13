@@ -177,26 +177,26 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               label=""Insert / Edit Structure...""
               imageMso=""EquationInsertNew""
               onAction=""OnInsertMolecule""
-              insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
       <button id=""btnContextTextQuickInsert""
               label=""Paste Structure""
               imageMso=""Paste""
               onAction=""OnQuickInsert""
-              insertBeforeMso=""Cut"" />
-      <menuSeparator id=""sepContextText"" insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
+      <menuSeparator id=""sepContextText"" insertAfterMso=""PasteGalleryMini"" />
     </contextMenu>
     <contextMenu idMso=""ContextMenuTable"">
       <button id=""btnContextTableInsert""
               label=""Insert / Edit Structure...""
               imageMso=""EquationInsertNew""
               onAction=""OnInsertMolecule""
-              insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
       <button id=""btnContextTableQuickInsert""
               label=""Paste Structure""
               imageMso=""Paste""
               onAction=""OnQuickInsert""
-              insertBeforeMso=""Cut"" />
-      <menuSeparator id=""sepContextTable"" insertBeforeMso=""Cut"" />
+              insertAfterMso=""PasteGalleryMini"" />
+      <menuSeparator id=""sepContextTable"" insertAfterMso=""PasteGalleryMini"" />
     </contextMenu>
   </contextMenus>
 </customUI>";
