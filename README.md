@@ -85,7 +85,7 @@ sequenceDiagram
 ```text
 func_SMILES2IMG/
 ├── Smiles2Img.sln                      # Visual Studio / .NET unified solution file
-├── Directory.Build.props               # Shared version (1.4.0), TFM (net48), and compiler configuration
+├── Directory.Build.props               # Shared version (1.5.0), TFM (net48), and compiler configuration
 ├── package.json                        # VitePress documentation dependencies and scripts
 ├── .github/
 │   └── workflows/

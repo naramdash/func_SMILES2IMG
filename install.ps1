@@ -221,11 +221,12 @@ function Register-OfficeComAddIn {
 # Register Word COM Add-in
 $wordDllPath = Join-Path $suiteDir 'Smiles2Img.Word.dll'
 if (Test-Path $wordDllPath) {
+    $wordAssembly = try { [System.Reflection.AssemblyName]::GetAssemblyName($wordDllPath).FullName } catch { "Smiles2Img.Word, Version=1.5.0.0, Culture=neutral, PublicKeyToken=null" }
     Register-OfficeComAddIn `
         -ProgId "Smiles2Img.Word.AddIn" `
         -Clsid "{41A5C1F0-559A-46E0-B9C0-8B35A0F1D910}" `
         -ClassName "Smiles2Img.Word.WordAddIn" `
-        -AssemblyString "Smiles2Img.Word, Version=1.4.0.0, Culture=neutral, PublicKeyToken=null" `
+        -AssemblyString $wordAssembly `
         -DllPath $wordDllPath `
         -OfficeApp "Word" `
         -FriendlyName "SMILES for Word" `
@@ -235,11 +236,12 @@ if (Test-Path $wordDllPath) {
 # Register PowerPoint COM Add-in
 $pptDllPath = Join-Path $suiteDir 'Smiles2Img.PowerPoint.dll'
 if (Test-Path $pptDllPath) {
+    $pptAssembly = try { [System.Reflection.AssemblyName]::GetAssemblyName($pptDllPath).FullName } catch { "Smiles2Img.PowerPoint, Version=1.5.0.0, Culture=neutral, PublicKeyToken=null" }
     Register-OfficeComAddIn `
         -ProgId "Smiles2Img.PowerPoint.AddIn" `
         -Clsid "{A755973C-21FB-494A-A3C5-086AFFB7C2AC}" `
         -ClassName "Smiles2Img.PowerPoint.PowerPointAddIn" `
-        -AssemblyString "Smiles2Img.PowerPoint, Version=1.4.0.0, Culture=neutral, PublicKeyToken=null" `
+        -AssemblyString $pptAssembly `
         -DllPath $pptDllPath `
         -OfficeApp "PowerPoint" `
         -FriendlyName "SMILES for PowerPoint" `
