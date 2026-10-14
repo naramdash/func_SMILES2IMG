@@ -19,11 +19,7 @@ public static class MoleculeNotification
     {
         if (string.IsNullOrWhiteSpace(value)) return;
 
-        // 1. Fire native Windows Notification
-        string displayVal = Truncate(value, 80);
-        WindowsNotificationService.ShowToast("func_SMILES2IMG", $"✓ Copied {label} to clipboard: {displayVal}");
-
-        // 2. Display lightweight non-blocking in-app toast near cursor
+        // Display lightweight non-blocking in-app floating toast near cursor
         CopiedToast.Show(label, value, isWarning: false);
     }
 
@@ -36,10 +32,7 @@ public static class MoleculeNotification
     {
         if (string.IsNullOrWhiteSpace(message)) return;
 
-        // 1. Fire native Windows Notification
-        WindowsNotificationService.ShowToast("func_SMILES2IMG", $"⚠ {label}: {message}");
-
-        // 2. Display lightweight in-app toast near cursor
+        // Display lightweight in-app floating toast near cursor
         CopiedToast.Show(label, message, isWarning: true);
     }
 
