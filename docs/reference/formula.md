@@ -29,6 +29,22 @@ Complete reference for Excel worksheet functions provided by **SMILES for Micros
 
 ---
 
+## 🔬 Molecular Property Functions
+
+These functions compute chemical properties directly from SMILES or Ketcher KET strings:
+
+| Function | Return Value | Description | Example Output |
+| :--- | :--- | :--- | :--- |
+| `=SMILES2NAME(smiles)` / `=KET2NAME(ket)` | `string` | Common Substance Name (via PubChem / IUPAC) | `"Aspirin"`, `"Caffeine"` |
+| `=SMILES2MW(smiles)` / `=KET2MW(ket)` | `double` | Molecular Weight in g/mol | `180.16`, `194.19` |
+| `=SMILES2FORMULA(smiles)` / `=KET2FORMULA(ket)` | `string` | Standard Hill-notation chemical formula | `"C9H8O4"`, `"C8H10N4O2"` |
+| `=SMILES2INCHI(smiles)` / `=KET2INCHI(ket)` | `string` | Standard InChI identifier | `"InChI=1S/C9H8O4/c1-6(10)13-8-5..."` |
+| `=SMILES2INCHIKEY(smiles)` / `=KET2INCHIKEY(ket)` | `string` | 27-character standard InChIKey hash | `"BSYNRYMUTXBXSQ-UHFFFAOYSA-N"` |
+
+> 💡 **Tip:** These functions work seamlessly with cell references (e.g. `=SMILES2MW(A2)`). You can drag them down alongside `=SMILES2IMG(A2)` to generate comprehensive chemical catalogs in seconds!
+
+---
+
 ## ⚙️ Parameter Reference
 
 | Parameter | Type | Default | Description |

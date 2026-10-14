@@ -29,11 +29,12 @@
 </p>
 
 1. **✏️ 구조식 삽입 (`Ctrl+Shift+K`):** 100% 로컬 오프라인 구동되는 Ketcher 2D 화학 에디터를 열고 분자식이나 반응식을 그린 뒤 <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (또는 적용 버튼)를 누르면 커서 위치에 즉시 삽입됩니다.
-2. **⚡ 퀵 인서트 (Quick Insert):**
+2. **🧬 3D 구조식 (Mol*):** 내장된 Mol* 3D 뷰어를 실행합니다. RCSB PDB ID(예: `1CRN`, `4HHB`)를 직접 다운로드하거나 로컬 구조 파일을 열어, 논문 본문에 마우스로 직접 회전/확대할 수 있는 **인터랙티브 3D 모델 (.glb)** 또는 고해상도 2D 인라인 그림으로 삽입합니다. 자세한 사용법은 [Mol* 3D 뷰어 가이드](/ko/guide/molstar)를 참고하세요.
+3. **⚡ 퀵 인서트 (Quick Insert):**
    - 본문에서 SMILES 텍스트를 드래그한 상태로 누르면 해당 텍스트가 0.1초 만에 분자 그림으로 즉시 치환됩니다.
    - 드래그한 텍스트가 없으면 클립보드의 SMILES를 읽어 커서 위치에 바로 그림으로 넣습니다.
-3. **📋 클립보드에서 붙여넣기:** 외부 논문이나 웹페이지에서 복사한 SMILES 또는 KET를 읽어 커서 위치에 인라인 그림으로 삽입합니다.
-4. **🔍 설정 및 진단 (Settings & Diagnostics):** Indigo 엔진 및 COM 추가 기능 연동 상태와 로그를 확인합니다.
+4. **📋 구조식 붙여넣기:** 외부 논문이나 웹페이지에서 복사한 SMILES 또는 KET를 읽어 커서 위치에 인라인 그림으로 삽입합니다.
+5. **🔍 설정 및 진단 (Settings & Diagnostics):** Indigo 엔진 및 COM 추가 기능 연동 상태와 로그를 확인합니다.
 
 ---
 
@@ -45,16 +46,25 @@
   <img src="/word-context-menu-guide.png" alt="Chemical Structure Context Menu in Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-### A. 삽입된 화학 그림을 우클릭한 경우
-* **✏️ Edit Structure in Ketcher:** 내장 에디터를 열어 해당 분자를 제자리에서 바로 재편집합니다.
-* **📋 Copy SMILES / Copy Molfile (KET):** 표준 화학 표기법 문자열을 클립보드로 복사합니다.
-* **🔬 Copy Molecular Formula:** 표준 Hill 표기법 화학식(예: `C8H10N4O2`)을 복사합니다.
-* **⚖️ Copy Molecular Weight (MW):** IUPAC 정밀 분자량(g/mol, 예: `194.19`)을 복사합니다.
-* **🎯 Copy Exact Mass:** 고해상도 단일 동위원소 질량(예: `194.0804`)을 복사합니다.
+### A. 삽입된 화학 그림 또는 3D 모델을 우클릭한 경우
+* **✏️ Edit Structure in Ketcher:** 내장 Ketcher 에디터를 열어 해당 분자를 제자리에서 바로 재편집합니다.
+* **🧬 Edit 3D Structure (Mol*):** 내장 Mol* 뷰어를 열어 작업하던 각도와 스타일 그대로 3D 구조를 재편집합니다.
+* **📋 Copy SMILES:** 표준 SMILES 문자열을 클립보드로 복사합니다.
+* **📋 Copy InChI:** 표준 IUPAC InChI 문자열을 즉시 변환하여 복사합니다.
+* **📋 Copy Canvas Data (KET):** 반응식이 포함된 KET JSON 데이터를 복사합니다.
+* **🔬 Copy Molecule Info (분자 정보 서브메뉴):**
+  * **물질명 (Substance Name):** PubChem/IUPAC 기반 일반 물질명 복사 (`Aspirin`, `Ethanol` 등).
+  * **화학식 (Chemical Formula):** Hill 표기법 화학식 복사 (`C9H8O4` 등).
+  * **분자량 (Molecular Weight):** 정밀 분자량 복사 (`180.16 g/mol` 등).
+  * **SMILES / InChI / InChIKey:** 각 표준 식별자 원클릭 즉시 복사.
+  * **전체 요약 복사 (All Summary):** 모든 정보를 한 줄 텍스트로 일괄 복사.
+  * **상세 정보 창 열기...:** 2D SVG 그래픽 뷰어 및 전체 속성 표가 포함된 상세 다이얼로그 창 실행.
+  > ⚡ **모달 창 방해 없는 플로팅 토스트:** 복사 항목을 누르면 팝업 확인 창이 뜨는 대신 마우스 커서 바로 옆에 가벼운 플로팅 배지(`✓ Copied {항목}: {값}`)가 1.4초간 나타났다 사라지며, 문서 작성 중 작업 포커스를 뺏지 않습니다!
 
-### B. 본문 텍스트나 빈 문단을 우클릭한 경우
+### B. 본문 텍스트, 표, 빈 문단을 우클릭한 경우
 * **✏️ Insert Structure in Ketcher:** Ketcher 에디터를 열어 새 구조식을 그린 후 커서 위치에 삽입합니다.
-* **📋 Paste from Clipboard:** 클립보드의 화학식 텍스트를 인라인 이미지로 즉시 삽입합니다.
+* **🧬 3D Structure (Mol*)...:** Mol* 뷰어를 열어 3D 고분자 모델이나 이미지를 커서 위치에 삽입합니다.
+* **📋 Paste Structure:** 클립보드의 화학식 텍스트를 인라인 이미지로 즉시 삽입합니다.
 
 ---
 

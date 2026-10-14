@@ -28,12 +28,13 @@
   <img src="/powerpoint-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-1. **✏️ 구조식 삽입 (`Ctrl+Shift+K`):** 오프라인 Ketcher 에디터에서 구조식이나 화학 반응식을 그린 뒤 <kbd>Ctrl</kbd> + <kbd>Enter</kbd>(또는 적용 버튼)를 누르면 현재 슬라이드 정중앙에 고해상도 그림으로 자동 배치됩니다.
-2. **⚡ 퀵 인서트 (Quick Insert):**
+1. **✏️ 구조식 삽입 (`Ctrl+Shift+K`):** 오프라인 Ketcher 2D 에디터에서 구조식이나 화학 반응식을 그린 뒤 <kbd>Ctrl</kbd> + <kbd>Enter</kbd>를 누르면 현재 슬라이드 정중앙에 고해상도 그림으로 자동 배치됩니다.
+2. **🧬 3D 구조식 (Mol*):** 내장된 Mol* 3D 뷰어를 실행합니다. RCSB PDB ID(예: `1CRN`, `4HHB`)를 직접 다운로드하거나 로컬 구조 파일을 열어, 슬라이드 쇼 중에도 마우스로 회전/확대할 수 있는 **인터랙티브 3D 모델 (.glb)** 또는 고해상도 2D 이미지로 삽입합니다. 자세한 사용법은 [Mol* 3D 뷰어 가이드](/ko/guide/molstar)를 참고하세요.
+3. **⚡ 퀵 인서트 (Quick Insert):**
    - 슬라이드의 텍스트 상자나 불릿 기호 안의 SMILES 텍스트를 선택한 상태에서 누르면 0.1초 만에 분자 도형으로 즉시 치환됩니다.
    - 선택된 개체가 없으면 클립보드의 SMILES를 슬라이드 중앙에 즉시 배치합니다.
-3. **📋 클립보드에서 붙여넣기:** 외부 논문이나 ChemDraw 등에서 복사한 화학 표기를 파워포인트 슬라이드 위에 고화질 이미지로 삽입합니다.
-4. **🔍 설정 및 진단 (Settings & Diagnostics):** Indigo 엔진 로딩 상태 및 실시간 렌더링 로그를 확인합니다.
+4. **📋 구조식 붙여넣기:** 외부 논문이나 ChemDraw 등에서 복사한 화학 표기를 파워포인트 슬라이드 위에 고화질 이미지로 삽입합니다.
+5. **🔍 설정 및 진단 (Settings & Diagnostics):** Indigo 엔진 로딩 상태 및 실시간 렌더링 로그를 확인합니다.
 
 ---
 
@@ -45,16 +46,25 @@
   <img src="/powerpoint-context-menu-guide.png" alt="Chemical Structure Context Menu in PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-### A. 슬라이드의 화학 분자 도형을 우클릭한 경우
-* **✏️ Edit Structure in Ketcher:** 내장 에디터를 열어 슬라이드 위 분자를 제자리에서 바로 재편집합니다.
-* **📋 Copy SMILES / Copy Molfile (KET):** 화학 구조식 텍스트를 클립보드로 복사합니다.
-* **🔬 Copy Molecular Formula:** 표준 Hill 표기법 화학식(예: `C8H10N4O2`)을 복사합니다.
-* **⚖️ Copy Molecular Weight (MW):** 발표 질의응답 시 즉시 활용할 수 있는 IUPAC 정밀 분자량(g/mol)을 복사합니다.
-* **🎯 Copy Exact Mass:** 고해상도 단일 동위원소 질량(Monoisotopic Exact Mass)을 복사합니다.
+### A. 슬라이드의 화학 분자 도형 또는 3D 모델을 우클릭한 경우
+* **✏️ Edit Structure in Ketcher:** 내장 Ketcher 에디터를 열어 제자리에서 바로 재편집합니다.
+* **🧬 Edit 3D Structure (Mol*):** 내장 Mol* 뷰어를 열어 작업하던 각도와 표현 스타일 그대로 재편집합니다.
+* **📋 Copy SMILES:** 표준 SMILES 문자열을 클립보드로 복사합니다.
+* **📋 Copy InChI:** 표준 IUPAC InChI 문자열을 즉시 변환하여 복사합니다.
+* **📋 Copy Canvas Data (KET):** 반응식이 포함된 KET JSON 데이터를 복사합니다.
+* **🔬 Copy Molecule Info (분자 정보 서브메뉴):**
+  * **물질명 (Substance Name):** PubChem/IUPAC 기반 일반 물질명 복사 (`Aspirin`, `Ethanol` 등).
+  * **화학식 (Chemical Formula):** Hill 표기법 화학식 복사 (`C9H8O4` 등).
+  * **분자량 (Molecular Weight):** 정밀 분자량 복사 (`180.16 g/mol` 등).
+  * **SMILES / InChI / InChIKey:** 각 표준 식별자 원클릭 즉시 복사.
+  * **전체 요약 복사 (All Summary):** 모든 정보를 한 줄 텍스트로 일괄 복사.
+  * **상세 정보 창 열기...:** 2D SVG 그래픽 뷰어 및 전체 속성 표가 포함된 상세 다이얼로그 창 실행.
+  > ⚡ **모달 창 방해 없는 플로팅 토스트:** 복사 항목을 누르면 팝업 확인 창이 뜨는 대신 마우스 커서 바로 옆에 가벼운 플로팅 배지(`✓ Copied {항목}: {값}`)가 1.4초간 나타났다 사라지며, 발표 준비 중 작업 포커스를 뺏지 않습니다!
 
 ### B. 빈 슬라이드 배경을 우클릭한 경우
 * **✏️ Insert Structure in Ketcher:** Ketcher 에디터를 열어 새 구조식을 그린 후 슬라이드에 삽입합니다.
-* **📋 Paste from Clipboard:** 클립보드의 화학식 텍스트를 고화질 슬라이드 도형으로 즉시 배치합니다.
+* **🧬 3D Structure (Mol*)...:** Mol* 뷰어를 열어 3D 고분자 모델이나 이미지를 슬라이드에 삽입합니다.
+* **📋 Paste Structure:** 클립보드의 화학식 텍스트를 고화질 슬라이드 도형으로 즉시 배치합니다.
 
 ---
 

@@ -7,8 +7,9 @@
 [![Excel-DNA](https://img.shields.io/badge/Excel--DNA-1.9.0-green.svg)](https://excel-dna.net/)
 [![EPAM Indigo](https://img.shields.io/badge/EPAM%20Indigo-1.49.0--rc.2-orange.svg)](https://lifescience.opensource.epam.com/indigo/)
 [![EPAM Ketcher](https://img.shields.io/badge/EPAM%20Ketcher-v3.18.0-blueviolet.svg)](https://lifescience.opensource.epam.com/ketcher/)
+[![Mol* Viewer](https://img.shields.io/badge/Mol*--Viewer-v5.13.1-teal.svg)](https://molstar.org/)
 
-> **A 100% free and open-source Microsoft Office add-in suite (Excel, Word, PowerPoint) to render publication-quality 2D chemical structures directly from SMILES/KET strings and sketch molecules interactively via embedded EPAM Ketcher.**  
+> **A 100% free and open-source Microsoft Office add-in suite (Excel, Word, PowerPoint) to render publication-quality 2D chemical structures directly from SMILES/KET strings, explore 3D biological macromolecules via embedded Mol*, calculate chemical properties via native formulas, and sketch molecules interactively via embedded EPAM Ketcher.**  
 > 100% local and offline execution without external web requests, cloud subscriptions, or administrative privileges.
 
 ---
@@ -19,11 +20,12 @@ Complete user manuals, visual walkthroughs, parameter recipes, and guides for Ex
 
 👉 **[Online Documentation Site (English & 한국어)](https://naramdash.github.io/func_SMILES2IMG/)**
 
-* 📗 [**Microsoft Excel Guide**](https://naramdash.github.io/func_SMILES2IMG/guide/excel) — In-cell formulas (`=SMILES2IMG`, `=KET2IMG`), chemical styling, double-click in-place editing.
-* 📘 [**Microsoft Word Guide**](https://naramdash.github.io/func_SMILES2IMG/guide/word) — Inline figures, ribbon `[SMILES]` tab, 0.1s Quick Insert, table layout preservation.
-* 📙 [**Microsoft PowerPoint Guide**](https://naramdash.github.io/func_SMILES2IMG/guide/powerpoint) — One-click slide placement, dark theme transparent backgrounds, shape editing.
+* 📗 [**Microsoft Excel Guide**](https://naramdash.github.io/func_SMILES2IMG/guide/excel) — In-cell formulas (`=SMILES2IMG`, `=KET2IMG`), property calculation (`=SMILES2MW`, `=SMILES2NAME`, etc.), chemical styling, double-click editing.
+* 📘 [**Microsoft Word Guide**](https://naramdash.github.io/func_SMILES2IMG/guide/word) — Inline figures, ribbon `[SMILES]` tab, 0.1s Quick Insert, Mol* 3D models, table layout preservation.
+* 📙 [**Microsoft PowerPoint Guide**](https://naramdash.github.io/func_SMILES2IMG/guide/powerpoint) — One-click slide placement, dark theme transparent backgrounds, Mol* interactive 3D GLB models.
 * ✏️ [**Ketcher 2D Editor Guide**](https://naramdash.github.io/func_SMILES2IMG/guide/ketcher) — Offline structure sketcher, multi-step reaction schemes, molecular weight calculation.
-* 📐 [**Excel Formula Reference**](https://naramdash.github.io/func_SMILES2IMG/reference/formula) — Full parameter and option token specification.
+* 🧬 [**Mol* 3D Viewer Guide**](https://naramdash.github.io/func_SMILES2IMG/guide/molstar) — Macromolecular 3D viewer (PDB/mmCIF), direct PDB download, rotatable GLB 3D models & 2D pictures.
+* 📐 [**Excel Formula Reference**](https://naramdash.github.io/func_SMILES2IMG/reference/formula) — Full parameter specifications for rendering and property calculation formulas.
 * ❓ [**Troubleshooting & FAQ**](https://naramdash.github.io/func_SMILES2IMG/guide/faq) — Smart App Control, `#VALUE!` resolution, and version compatibility.
 
 ---
@@ -33,8 +35,16 @@ Complete user manuals, visual walkthroughs, parameter recipes, and guides for Ex
 Open **PowerShell** and run this single command to automatically install, configure security, and register the add-in across the entire Microsoft Office suite (Excel, Word, PowerPoint):
 
 ```powershell
+# Stable release (v1.5.0)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
+
+::: tip 💡 Preview Release (Mol* 3D & Molecular Property Functions)
+To test the latest preview release featuring the Mol* 3D Viewer and Molecular Property functions:
+```powershell
+$v='v1.6.0-preview.1'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+```
+:::
 
 > **What the installer automates:**  
 > 1. Detects your Office bitness (32-bit vs. 64-bit) and installed Office applications (Excel, Word, PowerPoint)  
@@ -43,6 +53,18 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 > 4. Registers Excel, Word, and PowerPoint add-ins in HKCU registry (no admin rights required, loads automatically on start)  
 > 💡 **Future Updates:** Running this exact command again in the future automatically upgrades to the latest release!  
 > 🗑️ **Uninstallation:** Run `irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex` anytime to cleanly remove all files and registry entries.
+
+---
+
+## ✨ Key Features
+
+* ⚡ **Real-Time In-Cell Chemical Rendering:** `=SMILES2IMG(A2)` and `=KET2IMG(A2)` render native cell pictures in Microsoft Excel that scale with row/column sizing and recalculate dynamically.
+* 🔬 **Molecular Property Calculation Formulas:** Direct cell formulas `=SMILES2NAME`, `=SMILES2MW`, `=SMILES2FORMULA`, `=SMILES2INCHI`, and `=SMILES2INCHIKEY` (as well as `=KET2*` variants) for high-throughput cheminformatics.
+* 📋 **One-Click Molecule Info & Direct Copy:** Right-click context submenu across Excel, Word, and PowerPoint to instantly copy Substance Name, Formula, MW, SMILES, InChI, or InChIKey with smooth floating badge feedback near the cursor (zero focus-stealing modal dialogs).
+* ✏️ **Embedded Ketcher 2D Visual Sketcher:** 100% offline molecular editor supporting atoms, bonds, rings, charges, and multi-step reaction schemes with arrows and plus signs.
+* 🧬 **Embedded Mol\* 3D Macromolecular Viewer:** Visualize proteins, nucleic acids, and complexes directly in PowerPoint and Word. Download PDB structures by ID, insert rotatable 3D GLB models or 2D publication images, and re-edit anytime with double-click.
+* 🔄 **Lossless Document Persistence:** KET coordinates, chemical annotations, and Mol* 3D session recipes (`.molj`) are stored losslessly inside document XML metadata (`CustomXMLParts`), allowing seamless re-editing when sharing files with collaborators.
+* 🛡️ **100% Local & Privacy-Preserving:** Powered by embedded EPAM Indigo, EPAM Ketcher, and Mol* runtimes. Zero cloud calls, zero data leakage, works completely offline.
 
 ---
 
@@ -86,7 +108,7 @@ sequenceDiagram
 ```text
 func_SMILES2IMG/
 ├── Smiles2Img.sln                      # Visual Studio / .NET unified solution file
-├── Directory.Build.props               # Shared version (1.5.0), TFM (net48), and compiler configuration
+├── Directory.Build.props               # Shared version, TFM (net48), and compiler configuration
 ├── package.json                        # VitePress documentation dependencies and scripts
 ├── .github/
 │   └── workflows/
@@ -95,28 +117,29 @@ func_SMILES2IMG/
 │   ├── .vitepress/
 │   │   └── config.mts                  # VitePress site configuration & i18n routing
 │   ├── public/                         # Static assets (images, icons)
-│   ├── guide/                          # English guides (getting started, excel, word, powerpoint, ketcher, faq)
+│   ├── guide/                          # English guides (getting started, excel, word, powerpoint, ketcher, molstar, faq)
 │   ├── reference/                      # English reference (formulas & parameter specs)
 │   └── ko/                             # Korean guides & reference (ko/guide/*, ko/reference/*)
 ├── src/
-│   ├── Smiles2Img.Core/                # Shared rendering & Ketcher editor core (net48)
-│   │   ├── Rendering/                  # EPAM Indigo 1.49.0-rc.2 wrapper, ACS standards, color/option parsers
-│   │   ├── Editor/                     # EPAM Ketcher v3.18.0 WebView2 Form, SHA256 asset manager & StructureMetadata
+│   ├── Smiles2Img.Core/                # Shared rendering, Ketcher 2D, Mol* 3D & notification core (net48)
+│   │   ├── Rendering/                  # EPAM Indigo 1.49.0 wrapper, ACS standards, color/option parsers, PubChem resolver
+│   │   ├── Editor/                     # Ketcher v3.18.0 & Mol* v5.13.1 forms, session managers, StructureMetadata, CopiedToast
+│   │   ├── Notifications/              # Non-intrusive floating badges and notification service
 │   │   └── COM/                        # Shared Office COM interfaces (IDTExtensibility2, IRibbonExtensibility)
 │   ├── Smiles2Img.Excel/               # Excel-DNA standalone XLL add-in (net48)
-│   │   ├── Functions.cs                # =SMILES2IMG & =KET2IMG in-cell UDFs (Excel 2024 / M365)
+│   │   ├── Functions.cs                # =SMILES2IMG, =KET2IMG, and property calculation UDFs (=SMILES2NAME, =SMILES2MW, etc.)
 │   │   ├── FloatFunctions.cs           # =SMILES2IMG.FLOAT & =KET2IMG.FLOAT floating UDFs (Excel 2016-2021)
 │   │   ├── CellImages.cs               # In-cell image cache manager
 │   │   ├── FloatingPictures.cs         # Cell-anchored floating shape manager
-│   │   ├── SmilesRibbon.cs             # [SMILES] ribbon tab & right-click context menu handlers
+│   │   ├── SmilesRibbon.cs             # [SMILES] ribbon tab & right-click context menu handlers (Copy Molecule Info submenu)
 │   │   ├── KetcherEditor.cs            # Ketcher commands, quick paste, molecule info & double-click hooks
 │   │   └── KetcherEditor.ShapesAndCells.cs # KET canvas shape & formula cell extraction/insertion helpers
 │   ├── Smiles2Img.Word/                # Word COM add-in DLL (net48)
-│   │   ├── WordAddIn.cs                # IDTExtensibility2 + IRibbonExtensibility implementation
-│   │   └── WordStructureManager.cs     # Inline structure image insertion, replacement, quick paste & double-click
+│   │   ├── WordAddIn.cs                # IDTExtensibility2 + IRibbonExtensibility + context menu handlers
+│   │   └── WordStructureManager.cs     # Inline structure images, Mol* 3D models, replacement, quick paste & double-click
 │   └── Smiles2Img.PowerPoint/          # PowerPoint COM add-in DLL (net48)
-│       ├── PowerPointAddIn.cs          # IDTExtensibility2 + IRibbonExtensibility + Win32 double-click hook
-│       └── PowerPointStructureManager.cs # Slide structure shape insertion, replacement, quick paste & metadata
+│       ├── PowerPointAddIn.cs          # IDTExtensibility2 + IRibbonExtensibility + context menu + double-click hook
+│       └── PowerPointStructureManager.cs # Slide structure shape insertion, Mol* 3D models, replacement, quick paste & metadata
 ├── dist/                               # Distribution output directory
 │   ├── x64/
 │   │   ├── Smiles2Img-AddIn64-packed.xll # 64-bit standalone Excel XLL

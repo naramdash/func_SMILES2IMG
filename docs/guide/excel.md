@@ -47,15 +47,22 @@ Right-click anywhere in your worksheet to access contextual chemical actions cle
 ### Case A: Right-Clicking a Molecule Cell
 When right-clicking a cell containing a chemical structure or formula:
 * **✏️ Edit Structure in Ketcher:** Opens the Ketcher editor with the current molecule or reaction graph loaded for in-place modification.
-* **📋 Copy SMILES / Copy Molfile (KET):** Copies clean chemical notations to the clipboard.
-* **🔬 Copy Molecular Formula:** Calculates the standard Hill-notation formula (e.g., `C8H10N4O2`).
-* **⚖️ Copy Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g., `194.19`).
-* **🎯 Copy Exact Mass:** Copies high-resolution monoisotopic mass (e.g., `194.0804`).
+* **📋 Copy SMILES:** Copies clean SMILES notation to clipboard.
+* **📋 Copy InChI:** Generates and copies standard IUPAC InChI string instantly.
+* **📋 Copy Canvas Data (KET):** Copies Ketcher native JSON representation.
+* **🔬 Copy Molecule Info (Submenu):**
+  * **Substance Name:** Copies substance common name (e.g., `Aspirin`, `Ethanol`).
+  * **Chemical Formula:** Copies standard Hill-notation formula (e.g., `C9H8O4`).
+  * **Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g., `180.16 g/mol`).
+  * **Copy SMILES / InChI / InChIKey:** Individual one-click copy options.
+  * **All Summary (Text):** Copies full formatted summary to clipboard.
+  * **Detailed Molecule Info Window...:** Opens the full chemical properties window with 2D SVG preview and complete property table.
+  > ⚡ **Zero Modal Distraction:** Clicking any copy command displays a non-blocking floating toast badge (`✓ Copied {Item}: {Value}`) near your mouse cursor for 1.4 seconds without stealing focus or interrupting your work!
 
 ### Case B: Right-Clicking an Empty Cell
 When right-clicking an empty cell or blank worksheet space:
 * **✏️ Insert Structure in Ketcher:** Launches Ketcher to draw a new chemical structure and place it directly into the selected cell.
-* **📋 Paste from Clipboard:** Automatically detects chemical notation in the clipboard and inserts it as a rendered molecule.
+* **📋 Paste Structure:** Automatically detects chemical notation in the clipboard and inserts it as a rendered molecule.
 
 ---
 
@@ -102,6 +109,14 @@ Depending on your Microsoft Excel version, two distinct formula modes are availa
 * **Target:** **Excel 2016 / 2019 / 2021** (or when floating shapes are explicitly desired)
 * Inserts floating picture shapes locked to cell coordinates (`xlMoveAndSize`).
 * Recalculates automatically, replaces existing shapes without orphan clutter, and moves/resizes with cell boundaries.
+
+### 3. Molecular Property & Formula Calculation Functions
+Calculate chemical characteristics directly in your worksheet:
+* `=SMILES2NAME(cell)` / `=KET2NAME(cell)` — Resolves chemical substance name via PubChem/IUPAC.
+* `=SMILES2MW(cell)` / `=KET2MW(cell)` — Computes standard molecular weight in g/mol.
+* `=SMILES2FORMULA(cell)` / `=KET2FORMULA(cell)` — Generates Hill-notation formula (e.g. `C9H8O4`).
+* `=SMILES2INCHI(cell)` / `=KET2INCHI(cell)` — Converts to standard IUPAC InChI notation.
+* `=SMILES2INCHIKEY(cell)` / `=KET2INCHIKEY(cell)` — Computes 27-character unique InChIKey hash.
 
 ---
 

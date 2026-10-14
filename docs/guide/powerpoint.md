@@ -28,12 +28,13 @@ The custom `[SMILES]` tab on PowerPoint's ribbon provides one-click slide insert
   <img src="/powerpoint-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-1. **✏️ Insert Structure (`Ctrl+Shift+K`):** Launches Ketcher. Draw your molecule or multi-step reaction, then click **Apply** (<kbd>Ctrl</kbd> + <kbd>Enter</kbd>) to place it directly at the center of the active slide.
-2. **⚡ Quick Insert:**
+1. **✏️ Insert Structure (`Ctrl+Shift+K`):** Launches Ketcher 2D editor. Draw molecules or multi-step reactions, then click **Apply** (<kbd>Ctrl</kbd> + <kbd>Enter</kbd>) to place them at the center of the active slide.
+2. **🧬 3D Structure (Mol*):** Opens the embedded Mol* 3D viewer. Download PDB structures (e.g. `1CRN`, `4HHB`) or open local files, then insert as an **interactive 3D model (.glb)** or high-resolution 2D image. See the [Mol* 3D Viewer Guide](/guide/molstar) for full details.
+3. **⚡ Quick Insert:**
    - If a text box or shape containing SMILES text is selected on the slide, converts the text frame into a high-resolution molecule shape in 0.1s.
    - If no shape is selected, automatically reads chemical text from the clipboard and places it onto the slide.
-3. **📋 Insert from Clipboard:** Reads clipboard SMILES/KET and embeds it as a vector-crisp slide image.
-4. **🔍 Settings & Diagnostics:** Opens engine diagnostic logs and troubleshooting metrics.
+4. **📋 Paste Structure:** Reads clipboard SMILES/KET and embeds it as a vector-crisp slide image.
+5. **🔍 Settings & Diagnostics:** Opens engine diagnostic logs and troubleshooting metrics.
 
 ---
 
@@ -45,16 +46,25 @@ Right-click any chemical shape or blank presentation slide area:
   <img src="/powerpoint-context-menu-guide.png" alt="Chemical Structure Context Menu in PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-### Case A: Right-Clicking an Existing Chemical Shape
-* **✏️ Edit Structure in Ketcher:** Opens Ketcher with the current molecule or reaction loaded.
-* **📋 Copy SMILES / Copy Molfile (KET):** Copies clean structure notation to the clipboard.
-* **🔬 Copy Molecular Formula:** Copies standard Hill-notation formula (e.g. `C8H10N4O2`).
-* **⚖️ Copy Molecular Weight (MW):** Instant g/mol value for conference audience Q&A.
-* **🎯 Copy Exact Mass:** Copies high-resolution monoisotopic mass (e.g. `194.0804`).
+### Case A: Right-Clicking an Existing Chemical Shape or 3D Model
+* **✏️ Edit Structure in Ketcher:** Reopens Ketcher with the current molecule or reaction loaded.
+* **🧬 Edit 3D Structure (Mol*):** Reopens the Mol* 3D viewer in the exact camera orientation and representation style.
+* **📋 Copy SMILES:** Copies clean SMILES notation to the clipboard.
+* **📋 Copy InChI:** Copies standard IUPAC InChI string instantly.
+* **📋 Copy Canvas Data (KET):** Copies Ketcher native JSON representation.
+* **🔬 Copy Molecule Info (Submenu):**
+  * **Substance Name:** Copies substance name (PubChem / IUPAC).
+  * **Chemical Formula:** Copies standard Hill-notation formula (e.g. `C9H8O4`).
+  * **Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g. `180.16 g/mol`).
+  * **Copy SMILES / InChI / InChIKey:** Individual one-click copy options.
+  * **All Summary (Text):** Copies full formatted summary to clipboard.
+  * **Detailed Molecule Info Window...:** Opens the full chemical properties dialog.
+  > ⚡ **Non-Blocking Toast:** Each copy action displays a floating pill badge (`✓ Copied {Item}: {Value}`) near your mouse for 1.4s without stealing PowerPoint's focus.
 
 ### Case B: Right-Clicking Blank Slide Canvas
-* **✏️ Insert Structure in Ketcher:** Launches Ketcher to draw and place a new molecule onto the slide.
-* **📋 Paste from Clipboard:** Reads chemical notation from clipboard and creates a slide shape.
+* **✏️ Insert Structure in Ketcher:** Launches Ketcher to draw a new molecule onto the slide.
+* **🧬 3D Structure (Mol*)...:** Launches Mol* to insert a 3D macromolecular model or image.
+* **📋 Paste Structure:** Reads chemical notation from clipboard and creates a slide shape.
 
 ---
 

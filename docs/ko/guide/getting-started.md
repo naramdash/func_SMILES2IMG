@@ -1,6 +1,6 @@
 # 시작하기 및 설치 안내
 
-**SMILES for Microsoft Office Suite**는 Microsoft Excel, Microsoft Word, Microsoft PowerPoint에서 2D 화학 구조식을 고해상도로 렌더링하고 시각적으로 편집할 수 있는 화학 연구용 통합 추가 기능(Add-in)입니다.
+**SMILES for Microsoft Office Suite**는 Microsoft Excel, Microsoft Word, Microsoft PowerPoint에서 2D 화학 구조식 및 3D 생체 거대분자(Mol*)를 고해상도로 렌더링하고, 분자 특성을 계산하며, 시각적으로 편집할 수 있는 화학 연구용 통합 추가 기능(Add-in)입니다.
 
 ---
 
@@ -11,6 +11,13 @@
 ```powershell
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
+
+::: tip 💡 프리뷰(최신 기능) 버전 설치
+Mol* 3D 뷰어 및 분자 특성 계산 함수가 포함된 최신 프리뷰 버전을 설치하려면 아래와 같이 실행하세요:
+```powershell
+$v='v1.6.0-preview.1'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+```
+:::
 
 ### 설치 스크립트가 자동으로 수행하는 작업
 1. **Office 환경 자동 감지:** 설치된 Office가 32비트(`x86`)인지 64비트(`x64`)인지 확인하고 Excel, Word, PowerPoint 설치 여부를 판별합니다.
@@ -31,7 +38,7 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 | **운영체제** | Windows 10 / Windows 11 | 32비트 및 64비트 환경 완벽 지원 |
 | **Microsoft Office** | Office 2016 / 2019 / 2021 / 2024 / Microsoft 365 | 데스크톱 설치 버전 (간편 실행 및 MSI) |
 | **.NET Framework** | .NET Framework 4.8 이상 | Windows 10 (1903+) 및 Windows 11 기본 내장 |
-| **Microsoft Edge WebView2** | Evergreen Runtime | 오프라인 Ketcher 2D 에디터 구동용 (최신 Windows 기본 내장) |
+| **Microsoft Edge WebView2** | Evergreen Runtime | 오프라인 Ketcher 2D 에디터 및 Mol* 3D 뷰어 구동용 (최신 Windows 기본 내장) |
 
 ---
 

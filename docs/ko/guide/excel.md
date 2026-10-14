@@ -47,15 +47,22 @@
 ### A. 화학 구조식 셀을 우클릭한 경우
 화학 구조식 수식이나 이미지가 들어있는 셀을 우클릭하면 전문 분자 분석 서브메뉴가 나타납니다:
 * **✏️ Edit Structure in Ketcher:** 내장 에디터를 열어 해당 분자를 제자리에서 바로 수정합니다.
-* **📋 Copy SMILES / Copy Molfile (KET):** 표준 화학 표기법 문자열을 클립보드로 복사합니다.
-* **🔬 Copy Molecular Formula:** 표준 Hill 표기법 화학식(예: `C8H10N4O2`)을 원클릭 계산하여 복사합니다.
-* **⚖️ Copy Molecular Weight (MW):** IUPAC 정밀 분자량(g/mol, 예: `194.19`)을 복사합니다.
-* **🎯 Copy Exact Mass:** 고해상도 단일 동위원소 질량(Monoisotopic Exact Mass, 예: `194.0804`)을 복사합니다.
+* **📋 Copy SMILES:** 표준 SMILES 문자열을 클립보드로 복사합니다.
+* **📋 Copy InChI:** 표준 IUPAC InChI 문자열을 즉시 변환하여 복사합니다.
+* **📋 Copy Canvas Data (KET):** 반응식이 포함된 KET JSON 데이터를 복사합니다.
+* **🔬 Copy Molecule Info (분자 정보 서브메뉴):**
+  * **물질명 (Substance Name):** PubChem/IUPAC 기반 일반 물질명 복사 (`Aspirin`, `Ethanol` 등).
+  * **화학식 (Chemical Formula):** Hill 표기법 화학식 복사 (`C9H8O4` 등).
+  * **분자량 (Molecular Weight):** 정밀 분자량 복사 (`180.16 g/mol` 등).
+  * **SMILES / InChI / InChIKey:** 각 표준 식별자 원클릭 즉시 복사.
+  * **전체 요약 복사 (All Summary):** 모든 정보를 한 줄 텍스트로 일괄 복사.
+  * **상세 정보 창 열기...:** 2D SVG 그래픽 뷰어 및 전체 속성 표가 포함된 상세 다이얼로그 창 실행.
+  > ⚡ **모달 창 방해 없는 플로팅 토스트:** 복사 항목을 누르면 팝업 확인 창이 뜨는 대신 마우스 커서 바로 옆에 가벼운 플로팅 배지(`✓ Copied {항목}: {값}`)가 1.4초간 나타났다 사라지며, 작업 포커스를 뺏지 않습니다!
 
 ### B. 빈 셀이나 빈 공간을 우클릭한 경우
 빈 셀을 우클릭했을 때도 불필요한 분자 분석 메뉴 대신 깔끔하게 분리된 서브메뉴가 제공됩니다:
 * **✏️ Insert Structure in Ketcher:** Ketcher 에디터를 실행하여 새 화학 구조식을 그린 후 셀에 즉시 삽입합니다.
-* **📋 Paste from Clipboard:** 클립보드에 복사된 화학식 텍스트를 감지하여 렌더링된 구조식으로 즉시 삽입합니다.
+* **📋 Paste Structure:** 클립보드에 복사된 화학식 텍스트를 감지하여 렌더링된 구조식으로 즉시 삽입합니다.
 
 ---
 
@@ -103,6 +110,14 @@
 * **지원 버전:** **Excel 2016 / 2019 / 2021** (또는 플로팅 도형으로 배치가 필요한 경우)
 * 셀 좌표에 고정(`xlMoveAndSize`)되는 플로팅 도형(Shape)으로 삽입됩니다.
 * 수식이 변경되면 고아 도형이 남지 않고 자동으로 교체되며, 셀 이동 및 크기 조절에 연동됩니다.
+
+### 3. 분자 화학 속성 계산 함수군
+워크시트 수식을 통해 분자 특성을 자동으로 산출할 수 있습니다:
+* `=SMILES2NAME(cell)` / `=KET2NAME(cell)` — PubChem/IUPAC 기반 물질 일반명 자동 조회.
+* `=SMILES2MW(cell)` / `=KET2MW(cell)` — 표준 분자량(MW, g/mol) 자동 계산.
+* `=SMILES2FORMULA(cell)` / `=KET2FORMULA(cell)` — Hill 표기법 화학식 산출 (`C9H8O4` 등).
+* `=SMILES2INCHI(cell)` / `=KET2INCHI(cell)` — IUPAC 표준 InChI 문자열 변환.
+* `=SMILES2INCHIKEY(cell)` / `=KET2INCHIKEY(cell)` — 27자리 InChIKey 고유 해시 생성.
 
 ---
 

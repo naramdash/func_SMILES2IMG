@@ -23,6 +23,12 @@ features:
   - icon: ✏️
     title: Double-Click In-Place Editing
     details: Double-click any rendered molecule or reaction in Excel, Word, or PowerPoint to launch the embedded Ketcher 2D editor.
+  - icon: 🧬
+    title: Mol* 3D Macromolecular Viewer
+    details: Visualize proteins, nucleic acids, and complexes in Word & PowerPoint. Embed rotatable 3D GLB models or publication 2D images with double-click re-editing.
+  - icon: 🔬
+    title: One-Click Property Extraction & Formulas
+    details: Right-click context submenu to copy Formula, MW, Name, SMILES, InChI, and InChIKey with smooth floating badges. Native Excel calculation formulas (=SMILES2MW, =SMILES2NAME, etc.).
   - icon: 🧪
     title: Lossless KET Reaction Canvases
     details: Preserves multi-step reaction pathways, arrows, plus signs, and chemical annotations losslessly in .xlsx, .docx, and .pptx documents.
@@ -59,4 +65,8 @@ Running this exact command anytime upgrades your installation to the latest rele
 
 | [📗 Microsoft Excel](/guide/excel) | [📘 Microsoft Word](/guide/word) | [📙 Microsoft PowerPoint](/guide/powerpoint) |
 | :---: | :---: | :---: |
-| Native in-cell formulas (`=SMILES2IMG`), cell resizing, sorting & filtering | Inline shapes flowing with paragraphs, table cell preservation | Center slide auto-placement, dark theme transparent background |
+| Native in-cell formulas (`=SMILES2IMG`), cell resizing, sorting & filtering, molecular property functions | Inline shapes flowing with paragraphs, table cell preservation, embedded Mol* 3D models | Center slide auto-placement, dark theme transparent background, rotatable 3D GLB models |
+
+| [✏️ Ketcher 2D Editor](/guide/ketcher) | [🧬 Mol* 3D Viewer](/guide/molstar) | [📐 Formula Reference](/reference/formula) |
+| :---: | :---: | :---: |
+| Offline molecule & reaction drawing, KET canvas format | Biological macromolecules, direct PDB ID download, rotatable GLB 3D | Full specification for rendering & property calculation formulas |
