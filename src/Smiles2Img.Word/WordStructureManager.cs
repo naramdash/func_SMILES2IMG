@@ -629,6 +629,58 @@ public static class WordStructureManager
         }
     }
 
+    public static void CopySelectedMoleculeInchi(MSWord.Application app)
+    {
+        try
+        {
+            var sel = app.Selection;
+            string? targetData = null;
+
+            if (sel.InlineShapes.Count > 0)
+            {
+                var targetInline = sel.InlineShapes[1];
+                targetData = ExtractSmiles(targetInline.Title, targetInline.AlternativeText)
+                             ?? ExtractStructure(targetInline.AlternativeText, targetInline.Title);
+            }
+            else if (sel.ShapeRange.Count > 0)
+            {
+                var targetShape = sel.ShapeRange[1];
+                targetData = ExtractSmiles(targetShape.Title, targetShape.AlternativeText)
+                             ?? ExtractStructure(targetShape.AlternativeText, targetShape.Title);
+            }
+            else if (sel != null && sel.Start != sel.End && !string.IsNullOrWhiteSpace(sel.Text))
+            {
+                targetData = sel.Text.Trim();
+            }
+
+            var inchi = MoleculeRenderer.TryConvertToInchi(targetData);
+            if (string.IsNullOrEmpty(inchi))
+            {
+                MessageBox.Show(
+                    "Could not generate InChI from the selected structure.\nPlease select a molecular structure picture or text first.",
+                    "SMILES for Word",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            Clipboard.SetText(inchi!);
+            MessageBox.Show(
+                $"InChI copied to clipboard:\n\n{inchi}",
+                "InChI Copied",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "An error occurred while generating InChI:\n" + ex.Message,
+                "SMILES for Word",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+
     public static void CopySelectedMoleculeKet(MSWord.Application app)
     {
         try

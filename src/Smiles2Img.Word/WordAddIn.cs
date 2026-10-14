@@ -91,6 +91,13 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopySmiles"" />
+          <button id=""btnCopyInchi""
+                  label=""Copy InChI""
+                  screentip=""Copy IUPAC InChI""
+                  supertip=""Extract or convert the selected molecular structure into an IUPAC InChI string and copy to clipboard.""
+                  imageMso=""Copy""
+                  size=""large""
+                  onAction=""OnCopyInchi"" />
           <button id=""btnCopyKet""
                   label=""Copy KET""
                   screentip=""Copy Canvas Data (KET)""
@@ -126,6 +133,11 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               imageMso=""Copy""
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
+      <button id=""btnContextInlineCopyInchi""
+              label=""Copy InChI""
+              imageMso=""Copy""
+              onAction=""OnCopyInchi""
+              insertBeforeMso=""Cut"" />
       <button id=""btnContextInlineCopyKet""
               label=""Copy Canvas Data (KET)""
               imageMso=""Copy""
@@ -154,6 +166,11 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               imageMso=""Copy""
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
+      <button id=""btnContextPictureCopyInchi""
+              label=""Copy InChI""
+              imageMso=""Copy""
+              onAction=""OnCopyInchi""
+              insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureCopyKet""
               label=""Copy Canvas Data (KET)""
               imageMso=""Copy""
@@ -181,6 +198,11 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               label=""Copy SMILES""
               imageMso=""Copy""
               onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextShapeCopyInchi""
+              label=""Copy InChI""
+              imageMso=""Copy""
+              onAction=""OnCopyInchi""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeCopyKet""
               label=""Copy Canvas Data (KET)""
@@ -211,6 +233,19 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Paste Structure""
                 imageMso=""Paste""
                 onAction=""OnQuickInsert"" />
+        <menuSeparator id=""sepContextWordTextSubCopy"" />
+        <button id=""btnContextTextCopySmiles""
+                label=""Copy SMILES""
+                imageMso=""Copy""
+                onAction=""OnCopySmiles"" />
+        <button id=""btnContextTextCopyInchi""
+                label=""Copy InChI""
+                imageMso=""Copy""
+                onAction=""OnCopyInchi"" />
+        <button id=""btnContextTextCopyKet""
+                label=""Copy Canvas Data (KET)""
+                imageMso=""Copy""
+                onAction=""OnCopyKet"" />
         <menuSeparator id=""sepContextWordTextSubInfo"" />
         <button id=""btnContextWordTextCopyInfo""
                 label=""Molecule Info (Name, MW &amp; Formula)...""
@@ -236,6 +271,19 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Paste Structure""
                 imageMso=""Paste""
                 onAction=""OnQuickInsert"" />
+        <menuSeparator id=""sepContextWordTableSubCopy"" />
+        <button id=""btnContextTableCopySmiles""
+                label=""Copy SMILES""
+                imageMso=""Copy""
+                onAction=""OnCopySmiles"" />
+        <button id=""btnContextTableCopyInchi""
+                label=""Copy InChI""
+                imageMso=""Copy""
+                onAction=""OnCopyInchi"" />
+        <button id=""btnContextTableCopyKet""
+                label=""Copy Canvas Data (KET)""
+                imageMso=""Copy""
+                onAction=""OnCopyKet"" />
         <menuSeparator id=""sepContextWordTableSubInfo"" />
         <button id=""btnContextWordTableCopyInfo""
                 label=""Molecule Info (Name, MW &amp; Formula)...""
@@ -287,6 +335,12 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
     {
         if (wordApp == null) return;
         WordStructureManager.CopySelectedMoleculeSmiles(wordApp);
+    }
+
+    public void OnCopyInchi(IRibbonControl control)
+    {
+        if (wordApp == null) return;
+        WordStructureManager.CopySelectedMoleculeInchi(wordApp);
     }
 
     public void OnCopyKet(IRibbonControl control)

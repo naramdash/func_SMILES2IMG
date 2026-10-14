@@ -46,6 +46,13 @@ public class SmilesRibbon : ExcelRibbon
                   imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopySmiles"" />
+          <button id=""btnCopyInchi""
+                  label=""Copy InChI""
+                  screentip=""Copy IUPAC InChI""
+                  supertip=""Extracts and copies IUPAC InChI string from the selected formula cell or molecule image to the clipboard.""
+                  imageMso=""Copy""
+                  size=""large""
+                  onAction=""OnCopyInchi"" />
           <button id=""btnCopyKet""
                   label=""Copy KET""
                   screentip=""Copy Canvas Data (KET)""
@@ -97,6 +104,10 @@ public class SmilesRibbon : ExcelRibbon
                 label=""Copy SMILES""
                 imageMso=""Copy""
                 onAction=""OnCopySmiles"" />
+        <button id=""btnContextCopyInchiCell""
+                label=""Copy InChI""
+                imageMso=""Copy""
+                onAction=""OnCopyInchi"" />
         <button id=""btnContextCopyKetCell""
                 label=""Copy Canvas Data (KET)""
                 imageMso=""Copy""
@@ -131,6 +142,10 @@ public class SmilesRibbon : ExcelRibbon
                 label=""Copy SMILES""
                 imageMso=""Copy""
                 onAction=""OnCopySmiles"" />
+        <button id=""btnContextListCopyInchiCell""
+                label=""Copy InChI""
+                imageMso=""Copy""
+                onAction=""OnCopyInchi"" />
         <button id=""btnContextListCopyKetCell""
                 label=""Copy Canvas Data (KET)""
                 imageMso=""Copy""
@@ -152,6 +167,11 @@ public class SmilesRibbon : ExcelRibbon
               label=""Copy SMILES""
               imageMso=""Copy""
               onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPictureCopyInchi""
+              label=""Copy InChI""
+              imageMso=""Copy""
+              onAction=""OnCopyInchi""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureCopyKet""
               label=""Copy Canvas Data (KET)""
@@ -175,6 +195,11 @@ public class SmilesRibbon : ExcelRibbon
               label=""Copy SMILES""
               imageMso=""Copy""
               onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextShapeCopyInchi""
+              label=""Copy InChI""
+              imageMso=""Copy""
+              onAction=""OnCopyInchi""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeCopyKet""
               label=""Copy Canvas Data (KET)""
@@ -237,6 +262,14 @@ public class SmilesRibbon : ExcelRibbon
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
             KetcherEditor.CopySelectedMoleculeSmilesCommand();
+        });
+    }
+
+    public void OnCopyInchi(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            KetcherEditor.CopySelectedMoleculeInchiCommand();
         });
     }
 

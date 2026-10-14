@@ -18,6 +18,9 @@ public sealed class MoleculeInfo
     public string Smiles { get; set; } = "";
     public bool IsReaction { get; set; }
 
+    public string InChI { get; set; } = "";
+    public string InChIKey { get; set; } = "";
+
     public string FormatClipboardSummary()
     {
         if (IsReaction)
@@ -33,6 +36,10 @@ public sealed class MoleculeInfo
         if (ExactMass > 0)
             parts.Add($"Exact Mass: {ExactMass:F4}");
         parts.Add($"SMILES: {Smiles}");
+        if (!string.IsNullOrWhiteSpace(InChI))
+            parts.Add($"InChI: {InChI}");
+        if (!string.IsNullOrWhiteSpace(InChIKey))
+            parts.Add($"InChIKey: {InChIKey}");
 
         return string.Join(" | ", parts);
     }
@@ -51,8 +58,12 @@ public sealed class MoleculeInfo
         sb.AppendLine($"• Molecular Weight (MW): {MolecularWeight:F2} g/mol");
         if (ExactMass > 0)
             sb.AppendLine($"• Exact Mass: {ExactMass:F4}");
-        sb.Append($"• Canonical SMILES: {Smiles}");
-        return sb.ToString();
+        sb.AppendLine($"• Canonical SMILES: {Smiles}");
+        if (!string.IsNullOrWhiteSpace(InChI))
+            sb.AppendLine($"• InChI: {InChI}");
+        if (!string.IsNullOrWhiteSpace(InChIKey))
+            sb.Append($"• InChIKey: {InChIKey}");
+        return sb.ToString().TrimEnd();
     }
 }
 
@@ -216,6 +227,58 @@ public static class MoleculeRenderer
         return null;
     }
 
+    public static string? TryConvertToInchi(string? input)
+    {
+        if (string.IsNullOrWhiteSpace(input)) return null;
+        var trimmed = input!.Trim();
+
+        if (trimmed.StartsWith("KET:", StringComparison.OrdinalIgnoreCase))
+            trimmed = trimmed.Substring(4).Trim();
+        else if (trimmed.StartsWith("SMILES:", StringComparison.OrdinalIgnoreCase))
+            trimmed = trimmed.Substring(7).Trim();
+
+        try
+        {
+            using var indigo = new Indigo();
+            using var inchi = new IndigoInchi(indigo);
+            using var mol = indigo.loadMolecule(trimmed);
+            return inchi.getInchi(mol);
+        }
+        catch
+        {
+            var smiles = TryConvertToSmiles(trimmed);
+            if (!string.IsNullOrEmpty(smiles) && !string.Equals(smiles, trimmed, StringComparison.Ordinal))
+            {
+                try
+                {
+                    using var indigo = new Indigo();
+                    using var inchi = new IndigoInchi(indigo);
+                    using var mol = indigo.loadMolecule(smiles);
+                    return inchi.getInchi(mol);
+                }
+                catch { }
+            }
+        }
+
+        return null;
+    }
+
+    public static string? TryConvertToInchiKey(string? input)
+    {
+        var inchiStr = TryConvertToInchi(input);
+        if (string.IsNullOrEmpty(inchiStr)) return null;
+
+        try
+        {
+            using var indigo = new Indigo();
+            using var inchi = new IndigoInchi(indigo);
+            return inchi.getInchiKey(inchiStr);
+        }
+        catch { }
+
+        return null;
+    }
+
     public static byte[]? RenderKet(string ket, RenderOptions? options = null)
     {
         if (string.IsNullOrWhiteSpace(ket)) return null;
@@ -318,6 +381,17 @@ public static class MoleculeRenderer
                         iupac = resolved.IupacName;
                     }
 
+                    string canInchi = "";
+                    string canInchiKey = "";
+                    try
+                    {
+                        using var inchi = new IndigoInchi(indigo);
+                        canInchi = inchi.getInchi(mol) ?? "";
+                        if (!string.IsNullOrEmpty(canInchi))
+                            canInchiKey = inchi.getInchiKey(canInchi) ?? "";
+                    }
+                    catch { }
+
                     return new MoleculeInfo
                     {
                         CompoundName = title,
@@ -326,6 +400,8 @@ public static class MoleculeRenderer
                         MolecularWeight = mw,
                         ExactMass = exact,
                         Smiles = canSmiles,
+                        InChI = canInchi,
+                        InChIKey = canInchiKey,
                         IsReaction = false
                     };
                 }

@@ -590,6 +590,51 @@ public static class PowerPointStructureManager
         }
     }
 
+    public static void CopySelectedMoleculeInchi(MSPowerPoint.Application app)
+    {
+        try
+        {
+            var sel = app.ActiveWindow?.Selection;
+            string? targetData = null;
+
+            if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 0)
+            {
+                var shape = sel.ShapeRange[1];
+                targetData = ExtractSmiles(shape) ?? ExtractStructure(shape);
+            }
+            else if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionText && sel.TextRange != null)
+            {
+                targetData = sel.TextRange.Text?.Trim();
+            }
+
+            var inchi = MoleculeRenderer.TryConvertToInchi(targetData);
+            if (string.IsNullOrEmpty(inchi))
+            {
+                MessageBox.Show(
+                    "Could not generate InChI from the selected structure.\nPlease select a molecular structure picture or text on the slide first.",
+                    "SMILES for PowerPoint",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            Clipboard.SetText(inchi!);
+            MessageBox.Show(
+                $"InChI copied to clipboard:\n\n{inchi}",
+                "InChI Copied",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "An error occurred while generating InChI:\n" + ex.Message,
+                "SMILES for PowerPoint",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+
     public static void CopySelectedMoleculeKet(MSPowerPoint.Application app)
     {
         try

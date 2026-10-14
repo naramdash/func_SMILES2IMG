@@ -233,6 +233,48 @@ public static partial class KetcherEditor
         }
     }
 
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy InChI")]
+    public static void CopySelectedMoleculeInchiCommand()
+    {
+        try
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            var targetShape = GetSelectedShape(app);
+            string? targetData = null;
+
+            if (targetShape != null)
+                targetData = ExtractSmiles(targetShape) ?? ExtractStructure(targetShape);
+            else if (app.ActiveCell is Excel.Range cell)
+                targetData = ExtractSmilesFromCell(cell) ?? ExtractKetFromCell(cell);
+
+            var inchi = MoleculeRenderer.TryConvertToInchi(targetData);
+            if (string.IsNullOrEmpty(inchi))
+            {
+                MessageBox.Show(
+                    "Could not generate InChI from the selected object or cell.\nPlease select a molecular structure image or formula cell.",
+                    "SMILES for Excel",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            Clipboard.SetText(inchi!);
+            MessageBox.Show(
+                $"InChI copied to clipboard:\n\n{inchi}",
+                "InChI Copied",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "An error occurred while copying InChI: " + ex.Message,
+                "SMILES for Excel",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+
     [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy Canvas Data (KET)")]
     public static void CopySelectedMoleculeKetCommand()
     {

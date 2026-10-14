@@ -330,13 +330,26 @@ internal static class Program
             var formVal = Functions.SmilesFormula("CCO");
             Check(Equals(formVal, "C2H6O"), "Functions.SmilesFormula for CCO is C2H6O, got: " + formVal);
 
+            // Test InChI & InChIKey conversion
+            var ethanolInchi = MoleculeRenderer.TryConvertToInchi("CCO");
+            Check(ethanolInchi != null && ethanolInchi.StartsWith("InChI=1S/C2H6O", StringComparison.OrdinalIgnoreCase), "InChI for CCO starts with InChI=1S/C2H6O, got: " + ethanolInchi);
+            var ethanolInchiKey = MoleculeRenderer.TryConvertToInchiKey("CCO");
+            Check(string.Equals(ethanolInchiKey, "LFQSCWFLJHTTHZ-UHFFFAOYSA-N", StringComparison.OrdinalIgnoreCase), "InChIKey for CCO is LFQSCWFLJHTTHZ-UHFFFAOYSA-N, got: " + ethanolInchiKey);
+            Check(!string.IsNullOrEmpty(aspirinInfo.InChI) && aspirinInfo.InChI.StartsWith("InChI=1S/C9H8O4"), "Aspirin info includes InChI");
+            Check(!string.IsNullOrEmpty(aspirinInfo.InChIKey), "Aspirin info includes InChIKey");
+
+            var inchiFuncVal = Functions.SmilesInchi("CCO");
+            Check(inchiFuncVal is string s && s.StartsWith("InChI=1S/C2H6O"), "Functions.SmilesInchi works for CCO");
+            var inchiKeyFuncVal = Functions.SmilesInchiKey("CCO");
+            Check(Equals(inchiKeyFuncVal, "LFQSCWFLJHTTHZ-UHFFFAOYSA-N"), "Functions.SmilesInchiKey works for CCO");
+
             // Test MoleculeInfoDialog instantiation
             using (var dlg = new Smiles2Img.Editor.MoleculeInfoDialog(aspirinInfo))
             {
                 Check(dlg != null && dlg.Text.Contains("Molecule"), "MoleculeInfoDialog instantiates cleanly");
             }
 
-            Console.WriteLine("PASS MoleculeInfo calculation (Name, Formula, MW, ExactMass) & PubChem resolution");
+            Console.WriteLine("PASS MoleculeInfo calculation (Name, Formula, MW, InChI, ExactMass) & PubChem resolution");
 
             // Test TryRenderStructure (Quick Paste helper)
             Check(MoleculeRenderer.TryRenderStructure("c1ccccc1", null, out var quickSmilesPng, out var quickKet, out var quickSmiles)

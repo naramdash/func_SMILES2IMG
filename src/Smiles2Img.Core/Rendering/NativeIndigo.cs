@@ -20,8 +20,8 @@ public static class NativeIndigo
         EnsureWebView2Loader();
 
         var dllsToLoad = Environment.Is64BitProcess
-            ? new[] { "vcruntime140.dll", "vcruntime140_1.dll", "msvcp140.dll", "indigo.dll", "indigo-renderer.dll" }
-            : new[] { "vcruntime140.dll", "msvcp140.dll", "indigo.dll", "indigo-renderer.dll" };
+            ? new[] { "vcruntime140.dll", "vcruntime140_1.dll", "msvcp140.dll", "indigo.dll", "indigo-renderer.dll", "indigo-inchi.dll" }
+            : new[] { "vcruntime140.dll", "msvcp140.dll", "indigo.dll", "indigo-renderer.dll", "indigo-inchi.dll" };
 
         foreach (var name in dllsToLoad)
         {

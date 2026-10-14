@@ -20,7 +20,7 @@ public sealed class MoleculeInfoDialog : Form
 
         Text = title ?? "Molecule Info & Chemical Properties";
         Width = 620;
-        Height = 480;
+        Height = 520;
         StartPosition = FormStartPosition.CenterScreen;
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MaximizeBox = false;
@@ -142,6 +142,10 @@ public sealed class MoleculeInfoDialog : Form
         }
 
         AddPropertyRow("Canonical SMILES:", _info.Smiles, _info.Smiles);
+        if (!string.IsNullOrWhiteSpace(_info.InChI))
+            AddPropertyRow("InChI:", _info.InChI, _info.InChI);
+        if (!string.IsNullOrWhiteSpace(_info.InChIKey))
+            AddPropertyRow("InChIKey:", _info.InChIKey, _info.InChIKey);
 
         Controls.Add(pnlContent);
 

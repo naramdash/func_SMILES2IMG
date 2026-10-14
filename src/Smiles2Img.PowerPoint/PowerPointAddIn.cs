@@ -165,6 +165,13 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopySmiles"" />
+          <button id=""btnCopyInchi""
+                  label=""Copy InChI""
+                  screentip=""Copy IUPAC InChI""
+                  supertip=""Extract or convert the selected molecular structure into an IUPAC InChI string and copy to clipboard.""
+                  imageMso=""Copy""
+                  size=""large""
+                  onAction=""OnCopyInchi"" />
           <button id=""btnCopyKet""
                   label=""Copy KET""
                   screentip=""Copy Canvas Data (KET)""
@@ -200,6 +207,11 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               imageMso=""Copy""
               onAction=""OnCopySmiles""
               insertBeforeMso=""Cut"" />
+      <button id=""btnContextPptPictureCopyInchi""
+              label=""Copy InChI""
+              imageMso=""Copy""
+              onAction=""OnCopyInchi""
+              insertBeforeMso=""Cut"" />
       <button id=""btnContextPptPictureCopyKet""
               label=""Copy Canvas Data (KET)""
               imageMso=""Copy""
@@ -227,6 +239,11 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               label=""Copy SMILES""
               imageMso=""Copy""
               onAction=""OnCopySmiles""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPptShapeCopyInchi""
+              label=""Copy InChI""
+              imageMso=""Copy""
+              onAction=""OnCopyInchi""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPptShapeCopyKet""
               label=""Copy Canvas Data (KET)""
@@ -277,6 +294,19 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Paste Structure""
                 imageMso=""Paste""
                 onAction=""OnQuickInsert"" />
+        <menuSeparator id=""sepContextPptTextSubCopy"" />
+        <button id=""btnContextPptTextCopySmiles""
+                label=""Copy SMILES""
+                imageMso=""Copy""
+                onAction=""OnCopySmiles"" />
+        <button id=""btnContextPptTextCopyInchi""
+                label=""Copy InChI""
+                imageMso=""Copy""
+                onAction=""OnCopyInchi"" />
+        <button id=""btnContextPptTextCopyKet""
+                label=""Copy Canvas Data (KET)""
+                imageMso=""Copy""
+                onAction=""OnCopyKet"" />
         <menuSeparator id=""sepContextPptTextSubInfo"" />
         <button id=""btnContextPptTextCopyInfo""
                 label=""Molecule Info (Name, MW &amp; Formula)...""
@@ -302,6 +332,19 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Paste Structure""
                 imageMso=""Paste""
                 onAction=""OnQuickInsert"" />
+        <menuSeparator id=""sepContextPptTableSubCopy"" />
+        <button id=""btnContextPptTableCopySmiles""
+                label=""Copy SMILES""
+                imageMso=""Copy""
+                onAction=""OnCopySmiles"" />
+        <button id=""btnContextPptTableCopyInchi""
+                label=""Copy InChI""
+                imageMso=""Copy""
+                onAction=""OnCopyInchi"" />
+        <button id=""btnContextPptTableCopyKet""
+                label=""Copy Canvas Data (KET)""
+                imageMso=""Copy""
+                onAction=""OnCopyKet"" />
         <menuSeparator id=""sepContextPptTableSubInfo"" />
         <button id=""btnContextPptTableCopyInfo""
                 label=""Molecule Info (Name, MW &amp; Formula)...""
@@ -341,6 +384,12 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
     {
         if (pptApp == null) return;
         PowerPointStructureManager.CopySelectedMoleculeSmiles(pptApp);
+    }
+
+    public void OnCopyInchi(IRibbonControl control)
+    {
+        if (pptApp == null) return;
+        PowerPointStructureManager.CopySelectedMoleculeInchi(pptApp);
     }
 
     public void OnCopyKet(IRibbonControl control)

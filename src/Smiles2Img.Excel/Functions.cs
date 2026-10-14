@@ -173,6 +173,58 @@ public static class Functions
         [ExcelArgument(Name = "ket", Description = "A Ketcher JSON string or cell reference.")] string ket)
         => SmilesFormula(ket);
 
+    [ExcelFunction(Name = "SMILES2INCHI", Category = "SMILES",
+        Description = "Converts a SMILES string, KET, or cell reference to an IUPAC InChI string.", IsMacroType = false)]
+    public static object SmilesInchi(
+        [ExcelArgument(Name = "smiles", Description = "A SMILES string, KET string, or cell reference.")] string smiles)
+    {
+        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2INCHI";
+        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
+        try
+        {
+            var inchi = MoleculeRenderer.TryConvertToInchi(smiles);
+            if (!string.IsNullOrEmpty(inchi))
+                return inchi!;
+            return ExcelError.ExcelErrorNA;
+        }
+        catch
+        {
+            return ExcelError.ExcelErrorValue;
+        }
+    }
+
+    [ExcelFunction(Name = "SMILES2INCHIKEY", Category = "SMILES",
+        Description = "Calculates hashed IUPAC InChIKey (27 characters) for a SMILES string, KET, or cell reference.", IsMacroType = false)]
+    public static object SmilesInchiKey(
+        [ExcelArgument(Name = "smiles", Description = "A SMILES string, KET string, or cell reference.")] string smiles)
+    {
+        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2INCHIKEY";
+        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
+        try
+        {
+            var key = MoleculeRenderer.TryConvertToInchiKey(smiles);
+            if (!string.IsNullOrEmpty(key))
+                return key!;
+            return ExcelError.ExcelErrorNA;
+        }
+        catch
+        {
+            return ExcelError.ExcelErrorValue;
+        }
+    }
+
+    [ExcelFunction(Name = "KET2INCHI", Category = "SMILES",
+        Description = "Converts a Ketcher (KET) structure to an IUPAC InChI string.", IsMacroType = false)]
+    public static object KetInchi(
+        [ExcelArgument(Name = "ket", Description = "A Ketcher JSON string or cell reference.")] string ket)
+        => SmilesInchi(ket);
+
+    [ExcelFunction(Name = "KET2INCHIKEY", Category = "SMILES",
+        Description = "Calculates hashed IUPAC InChIKey for a Ketcher (KET) structure.", IsMacroType = false)]
+    public static object KetInchiKey(
+        [ExcelArgument(Name = "ket", Description = "A Ketcher JSON string or cell reference.")] string ket)
+        => SmilesInchiKey(ket);
+
     /// <summary>
     /// Delegates parsing of Excel formula arguments to RenderOptions.
     /// </summary>
