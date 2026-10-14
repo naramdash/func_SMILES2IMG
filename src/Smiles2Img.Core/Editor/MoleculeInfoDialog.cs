@@ -134,12 +134,12 @@ public sealed class MoleculeInfoDialog : Form
 
         var btnCopyAll = new Button
         {
-            Text = "📋 Copy All Summary",
+            Text = "Copy All Summary",
             Font = new Font("Segoe UI", 9.25f, FontStyle.Bold),
             ForeColor = Color.White,
             BackColor = Color.FromArgb(24, 76, 120),
             FlatStyle = FlatStyle.Flat,
-            Size = new Size(185, 36),
+            Size = new Size(160, 36),
             Cursor = Cursors.Hand,
             Margin = new Padding(0, 2, 12, 0)
         };
