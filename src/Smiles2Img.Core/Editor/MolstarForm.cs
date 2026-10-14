@@ -33,10 +33,21 @@ public sealed class MolstarForm : Form
         this.initialSnapshotJson = initialSnapshotJson;
 
         Text = $"Mol* 3D Molecular Viewer - {this.contextTitle}";
-        Width = 1100;
-        Height = 760;
+
+        float dpiScale = 1.0f;
+        try
+        {
+            using var g = CreateGraphics();
+            dpiScale = Math.Max(1.0f, g.DpiX / 96.0f);
+        }
+        catch { }
+
+        var screen = Screen.FromControl(this) ?? Screen.PrimaryScreen;
+        int targetW = Math.Min((int)(1340 * dpiScale), (int)(screen.WorkingArea.Width * 0.94));
+        int targetH = Math.Min((int)(880 * dpiScale), (int)(screen.WorkingArea.Height * 0.94));
+        ClientSize = new Size(Math.Max(targetW, 1060), Math.Max(targetH, 720));
+        MinimumSize = new Size(Math.Min(880, screen.WorkingArea.Width), Math.Min(600, screen.WorkingArea.Height));
         StartPosition = FormStartPosition.CenterScreen;
-        MinimumSize = new Size(840, 580);
         BackColor = Color.FromArgb(15, 23, 42);
 
         webView = new WebView2

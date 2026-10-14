@@ -49,10 +49,21 @@ public sealed class KetcherForm : Form
             _ => $"Excel [{this.cellAddress}]"
         };
         Text = $"EPAM Ketcher Molecular Editor - {titleContext}";
-        Width = 1040;
-        Height = 720;
+
+        float dpiScale = 1.0f;
+        try
+        {
+            using var g = CreateGraphics();
+            dpiScale = Math.Max(1.0f, g.DpiX / 96.0f);
+        }
+        catch { }
+
+        var screen = Screen.FromControl(this) ?? Screen.PrimaryScreen;
+        int targetW = Math.Min((int)(1320 * dpiScale), (int)(screen.WorkingArea.Width * 0.94));
+        int targetH = Math.Min((int)(860 * dpiScale), (int)(screen.WorkingArea.Height * 0.94));
+        ClientSize = new Size(Math.Max(targetW, 1040), Math.Max(targetH, 700));
+        MinimumSize = new Size(Math.Min(880, screen.WorkingArea.Width), Math.Min(600, screen.WorkingArea.Height));
         StartPosition = FormStartPosition.CenterScreen;
-        MinimumSize = new Size(820, 560);
         BackColor = Color.FromArgb(30, 41, 59);
 
         if (AppIcon != null)

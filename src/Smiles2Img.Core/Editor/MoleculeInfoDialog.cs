@@ -20,8 +20,21 @@ public sealed class MoleculeInfoDialog : Form
         _info = info ?? throw new ArgumentNullException(nameof(info));
 
         Text = title ?? "Molecule Info & Chemical Properties";
-        ClientSize = new Size(820, 580);
-        MinimumSize = new Size(680, 480);
+
+        float dpiScale = 1.0f;
+        try
+        {
+            using var g = CreateGraphics();
+            dpiScale = Math.Max(1.0f, g.DpiX / 96.0f);
+        }
+        catch { }
+
+        var screen = Screen.FromControl(this) ?? Screen.PrimaryScreen;
+        int targetW = Math.Min((int)(940 * dpiScale), (int)(screen.WorkingArea.Width * 0.92));
+        int targetH = Math.Min((int)(660 * dpiScale), (int)(screen.WorkingArea.Height * 0.92));
+        ClientSize = new Size(Math.Max(targetW, 800), Math.Max(targetH, 560));
+        MinimumSize = new Size(Math.Min(700, screen.WorkingArea.Width), Math.Min(500, screen.WorkingArea.Height));
+
         StartPosition = FormStartPosition.CenterScreen;
         FormBorderStyle = FormBorderStyle.Sizable;
         MaximizeBox = true;
@@ -46,13 +59,14 @@ public sealed class MoleculeInfoDialog : Form
             ShowAlways = true
         };
 
-        // Header Panel
+        // Header Panel: Auto-sized so both lines are 100% visible on any DPI scale without clipping
         var pnlHeader = new Panel
         {
             Dock = DockStyle.Top,
-            Height = 72,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
             BackColor = Color.FromArgb(20, 50, 85),
-            Padding = new Padding(24, 12, 20, 10)
+            Padding = new Padding(24, 16, 20, 16)
         };
 
         var lblHeaderTitle = new Label
@@ -60,9 +74,10 @@ public sealed class MoleculeInfoDialog : Form
             Text = "Molecular Properties & Substance Info",
             UseMnemonic = false,
             ForeColor = Color.White,
-            Font = new Font("Segoe UI", 12.5f, FontStyle.Bold),
+            Font = new Font("Segoe UI", 13f, FontStyle.Bold),
             AutoSize = true,
-            Location = new Point(22, 12)
+            Dock = DockStyle.Top,
+            Margin = new Padding(0, 0, 0, 4)
         };
 
         var lblHeaderSub = new Label
@@ -70,19 +85,20 @@ public sealed class MoleculeInfoDialog : Form
             Text = "Calculated via Indigo Chemical Engine & Resolved via PubChem / RCSB PDB",
             UseMnemonic = false,
             ForeColor = Color.FromArgb(203, 225, 245),
-            Font = new Font("Segoe UI", 8.75f, FontStyle.Regular),
+            Font = new Font("Segoe UI", 9f, FontStyle.Regular),
             AutoSize = true,
-            Location = new Point(23, 40)
+            Dock = DockStyle.Top,
+            Margin = new Padding(0, 4, 0, 0)
         };
 
-        pnlHeader.Controls.Add(lblHeaderTitle);
         pnlHeader.Controls.Add(lblHeaderSub);
+        pnlHeader.Controls.Add(lblHeaderTitle);
 
         // Bottom Action Panel
         var pnlBottom = new Panel
         {
             Dock = DockStyle.Bottom,
-            Height = 64,
+            Height = (int)Math.Max(64, 56 * dpiScale),
             BackColor = Color.FromArgb(243, 244, 246),
             Padding = new Padding(16, 12, 16, 12)
         };
@@ -113,7 +129,7 @@ public sealed class MoleculeInfoDialog : Form
             ForeColor = Color.FromArgb(55, 65, 81),
             BackColor = Color.White,
             FlatStyle = FlatStyle.Flat,
-            Size = new Size(95, 36),
+            Size = new Size((int)(95 * dpiScale), 36),
             Cursor = Cursors.Hand,
             Margin = new Padding(0, 2, 0, 0)
         };
@@ -139,7 +155,9 @@ public sealed class MoleculeInfoDialog : Form
             ForeColor = Color.White,
             BackColor = Color.FromArgb(24, 76, 120),
             FlatStyle = FlatStyle.Flat,
-            Size = new Size(160, 36),
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            Padding = new Padding(14, 6, 14, 6),
             Cursor = Cursors.Hand,
             Margin = new Padding(0, 2, 12, 0)
         };
@@ -177,14 +195,18 @@ public sealed class MoleculeInfoDialog : Form
             Padding = new Padding(10, 8, 10, 8)
         };
 
-        tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 185f));
+        // Generous DPI-scaled column width for labels to prevent any truncation
+        float labelColWidth = Math.Max(230f, 185f * dpiScale);
+        float btnColWidth = Math.Max(100f, 85f * dpiScale);
+
+        tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, labelColWidth));
         tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
-        tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 95f));
+        tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, btnColWidth));
 
         int rowIndex = 0;
         void AddPropertyRow(string labelText, string valueText, string copyPayload, bool isBold = false, bool isCode = false)
         {
-            tblLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40f));
+            tblLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, Math.Max(40f, 36f * dpiScale)));
 
             var lbl = new Label
             {
@@ -275,7 +297,6 @@ public sealed class MoleculeInfoDialog : Form
 
         pnlContent.Controls.Add(tblLayout);
 
-        // WinForms docking order: Top and Bottom first, then Fill
         Controls.Add(pnlContent);
         Controls.Add(pnlBottom);
         Controls.Add(pnlHeader);
@@ -284,7 +305,6 @@ public sealed class MoleculeInfoDialog : Form
         AcceptButton = btnCopyAll;
         CancelButton = btnClose;
 
-        // Auto-copy full summary on launch
         try { Clipboard.SetText(_info.FormatClipboardSummary()); } catch { }
     }
 

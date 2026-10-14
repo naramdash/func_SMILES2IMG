@@ -321,45 +321,156 @@ public static partial class KetcherEditor
         }
     }
 
+    public static MoleculeInfo? GetSelectedMoleculeInfo(Excel.Application app)
+    {
+        var targetShape = GetSelectedShape(app);
+        string? targetData = null;
+
+        if (targetShape != null)
+        {
+            if (StructureMetadata.IsMolstar(targetShape.AlternativeText, targetShape.Title))
+            {
+                var meta = MolstarSessionManager.ParseAltText(targetShape.AlternativeText, targetShape.Title);
+                if (meta != null && !string.IsNullOrWhiteSpace(meta.Pdb))
+                {
+                    var pdbInfo = PubChemResolver.ResolvePdb(meta.Pdb);
+                    return new MoleculeInfo
+                    {
+                        CompoundName = !string.IsNullOrEmpty(pdbInfo.Title) ? pdbInfo.Title : $"PDB {meta.Pdb}",
+                        IupacName = $"PDB Entry: {meta.Pdb}",
+                        Formula = "Macromolecular Complex",
+                        MolecularWeight = pdbInfo.WeightKDa.HasValue ? pdbInfo.WeightKDa.Value * 1000.0 : 0.0,
+                        ExactMass = 0,
+                        Smiles = $"PDB:{meta.Pdb}",
+                        IsReaction = false
+                    };
+                }
+            }
+            targetData = ExtractSmiles(targetShape) ?? ExtractStructure(targetShape);
+        }
+        else if (app.ActiveCell is Excel.Range cell)
+        {
+            targetData = ExtractSmilesFromCell(cell) ?? ExtractKetFromCell(cell);
+        }
+
+        if (string.IsNullOrEmpty(targetData)) return null;
+        return MoleculeRenderer.TryGetMoleculeInfo(targetData);
+    }
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy Substance Name")]
+    public static void CopySelectedSubstanceNameCommand()
+    {
+        try
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            var info = GetSelectedMoleculeInfo(app);
+            if (info == null || string.IsNullOrWhiteSpace(info.CompoundName))
+            {
+                MessageBox.Show("Could not resolve substance name from the selected cell or image.", "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            Clipboard.SetText(info.CompoundName);
+            CopiedToast.Show("Substance Name", info.CompoundName);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error copying substance name: " + ex.Message, "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy Chemical Formula")]
+    public static void CopySelectedFormulaCommand()
+    {
+        try
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            var info = GetSelectedMoleculeInfo(app);
+            if (info == null || string.IsNullOrWhiteSpace(info.Formula))
+            {
+                MessageBox.Show("Could not compute formula from the selected cell or image.", "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            Clipboard.SetText(info.Formula);
+            CopiedToast.Show("Chemical Formula", info.Formula);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error copying chemical formula: " + ex.Message, "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy Molecular Weight")]
+    public static void CopySelectedMolecularWeightCommand()
+    {
+        try
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            var info = GetSelectedMoleculeInfo(app);
+            if (info == null || info.MolecularWeight <= 0)
+            {
+                MessageBox.Show("Could not compute molecular weight from the selected cell or image.", "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            string mw = info.MolecularWeight.ToString("F2");
+            Clipboard.SetText(mw);
+            CopiedToast.Show("Molecular Weight", $"{mw} g/mol");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error copying molecular weight: " + ex.Message, "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy InChIKey")]
+    public static void CopySelectedInchiKeyCommand()
+    {
+        try
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            var info = GetSelectedMoleculeInfo(app);
+            if (info == null || string.IsNullOrWhiteSpace(info.InChIKey))
+            {
+                MessageBox.Show("Could not generate InChIKey from the selected cell or image.", "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            Clipboard.SetText(info.InChIKey);
+            CopiedToast.Show("InChIKey", info.InChIKey);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error copying InChIKey: " + ex.Message, "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy All Summary")]
+    public static void CopySelectedAllSummaryCommand()
+    {
+        try
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            var info = GetSelectedMoleculeInfo(app);
+            if (info == null)
+            {
+                MessageBox.Show("Could not retrieve molecule info from the selected cell or image.", "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            string summary = info.FormatClipboardSummary();
+            Clipboard.SetText(summary);
+            CopiedToast.Show("Molecule Summary", "Full summary copied to clipboard");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error copying molecule summary: " + ex.Message, "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
     [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Molecule Info (Name, MW & Formula)...")]
     public static void CopySelectedMoleculeInfoCommand()
     {
         try
         {
             var app = (Excel.Application)ExcelDnaUtil.Application;
-            var targetShape = GetSelectedShape(app);
-            string? targetData = null;
-
-            if (targetShape != null)
-            {
-                if (StructureMetadata.IsMolstar(targetShape.AlternativeText, targetShape.Title))
-                {
-                    var meta = MolstarSessionManager.ParseAltText(targetShape.AlternativeText, targetShape.Title);
-                    if (meta != null && !string.IsNullOrWhiteSpace(meta.Pdb))
-                    {
-                        var pdbInfo = PubChemResolver.ResolvePdb(meta.Pdb);
-                        var molInfo = new MoleculeInfo
-                        {
-                            CompoundName = !string.IsNullOrEmpty(pdbInfo.Title) ? pdbInfo.Title : $"PDB {meta.Pdb}",
-                            IupacName = $"PDB Entry: {meta.Pdb}",
-                            Formula = "Macromolecular Complex",
-                            MolecularWeight = pdbInfo.WeightKDa.HasValue ? pdbInfo.WeightKDa.Value * 1000.0 : 0.0,
-                            ExactMass = 0,
-                            Smiles = $"PDB:{meta.Pdb}",
-                            IsReaction = false
-                        };
-                        MoleculeInfoDialog.ShowModal(molInfo, "Mol* 3D Macromolecule Info");
-                        return;
-                    }
-                }
-                targetData = ExtractSmiles(targetShape) ?? ExtractStructure(targetShape);
-            }
-            else if (app.ActiveCell is Excel.Range cell)
-            {
-                targetData = ExtractSmilesFromCell(cell);
-            }
-
-            var info = MoleculeRenderer.TryGetMoleculeInfo(targetData);
+            var info = GetSelectedMoleculeInfo(app);
             if (info == null)
             {
                 MessageBox.Show(
@@ -370,7 +481,11 @@ public static partial class KetcherEditor
                 return;
             }
 
-            MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties");
+            IWin32Window? owner = app.Hwnd != 0 ? new Win32Window((IntPtr)app.Hwnd) : null;
+            if (owner != null)
+                MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties", owner);
+            else
+                MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties");
         }
         catch (Exception ex)
         {

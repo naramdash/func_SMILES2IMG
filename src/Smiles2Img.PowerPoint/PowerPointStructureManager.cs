@@ -739,44 +739,149 @@ public static class PowerPointStructureManager
         }
     }
 
-    public static void CopySelectedMoleculeInfo(MSPowerPoint.Application app)
+    public static void CopySelectedMoleculeInfo(MSPowerPoint.Application app) => ShowSelectedMoleculeInfo(app);
+
+    public static MoleculeInfo? GetSelectedMoleculeInfo(MSPowerPoint.Application app)
+    {
+        var sel = app.ActiveWindow?.Selection;
+        if (sel == null) return null;
+
+        string? targetData = null;
+
+        if (sel.Type == MSPowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 0)
+        {
+            var shape = sel.ShapeRange[1];
+            if (StructureMetadata.IsMolstar(shape.AlternativeText, shape.Title))
+            {
+                var meta = MolstarSessionManager.ParseAltText(shape.AlternativeText, shape.Title);
+                if (meta != null && !string.IsNullOrWhiteSpace(meta.Pdb))
+                {
+                    var pdbInfo = PubChemResolver.ResolvePdb(meta.Pdb);
+                    return new MoleculeInfo
+                    {
+                        CompoundName = !string.IsNullOrEmpty(pdbInfo.Title) ? pdbInfo.Title : $"PDB {meta.Pdb}",
+                        IupacName = $"PDB Entry: {meta.Pdb}",
+                        Formula = "Macromolecular Complex",
+                        MolecularWeight = pdbInfo.WeightKDa.HasValue ? pdbInfo.WeightKDa.Value * 1000.0 : 0.0,
+                        ExactMass = 0,
+                        Smiles = $"PDB:{meta.Pdb}",
+                        IsReaction = false
+                    };
+                }
+            }
+            targetData = ExtractSmiles(shape) ?? ExtractStructure(shape);
+        }
+        else if (sel.Type == MSPowerPoint.PpSelectionType.ppSelectionText && sel.TextRange != null)
+        {
+            targetData = sel.TextRange.Text?.Trim();
+        }
+
+        if (string.IsNullOrEmpty(targetData)) return null;
+        return MoleculeRenderer.TryGetMoleculeInfo(targetData);
+    }
+
+    public static void CopySelectedSubstanceName(MSPowerPoint.Application app)
     {
         try
         {
-            var sel = app.ActiveWindow?.Selection;
-            string? targetData = null;
-
-            if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 0)
+            var info = GetSelectedMoleculeInfo(app);
+            if (info == null || string.IsNullOrWhiteSpace(info.CompoundName))
             {
-                var shape = sel.ShapeRange[1];
-                if (StructureMetadata.IsMolstar(shape.AlternativeText, shape.Title))
-                {
-                    var meta = MolstarSessionManager.ParseAltText(shape.AlternativeText, shape.Title);
-                    if (meta != null && !string.IsNullOrWhiteSpace(meta.Pdb))
-                    {
-                        var pdbInfo = PubChemResolver.ResolvePdb(meta.Pdb);
-                        var molInfo = new MoleculeInfo
-                        {
-                            CompoundName = !string.IsNullOrEmpty(pdbInfo.Title) ? pdbInfo.Title : $"PDB {meta.Pdb}",
-                            IupacName = $"PDB Entry: {meta.Pdb}",
-                            Formula = "Macromolecular Complex",
-                            MolecularWeight = pdbInfo.WeightKDa.HasValue ? pdbInfo.WeightKDa.Value * 1000.0 : 0.0,
-                            ExactMass = 0,
-                            Smiles = $"PDB:{meta.Pdb}",
-                            IsReaction = false
-                        };
-                        MoleculeInfoDialog.ShowModal(molInfo, "Mol* 3D Macromolecule Info");
-                        return;
-                    }
-                }
-                targetData = ExtractSmiles(shape) ?? ExtractStructure(shape);
+                MessageBox.Show("Could not resolve substance name from the selected structure.", "SMILES for PowerPoint", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
-            else if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionText && sel.TextRange != null)
-            {
-                targetData = sel.TextRange.Text?.Trim();
-            }
+            Clipboard.SetText(info.CompoundName);
+            CopiedToast.Show("Substance Name", info.CompoundName);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error copying substance name: " + ex.Message, "SMILES for PowerPoint", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
 
-            var info = MoleculeRenderer.TryGetMoleculeInfo(targetData);
+    public static void CopySelectedFormula(MSPowerPoint.Application app)
+    {
+        try
+        {
+            var info = GetSelectedMoleculeInfo(app);
+            if (info == null || string.IsNullOrWhiteSpace(info.Formula))
+            {
+                MessageBox.Show("Could not compute formula from the selected structure.", "SMILES for PowerPoint", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            Clipboard.SetText(info.Formula);
+            CopiedToast.Show("Chemical Formula", info.Formula);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error copying formula: " + ex.Message, "SMILES for PowerPoint", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    public static void CopySelectedMolecularWeight(MSPowerPoint.Application app)
+    {
+        try
+        {
+            var info = GetSelectedMoleculeInfo(app);
+            if (info == null || info.MolecularWeight <= 0)
+            {
+                MessageBox.Show("Could not compute molecular weight from the selected structure.", "SMILES for PowerPoint", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            string mw = info.MolecularWeight.ToString("F2");
+            Clipboard.SetText(mw);
+            CopiedToast.Show("Molecular Weight", $"{mw} g/mol");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error copying molecular weight: " + ex.Message, "SMILES for PowerPoint", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    public static void CopySelectedInchiKey(MSPowerPoint.Application app)
+    {
+        try
+        {
+            var info = GetSelectedMoleculeInfo(app);
+            if (info == null || string.IsNullOrWhiteSpace(info.InChIKey))
+            {
+                MessageBox.Show("Could not generate InChIKey from the selected structure.", "SMILES for PowerPoint", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            Clipboard.SetText(info.InChIKey);
+            CopiedToast.Show("InChIKey", info.InChIKey);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error copying InChIKey: " + ex.Message, "SMILES for PowerPoint", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    public static void CopySelectedAllSummary(MSPowerPoint.Application app)
+    {
+        try
+        {
+            var info = GetSelectedMoleculeInfo(app);
+            if (info == null)
+            {
+                MessageBox.Show("Could not retrieve molecule info from the selected structure.", "SMILES for PowerPoint", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            string summary = info.FormatClipboardSummary();
+            Clipboard.SetText(summary);
+            CopiedToast.Show("Molecule Summary", "Full summary copied to clipboard");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error copying molecule summary: " + ex.Message, "SMILES for PowerPoint", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    public static void ShowSelectedMoleculeInfo(MSPowerPoint.Application app)
+    {
+        try
+        {
+            var info = GetSelectedMoleculeInfo(app);
             if (info == null)
             {
                 MessageBox.Show(
@@ -787,7 +892,11 @@ public static class PowerPointStructureManager
                 return;
             }
 
-            MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties");
+            var hwnd = GetHwnd(app);
+            if (hwnd != IntPtr.Zero)
+                MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties", new Win32Window(hwnd));
+            else
+                MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties");
         }
         catch (Exception ex)
         {

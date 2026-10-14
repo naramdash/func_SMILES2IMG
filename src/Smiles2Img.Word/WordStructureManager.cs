@@ -775,71 +775,174 @@ public static class WordStructureManager
         }
     }
 
-    public static void CopySelectedMoleculeInfo(MSWord.Application app)
+    public static void CopySelectedMoleculeInfo(MSWord.Application app) => ShowSelectedMoleculeInfo(app);
+
+    public static MoleculeInfo? GetSelectedMoleculeInfo(MSWord.Application app)
+    {
+        var sel = app.Selection;
+        if (sel == null) return null;
+
+        string? targetData = null;
+
+        if (sel.InlineShapes.Count > 0)
+        {
+            var targetInline = sel.InlineShapes[1];
+            if (StructureMetadata.IsMolstar(targetInline.AlternativeText, targetInline.Title))
+            {
+                var meta = MolstarSessionManager.ParseAltText(targetInline.AlternativeText, targetInline.Title);
+                if (meta != null && !string.IsNullOrWhiteSpace(meta.Pdb))
+                {
+                    var pdbInfo = PubChemResolver.ResolvePdb(meta.Pdb);
+                    return new MoleculeInfo
+                    {
+                        CompoundName = !string.IsNullOrEmpty(pdbInfo.Title) ? pdbInfo.Title : $"PDB {meta.Pdb}",
+                        IupacName = $"PDB Entry: {meta.Pdb}",
+                        Formula = "Macromolecular Complex",
+                        MolecularWeight = pdbInfo.WeightKDa.HasValue ? pdbInfo.WeightKDa.Value * 1000.0 : 0.0,
+                        ExactMass = 0,
+                        Smiles = $"PDB:{meta.Pdb}",
+                        IsReaction = false
+                    };
+                }
+            }
+            targetData = ExtractSmiles(targetInline.Title, targetInline.AlternativeText)
+                         ?? ExtractStructure(targetInline.AlternativeText, targetInline.Title);
+        }
+        else if (sel.ShapeRange.Count > 0)
+        {
+            var targetShape = sel.ShapeRange[1];
+            if (StructureMetadata.IsMolstar(targetShape.AlternativeText, targetShape.Title))
+            {
+                var meta = MolstarSessionManager.ParseAltText(targetShape.AlternativeText, targetShape.Title);
+                if (meta != null && !string.IsNullOrWhiteSpace(meta.Pdb))
+                {
+                    var pdbInfo = PubChemResolver.ResolvePdb(meta.Pdb);
+                    return new MoleculeInfo
+                    {
+                        CompoundName = !string.IsNullOrEmpty(pdbInfo.Title) ? pdbInfo.Title : $"PDB {meta.Pdb}",
+                        IupacName = $"PDB Entry: {meta.Pdb}",
+                        Formula = "Macromolecular Complex",
+                        MolecularWeight = pdbInfo.WeightKDa.HasValue ? pdbInfo.WeightKDa.Value * 1000.0 : 0.0,
+                        ExactMass = 0,
+                        Smiles = $"PDB:{meta.Pdb}",
+                        IsReaction = false
+                    };
+                }
+            }
+            targetData = ExtractSmiles(targetShape.Title, targetShape.AlternativeText)
+                         ?? ExtractStructure(targetShape.AlternativeText, targetShape.Title);
+        }
+        else if (sel.Start != sel.End && !string.IsNullOrWhiteSpace(sel.Text))
+        {
+            targetData = sel.Text.Trim();
+        }
+
+        if (string.IsNullOrEmpty(targetData)) return null;
+        return MoleculeRenderer.TryGetMoleculeInfo(targetData);
+    }
+
+    public static void CopySelectedSubstanceName(MSWord.Application app)
     {
         try
         {
-            var sel = app.Selection;
-            string? targetData = null;
+            var info = GetSelectedMoleculeInfo(app);
+            if (info == null || string.IsNullOrWhiteSpace(info.CompoundName))
+            {
+                MessageBox.Show("Could not resolve substance name from the selected structure.", "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            Clipboard.SetText(info.CompoundName);
+            CopiedToast.Show("Substance Name", info.CompoundName);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error copying substance name: " + ex.Message, "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
 
-            if (sel.InlineShapes.Count > 0)
+    public static void CopySelectedFormula(MSWord.Application app)
+    {
+        try
+        {
+            var info = GetSelectedMoleculeInfo(app);
+            if (info == null || string.IsNullOrWhiteSpace(info.Formula))
             {
-                var targetInline = sel.InlineShapes[1];
-                if (StructureMetadata.IsMolstar(targetInline.AlternativeText, targetInline.Title))
-                {
-                    var meta = MolstarSessionManager.ParseAltText(targetInline.AlternativeText, targetInline.Title);
-                    if (meta != null && !string.IsNullOrWhiteSpace(meta.Pdb))
-                    {
-                        var pdbInfo = PubChemResolver.ResolvePdb(meta.Pdb);
-                        var molInfo = new MoleculeInfo
-                        {
-                            CompoundName = !string.IsNullOrEmpty(pdbInfo.Title) ? pdbInfo.Title : $"PDB {meta.Pdb}",
-                            IupacName = $"PDB Entry: {meta.Pdb}",
-                            Formula = "Macromolecular Complex",
-                            MolecularWeight = pdbInfo.WeightKDa.HasValue ? pdbInfo.WeightKDa.Value * 1000.0 : 0.0,
-                            ExactMass = 0,
-                            Smiles = $"PDB:{meta.Pdb}",
-                            IsReaction = false
-                        };
-                        MoleculeInfoDialog.ShowModal(molInfo, "Mol* 3D Macromolecule Info");
-                        return;
-                    }
-                }
-                targetData = ExtractSmiles(targetInline.Title, targetInline.AlternativeText)
-                             ?? ExtractStructure(targetInline.AlternativeText, targetInline.Title);
+                MessageBox.Show("Could not compute formula from the selected structure.", "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
-            else if (sel.ShapeRange.Count > 0)
-            {
-                var targetShape = sel.ShapeRange[1];
-                if (StructureMetadata.IsMolstar(targetShape.AlternativeText, targetShape.Title))
-                {
-                    var meta = MolstarSessionManager.ParseAltText(targetShape.AlternativeText, targetShape.Title);
-                    if (meta != null && !string.IsNullOrWhiteSpace(meta.Pdb))
-                    {
-                        var pdbInfo = PubChemResolver.ResolvePdb(meta.Pdb);
-                        var molInfo = new MoleculeInfo
-                        {
-                            CompoundName = !string.IsNullOrEmpty(pdbInfo.Title) ? pdbInfo.Title : $"PDB {meta.Pdb}",
-                            IupacName = $"PDB Entry: {meta.Pdb}",
-                            Formula = "Macromolecular Complex",
-                            MolecularWeight = pdbInfo.WeightKDa.HasValue ? pdbInfo.WeightKDa.Value * 1000.0 : 0.0,
-                            ExactMass = 0,
-                            Smiles = $"PDB:{meta.Pdb}",
-                            IsReaction = false
-                        };
-                        MoleculeInfoDialog.ShowModal(molInfo, "Mol* 3D Macromolecule Info");
-                        return;
-                    }
-                }
-                targetData = ExtractSmiles(targetShape.Title, targetShape.AlternativeText)
-                             ?? ExtractStructure(targetShape.AlternativeText, targetShape.Title);
-            }
-            else if (sel != null && sel.Start != sel.End && !string.IsNullOrWhiteSpace(sel.Text))
-            {
-                targetData = sel.Text.Trim();
-            }
+            Clipboard.SetText(info.Formula);
+            CopiedToast.Show("Chemical Formula", info.Formula);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error copying formula: " + ex.Message, "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
 
-            var info = MoleculeRenderer.TryGetMoleculeInfo(targetData);
+    public static void CopySelectedMolecularWeight(MSWord.Application app)
+    {
+        try
+        {
+            var info = GetSelectedMoleculeInfo(app);
+            if (info == null || info.MolecularWeight <= 0)
+            {
+                MessageBox.Show("Could not compute molecular weight from the selected structure.", "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            string mw = info.MolecularWeight.ToString("F2");
+            Clipboard.SetText(mw);
+            CopiedToast.Show("Molecular Weight", $"{mw} g/mol");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error copying molecular weight: " + ex.Message, "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    public static void CopySelectedInchiKey(MSWord.Application app)
+    {
+        try
+        {
+            var info = GetSelectedMoleculeInfo(app);
+            if (info == null || string.IsNullOrWhiteSpace(info.InChIKey))
+            {
+                MessageBox.Show("Could not generate InChIKey from the selected structure.", "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            Clipboard.SetText(info.InChIKey);
+            CopiedToast.Show("InChIKey", info.InChIKey);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error copying InChIKey: " + ex.Message, "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    public static void CopySelectedAllSummary(MSWord.Application app)
+    {
+        try
+        {
+            var info = GetSelectedMoleculeInfo(app);
+            if (info == null)
+            {
+                MessageBox.Show("Could not retrieve molecule info from the selected structure.", "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            string summary = info.FormatClipboardSummary();
+            Clipboard.SetText(summary);
+            CopiedToast.Show("Molecule Summary", "Full summary copied to clipboard");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error copying molecule summary: " + ex.Message, "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    public static void ShowSelectedMoleculeInfo(MSWord.Application app)
+    {
+        try
+        {
+            var info = GetSelectedMoleculeInfo(app);
             if (info == null)
             {
                 MessageBox.Show(
@@ -850,7 +953,11 @@ public static class WordStructureManager
                 return;
             }
 
-            MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties");
+            var hwnd = GetHwnd(app);
+            if (hwnd != IntPtr.Zero)
+                MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties", new Win32Window(hwnd));
+            else
+                MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties");
         }
         catch (Exception ex)
         {
