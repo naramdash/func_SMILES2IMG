@@ -10,6 +10,8 @@ public sealed class InvalidSmilesException(string message) : Exception(message);
 
 public sealed class MoleculeInfo
 {
+    public string CompoundName { get; set; } = "";
+    public string IupacName { get; set; } = "";
     public string Formula { get; set; } = "";
     public double MolecularWeight { get; set; }
     public double ExactMass { get; set; }
@@ -20,14 +22,37 @@ public sealed class MoleculeInfo
     {
         if (IsReaction)
             return $"Reaction SMILES: {Smiles}";
-        return $"Formula: {Formula} | MW: {MolecularWeight:F2} g/mol | Exact Mass: {ExactMass:F4} | SMILES: {Smiles}";
+
+        var parts = new List<string>();
+        if (!string.IsNullOrWhiteSpace(CompoundName))
+            parts.Add($"Name: {CompoundName}");
+        if (!string.IsNullOrWhiteSpace(IupacName) && !string.Equals(IupacName, CompoundName, StringComparison.OrdinalIgnoreCase))
+            parts.Add($"IUPAC: {IupacName}");
+        parts.Add($"Formula: {Formula}");
+        parts.Add($"MW: {MolecularWeight:F2} g/mol");
+        if (ExactMass > 0)
+            parts.Add($"Exact Mass: {ExactMass:F4}");
+        parts.Add($"SMILES: {Smiles}");
+
+        return string.Join(" | ", parts);
     }
 
     public string FormatDisplayMessage()
     {
         if (IsReaction)
             return $"[Reaction]\n\n• Reaction SMILES: {Smiles}";
-        return $"• Formula: {Formula}\n• Molecular Weight (MW): {MolecularWeight:F2} g/mol\n• Exact Mass: {ExactMass:F4}\n• Canonical SMILES: {Smiles}";
+
+        var sb = new System.Text.StringBuilder();
+        if (!string.IsNullOrWhiteSpace(CompoundName))
+            sb.AppendLine($"• Substance Name: {CompoundName}");
+        if (!string.IsNullOrWhiteSpace(IupacName) && !string.Equals(IupacName, CompoundName, StringComparison.OrdinalIgnoreCase))
+            sb.AppendLine($"• IUPAC Name: {IupacName}");
+        sb.AppendLine($"• Formula: {Formula}");
+        sb.AppendLine($"• Molecular Weight (MW): {MolecularWeight:F2} g/mol");
+        if (ExactMass > 0)
+            sb.AppendLine($"• Exact Mass: {ExactMass:F4}");
+        sb.Append($"• Canonical SMILES: {Smiles}");
+        return sb.ToString();
     }
 }
 
@@ -284,8 +309,19 @@ public static class MoleculeRenderer
                     var canSmiles = "";
                     try { canSmiles = mol.canonicalSmiles() ?? ""; } catch { try { canSmiles = mol.smiles() ?? ""; } catch { } }
 
+                    string title = "";
+                    string iupac = "";
+                    if (!string.IsNullOrWhiteSpace(canSmiles))
+                    {
+                        var resolved = PubChemResolver.ResolveCompound(canSmiles);
+                        title = resolved.CompoundName;
+                        iupac = resolved.IupacName;
+                    }
+
                     return new MoleculeInfo
                     {
+                        CompoundName = title,
+                        IupacName = iupac,
                         Formula = rawFormula,
                         MolecularWeight = mw,
                         ExactMass = exact,

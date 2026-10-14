@@ -310,7 +310,7 @@ internal static class Program
             Check(ketFloatAttr.Name == "KET2IMG.FLOAT" && ketFloatAttr.IsMacroType, "KET2IMG.FLOAT function registration");
             Console.WriteLine("PASS Native KET rendering, IsKet, and KET2IMG function registration");
 
-            // Test MoleculeInfo calculation (Formula, Molecular Weight, Exact Mass, Canonical SMILES)
+            // Test MoleculeInfo calculation (Formula, Molecular Weight, Exact Mass, Canonical SMILES, PubChem Name)
             var aspirinInfo = MoleculeRenderer.TryGetMoleculeInfo("CC(=O)Oc1ccccc1C(=O)O");
             Check(aspirinInfo != null, "TryGetMoleculeInfo succeeds for Aspirin SMILES");
             Check(aspirinInfo!.Formula == "C9H8O4", "Aspirin formula is C9H8O4, got: " + aspirinInfo.Formula);
@@ -318,9 +318,25 @@ internal static class Program
             Check(Math.Abs(aspirinInfo.ExactMass - 180.0423) < 0.01, "Aspirin Exact Mass ~ 180.0423, got: " + aspirinInfo.ExactMass);
             Check(!string.IsNullOrEmpty(aspirinInfo.Smiles), "Aspirin canonical SMILES non-empty");
 
+            var resolvedEthanol = PubChemResolver.ResolveCompound("CCO");
+            Check(string.Equals(resolvedEthanol.CompoundName, "Ethanol", StringComparison.OrdinalIgnoreCase), "PubChem resolves CCO to Ethanol, got: " + resolvedEthanol.CompoundName);
+
             var ketInfo = MoleculeRenderer.TryGetMoleculeInfo(sampleKet);
             Check(ketInfo != null && ketInfo.Formula == "CH4O", "TryGetMoleculeInfo succeeds for methanol KET, got: " + (ketInfo?.Formula ?? "null"));
-            Console.WriteLine("PASS MoleculeInfo calculation (Formula, MW, ExactMass)");
+
+            // Test Excel Functions SMILES2NAME / SMILES2MW / SMILES2FORMULA
+            var mwVal = Functions.SmilesMW("CCO");
+            Check(mwVal is double d && Math.Abs(d - 46.07) < 0.1, "Functions.SmilesMW for CCO ~ 46.07, got: " + mwVal);
+            var formVal = Functions.SmilesFormula("CCO");
+            Check(Equals(formVal, "C2H6O"), "Functions.SmilesFormula for CCO is C2H6O, got: " + formVal);
+
+            // Test MoleculeInfoDialog instantiation
+            using (var dlg = new Smiles2Img.Editor.MoleculeInfoDialog(aspirinInfo))
+            {
+                Check(dlg != null && dlg.Text.Contains("Molecule"), "MoleculeInfoDialog instantiates cleanly");
+            }
+
+            Console.WriteLine("PASS MoleculeInfo calculation (Name, Formula, MW, ExactMass) & PubChem resolution");
 
             // Test TryRenderStructure (Quick Paste helper)
             Check(MoleculeRenderer.TryRenderStructure("c1ccccc1", null, out var quickSmilesPng, out var quickKet, out var quickSmiles)

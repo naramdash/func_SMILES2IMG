@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
+using Smiles2Img.Editor;
 using Smiles2Img.Rendering;
 using MSWord = Microsoft.Office.Interop.Word;
 
@@ -732,12 +733,52 @@ public static class WordStructureManager
             if (sel.InlineShapes.Count > 0)
             {
                 var targetInline = sel.InlineShapes[1];
+                if (StructureMetadata.IsMolstar(targetInline.AlternativeText, targetInline.Title))
+                {
+                    var meta = MolstarSessionManager.ParseAltText(targetInline.AlternativeText, targetInline.Title);
+                    if (meta != null && !string.IsNullOrWhiteSpace(meta.Pdb))
+                    {
+                        var pdbInfo = PubChemResolver.ResolvePdb(meta.Pdb);
+                        var molInfo = new MoleculeInfo
+                        {
+                            CompoundName = !string.IsNullOrEmpty(pdbInfo.Title) ? pdbInfo.Title : $"PDB {meta.Pdb}",
+                            IupacName = $"PDB Entry: {meta.Pdb}",
+                            Formula = "Macromolecular Complex",
+                            MolecularWeight = pdbInfo.WeightKDa.HasValue ? pdbInfo.WeightKDa.Value * 1000.0 : 0.0,
+                            ExactMass = 0,
+                            Smiles = $"PDB:{meta.Pdb}",
+                            IsReaction = false
+                        };
+                        MoleculeInfoDialog.ShowModal(molInfo, "Mol* 3D Macromolecule Info");
+                        return;
+                    }
+                }
                 targetData = ExtractSmiles(targetInline.Title, targetInline.AlternativeText)
                              ?? ExtractStructure(targetInline.AlternativeText, targetInline.Title);
             }
             else if (sel.ShapeRange.Count > 0)
             {
                 var targetShape = sel.ShapeRange[1];
+                if (StructureMetadata.IsMolstar(targetShape.AlternativeText, targetShape.Title))
+                {
+                    var meta = MolstarSessionManager.ParseAltText(targetShape.AlternativeText, targetShape.Title);
+                    if (meta != null && !string.IsNullOrWhiteSpace(meta.Pdb))
+                    {
+                        var pdbInfo = PubChemResolver.ResolvePdb(meta.Pdb);
+                        var molInfo = new MoleculeInfo
+                        {
+                            CompoundName = !string.IsNullOrEmpty(pdbInfo.Title) ? pdbInfo.Title : $"PDB {meta.Pdb}",
+                            IupacName = $"PDB Entry: {meta.Pdb}",
+                            Formula = "Macromolecular Complex",
+                            MolecularWeight = pdbInfo.WeightKDa.HasValue ? pdbInfo.WeightKDa.Value * 1000.0 : 0.0,
+                            ExactMass = 0,
+                            Smiles = $"PDB:{meta.Pdb}",
+                            IsReaction = false
+                        };
+                        MoleculeInfoDialog.ShowModal(molInfo, "Mol* 3D Macromolecule Info");
+                        return;
+                    }
+                }
                 targetData = ExtractSmiles(targetShape.Title, targetShape.AlternativeText)
                              ?? ExtractStructure(targetShape.AlternativeText, targetShape.Title);
             }
@@ -750,19 +791,14 @@ public static class WordStructureManager
             if (info == null)
             {
                 MessageBox.Show(
-                    "Could not calculate formula/molecular weight from the selected structure.\nPlease select a molecular structure picture first.",
+                    "Could not retrieve molecule properties from the selected structure.\nPlease select a molecular structure picture or text first.",
                     "SMILES for Word",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
             }
 
-            Clipboard.SetText(info.FormatClipboardSummary());
-            MessageBox.Show(
-                $"Molecular properties copied to clipboard:\n\n{info.FormatDisplayMessage()}",
-                "Molecule Info (Formula / MW)",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties");
         }
         catch (Exception ex)
         {

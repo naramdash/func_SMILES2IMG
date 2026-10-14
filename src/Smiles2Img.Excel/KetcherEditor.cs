@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using ExcelDna.Integration;
 using ExcelDna.Logging;
 using Microsoft.Office.Core;
+using Smiles2Img.Editor;
 using Smiles2Img.Rendering;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -278,7 +279,7 @@ public static partial class KetcherEditor
         }
     }
 
-    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy Molecule Info (Formula & MW)")]
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Molecule Info (Name, MW & Formula)...")]
     public static void CopySelectedMoleculeInfoCommand()
     {
         try
@@ -288,27 +289,46 @@ public static partial class KetcherEditor
             string? targetData = null;
 
             if (targetShape != null)
+            {
+                if (StructureMetadata.IsMolstar(targetShape.AlternativeText, targetShape.Title))
+                {
+                    var meta = MolstarSessionManager.ParseAltText(targetShape.AlternativeText, targetShape.Title);
+                    if (meta != null && !string.IsNullOrWhiteSpace(meta.Pdb))
+                    {
+                        var pdbInfo = PubChemResolver.ResolvePdb(meta.Pdb);
+                        var molInfo = new MoleculeInfo
+                        {
+                            CompoundName = !string.IsNullOrEmpty(pdbInfo.Title) ? pdbInfo.Title : $"PDB {meta.Pdb}",
+                            IupacName = $"PDB Entry: {meta.Pdb}",
+                            Formula = "Macromolecular Complex",
+                            MolecularWeight = pdbInfo.WeightKDa.HasValue ? pdbInfo.WeightKDa.Value * 1000.0 : 0.0,
+                            ExactMass = 0,
+                            Smiles = $"PDB:{meta.Pdb}",
+                            IsReaction = false
+                        };
+                        MoleculeInfoDialog.ShowModal(molInfo, "Mol* 3D Macromolecule Info");
+                        return;
+                    }
+                }
                 targetData = ExtractSmiles(targetShape) ?? ExtractStructure(targetShape);
+            }
             else if (app.ActiveCell is Excel.Range cell)
+            {
                 targetData = ExtractSmilesFromCell(cell);
+            }
 
             var info = MoleculeRenderer.TryGetMoleculeInfo(targetData);
             if (info == null)
             {
                 MessageBox.Show(
-                    "Cannot calculate formula/molecular weight for the selected cell or image.\nPlease select a molecular structure cell or image.",
+                    "Cannot retrieve formula/molecular weight for the selected cell or image.\nPlease select a molecular structure cell or image.",
                     "SMILES for Excel",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
             }
 
-            Clipboard.SetText(info.FormatClipboardSummary());
-            MessageBox.Show(
-                $"Molecular property information copied to clipboard:\n\n{info.FormatDisplayMessage()}",
-                "Molecule Info (Formula & MW)",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties");
         }
         catch (Exception ex)
         {

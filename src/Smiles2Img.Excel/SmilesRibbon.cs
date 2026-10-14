@@ -54,9 +54,9 @@ public class SmilesRibbon : ExcelRibbon
                   size=""large""
                   onAction=""OnCopyKet"" />
           <button id=""btnCopyMoleculeInfo""
-                  label=""Copy Molecule Info""
-                  screentip=""Copy Formula &amp; Molecular Weight""
-                  supertip=""Calculates chemical formula, molecular weight (MW), and exact mass, and copies them to the clipboard.""
+                  label=""Molecule Info""
+                  screentip=""Molecule Info &amp; Substance Properties""
+                  supertip=""Display and copy chemical substance name, IUPAC name, molecular weight (MW), formula, and SMILES.""
                   imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopyMoleculeInfo"" />
@@ -102,7 +102,7 @@ public class SmilesRibbon : ExcelRibbon
                 imageMso=""Copy""
                 onAction=""OnCopyKet"" />
         <button id=""btnContextCopyInfoCell""
-                label=""Copy Molecule Info (Formula &amp; MW)""
+                label=""Molecule Info (Name, MW &amp; Formula)...""
                 imageMso=""Copy""
                 onAction=""OnCopyMoleculeInfo"" />
       </menu>
@@ -136,7 +136,7 @@ public class SmilesRibbon : ExcelRibbon
                 imageMso=""Copy""
                 onAction=""OnCopyKet"" />
         <button id=""btnContextListCopyInfoCell""
-                label=""Copy Molecule Info (Formula &amp; MW)""
+                label=""Molecule Info (Name, MW &amp; Formula)...""
                 imageMso=""Copy""
                 onAction=""OnCopyMoleculeInfo"" />
       </menu>
@@ -159,7 +159,7 @@ public class SmilesRibbon : ExcelRibbon
               onAction=""OnCopyKet""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureCopyInfo""
-              label=""Copy Molecule Info (Formula &amp; MW)""
+              label=""Molecule Info (Name, MW &amp; Formula)...""
               imageMso=""Copy""
               onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
@@ -182,7 +182,7 @@ public class SmilesRibbon : ExcelRibbon
               onAction=""OnCopyKet""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeCopyInfo""
-              label=""Copy Molecule Info (Formula &amp; MW)""
+              label=""Molecule Info (Name, MW &amp; Formula)...""
               imageMso=""Copy""
               onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />

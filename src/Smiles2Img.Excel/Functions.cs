@@ -95,6 +95,84 @@ public static class Functions
         }
     }
 
+    [ExcelFunction(Name = "SMILES2NAME", Category = "SMILES",
+        Description = "Resolves chemical substance name from PubChem for a SMILES string, KET, or cell reference.", IsMacroType = false)]
+    public static object SmilesName(
+        [ExcelArgument(Name = "smiles", Description = "A SMILES string, KET string, or cell reference.")] string smiles)
+    {
+        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2NAME";
+        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
+        try
+        {
+            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles);
+            if (info != null && !string.IsNullOrWhiteSpace(info.CompoundName))
+                return info.CompoundName;
+            return ExcelError.ExcelErrorNA;
+        }
+        catch
+        {
+            return ExcelError.ExcelErrorValue;
+        }
+    }
+
+    [ExcelFunction(Name = "SMILES2MW", Category = "SMILES",
+        Description = "Calculates molecular weight (MW) in g/mol for a SMILES string, KET, or cell reference.", IsMacroType = false)]
+    public static object SmilesMW(
+        [ExcelArgument(Name = "smiles", Description = "A SMILES string, KET string, or cell reference.")] string smiles)
+    {
+        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2MW";
+        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
+        try
+        {
+            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles);
+            if (info != null && !info.IsReaction && info.MolecularWeight > 0)
+                return Math.Round(info.MolecularWeight, 2);
+            return ExcelError.ExcelErrorNA;
+        }
+        catch
+        {
+            return ExcelError.ExcelErrorValue;
+        }
+    }
+
+    [ExcelFunction(Name = "SMILES2FORMULA", Category = "SMILES",
+        Description = "Calculates Hill chemical formula for a SMILES string, KET, or cell reference.", IsMacroType = false)]
+    public static object SmilesFormula(
+        [ExcelArgument(Name = "smiles", Description = "A SMILES string, KET string, or cell reference.")] string smiles)
+    {
+        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2FORMULA";
+        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
+        try
+        {
+            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles);
+            if (info != null && !info.IsReaction && !string.IsNullOrWhiteSpace(info.Formula))
+                return info.Formula;
+            return ExcelError.ExcelErrorNA;
+        }
+        catch
+        {
+            return ExcelError.ExcelErrorValue;
+        }
+    }
+
+    [ExcelFunction(Name = "KET2NAME", Category = "SMILES",
+        Description = "Resolves chemical substance name from PubChem for a Ketcher (KET) structure.", IsMacroType = false)]
+    public static object KetName(
+        [ExcelArgument(Name = "ket", Description = "A Ketcher JSON string or cell reference.")] string ket)
+        => SmilesName(ket);
+
+    [ExcelFunction(Name = "KET2MW", Category = "SMILES",
+        Description = "Calculates molecular weight (MW) in g/mol for a Ketcher (KET) structure.", IsMacroType = false)]
+    public static object KetMW(
+        [ExcelArgument(Name = "ket", Description = "A Ketcher JSON string or cell reference.")] string ket)
+        => SmilesMW(ket);
+
+    [ExcelFunction(Name = "KET2FORMULA", Category = "SMILES",
+        Description = "Calculates Hill chemical formula for a Ketcher (KET) structure.", IsMacroType = false)]
+    public static object KetFormula(
+        [ExcelArgument(Name = "ket", Description = "A Ketcher JSON string or cell reference.")] string ket)
+        => SmilesFormula(ket);
+
     /// <summary>
     /// Delegates parsing of Excel formula arguments to RenderOptions.
     /// </summary>

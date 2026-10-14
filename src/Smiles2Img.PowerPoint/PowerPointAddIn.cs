@@ -173,9 +173,9 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   size=""large""
                   onAction=""OnCopyKet"" />
           <button id=""btnCopyMoleculeInfo""
-                  label=""Copy Molecule Info""
-                  screentip=""Copy Formula &amp; Molecular Weight""
-                  supertip=""Calculate and copy chemical formula, molecular weight (MW), and exact mass to clipboard.""
+                  label=""Molecule Info""
+                  screentip=""Molecule Info &amp; Substance Properties""
+                  supertip=""Display and copy chemical substance name, IUPAC name, molecular weight (MW), formula, and SMILES.""
                   imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopyMoleculeInfo"" />
@@ -206,7 +206,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               onAction=""OnCopyKet""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPptPictureCopyInfo""
-              label=""Copy Molecule Info (Formula &amp; MW)""
+              label=""Molecule Info (Name, MW &amp; Formula)...""
               imageMso=""Copy""
               onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
@@ -234,7 +234,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               onAction=""OnCopyKet""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPptShapeCopyInfo""
-              label=""Copy Molecule Info (Formula &amp; MW)""
+              label=""Molecule Info (Name, MW &amp; Formula)...""
               imageMso=""Copy""
               onAction=""OnCopyMoleculeInfo""
               insertBeforeMso=""Cut"" />
@@ -277,6 +277,11 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Paste Structure""
                 imageMso=""Paste""
                 onAction=""OnQuickInsert"" />
+        <menuSeparator id=""sepContextPptTextSubInfo"" />
+        <button id=""btnContextPptTextCopyInfo""
+                label=""Molecule Info (Name, MW &amp; Formula)...""
+                imageMso=""Copy""
+                onAction=""OnCopyMoleculeInfo"" />
       </menu>
       <menuSeparator id=""sepContextPptText"" insertAfterMso=""PasteGalleryMini"" />
     </contextMenu>
@@ -297,6 +302,11 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Paste Structure""
                 imageMso=""Paste""
                 onAction=""OnQuickInsert"" />
+        <menuSeparator id=""sepContextPptTableSubInfo"" />
+        <button id=""btnContextPptTableCopyInfo""
+                label=""Molecule Info (Name, MW &amp; Formula)...""
+                imageMso=""Copy""
+                onAction=""OnCopyMoleculeInfo"" />
       </menu>
       <menuSeparator id=""sepContextPptTable"" insertAfterMso=""PasteGalleryMini"" />
     </contextMenu>
