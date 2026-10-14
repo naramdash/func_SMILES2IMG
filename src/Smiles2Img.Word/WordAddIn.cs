@@ -68,6 +68,13 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   imageMso=""EquationInsertNew""
                   size=""large""
                   onAction=""OnInsertMolecule"" />
+          <button id=""btnInsertMolstar""
+                  label=""3D Structure (Mol*)""
+                  screentip=""Mol* 3D Macromolecular Viewer""
+                  supertip=""Open Mol* 3D viewer to render macromolecular structures (PDB/AlphaFold/CIF/SDF) as interactive 3D models or publication images.""
+                  imageMso=""Shape3DScene""
+                  size=""large""
+                  onAction=""OnInsertMolstar"" />
           <button id=""btnQuickInsert""
                   label=""Paste Structure""
                   screentip=""Paste Structure from Clipboard""
@@ -109,6 +116,11 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               imageMso=""DesignMode""
               onAction=""OnEditMolecule""
               insertBeforeMso=""Cut"" />
+      <button id=""btnContextInlineEditMolstar""
+              label=""Edit 3D Structure (Mol*)...""
+              imageMso=""Shape3DScene""
+              onAction=""OnEditMolstar""
+              insertBeforeMso=""Cut"" />
       <button id=""btnContextInlineCopySmiles""
               label=""Copy SMILES""
               imageMso=""Copy""
@@ -132,6 +144,11 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               imageMso=""DesignMode""
               onAction=""OnEditMolecule""
               insertBeforeMso=""Cut"" />
+      <button id=""btnContextPictureEditMolstar""
+              label=""Edit 3D Structure (Mol*)...""
+              imageMso=""Shape3DScene""
+              onAction=""OnEditMolstar""
+              insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureCopySmiles""
               label=""Copy SMILES""
               imageMso=""Copy""
@@ -154,6 +171,11 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               label=""Edit Structure (Ketcher)...""
               imageMso=""DesignMode""
               onAction=""OnEditMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextShapeEditMolstar""
+              label=""Edit 3D Structure (Mol*)...""
+              imageMso=""Shape3DScene""
+              onAction=""OnEditMolstar""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeCopySmiles""
               label=""Copy SMILES""
@@ -181,6 +203,10 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Insert / Edit Structure...""
                 imageMso=""EquationInsertNew""
                 onAction=""OnInsertMolecule"" />
+        <button id=""btnContextTextInsertMolstar""
+                label=""3D Structure (Mol*)...""
+                imageMso=""Shape3DScene""
+                onAction=""OnInsertMolstar"" />
         <button id=""btnContextTextQuickInsert""
                 label=""Paste Structure""
                 imageMso=""Paste""
@@ -197,6 +223,10 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Insert / Edit Structure...""
                 imageMso=""EquationInsertNew""
                 onAction=""OnInsertMolecule"" />
+        <button id=""btnContextTableInsertMolstar""
+                label=""3D Structure (Mol*)...""
+                imageMso=""Shape3DScene""
+                onAction=""OnInsertMolstar"" />
         <button id=""btnContextTableQuickInsert""
                 label=""Paste Structure""
                 imageMso=""Paste""
@@ -219,6 +249,12 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
         WordStructureManager.InsertMolecule(wordApp);
     }
 
+    public void OnInsertMolstar(IRibbonControl control)
+    {
+        if (wordApp == null) return;
+        WordStructureManager.InsertMolstarStructure(wordApp);
+    }
+
     public void OnQuickInsert(IRibbonControl control)
     {
         if (wordApp == null) return;
@@ -229,6 +265,12 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
     {
         if (wordApp == null) return;
         WordStructureManager.EditSelectedMolecule(wordApp);
+    }
+
+    public void OnEditMolstar(IRibbonControl control)
+    {
+        if (wordApp == null) return;
+        WordStructureManager.EditSelectedMolstar(wordApp);
     }
 
     public void OnCopySmiles(IRibbonControl control)

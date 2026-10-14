@@ -102,7 +102,14 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                         isEditing = true;
                         try
                         {
-                            PowerPointStructureManager.EditSelectedMolecule(pptApp, targetShape);
+                            if (StructureMetadata.IsMolstar(targetShape.AlternativeText, targetShape.Title))
+                            {
+                                PowerPointStructureManager.EditSelectedMolstar(pptApp, targetShape);
+                            }
+                            else
+                            {
+                                PowerPointStructureManager.EditSelectedMolecule(pptApp, targetShape);
+                            }
                         }
                         finally
                         {
@@ -143,6 +150,15 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   size=""large""
                   onAction=""OnQuickInsert"" />
         </group>
+        <group id=""grpInsert3D"" label=""3D Macromolecule"">
+          <button id=""btnInsertMolstar""
+                  label=""3D Structure (Mol*)""
+                  screentip=""Mol* 3D Molecular Viewer""
+                  supertip=""Open Mol* 3D Web Viewer to visualize macromolecules, load PDB structures, and insert 2D pictures or interactive 3D models into the active slide.""
+                  imageMso=""ViewThreeD""
+                  size=""large""
+                  onAction=""OnInsertMolstar"" />
+        </group>
         <group id=""grpStructureTools"" label=""Structure Tools"">
           <button id=""btnCopySmiles""
                   label=""Copy SMILES""
@@ -176,6 +192,11 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               imageMso=""DesignMode""
               onAction=""OnEditMolecule""
               insertBeforeMso=""Cut"" />
+      <button id=""btnContextPptPictureEditMolstar""
+              label=""Edit 3D View (Mol*)...""
+              imageMso=""ViewThreeD""
+              onAction=""OnEditMolstar""
+              insertBeforeMso=""Cut"" />
       <button id=""btnContextPptPictureCopySmiles""
               label=""Copy SMILES""
               imageMso=""Copy""
@@ -198,6 +219,11 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               label=""Edit Structure (Ketcher)...""
               imageMso=""DesignMode""
               onAction=""OnEditMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPptShapeEditMolstar""
+              label=""Edit 3D View (Mol*)...""
+              imageMso=""ViewThreeD""
+              onAction=""OnEditMolstar""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPptShapeCopySmiles""
               label=""Copy SMILES""
@@ -307,5 +333,17 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
     {
         if (pptApp == null) return;
         PowerPointStructureManager.CopySelectedMoleculeInfo(pptApp);
+    }
+
+    public void OnInsertMolstar(IRibbonControl control)
+    {
+        if (pptApp == null) return;
+        PowerPointStructureManager.InsertMolstarStructure(pptApp);
+    }
+
+    public void OnEditMolstar(IRibbonControl control)
+    {
+        if (pptApp == null) return;
+        PowerPointStructureManager.EditSelectedMolstar(pptApp);
     }
 }

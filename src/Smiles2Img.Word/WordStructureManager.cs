@@ -116,6 +116,119 @@ public static class WordStructureManager
         }
     }
 
+    public static void InsertMolstarStructure(MSWord.Application app)
+    {
+        try
+        {
+            var sel = app.Selection;
+            if (sel != null)
+            {
+                if (sel.InlineShapes.Count > 0 && StructureMetadata.IsMolstar(sel.InlineShapes[1].AlternativeText, sel.InlineShapes[1].Title))
+                {
+                    EditSelectedMolstar(app);
+                    return;
+                }
+                if (sel.ShapeRange.Count > 0 && StructureMetadata.IsMolstar(sel.ShapeRange[1].AlternativeText, sel.ShapeRange[1].Title))
+                {
+                    EditSelectedMolstar(app);
+                    return;
+                }
+            }
+
+            if (app.Documents.Count == 0)
+            {
+                app.Documents.Add();
+            }
+
+            var hwnd = GetHwnd(app);
+            using var form = new MolstarForm("Word", "");
+            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
+
+            if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))
+            {
+                ApplyMolstarInsert(app, form);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "An error occurred while opening Mol* 3D Viewer:\n" + ex.Message,
+                "Mol* 3D for Word",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+
+    public static void EditSelectedMolstar(MSWord.Application app)
+    {
+        try
+        {
+            var sel = app.Selection;
+            MSWord.InlineShape? targetInline = null;
+            MSWord.Shape? targetShape = null;
+            string? altText = null;
+            string? title = null;
+
+            if (sel.InlineShapes.Count > 0)
+            {
+                targetInline = sel.InlineShapes[1];
+                altText = targetInline.AlternativeText;
+                title = targetInline.Title;
+            }
+            else if (sel.ShapeRange.Count > 0)
+            {
+                targetShape = sel.ShapeRange[1];
+                altText = targetShape.AlternativeText;
+                title = targetShape.Title;
+            }
+
+            var meta = MolstarSessionManager.ParseAltText(altText, title);
+            if (meta == null)
+            {
+                MessageBox.Show(
+                    "The selected object is not a Mol* 3D structure object.\nPlease select a Mol* structure image or 3D model first.",
+                    "Mol* 3D for Word",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            string? snapshotJson = MolstarSessionManager.LoadLocalCache(meta.Id);
+            if (string.IsNullOrEmpty(snapshotJson) && app.ActiveDocument != null)
+            {
+                try
+                {
+                    snapshotJson = MolstarSessionManager.LoadFromCustomXmlParts(app.ActiveDocument, meta.Id);
+                }
+                catch { }
+            }
+
+            var hwnd = GetHwnd(app);
+            using var form = new MolstarForm("Word", meta.Pdb, snapshotJson);
+            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
+
+            if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))
+            {
+                if (targetInline != null)
+                {
+                    ApplyMolstarReplaceInline(app, targetInline, form, meta);
+                }
+                else if (targetShape != null)
+                {
+                    ApplyMolstarReplaceShape(app, targetShape, form, meta);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "An error occurred while editing Mol* 3D structure:\n" + ex.Message,
+                "Mol* 3D for Word",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+    }
+
     public static void OnWindowBeforeDoubleClick(MSWord.Selection sel, ref bool cancel)
     {
         try
@@ -123,19 +236,33 @@ public static class WordStructureManager
             if (sel.InlineShapes.Count > 0)
             {
                 var shape = sel.InlineShapes[1];
+                if (StructureMetadata.IsMolstar(shape.AlternativeText, shape.Title))
+                {
+                    cancel = true;
+                    EditSelectedMolstar(sel.Application);
+                    return;
+                }
                 if (!string.IsNullOrEmpty(ExtractStructure(shape.AlternativeText, shape.Title)))
                 {
                     cancel = true;
                     EditSelectedMolecule(sel.Application);
+                    return;
                 }
             }
             else if (sel.ShapeRange.Count > 0)
             {
                 var shape = sel.ShapeRange[1];
+                if (StructureMetadata.IsMolstar(shape.AlternativeText, shape.Title))
+                {
+                    cancel = true;
+                    EditSelectedMolstar(sel.Application);
+                    return;
+                }
                 if (!string.IsNullOrEmpty(ExtractStructure(shape.AlternativeText, shape.Title)))
                 {
                     cancel = true;
                     EditSelectedMolecule(sel.Application);
+                    return;
                 }
             }
         }
@@ -219,6 +346,234 @@ public static class WordStructureManager
         finally
         {
             try { if (File.Exists(tempFile)) File.Delete(tempFile); } catch { }
+        }
+    }
+
+    private static void ApplyMolstarInsert(MSWord.Application app, MolstarForm form)
+    {
+        var sessionId = Guid.NewGuid().ToString("N");
+        var meta = new MolstarMetadata
+        {
+            Id = sessionId,
+            Pdb = form.ResultPdbId,
+            Mode = form.ResultMode,
+            Embed = form.ResultEmbedInDoc,
+            Background = form.ResultBackground
+        };
+
+        if (!string.IsNullOrEmpty(form.ResultSnapshotJson))
+        {
+            MolstarSessionManager.SaveLocalCache(sessionId, form.ResultSnapshotJson!);
+            if (form.ResultEmbedInDoc && app.ActiveDocument != null)
+            {
+                MolstarSessionManager.SaveToCustomXmlParts(app.ActiveDocument, sessionId, form.ResultPdbId, form.ResultSnapshotJson!);
+            }
+        }
+
+        dynamic? newShape = null;
+        if (form.ResultMode == "3dmodel" && form.ResultGlbBytes != null && form.ResultGlbBytes.Length > 0)
+        {
+            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.glb");
+            try
+            {
+                File.WriteAllBytes(tempGlb, form.ResultGlbBytes);
+                dynamic inlineShapes = app.Selection.InlineShapes;
+                newShape = inlineShapes.Add3DModel(tempGlb, false, true, app.Selection.Range);
+            }
+            catch
+            {
+                meta.Mode = "image";
+            }
+            finally
+            {
+                try { if (File.Exists(tempGlb)) File.Delete(tempGlb); } catch { }
+            }
+        }
+
+        if (newShape == null && form.ResultImageBytes != null)
+        {
+            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.png");
+            try
+            {
+                File.WriteAllBytes(tempPng, form.ResultImageBytes);
+                var shape = app.Selection.InlineShapes.AddPicture(
+                    FileName: tempPng,
+                    LinkToFile: false,
+                    SaveWithDocument: true);
+
+                var (w, h) = StructureMetadata.GetScaledDimensions(form.ResultImageBytes!, 320f, 240f, scale: 0.85f);
+                shape.Width = w;
+                shape.Height = h;
+                newShape = shape;
+            }
+            finally
+            {
+                try { if (File.Exists(tempPng)) File.Delete(tempPng); } catch { }
+            }
+        }
+
+        if (newShape != null)
+        {
+            newShape.AlternativeText = MolstarSessionManager.FormatAltText(meta);
+            newShape.Title = $"Mol* 3D: {(string.IsNullOrEmpty(form.ResultPdbId) ? "Structure" : form.ResultPdbId)}";
+            newShape.Select();
+        }
+    }
+
+    private static void ApplyMolstarReplaceInline(MSWord.Application app, MSWord.InlineShape oldShape, MolstarForm form, MolstarMetadata oldMeta)
+    {
+        var sessionId = oldMeta.Id;
+        if (string.IsNullOrEmpty(sessionId)) sessionId = Guid.NewGuid().ToString("N");
+
+        var meta = new MolstarMetadata
+        {
+            Id = sessionId,
+            Pdb = form.ResultPdbId,
+            Mode = form.ResultMode,
+            Embed = form.ResultEmbedInDoc,
+            Background = form.ResultBackground
+        };
+
+        if (!string.IsNullOrEmpty(form.ResultSnapshotJson))
+        {
+            MolstarSessionManager.SaveLocalCache(sessionId, form.ResultSnapshotJson!);
+            if (form.ResultEmbedInDoc && app.ActiveDocument != null)
+            {
+                MolstarSessionManager.SaveToCustomXmlParts(app.ActiveDocument, sessionId, form.ResultPdbId, form.ResultSnapshotJson!);
+            }
+        }
+
+        var oldWidth = oldShape.Width;
+        var range = oldShape.Range;
+        oldShape.Delete();
+
+        dynamic? newShape = null;
+        if (form.ResultMode == "3dmodel" && form.ResultGlbBytes != null && form.ResultGlbBytes.Length > 0)
+        {
+            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.glb");
+            try
+            {
+                File.WriteAllBytes(tempGlb, form.ResultGlbBytes);
+                dynamic inlineShapes = range.InlineShapes;
+                newShape = inlineShapes.Add3DModel(tempGlb, false, true, range);
+            }
+            catch
+            {
+                meta.Mode = "image";
+            }
+            finally
+            {
+                try { if (File.Exists(tempGlb)) File.Delete(tempGlb); } catch { }
+            }
+        }
+
+        if (newShape == null && form.ResultImageBytes != null)
+        {
+            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.png");
+            try
+            {
+                File.WriteAllBytes(tempPng, form.ResultImageBytes);
+                var shape = range.InlineShapes.AddPicture(
+                    FileName: tempPng,
+                    LinkToFile: false,
+                    SaveWithDocument: true);
+
+                var (_, h) = StructureMetadata.GetScaledDimensions(form.ResultImageBytes!, oldWidth, oldWidth, minWidth: oldWidth, maxWidth: oldWidth);
+                shape.Width = oldWidth;
+                shape.Height = h;
+                newShape = shape;
+            }
+            finally
+            {
+                try { if (File.Exists(tempPng)) File.Delete(tempPng); } catch { }
+            }
+        }
+
+        if (newShape != null)
+        {
+            newShape.AlternativeText = MolstarSessionManager.FormatAltText(meta);
+            newShape.Title = $"Mol* 3D: {(string.IsNullOrEmpty(form.ResultPdbId) ? "Structure" : form.ResultPdbId)}";
+            newShape.Select();
+        }
+    }
+
+    private static void ApplyMolstarReplaceShape(MSWord.Application app, MSWord.Shape oldShape, MolstarForm form, MolstarMetadata oldMeta)
+    {
+        var sessionId = oldMeta.Id;
+        if (string.IsNullOrEmpty(sessionId)) sessionId = Guid.NewGuid().ToString("N");
+
+        var meta = new MolstarMetadata
+        {
+            Id = sessionId,
+            Pdb = form.ResultPdbId,
+            Mode = form.ResultMode,
+            Embed = form.ResultEmbedInDoc,
+            Background = form.ResultBackground
+        };
+
+        if (!string.IsNullOrEmpty(form.ResultSnapshotJson))
+        {
+            MolstarSessionManager.SaveLocalCache(sessionId, form.ResultSnapshotJson!);
+            if (form.ResultEmbedInDoc && app.ActiveDocument != null)
+            {
+                MolstarSessionManager.SaveToCustomXmlParts(app.ActiveDocument, sessionId, form.ResultPdbId, form.ResultSnapshotJson!);
+            }
+        }
+
+        var doc = (MSWord.Document)oldShape.Parent;
+        float oldLeft = oldShape.Left;
+        float oldTop = oldShape.Top;
+        float oldWidth = oldShape.Width;
+        float oldHeight = oldShape.Height;
+        oldShape.Delete();
+
+        dynamic? newShape = null;
+        if (form.ResultMode == "3dmodel" && form.ResultGlbBytes != null && form.ResultGlbBytes.Length > 0)
+        {
+            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.glb");
+            try
+            {
+                File.WriteAllBytes(tempGlb, form.ResultGlbBytes);
+                dynamic shapes = doc.Shapes;
+                newShape = shapes.Add3DModel(tempGlb, false, true, oldLeft, oldTop, oldWidth, oldHeight);
+            }
+            catch
+            {
+                meta.Mode = "image";
+            }
+            finally
+            {
+                try { if (File.Exists(tempGlb)) File.Delete(tempGlb); } catch { }
+            }
+        }
+
+        if (newShape == null && form.ResultImageBytes != null)
+        {
+            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.png");
+            try
+            {
+                File.WriteAllBytes(tempPng, form.ResultImageBytes);
+                var (left, top, w, h) = StructureMetadata.FitReplacementBounds(oldLeft, oldTop, oldWidth, oldHeight, form.ResultImageBytes!);
+                newShape = doc.Shapes.AddPicture(
+                    FileName: tempPng,
+                    LinkToFile: false,
+                    SaveWithDocument: true,
+                    Left: left,
+                    Top: top,
+                    Width: w,
+                    Height: h);
+            }
+            finally
+            {
+                try { if (File.Exists(tempPng)) File.Delete(tempPng); } catch { }
+            }
+        }
+
+        if (newShape != null)
+        {
+            newShape.AlternativeText = MolstarSessionManager.FormatAltText(meta);
+            newShape.Title = $"Mol* 3D: {(string.IsNullOrEmpty(form.ResultPdbId) ? "Structure" : form.ResultPdbId)}";
+            newShape.Select();
         }
     }
 
