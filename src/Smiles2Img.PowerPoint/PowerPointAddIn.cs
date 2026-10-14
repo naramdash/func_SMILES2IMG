@@ -142,6 +142,13 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   imageMso=""EquationInsertNew""
                   size=""large""
                   onAction=""OnInsertMolecule"" />
+          <button id=""btnInsertMolstar""
+                  label=""3D Structure (Mol*)""
+                  screentip=""Mol* 3D Molecular Viewer""
+                  supertip=""Open Mol* 3D Web Viewer to visualize macromolecules, load PDB structures, and insert 2D pictures or interactive 3D models into the active slide.""
+                  imageMso=""Insert3DModelFromFile""
+                  size=""large""
+                  onAction=""OnInsertMolstar"" />
           <button id=""btnQuickInsert""
                   label=""Paste Structure""
                   screentip=""Paste Structure from Clipboard""
@@ -149,15 +156,6 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   imageMso=""Paste""
                   size=""large""
                   onAction=""OnQuickInsert"" />
-        </group>
-        <group id=""grpInsert3D"" label=""3D Macromolecule"">
-          <button id=""btnInsertMolstar""
-                  label=""3D Structure (Mol*)""
-                  screentip=""Mol* 3D Molecular Viewer""
-                  supertip=""Open Mol* 3D Web Viewer to visualize macromolecules, load PDB structures, and insert 2D pictures or interactive 3D models into the active slide.""
-                  imageMso=""ViewThreeD""
-                  size=""large""
-                  onAction=""OnInsertMolstar"" />
         </group>
         <group id=""grpStructureTools"" label=""Structure Tools"">
           <button id=""btnCopySmiles""
@@ -193,8 +191,8 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               onAction=""OnEditMolecule""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPptPictureEditMolstar""
-              label=""Edit 3D View (Mol*)...""
-              imageMso=""ViewThreeD""
+              label=""Edit 3D Structure (Mol*)...""
+              imageMso=""Insert3DModelFromFile""
               onAction=""OnEditMolstar""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPptPictureCopySmiles""
@@ -221,8 +219,8 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               onAction=""OnEditMolecule""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPptShapeEditMolstar""
-              label=""Edit 3D View (Mol*)...""
-              imageMso=""ViewThreeD""
+              label=""Edit 3D Structure (Mol*)...""
+              imageMso=""Insert3DModelFromFile""
               onAction=""OnEditMolstar""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPptShapeCopySmiles""
@@ -251,6 +249,10 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Insert / Edit Structure...""
                 imageMso=""EquationInsertNew""
                 onAction=""OnInsertMolecule"" />
+        <button id=""btnContextPptFrameInsertMolstar""
+                label=""3D Structure (Mol*)...""
+                imageMso=""Insert3DModelFromFile""
+                onAction=""OnInsertMolstar"" />
         <button id=""btnContextPptFrameQuickInsert""
                 label=""Paste Structure""
                 imageMso=""Paste""
@@ -267,6 +269,10 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Insert / Edit Structure...""
                 imageMso=""EquationInsertNew""
                 onAction=""OnInsertMolecule"" />
+        <button id=""btnContextPptTextInsertMolstar""
+                label=""3D Structure (Mol*)...""
+                imageMso=""Insert3DModelFromFile""
+                onAction=""OnInsertMolstar"" />
         <button id=""btnContextPptTextQuickInsert""
                 label=""Paste Structure""
                 imageMso=""Paste""
@@ -283,6 +289,10 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Insert / Edit Structure...""
                 imageMso=""EquationInsertNew""
                 onAction=""OnInsertMolecule"" />
+        <button id=""btnContextPptTableInsertMolstar""
+                label=""3D Structure (Mol*)...""
+                imageMso=""Insert3DModelFromFile""
+                onAction=""OnInsertMolstar"" />
         <button id=""btnContextPptTableQuickInsert""
                 label=""Paste Structure""
                 imageMso=""Paste""

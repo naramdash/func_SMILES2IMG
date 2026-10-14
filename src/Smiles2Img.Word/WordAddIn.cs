@@ -72,7 +72,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   label=""3D Structure (Mol*)""
                   screentip=""Mol* 3D Macromolecular Viewer""
                   supertip=""Open Mol* 3D viewer to render macromolecular structures (PDB/AlphaFold/CIF/SDF) as interactive 3D models or publication images.""
-                  imageMso=""Shape3DScene""
+                  imageMso=""Insert3DModelFromFile""
                   size=""large""
                   onAction=""OnInsertMolstar"" />
           <button id=""btnQuickInsert""
@@ -118,7 +118,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               insertBeforeMso=""Cut"" />
       <button id=""btnContextInlineEditMolstar""
               label=""Edit 3D Structure (Mol*)...""
-              imageMso=""Shape3DScene""
+              imageMso=""Insert3DModelFromFile""
               onAction=""OnEditMolstar""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextInlineCopySmiles""
@@ -146,7 +146,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureEditMolstar""
               label=""Edit 3D Structure (Mol*)...""
-              imageMso=""Shape3DScene""
+              imageMso=""Insert3DModelFromFile""
               onAction=""OnEditMolstar""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureCopySmiles""
@@ -174,7 +174,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeEditMolstar""
               label=""Edit 3D Structure (Mol*)...""
-              imageMso=""Shape3DScene""
+              imageMso=""Insert3DModelFromFile""
               onAction=""OnEditMolstar""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeCopySmiles""
@@ -205,7 +205,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnInsertMolecule"" />
         <button id=""btnContextTextInsertMolstar""
                 label=""3D Structure (Mol*)...""
-                imageMso=""Shape3DScene""
+                imageMso=""Insert3DModelFromFile""
                 onAction=""OnInsertMolstar"" />
         <button id=""btnContextTextQuickInsert""
                 label=""Paste Structure""
@@ -225,7 +225,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnInsertMolecule"" />
         <button id=""btnContextTableInsertMolstar""
                 label=""3D Structure (Mol*)...""
-                imageMso=""Shape3DScene""
+                imageMso=""Insert3DModelFromFile""
                 onAction=""OnInsertMolstar"" />
         <button id=""btnContextTableQuickInsert""
                 label=""Paste Structure""
