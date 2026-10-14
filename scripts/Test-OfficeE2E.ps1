@@ -167,6 +167,38 @@ try {
     $valB1 = $ws.Range("B1").Text
     Write-Host "  [PASS] Excel =SMILES2IMG.FLOAT(A1) evaluated cleanly (Cell text='$valB1', Shapes on sheet=$($ws.Shapes.Count))" -ForegroundColor Green
 
+    # Test 3B: Test in-cell property formulas (=SMILES2NAME, =SMILES2MW, =SMILES2FORMULA, =SMILES2INCHI, =SMILES2INCHIKEY)
+    $ws.Range("C1").Formula = "=SMILES2NAME(A1)"
+    $ws.Range("D1").Formula = "=SMILES2MW(A1)"
+    $ws.Range("E1").Formula = "=SMILES2FORMULA(A1)"
+    $ws.Range("F1").Formula = "=SMILES2INCHI(A1)"
+    $ws.Range("G1").Formula = "=SMILES2INCHIKEY(A1)"
+    Start-Sleep -Seconds 1
+
+    $nameVal = $ws.Range("C1").Text
+    $mwVal = [double]$ws.Range("D1").Value2
+    $formulaVal = $ws.Range("E1").Text
+    $inchiVal = $ws.Range("F1").Text
+    $inchiKeyVal = $ws.Range("G1").Text
+
+    if (-not $nameVal.Contains("Aspirin") -and -not $nameVal.Contains("aspirin")) {
+        Write-Warning "PubChem returned '$nameVal' for Aspirin (may be network dependent or offline)"
+    } else {
+        Write-Host "  [PASS] Excel =SMILES2NAME(A1) -> '$nameVal'" -ForegroundColor Green
+    }
+
+    if ([math]::Abs($mwVal - 180.16) -gt 0.2) { throw "Excel =SMILES2MW(A1) mismatch! Expected ~180.16, got $mwVal" }
+    Write-Host "  [PASS] Excel =SMILES2MW(A1) -> $mwVal" -ForegroundColor Green
+
+    if ($formulaVal -ne "C9H8O4") { throw "Excel =SMILES2FORMULA(A1) mismatch! Expected C9H8O4, got $formulaVal" }
+    Write-Host "  [PASS] Excel =SMILES2FORMULA(A1) -> $formulaVal" -ForegroundColor Green
+
+    if (-not $inchiVal.StartsWith("InChI=1S/C9H8O4")) { throw "Excel =SMILES2INCHI(A1) mismatch! Expected InChI=1S/C9H8O4..., got $inchiVal" }
+    Write-Host "  [PASS] Excel =SMILES2INCHI(A1) -> $($inchiVal.Substring(0, 30))..." -ForegroundColor Green
+
+    if ($inchiKeyVal -ne "BSYNRYMUTXBXSQ-UHFFFAOYSA-N") { throw "Excel =SMILES2INCHIKEY(A1) mismatch! Got $inchiKeyVal" }
+    Write-Host "  [PASS] Excel =SMILES2INCHIKEY(A1) -> $inchiKeyVal" -ForegroundColor Green
+
     $wb.Close($false)
 } finally {
     if ($excel) {
