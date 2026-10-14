@@ -12,6 +12,7 @@ public sealed class MoleculeInfo
 {
     public string CompoundName { get; set; } = "";
     public string IupacName { get; set; } = "";
+    public string SubstanceName => !string.IsNullOrWhiteSpace(CompoundName) ? CompoundName : IupacName;
     public string Formula { get; set; } = "";
     public double MolecularWeight { get; set; }
     public double ExactMass { get; set; }

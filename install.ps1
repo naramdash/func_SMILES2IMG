@@ -248,6 +248,13 @@ if (Test-Path $pptDllPath) {
         -Description "SMILES 화학 구조식 렌더러 및 Ketcher 에디터"
 }
 
+# Register Windows Toast Notification AUMID
+try {
+    $aumidKey = "HKCU:\Software\Classes\AppUserModelId\func_SMILES2IMG"
+    New-Item -Path $aumidKey -Force | Out-Null
+    Set-ItemProperty -Path $aumidKey -Name "DisplayName" -Value "func_SMILES2IMG"
+} catch { }
+
 # -------------------------------------------------------------
 # 6. Success Output
 # -------------------------------------------------------------

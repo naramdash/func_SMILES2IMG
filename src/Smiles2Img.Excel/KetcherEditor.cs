@@ -6,6 +6,7 @@ using ExcelDna.Logging;
 using Microsoft.Office.Core;
 using Smiles2Img.Editor;
 using Smiles2Img.Rendering;
+using Smiles2Img.Notifications;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Smiles2Img;
@@ -208,28 +209,16 @@ public static partial class KetcherEditor
 
             if (string.IsNullOrEmpty(smiles))
             {
-                MessageBox.Show(
-                    "No SMILES structure found in selected object or cell.\nPlease select a molecular structure image or formula cell.",
-                    "SMILES for Excel",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                MoleculeNotification.NotifyWarning("SMILES", "No SMILES structure found in selected cell or object.");
                 return;
             }
 
             Clipboard.SetText(smiles!);
-            MessageBox.Show(
-                $"SMILES copied to clipboard:\n\n{smiles}",
-                "SMILES Copied",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            MoleculeNotification.NotifyCopied("SMILES", smiles!);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while copying SMILES: " + ex.Message,
-                "SMILES for Excel",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            MoleculeNotification.NotifyWarning("SMILES", "Error copying SMILES: " + ex.Message);
         }
     }
 
@@ -250,28 +239,16 @@ public static partial class KetcherEditor
             var inchi = MoleculeRenderer.TryConvertToInchi(targetData);
             if (string.IsNullOrEmpty(inchi))
             {
-                MessageBox.Show(
-                    "Could not generate InChI from the selected object or cell.\nPlease select a molecular structure image or formula cell.",
-                    "SMILES for Excel",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                MoleculeNotification.NotifyWarning("InChI", "Could not generate InChI from selected cell or object.");
                 return;
             }
 
             Clipboard.SetText(inchi!);
-            MessageBox.Show(
-                $"InChI copied to clipboard:\n\n{inchi}",
-                "InChI Copied",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            MoleculeNotification.NotifyCopied("InChI", inchi!);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while copying InChI: " + ex.Message,
-                "SMILES for Excel",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            MoleculeNotification.NotifyWarning("InChI", "Error copying InChI: " + ex.Message);
         }
     }
 
@@ -296,28 +273,16 @@ public static partial class KetcherEditor
 
             if (string.IsNullOrEmpty(ket))
             {
-                MessageBox.Show(
-                    "No canvas structure (KET) found in the selected object or cell.\nPlease select a molecular structure image or formula cell.",
-                    "SMILES for Excel",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                MoleculeNotification.NotifyWarning("Canvas Data (KET)", "No canvas structure found in selected cell or object.");
                 return;
             }
 
             Clipboard.SetText(ket!);
-            MessageBox.Show(
-                "Canvas data (KET) copied to clipboard.",
-                "KET Copied",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            MoleculeNotification.NotifyCopied("Canvas Data (KET)", ket!);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while copying canvas data: " + ex.Message,
-                "SMILES for Excel",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            MoleculeNotification.NotifyWarning("Canvas Data (KET)", "Error copying canvas data: " + ex.Message);
         }
     }
 
@@ -366,15 +331,15 @@ public static partial class KetcherEditor
             var info = GetSelectedMoleculeInfo(app);
             if (info == null || string.IsNullOrWhiteSpace(info.CompoundName))
             {
-                MessageBox.Show("Could not resolve substance name from the selected cell or image.", "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MoleculeNotification.NotifyWarning("Substance Name", "Could not resolve substance name from selected cell or object.");
                 return;
             }
             Clipboard.SetText(info.CompoundName);
-            CopiedToast.Show("Substance Name", info.CompoundName);
+            MoleculeNotification.NotifyCopied("Substance Name", info.CompoundName);
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Error copying substance name: " + ex.Message, "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MoleculeNotification.NotifyWarning("Substance Name", "Error copying substance name: " + ex.Message);
         }
     }
 
@@ -387,15 +352,15 @@ public static partial class KetcherEditor
             var info = GetSelectedMoleculeInfo(app);
             if (info == null || string.IsNullOrWhiteSpace(info.Formula))
             {
-                MessageBox.Show("Could not compute formula from the selected cell or image.", "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MoleculeNotification.NotifyWarning("Formula", "Could not compute chemical formula from selected cell or object.");
                 return;
             }
             Clipboard.SetText(info.Formula);
-            CopiedToast.Show("Chemical Formula", info.Formula);
+            MoleculeNotification.NotifyCopied("Formula", info.Formula);
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Error copying chemical formula: " + ex.Message, "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MoleculeNotification.NotifyWarning("Formula", "Error copying chemical formula: " + ex.Message);
         }
     }
 
@@ -408,16 +373,16 @@ public static partial class KetcherEditor
             var info = GetSelectedMoleculeInfo(app);
             if (info == null || info.MolecularWeight <= 0)
             {
-                MessageBox.Show("Could not compute molecular weight from the selected cell or image.", "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MoleculeNotification.NotifyWarning("Molecular Weight", "Could not compute molecular weight from selected cell or object.");
                 return;
             }
             string mw = info.MolecularWeight.ToString("F2");
             Clipboard.SetText(mw);
-            CopiedToast.Show("Molecular Weight", $"{mw} g/mol");
+            MoleculeNotification.NotifyCopied("Molecular Weight", $"{mw} g/mol");
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Error copying molecular weight: " + ex.Message, "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MoleculeNotification.NotifyWarning("Molecular Weight", "Error copying molecular weight: " + ex.Message);
         }
     }
 
@@ -430,15 +395,15 @@ public static partial class KetcherEditor
             var info = GetSelectedMoleculeInfo(app);
             if (info == null || string.IsNullOrWhiteSpace(info.InChIKey))
             {
-                MessageBox.Show("Could not generate InChIKey from the selected cell or image.", "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MoleculeNotification.NotifyWarning("InChIKey", "Could not generate InChIKey from selected cell or object.");
                 return;
             }
             Clipboard.SetText(info.InChIKey);
-            CopiedToast.Show("InChIKey", info.InChIKey);
+            MoleculeNotification.NotifyCopied("InChIKey", info.InChIKey);
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Error copying InChIKey: " + ex.Message, "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MoleculeNotification.NotifyWarning("InChIKey", "Error copying InChIKey: " + ex.Message);
         }
     }
 
@@ -451,16 +416,16 @@ public static partial class KetcherEditor
             var info = GetSelectedMoleculeInfo(app);
             if (info == null)
             {
-                MessageBox.Show("Could not retrieve molecule info from the selected cell or image.", "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from selected cell or object.");
                 return;
             }
             string summary = info.FormatClipboardSummary();
             Clipboard.SetText(summary);
-            CopiedToast.Show("Molecule Summary", "Full summary copied to clipboard");
+            MoleculeNotification.NotifyCopied("Molecule Info", info.SubstanceName ?? info.Formula ?? "Copied summary");
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Error copying molecule summary: " + ex.Message, "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying molecule summary: " + ex.Message);
         }
     }
 

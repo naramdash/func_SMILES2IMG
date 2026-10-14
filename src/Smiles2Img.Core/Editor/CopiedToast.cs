@@ -26,19 +26,20 @@ public sealed class CopiedToast : Form
 
     protected override bool ShowWithoutActivation => true;
 
-    private CopiedToast(string title, string value)
+    private CopiedToast(string title, string value, bool isWarning = false)
     {
         FormBorderStyle = FormBorderStyle.None;
         ShowInTaskbar = false;
         StartPosition = FormStartPosition.Manual;
         AutoSize = true;
         AutoSizeMode = AutoSizeMode.GrowAndShrink;
-        BackColor = Color.FromArgb(20, 50, 85);
+        BackColor = isWarning ? Color.FromArgb(130, 60, 20) : Color.FromArgb(20, 50, 85);
         Padding = new Padding(16, 10, 16, 10);
 
+        string prefix = isWarning ? "⚠ " : "✓ Copied ";
         var lbl = new Label
         {
-            Text = $"✓ Copied {title}:\n{Truncate(value, 55)}",
+            Text = $"{prefix}{title}:\n{Truncate(value, 55)}",
             Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
             ForeColor = Color.White,
             AutoSize = true,
@@ -53,7 +54,7 @@ public sealed class CopiedToast : Form
         int y = Math.Min(mouse.Y + 20, screen.Bottom - 80);
         Location = new Point(Math.Max(screen.Left + 10, x), Math.Max(screen.Top + 10, y));
 
-        var timer = new Timer { Interval = 1400 };
+        var timer = new Timer { Interval = isWarning ? 2000 : 1400 };
         timer.Tick += (s, e) =>
         {
             timer.Stop();
@@ -72,11 +73,11 @@ public sealed class CopiedToast : Form
         return text.Substring(0, maxLen - 3) + "...";
     }
 
-    public static void Show(string title, string value)
+    public static void Show(string title, string value, bool isWarning = false)
     {
         try
         {
-            var toast = new CopiedToast(title, value);
+            var toast = new CopiedToast(title, value, isWarning);
             toast.Show();
         }
         catch { }

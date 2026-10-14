@@ -68,7 +68,7 @@ public class SmilesRibbon : ExcelRibbon
                 size=""large"">
             <button id=""btnRibbonExcelCopyName""
                     label=""Copy Substance Name""
-                    imageMso=""ContactCard""
+                    imageMso=""PropertySheet""
                     onAction=""OnCopySubstanceName"" />
             <button id=""btnRibbonExcelCopyFormula""
                     label=""Copy Chemical Formula""
@@ -76,7 +76,7 @@ public class SmilesRibbon : ExcelRibbon
                     onAction=""OnCopyFormula"" />
             <button id=""btnRibbonExcelCopyMW""
                     label=""Copy Molecular Weight (MW)""
-                    imageMso=""FormulaFormulas""
+                    imageMso=""Calculate""
                     onAction=""OnCopyMolecularWeight"" />
             <button id=""btnRibbonExcelSubCopySmiles""
                     label=""Copy SMILES""
@@ -92,7 +92,7 @@ public class SmilesRibbon : ExcelRibbon
                     onAction=""OnCopyInchiKey"" />
             <button id=""btnRibbonExcelCopyAllSummary""
                     label=""Copy All Summary (Text)""
-                    imageMso=""DirectRepliesTo""
+                    imageMso=""FileDocumentInspect""
                     onAction=""OnCopyAllSummary"" />
             <menuSeparator id=""sepRibbonExcelSubDialog"" />
             <button id=""btnRibbonExcelShowDialog""
@@ -151,7 +151,7 @@ public class SmilesRibbon : ExcelRibbon
               imageMso=""GroupTaskProperties"">
           <button id=""btnContextCellCopyName""
                   label=""Copy Substance Name""
-                  imageMso=""ContactCard""
+                  imageMso=""PropertySheet""
                   onAction=""OnCopySubstanceName"" />
           <button id=""btnContextCellCopyFormula""
                   label=""Copy Chemical Formula""
@@ -159,7 +159,7 @@ public class SmilesRibbon : ExcelRibbon
                   onAction=""OnCopyFormula"" />
           <button id=""btnContextCellCopyMW""
                   label=""Copy Molecular Weight (MW)""
-                  imageMso=""FormulaFormulas""
+                  imageMso=""Calculate""
                   onAction=""OnCopyMolecularWeight"" />
           <button id=""btnContextCellSubCopySmiles""
                   label=""Copy SMILES""
@@ -175,7 +175,7 @@ public class SmilesRibbon : ExcelRibbon
                   onAction=""OnCopyInchiKey"" />
           <button id=""btnContextCellCopyAllSummary""
                   label=""Copy All Summary (Text)""
-                  imageMso=""DirectRepliesTo""
+                  imageMso=""FileDocumentInspect""
                   onAction=""OnCopyAllSummary"" />
           <menuSeparator id=""sepContextCellSubDialog"" />
           <button id=""btnContextCellShowDialog""
@@ -223,7 +223,7 @@ public class SmilesRibbon : ExcelRibbon
               imageMso=""GroupTaskProperties"">
           <button id=""btnContextListCopyName""
                   label=""Copy Substance Name""
-                  imageMso=""ContactCard""
+                  imageMso=""PropertySheet""
                   onAction=""OnCopySubstanceName"" />
           <button id=""btnContextListCopyFormula""
                   label=""Copy Chemical Formula""
@@ -231,7 +231,7 @@ public class SmilesRibbon : ExcelRibbon
                   onAction=""OnCopyFormula"" />
           <button id=""btnContextListCopyMW""
                   label=""Copy Molecular Weight (MW)""
-                  imageMso=""FormulaFormulas""
+                  imageMso=""Calculate""
                   onAction=""OnCopyMolecularWeight"" />
           <button id=""btnContextListSubCopySmiles""
                   label=""Copy SMILES""
@@ -247,7 +247,7 @@ public class SmilesRibbon : ExcelRibbon
                   onAction=""OnCopyInchiKey"" />
           <button id=""btnContextListCopyAllSummary""
                   label=""Copy All Summary (Text)""
-                  imageMso=""DirectRepliesTo""
+                  imageMso=""FileDocumentInspect""
                   onAction=""OnCopyAllSummary"" />
           <menuSeparator id=""sepContextListSubDialog"" />
           <button id=""btnContextListShowDialog""
@@ -285,7 +285,7 @@ public class SmilesRibbon : ExcelRibbon
             insertBeforeMso=""Cut"">
         <button id=""btnContextPicCopyName""
                 label=""Copy Substance Name""
-                imageMso=""ContactCard""
+                imageMso=""PropertySheet""
                 onAction=""OnCopySubstanceName"" />
         <button id=""btnContextPicCopyFormula""
                 label=""Copy Chemical Formula""
@@ -293,7 +293,7 @@ public class SmilesRibbon : ExcelRibbon
                 onAction=""OnCopyFormula"" />
         <button id=""btnContextPicCopyMW""
                 label=""Copy Molecular Weight (MW)""
-                imageMso=""FormulaFormulas""
+                imageMso=""Calculate""
                 onAction=""OnCopyMolecularWeight"" />
         <button id=""btnContextPicSubCopySmiles""
                 label=""Copy SMILES""
@@ -309,7 +309,7 @@ public class SmilesRibbon : ExcelRibbon
                 onAction=""OnCopyInchiKey"" />
         <button id=""btnContextPicCopyAllSummary""
                 label=""Copy All Summary (Text)""
-                imageMso=""DirectRepliesTo""
+                imageMso=""FileDocumentInspect""
                 onAction=""OnCopyAllSummary"" />
         <menuSeparator id=""sepContextPicSubDialog"" />
         <button id=""btnContextPicShowDialog""
@@ -346,7 +346,7 @@ public class SmilesRibbon : ExcelRibbon
             insertBeforeMso=""Cut"">
         <button id=""btnContextShapeCopyName""
                 label=""Copy Substance Name""
-                imageMso=""ContactCard""
+                imageMso=""PropertySheet""
                 onAction=""OnCopySubstanceName"" />
         <button id=""btnContextShapeCopyFormula""
                 label=""Copy Chemical Formula""
@@ -354,7 +354,7 @@ public class SmilesRibbon : ExcelRibbon
                 onAction=""OnCopyFormula"" />
         <button id=""btnContextShapeCopyMW""
                 label=""Copy Molecular Weight (MW)""
-                imageMso=""FormulaFormulas""
+                imageMso=""Calculate""
                 onAction=""OnCopyMolecularWeight"" />
         <button id=""btnContextShapeSubCopySmiles""
                 label=""Copy SMILES""
@@ -370,7 +370,7 @@ public class SmilesRibbon : ExcelRibbon
                 onAction=""OnCopyInchiKey"" />
         <button id=""btnContextShapeCopyAllSummary""
                 label=""Copy All Summary (Text)""
-                imageMso=""DirectRepliesTo""
+                imageMso=""FileDocumentInspect""
                 onAction=""OnCopyAllSummary"" />
         <menuSeparator id=""sepContextShapeSubDialog"" />
         <button id=""btnContextShapeShowDialog""

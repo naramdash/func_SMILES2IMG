@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using Smiles2Img.Editor;
+using Smiles2Img.Notifications;
 using Smiles2Img.Rendering;
 using MSWord = Microsoft.Office.Interop.Word;
 
@@ -604,28 +605,16 @@ public static class WordStructureManager
 
             if (string.IsNullOrEmpty(smiles))
             {
-                MessageBox.Show(
-                    "Could not find SMILES structure from the selected image.\nPlease select a molecular structure picture first.",
-                    "SMILES for Word",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                MoleculeNotification.NotifyWarning("SMILES", "Could not find SMILES structure from the selected image.");
                 return;
             }
 
             Clipboard.SetText(smiles!);
-            MessageBox.Show(
-                $"SMILES copied to clipboard:\n\n{smiles}",
-                "SMILES Extracted",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            MoleculeNotification.NotifyCopied("SMILES", smiles!);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while extracting SMILES:\n" + ex.Message,
-                "SMILES for Word",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            MoleculeNotification.NotifyWarning("SMILES", "Error extracting SMILES: " + ex.Message);
         }
     }
 
@@ -656,28 +645,16 @@ public static class WordStructureManager
             var inchi = MoleculeRenderer.TryConvertToInchi(targetData);
             if (string.IsNullOrEmpty(inchi))
             {
-                MessageBox.Show(
-                    "Could not generate InChI from the selected structure.\nPlease select a molecular structure picture or text first.",
-                    "SMILES for Word",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                MoleculeNotification.NotifyWarning("InChI", "Could not generate InChI from the selected structure or text.");
                 return;
             }
 
             Clipboard.SetText(inchi!);
-            MessageBox.Show(
-                $"InChI copied to clipboard:\n\n{inchi}",
-                "InChI Copied",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            MoleculeNotification.NotifyCopied("InChI", inchi!);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while generating InChI:\n" + ex.Message,
-                "SMILES for Word",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            MoleculeNotification.NotifyWarning("InChI", "Error generating InChI: " + ex.Message);
         }
     }
 
@@ -703,28 +680,16 @@ public static class WordStructureManager
 
             if (string.IsNullOrEmpty(ket))
             {
-                MessageBox.Show(
-                    "Could not find canvas structure (KET) from the selected image.",
-                    "SMILES for Word",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                MoleculeNotification.NotifyWarning("Canvas Data (KET)", "Could not find canvas structure (KET) from the selected image.");
                 return;
             }
 
             Clipboard.SetText(ket!);
-            MessageBox.Show(
-                "Canvas data (KET) copied to clipboard.",
-                "KET Copied",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            MoleculeNotification.NotifyCopied("Canvas Data (KET)", ket!);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while copying canvas data:\n" + ex.Message,
-                "SMILES for Word",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            MoleculeNotification.NotifyWarning("Canvas Data (KET)", "Error copying canvas data: " + ex.Message);
         }
     }
 
@@ -848,15 +813,15 @@ public static class WordStructureManager
             var info = GetSelectedMoleculeInfo(app);
             if (info == null || string.IsNullOrWhiteSpace(info.CompoundName))
             {
-                MessageBox.Show("Could not resolve substance name from the selected structure.", "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MoleculeNotification.NotifyWarning("Substance Name", "Could not resolve substance name from the selected structure.");
                 return;
             }
             Clipboard.SetText(info.CompoundName);
-            CopiedToast.Show("Substance Name", info.CompoundName);
+            MoleculeNotification.NotifyCopied("Substance Name", info.CompoundName);
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Error copying substance name: " + ex.Message, "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MoleculeNotification.NotifyWarning("Substance Name", "Error copying substance name: " + ex.Message);
         }
     }
 
@@ -867,15 +832,15 @@ public static class WordStructureManager
             var info = GetSelectedMoleculeInfo(app);
             if (info == null || string.IsNullOrWhiteSpace(info.Formula))
             {
-                MessageBox.Show("Could not compute formula from the selected structure.", "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MoleculeNotification.NotifyWarning("Formula", "Could not compute formula from the selected structure.");
                 return;
             }
             Clipboard.SetText(info.Formula);
-            CopiedToast.Show("Chemical Formula", info.Formula);
+            MoleculeNotification.NotifyCopied("Chemical Formula", info.Formula);
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Error copying formula: " + ex.Message, "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MoleculeNotification.NotifyWarning("Formula", "Error copying formula: " + ex.Message);
         }
     }
 
@@ -886,16 +851,16 @@ public static class WordStructureManager
             var info = GetSelectedMoleculeInfo(app);
             if (info == null || info.MolecularWeight <= 0)
             {
-                MessageBox.Show("Could not compute molecular weight from the selected structure.", "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MoleculeNotification.NotifyWarning("Molecular Weight", "Could not compute molecular weight from the selected structure.");
                 return;
             }
             string mw = info.MolecularWeight.ToString("F2");
             Clipboard.SetText(mw);
-            CopiedToast.Show("Molecular Weight", $"{mw} g/mol");
+            MoleculeNotification.NotifyCopied("Molecular Weight", $"{mw} g/mol");
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Error copying molecular weight: " + ex.Message, "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MoleculeNotification.NotifyWarning("Molecular Weight", "Error copying molecular weight: " + ex.Message);
         }
     }
 
@@ -906,15 +871,15 @@ public static class WordStructureManager
             var info = GetSelectedMoleculeInfo(app);
             if (info == null || string.IsNullOrWhiteSpace(info.InChIKey))
             {
-                MessageBox.Show("Could not generate InChIKey from the selected structure.", "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MoleculeNotification.NotifyWarning("InChIKey", "Could not generate InChIKey from the selected structure.");
                 return;
             }
             Clipboard.SetText(info.InChIKey);
-            CopiedToast.Show("InChIKey", info.InChIKey);
+            MoleculeNotification.NotifyCopied("InChIKey", info.InChIKey);
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Error copying InChIKey: " + ex.Message, "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MoleculeNotification.NotifyWarning("InChIKey", "Error copying InChIKey: " + ex.Message);
         }
     }
 
@@ -925,16 +890,16 @@ public static class WordStructureManager
             var info = GetSelectedMoleculeInfo(app);
             if (info == null)
             {
-                MessageBox.Show("Could not retrieve molecule info from the selected structure.", "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from the selected structure.");
                 return;
             }
             string summary = info.FormatClipboardSummary();
             Clipboard.SetText(summary);
-            CopiedToast.Show("Molecule Summary", "Full summary copied to clipboard");
+            MoleculeNotification.NotifyCopied("Molecule Info", info.SubstanceName ?? info.Formula ?? "Copied summary");
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Error copying molecule summary: " + ex.Message, "SMILES for Word", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying molecule summary: " + ex.Message);
         }
     }
 

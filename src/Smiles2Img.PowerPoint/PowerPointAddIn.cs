@@ -187,7 +187,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 size=""large"">
             <button id=""btnRibbonPptCopyName""
                     label=""Copy Substance Name""
-                    imageMso=""ContactCard""
+                    imageMso=""PropertySheet""
                     onAction=""OnCopySubstanceName"" />
             <button id=""btnRibbonPptCopyFormula""
                     label=""Copy Chemical Formula""
@@ -195,7 +195,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnCopyFormula"" />
             <button id=""btnRibbonPptCopyMW""
                     label=""Copy Molecular Weight (MW)""
-                    imageMso=""FormulaFormulas""
+                    imageMso=""Calculate""
                     onAction=""OnCopyMolecularWeight"" />
             <button id=""btnRibbonPptSubCopySmiles""
                     label=""Copy SMILES""
@@ -211,7 +211,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnCopyInchiKey"" />
             <button id=""btnRibbonPptCopyAllSummary""
                     label=""Copy All Summary (Text)""
-                    imageMso=""DirectRepliesTo""
+                    imageMso=""FileDocumentInspect""
                     onAction=""OnCopyAllSummary"" />
             <menuSeparator id=""sepRibbonPptSubDialog"" />
             <button id=""btnRibbonPptShowDialog""
@@ -256,7 +256,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
             insertBeforeMso=""Cut"">
         <button id=""btnContextPptPictureCopyName""
                 label=""Copy Substance Name""
-                imageMso=""ContactCard""
+                imageMso=""PropertySheet""
                 onAction=""OnCopySubstanceName"" />
         <button id=""btnContextPptPictureCopyFormula""
                 label=""Copy Chemical Formula""
@@ -264,7 +264,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyFormula"" />
         <button id=""btnContextPptPictureCopyMW""
                 label=""Copy Molecular Weight (MW)""
-                imageMso=""FormulaFormulas""
+                imageMso=""Calculate""
                 onAction=""OnCopyMolecularWeight"" />
         <button id=""btnContextPptPictureSubCopySmiles""
                 label=""Copy SMILES""
@@ -280,7 +280,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyInchiKey"" />
         <button id=""btnContextPptPictureCopyAllSummary""
                 label=""Copy All Summary (Text)""
-                imageMso=""DirectRepliesTo""
+                imageMso=""FileDocumentInspect""
                 onAction=""OnCopyAllSummary"" />
         <menuSeparator id=""sepContextPptPictureSubDialog"" />
         <button id=""btnContextPptPictureShowDialog""
@@ -322,7 +322,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
             insertBeforeMso=""Cut"">
         <button id=""btnContextPptShapeCopyName""
                 label=""Copy Substance Name""
-                imageMso=""ContactCard""
+                imageMso=""PropertySheet""
                 onAction=""OnCopySubstanceName"" />
         <button id=""btnContextPptShapeCopyFormula""
                 label=""Copy Chemical Formula""
@@ -330,7 +330,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyFormula"" />
         <button id=""btnContextPptShapeCopyMW""
                 label=""Copy Molecular Weight (MW)""
-                imageMso=""FormulaFormulas""
+                imageMso=""Calculate""
                 onAction=""OnCopyMolecularWeight"" />
         <button id=""btnContextPptShapeSubCopySmiles""
                 label=""Copy SMILES""
@@ -346,7 +346,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyInchiKey"" />
         <button id=""btnContextPptShapeCopyAllSummary""
                 label=""Copy All Summary (Text)""
-                imageMso=""DirectRepliesTo""
+                imageMso=""FileDocumentInspect""
                 onAction=""OnCopyAllSummary"" />
         <menuSeparator id=""sepContextPptShapeSubDialog"" />
         <button id=""btnContextPptShapeShowDialog""
@@ -412,7 +412,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               imageMso=""GroupTaskProperties"">
           <button id=""btnContextPptTextCopyName""
                   label=""Copy Substance Name""
-                  imageMso=""ContactCard""
+                  imageMso=""PropertySheet""
                   onAction=""OnCopySubstanceName"" />
           <button id=""btnContextPptTextCopyFormula""
                   label=""Copy Chemical Formula""
@@ -420,7 +420,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnCopyFormula"" />
           <button id=""btnContextPptTextCopyMW""
                   label=""Copy Molecular Weight (MW)""
-                  imageMso=""FormulaFormulas""
+                  imageMso=""Calculate""
                   onAction=""OnCopyMolecularWeight"" />
           <button id=""btnContextPptTextSubCopySmiles""
                   label=""Copy SMILES""
@@ -436,7 +436,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnCopyInchiKey"" />
           <button id=""btnContextPptTextCopyAllSummary""
                   label=""Copy All Summary (Text)""
-                  imageMso=""DirectRepliesTo""
+                  imageMso=""FileDocumentInspect""
                   onAction=""OnCopyAllSummary"" />
           <menuSeparator id=""sepContextPptTextSubDialog"" />
           <button id=""btnContextPptTextShowDialog""
@@ -483,7 +483,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               imageMso=""GroupTaskProperties"">
           <button id=""btnContextPptTableCopyName""
                   label=""Copy Substance Name""
-                  imageMso=""ContactCard""
+                  imageMso=""PropertySheet""
                   onAction=""OnCopySubstanceName"" />
           <button id=""btnContextPptTableCopyFormula""
                   label=""Copy Chemical Formula""
@@ -491,7 +491,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnCopyFormula"" />
           <button id=""btnContextPptTableCopyMW""
                   label=""Copy Molecular Weight (MW)""
-                  imageMso=""FormulaFormulas""
+                  imageMso=""Calculate""
                   onAction=""OnCopyMolecularWeight"" />
           <button id=""btnContextPptTableSubCopySmiles""
                   label=""Copy SMILES""
@@ -507,7 +507,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnCopyInchiKey"" />
           <button id=""btnContextPptTableCopyAllSummary""
                   label=""Copy All Summary (Text)""
-                  imageMso=""DirectRepliesTo""
+                  imageMso=""FileDocumentInspect""
                   onAction=""OnCopyAllSummary"" />
           <menuSeparator id=""sepContextPptTableSubDialog"" />
           <button id=""btnContextPptTableShowDialog""
