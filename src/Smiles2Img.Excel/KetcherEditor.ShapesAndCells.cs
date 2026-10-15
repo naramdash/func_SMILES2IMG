@@ -18,7 +18,7 @@ namespace Smiles2Img;
 public static partial class KetcherEditor
 {
     private static readonly Regex FormulaRefPattern = new(
-        @"(?:SMILES2IMG|KET2IMG)(?:\.FLOAT)?\s*\(\s*(?:""(?<literal>(?:""""|[^""])*)""|(?<ref>(?:'[^']+'!)?[^,)\s]+))",
+        @"(?:SMILES2IMG|KET2IMG|INCHI2IMG)(?:\.FLOAT)?\s*\(\s*(?:""(?<literal>(?:""""|[^""])*)""|(?<ref>(?:'[^']+'!)?[^,)\s]+))",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     public static void EditSelectedMolecule(Excel.Application app)
@@ -413,13 +413,15 @@ public static partial class KetcherEditor
             var targetCellToWrite = cell;
             var initialSmiles = "";
             var isFormulaLiteral = false;
+            bool isInchiFunction = formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0;
             bool isKetFunction = preferKet.HasValue
                 ? preferKet.Value
                 : formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0;
 
             if (!string.IsNullOrEmpty(formula) &&
                 (formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0))
+                 formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 isInchiFunction))
             {
                 var match = FormulaRefPattern.Match(formula);
                 if (match.Success)
@@ -466,20 +468,32 @@ public static partial class KetcherEditor
                 }
 
                 // If user selected SMILES mode but Ketcher couldn't generate SMILES (e.g. multi-component reaction canvas), fallback to KET
-                if (!isKetFunction && string.IsNullOrEmpty(newSmiles) && !string.IsNullOrEmpty(newKet))
+                if (!isKetFunction && !isInchiFunction && string.IsNullOrEmpty(newSmiles) && !string.IsNullOrEmpty(newKet))
                 {
                     isKetFunction = true;
                 }
 
-                var dataToWrite = isKetFunction
-                    ? (!string.IsNullOrEmpty(newKet) ? newKet : newSmiles)
-                    : newSmiles;
+                string? dataToWrite;
+                if (isInchiFunction)
+                {
+                    dataToWrite = MoleculeRenderer.TryConvertToInchi(newSmiles) ?? newSmiles;
+                }
+                else if (isKetFunction)
+                {
+                    dataToWrite = !string.IsNullOrEmpty(newKet) ? newKet : newSmiles;
+                }
+                else
+                {
+                    dataToWrite = newSmiles;
+                }
 
                 if (string.IsNullOrEmpty(dataToWrite)) return;
 
-                var funcName = isKetFunction
-                    ? (CellImages.NativeImagesUnsupported ? "KET2IMG.FLOAT" : "KET2IMG")
-                    : (CellImages.NativeImagesUnsupported ? "SMILES2IMG.FLOAT" : "SMILES2IMG");
+                var funcName = isInchiFunction
+                    ? (CellImages.NativeImagesUnsupported ? "INCHI2IMG.FLOAT" : "INCHI2IMG")
+                    : (isKetFunction
+                        ? (CellImages.NativeImagesUnsupported ? "KET2IMG.FLOAT" : "KET2IMG")
+                        : (CellImages.NativeImagesUnsupported ? "SMILES2IMG.FLOAT" : "SMILES2IMG"));
 
                 if (targetCellToWrite != cell)
                 {
