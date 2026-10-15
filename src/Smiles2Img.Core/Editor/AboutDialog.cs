@@ -585,16 +585,23 @@ public sealed class AboutDialog : Form
 
     public static void ShowModal(IWin32Window? owner = null)
     {
-        using var dlg = new AboutDialog();
-        if (owner != null)
+        try
         {
-            dlg.StartPosition = FormStartPosition.CenterParent;
-            dlg.ShowDialog(owner);
+            using var dlg = new AboutDialog();
+            if (owner != null)
+            {
+                dlg.StartPosition = FormStartPosition.CenterParent;
+                dlg.ShowDialog(owner);
+            }
+            else
+            {
+                dlg.StartPosition = FormStartPosition.CenterScreen;
+                dlg.ShowDialog();
+            }
         }
-        else
+        catch
         {
-            dlg.StartPosition = FormStartPosition.CenterScreen;
-            dlg.ShowDialog();
+            OpenBrowser("https://github.com/naramdash/func_SMILES2IMG");
         }
     }
 }

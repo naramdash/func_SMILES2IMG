@@ -617,6 +617,19 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
 
     public void OnAbout(IRibbonControl control)
     {
-        Smiles2Img.Editor.AboutDialog.ShowModal();
+        try
+        {
+            IntPtr hwnd = IntPtr.Zero;
+            if (pptApp != null)
+            {
+                try { hwnd = (IntPtr)pptApp.HWND; } catch { }
+            }
+            IWin32Window? owner = hwnd != IntPtr.Zero ? new Win32Window(hwnd) : null;
+            Smiles2Img.Editor.AboutDialog.ShowModal(owner);
+        }
+        catch
+        {
+            Smiles2Img.Editor.AboutDialog.ShowModal();
+        }
     }
 }

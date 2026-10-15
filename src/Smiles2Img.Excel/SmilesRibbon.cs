@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using ExcelDna.Integration;
 using ExcelDna.Integration.CustomUI;
 using ExcelDna.Logging;
@@ -584,7 +585,16 @@ public class SmilesRibbon : ExcelRibbon
     {
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
-            Smiles2Img.Editor.AboutDialog.ShowModal();
+            try
+            {
+                var hwnd = ExcelDnaUtil.WindowHandle;
+                IWin32Window? owner = hwnd != IntPtr.Zero ? new Win32Window(hwnd) : null;
+                Smiles2Img.Editor.AboutDialog.ShowModal(owner);
+            }
+            catch
+            {
+                Smiles2Img.Editor.AboutDialog.ShowModal();
+            }
         });
     }
 }
