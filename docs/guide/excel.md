@@ -102,24 +102,25 @@ For multi-step organic reaction pathways involving reagents, catalysts, temperat
 
 Depending on your Microsoft Excel version, two distinct formula modes are available:
 
-### 1. `=SMILES2IMG(smiles_or_ket, [bg], [options])`
+### 1. `=SMILES2IMG(smiles_or_ket, [bg], [options])` & `=INCHI2IMG(inchi, [bg], [options])`
 * **Target:** **Microsoft 365** and **Excel 2024+**
-* Embeds real **native in-cell pictures** directly into worksheet cell contents.
+* Embeds real **native in-cell pictures** directly into worksheet cell contents from SMILES, Ketcher KET, or InChI.
 * Moves, sorts, filters, and auto-scales with row height and column width.
 * Can be referenced by standard Excel lookup functions, formulas, and conditional formatting rules.
 
-### 2. `=SMILES2IMG.FLOAT(smiles_or_ket, [bg], [options])`
+### 2. `=SMILES2IMG.FLOAT(smiles_or_ket, [bg], [options])` & `=INCHI2IMG.FLOAT(inchi, [bg], [options])`
 * **Target:** **Excel 2016 / 2019 / 2021** (or when floating shapes are explicitly desired)
 * Inserts floating picture shapes locked to cell coordinates (`xlMoveAndSize`).
 * Recalculates automatically, replaces existing shapes without orphan clutter, and moves/resizes with cell boundaries.
 
 ### 3. Molecular Property & Formula Calculation Functions
 Calculate chemical characteristics directly in your worksheet:
-* `=SMILES2NAME(cell)` / `=KET2NAME(cell)` — Resolves chemical substance name via PubChem/IUPAC.
-* `=SMILES2MW(cell)` / `=KET2MW(cell)` — Computes standard molecular weight in g/mol.
-* `=SMILES2FORMULA(cell)` / `=KET2FORMULA(cell)` — Generates Hill-notation formula (e.g. `C9H8O4`).
-* `=SMILES2INCHI(cell)` / `=KET2INCHI(cell)` — Converts to standard IUPAC InChI notation.
-* `=SMILES2INCHIKEY(cell)` / `=KET2INCHIKEY(cell)` — Computes 27-character unique InChIKey hash.
+* `=SMILES2NAME(cell)` / `=KET2NAME(cell)` / `=INCHI2NAME(cell)` — Resolves chemical substance name via PubChem/IUPAC.
+* `=SMILES2MW(cell)` / `=KET2MW(cell)` / `=INCHI2MW(cell)` — Computes standard molecular weight in g/mol (0ms pure local).
+* `=SMILES2FORMULA(cell)` / `=KET2FORMULA(cell)` / `=INCHI2FORMULA(cell)` — Generates Hill-notation formula (e.g. `C9H8O4`, 0ms pure local).
+* `=SMILES2INCHI(cell)` / `=KET2INCHI(cell)` — Converts to standard IUPAC InChI notation (0ms pure local).
+* `=INCHI2SMILES(cell)` — Converts IUPAC InChI to canonical SMILES (0ms pure local).
+* `=SMILES2INCHIKEY(cell)` / `=KET2INCHIKEY(cell)` / `=INCHI2INCHIKEY(cell)` — Computes 27-character unique InChIKey hash (0ms pure local).
 
 ---
 

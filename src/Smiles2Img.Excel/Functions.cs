@@ -104,7 +104,7 @@ public static class Functions
         if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
         try
         {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles);
+            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: true);
             if (info != null && !string.IsNullOrWhiteSpace(info.CompoundName))
                 return info.CompoundName;
             return ExcelError.ExcelErrorNA;
@@ -124,7 +124,7 @@ public static class Functions
         if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
         try
         {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles);
+            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
             if (info != null && !info.IsReaction && info.MolecularWeight > 0)
                 return Math.Round(info.MolecularWeight, 2);
             return ExcelError.ExcelErrorNA;
@@ -144,7 +144,7 @@ public static class Functions
         if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
         try
         {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles);
+            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
             if (info != null && !info.IsReaction && !string.IsNullOrWhiteSpace(info.Formula))
                 return info.Formula;
             return ExcelError.ExcelErrorNA;
@@ -224,6 +224,59 @@ public static class Functions
     public static object KetInchiKey(
         [ExcelArgument(Name = "ket", Description = "A Ketcher JSON string or cell reference.")] string ket)
         => SmilesInchiKey(ket);
+
+    [ExcelFunction(Name = "INCHI2IMG", Category = "SMILES",
+        Description = "[Excel 2024 / Microsoft 365] Renders an InChI molecular structure image into the cell. On Excel 2016/2019/2021 use INCHI2IMG.FLOAT.", IsMacroType = true)]
+    public static object InchiImg(
+        [ExcelArgument(Name = "inchi", Description = "An IUPAC InChI string or cell reference (e.g., A2, \"InChI=1S/...\").")] string inchi,
+        [ExcelArgument(Name = "background", Description = "Optional: \"trans\" (default), \"white\", CSS color (e.g. \"yellow\"), or hex (#RRGGBB).")] object? background = null,
+        [ExcelArgument(Name = "style", Description = "Optional: \"color\" (default), \"bw\", \"num\", \"stereo\", \"h\", \"all-c\", \"white\", combined.")] object? style = null,
+        [ExcelArgument(Name = "transform", Description = "Optional: orientation (flip, flipy, rot90, rot180, rot270).")] object? transform = null)
+        => Img(inchi, background, style, transform);
+
+    [ExcelFunction(Name = "INCHI2SMILES", Category = "SMILES",
+        Description = "Converts an IUPAC InChI string or cell reference to canonical SMILES.", IsMacroType = false)]
+    public static object InchiSmiles(
+        [ExcelArgument(Name = "inchi", Description = "An IUPAC InChI string or cell reference.")] string inchi)
+    {
+        if (ExcelDnaUtil.IsInFunctionWizard()) return "INCHI2SMILES";
+        if (string.IsNullOrWhiteSpace(inchi)) return ExcelError.ExcelErrorValue;
+        try
+        {
+            var smiles = MoleculeRenderer.TryConvertToSmiles(inchi);
+            if (!string.IsNullOrEmpty(smiles))
+                return smiles!;
+            return ExcelError.ExcelErrorNA;
+        }
+        catch
+        {
+            return ExcelError.ExcelErrorValue;
+        }
+    }
+
+    [ExcelFunction(Name = "INCHI2INCHIKEY", Category = "SMILES",
+        Description = "Calculates hashed 27-character IUPAC InChIKey from an InChI string or cell reference.", IsMacroType = false)]
+    public static object InchiKey(
+        [ExcelArgument(Name = "inchi", Description = "An IUPAC InChI string or cell reference.")] string inchi)
+        => SmilesInchiKey(inchi);
+
+    [ExcelFunction(Name = "INCHI2NAME", Category = "SMILES",
+        Description = "Resolves chemical substance name from PubChem for an IUPAC InChI string.", IsMacroType = false)]
+    public static object InchiName(
+        [ExcelArgument(Name = "inchi", Description = "An IUPAC InChI string or cell reference.")] string inchi)
+        => SmilesName(inchi);
+
+    [ExcelFunction(Name = "INCHI2MW", Category = "SMILES",
+        Description = "Calculates molecular weight (MW) in g/mol for an IUPAC InChI string.", IsMacroType = false)]
+    public static object InchiMW(
+        [ExcelArgument(Name = "inchi", Description = "An IUPAC InChI string or cell reference.")] string inchi)
+        => SmilesMW(inchi);
+
+    [ExcelFunction(Name = "INCHI2FORMULA", Category = "SMILES",
+        Description = "Calculates Hill chemical formula for an IUPAC InChI string.", IsMacroType = false)]
+    public static object InchiFormula(
+        [ExcelArgument(Name = "inchi", Description = "An IUPAC InChI string or cell reference.")] string inchi)
+        => SmilesFormula(inchi);
 
     /// <summary>
     /// Delegates parsing of Excel formula arguments to RenderOptions.

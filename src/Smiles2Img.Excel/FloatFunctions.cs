@@ -86,6 +86,15 @@ public static class FloatFunctions
         }
     }
 
+    [ExcelFunction(Name = "INCHI2IMG.FLOAT", Category = "SMILES",
+        Description = "[Excel 2016+] Places an InChI molecular structure picture over the cell. Use on Excel 2016/2019/2021.", IsMacroType = true)]
+    public static object InchiImgFloat(
+        [ExcelArgument(Name = "inchi", Description = "An IUPAC InChI string or cell reference (e.g., A2, \"InChI=1S/...\").")] string inchi,
+        [ExcelArgument(Name = "background", Description = "Optional: \"trans\" (default), \"white\", CSS color (e.g. \"yellow\"), or hex (#RRGGBB).")] object? background = null,
+        [ExcelArgument(Name = "style", Description = "Optional: \"color\" (default), \"bw\", \"num\", \"stereo\", \"h\", \"all-c\", \"white\", combined.")] object? style = null,
+        [ExcelArgument(Name = "transform", Description = "Optional: orientation (flip, flipy, rot90, rot180, rot270).")] object? transform = null)
+        => ImgFloat(inchi, background, style, transform);
+
     [ExcelCommand(MenuName = "SMILES", MenuText = "Refit floating images")]
     public static void RefitFloatingImages()
     {

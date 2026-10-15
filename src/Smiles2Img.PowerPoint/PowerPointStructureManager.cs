@@ -698,7 +698,7 @@ public static class PowerPointStructureManager
 
     public static void CopySelectedMoleculeInfo(MSPowerPoint.Application app) => ShowSelectedMoleculeInfo(app);
 
-    public static MoleculeInfo? GetSelectedMoleculeInfo(MSPowerPoint.Application app)
+    public static MoleculeInfo? GetSelectedMoleculeInfo(MSPowerPoint.Application app, bool resolvePubChem = false)
     {
         var sel = app.ActiveWindow?.Selection;
         if (sel == null) return null;
@@ -713,7 +713,7 @@ public static class PowerPointStructureManager
                 var meta = MolstarSessionManager.ParseAltText(shape.AlternativeText, shape.Title);
                 if (meta != null && !string.IsNullOrWhiteSpace(meta.Pdb))
                 {
-                    var pdbInfo = PubChemResolver.ResolvePdb(meta.Pdb);
+                    (string Title, double? WeightKDa) pdbInfo = resolvePubChem ? PubChemResolver.ResolvePdb(meta.Pdb) : ("", (double?)null);
                     return new MoleculeInfo
                     {
                         CompoundName = !string.IsNullOrEmpty(pdbInfo.Title) ? pdbInfo.Title : $"PDB {meta.Pdb}",
@@ -734,14 +734,14 @@ public static class PowerPointStructureManager
         }
 
         if (string.IsNullOrEmpty(targetData)) return null;
-        return MoleculeRenderer.TryGetMoleculeInfo(targetData);
+        return MoleculeRenderer.TryGetMoleculeInfo(targetData, resolvePubChem);
     }
 
     public static void CopySelectedSubstanceName(MSPowerPoint.Application app)
     {
         try
         {
-            var info = GetSelectedMoleculeInfo(app);
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
             if (info == null || string.IsNullOrWhiteSpace(info.CompoundName))
             {
                 MoleculeNotification.NotifyWarning("Substance Name", "Could not resolve substance name from the selected structure.");
@@ -760,7 +760,7 @@ public static class PowerPointStructureManager
     {
         try
         {
-            var info = GetSelectedMoleculeInfo(app);
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: false);
             if (info == null || string.IsNullOrWhiteSpace(info.Formula))
             {
                 MoleculeNotification.NotifyWarning("Formula", "Could not compute formula from the selected structure.");
@@ -779,7 +779,7 @@ public static class PowerPointStructureManager
     {
         try
         {
-            var info = GetSelectedMoleculeInfo(app);
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: false);
             if (info == null || info.MolecularWeight <= 0)
             {
                 MoleculeNotification.NotifyWarning("Molecular Weight", "Could not compute molecular weight from the selected structure.");
@@ -799,7 +799,7 @@ public static class PowerPointStructureManager
     {
         try
         {
-            var info = GetSelectedMoleculeInfo(app);
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: false);
             if (info == null || string.IsNullOrWhiteSpace(info.InChIKey))
             {
                 MoleculeNotification.NotifyWarning("InChIKey", "Could not generate InChIKey from the selected structure.");
@@ -818,7 +818,7 @@ public static class PowerPointStructureManager
     {
         try
         {
-            var info = GetSelectedMoleculeInfo(app);
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
             if (info == null)
             {
                 MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from the selected structure.");
@@ -838,7 +838,7 @@ public static class PowerPointStructureManager
     {
         try
         {
-            var info = GetSelectedMoleculeInfo(app);
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
             if (info == null)
             {
                 MessageBox.Show(

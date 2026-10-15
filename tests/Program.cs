@@ -351,6 +351,35 @@ internal static class Program
 
             Console.WriteLine("PASS MoleculeInfo calculation (Name, Formula, MW, InChI, ExactMass) & PubChem resolution");
 
+            // Test InChI Input Support & Functions
+            Check(MoleculeRenderer.IsInchi(ethanolInchi), "IsInchi identifies InChI string");
+            Check(MoleculeRenderer.IsInchi("1S/C2H6O/c1-2-3/h3H,2H2,1H3"), "IsInchi identifies prefix-less InChI");
+            Check(MoleculeRenderer.NormalizeInchi("1S/C2H6O/c1-2-3/h3H,2H2,1H3") == ethanolInchi, "NormalizeInchi prepends InChI=");
+
+            // Test InChI rendering to PNG
+            var inchiPng = MoleculeRenderer.Render(ethanolInchi!);
+            Check(inchiPng != null && inchiPng.Length > 200, "MoleculeRenderer.Render renders InChI to PNG");
+            var inchiNoPrefixPng = MoleculeRenderer.Render("1S/C2H6O/c1-2-3/h3H,2H2,1H3");
+            Check(inchiNoPrefixPng != null && inchiNoPrefixPng.Length > 200, "MoleculeRenderer.Render renders prefix-less InChI to PNG");
+
+            // Test InChI conversion to SMILES, Formula, MW, InChIKey
+            var convertedInchiSmiles = MoleculeRenderer.TryConvertToSmiles(ethanolInchi!);
+            Check(convertedInchiSmiles == "CCO", "TryConvertToSmiles converts ethanol InChI to CCO, got: " + convertedInchiSmiles);
+            var inchiFormulaVal = Functions.InchiFormula(ethanolInchi!);
+            Check(Equals(inchiFormulaVal, "C2H6O"), "Functions.InchiFormula for ethanol InChI is C2H6O, got: " + inchiFormulaVal);
+            var inchiMWVal = Functions.InchiMW(ethanolInchi!);
+            Check(Equals(inchiMWVal, 46.07), "Functions.InchiMW for ethanol InChI is 46.07, got: " + inchiMWVal);
+            var inchiKeyFromInchi = Functions.InchiKey(ethanolInchi!);
+            Check(Equals(inchiKeyFromInchi, "LFQSCWFLJHTTHZ-UHFFFAOYSA-N"), "Functions.InchiKey from InChI string");
+            var inchiSmilesFuncVal = Functions.InchiSmiles(ethanolInchi!);
+            Check(Equals(inchiSmilesFuncVal, "CCO"), "Functions.InchiSmiles from InChI string");
+
+            // Test pure local calculation with resolvePubChem: false (zero network calls)
+            var pureLocalInfo = MoleculeRenderer.TryGetMoleculeInfo("CCO", resolvePubChem: false);
+            Check(pureLocalInfo != null && pureLocalInfo.Formula == "C2H6O" && pureLocalInfo.MolecularWeight > 46.0 && pureLocalInfo.CompoundName == "",
+                "TryGetMoleculeInfo with resolvePubChem: false computes local properties without PubChem");
+            Console.WriteLine("PASS InChI input rendering, INCHI2* worksheet functions, and zero-network local calculations");
+
             // Test TryRenderStructure (Quick Paste helper)
             Check(MoleculeRenderer.TryRenderStructure("c1ccccc1", null, out var quickSmilesPng, out var quickKet, out var quickSmiles)
                   && quickSmilesPng != null && quickSmilesPng.Length > 100 && !string.IsNullOrEmpty(quickSmiles),

@@ -73,11 +73,33 @@ public static class MoleculeRenderer
     private const int RingTopology = 10;
     private static readonly char[] TransformSeparators = [' ', ',', '|', ';'];
 
+    public static bool IsInchi(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return false;
+        var trimmed = text!.Trim();
+        return trimmed.StartsWith("InChI=", StringComparison.OrdinalIgnoreCase) ||
+               trimmed.StartsWith("1S/", StringComparison.OrdinalIgnoreCase) ||
+               trimmed.StartsWith("1/", StringComparison.OrdinalIgnoreCase);
+    }
+
+    public static string NormalizeInchi(string input)
+    {
+        var trimmed = input.Trim();
+        if (trimmed.StartsWith("InChI=", StringComparison.OrdinalIgnoreCase))
+            return trimmed;
+        if (trimmed.StartsWith("1S/", StringComparison.OrdinalIgnoreCase) || trimmed.StartsWith("1/", StringComparison.OrdinalIgnoreCase))
+            return "InChI=" + trimmed;
+        return trimmed;
+    }
+
     public static string Normalize(string smiles)
     {
         var input = smiles?.Trim();
         if (string.IsNullOrEmpty(input) || input!.Length > 2000)
-            throw new InvalidSmilesException("Enter a SMILES string containing 1 to 2000 characters.");
+            throw new InvalidSmilesException("Enter a SMILES or InChI string containing 1 to 2000 characters.");
+
+        if (IsInchi(input))
+            return NormalizeInchi(input!);
 
         // Fast syntax validation (bracket and parenthesis balancing)
         var branches = 0;
@@ -177,9 +199,22 @@ public static class MoleculeRenderer
 
         if (IsKet(trimmed))
         {
-            var info = TryGetMoleculeInfo(trimmed);
+            var info = TryGetMoleculeInfo(trimmed, resolvePubChem: false);
             if (!string.IsNullOrEmpty(info?.Smiles))
                 return info!.Smiles;
+            return null;
+        }
+
+        if (IsInchi(trimmed))
+        {
+            try
+            {
+                using var indigo = new Indigo();
+                using var inchi = new IndigoInchi(indigo);
+                using var mol = inchi.loadMolecule(NormalizeInchi(trimmed));
+                return mol.canonicalSmiles() ?? mol.smiles();
+            }
+            catch { }
             return null;
         }
 
@@ -206,7 +241,15 @@ public static class MoleculeRenderer
             IndigoObject? obj = null;
             try
             {
-                obj = indigo.loadMolecule(trimmed);
+                if (IsInchi(trimmed))
+                {
+                    using var inchi = new IndigoInchi(indigo);
+                    obj = inchi.loadMolecule(NormalizeInchi(trimmed));
+                }
+                else
+                {
+                    obj = indigo.loadMolecule(trimmed);
+                }
             }
             catch
             {
@@ -232,6 +275,9 @@ public static class MoleculeRenderer
     {
         if (string.IsNullOrWhiteSpace(input)) return null;
         var trimmed = input!.Trim();
+
+        if (IsInchi(trimmed))
+            return NormalizeInchi(trimmed);
 
         if (trimmed.StartsWith("KET:", StringComparison.OrdinalIgnoreCase))
             trimmed = trimmed.Substring(4).Trim();
@@ -325,7 +371,7 @@ public static class MoleculeRenderer
         }
     }
 
-    public static MoleculeInfo? TryGetMoleculeInfo(string? structureOrSmiles)
+    public static MoleculeInfo? TryGetMoleculeInfo(string? structureOrSmiles, bool resolvePubChem = false)
     {
         if (string.IsNullOrWhiteSpace(structureOrSmiles)) return null;
         var input = structureOrSmiles!.Trim();
@@ -348,63 +394,94 @@ public static class MoleculeRenderer
 
         if (string.IsNullOrWhiteSpace(input)) return null;
 
-        var result = TryGetMoleculeInfoCore(input);
+        var result = TryGetMoleculeInfoCore(input, resolvePubChem);
         if (result == null && !string.IsNullOrWhiteSpace(fallbackSmiles))
-            result = TryGetMoleculeInfoCore(fallbackSmiles!);
+            result = TryGetMoleculeInfoCore(fallbackSmiles!, resolvePubChem);
         return result;
     }
 
-    private static MoleculeInfo? TryGetMoleculeInfoCore(string input)
+    private static MoleculeInfo? TryGetMoleculeInfoCore(string input, bool resolvePubChem)
     {
         try
         {
             using var indigo = new Indigo();
             try
             {
-                using var mol = indigo.loadMolecule(input);
-                if (mol.countAtoms() > 0)
+                IndigoObject? mol = null;
+                IndigoInchi? inchi = null;
+                try
                 {
-                    var rawFormula = "";
-                    try { rawFormula = mol.grossFormula()?.Replace(" ", "") ?? ""; } catch { }
-                    double mw = 0;
-                    try { mw = mol.molecularWeight(); } catch { }
-                    double exact = 0;
-                    try { exact = mol.monoisotopicMass(); } catch { }
-                    var canSmiles = "";
-                    try { canSmiles = mol.canonicalSmiles() ?? ""; } catch { try { canSmiles = mol.smiles() ?? ""; } catch { } }
-
-                    string title = "";
-                    string iupac = "";
-                    if (!string.IsNullOrWhiteSpace(canSmiles))
+                    if (IsInchi(input))
                     {
-                        var resolved = PubChemResolver.ResolveCompound(canSmiles);
-                        title = resolved.CompoundName;
-                        iupac = resolved.IupacName;
+                        inchi = new IndigoInchi(indigo);
+                        mol = inchi.loadMolecule(NormalizeInchi(input));
                     }
-
-                    string canInchi = "";
-                    string canInchiKey = "";
-                    try
+                    else
                     {
-                        using var inchi = new IndigoInchi(indigo);
-                        canInchi = inchi.getInchi(mol) ?? "";
-                        if (!string.IsNullOrEmpty(canInchi))
-                            canInchiKey = inchi.getInchiKey(canInchi) ?? "";
+                        mol = indigo.loadMolecule(input);
                     }
-                    catch { }
+                }
+                catch { }
 
-                    return new MoleculeInfo
+                if (mol != null && mol.countAtoms() > 0)
+                {
+                    using (mol)
                     {
-                        CompoundName = title,
-                        IupacName = iupac,
-                        Formula = rawFormula,
-                        MolecularWeight = mw,
-                        ExactMass = exact,
-                        Smiles = canSmiles,
-                        InChI = canInchi,
-                        InChIKey = canInchiKey,
-                        IsReaction = false
-                    };
+                        var rawFormula = "";
+                        try { rawFormula = mol.grossFormula()?.Replace(" ", "") ?? ""; } catch { }
+                        double mw = 0;
+                        try { mw = mol.molecularWeight(); } catch { }
+                        double exact = 0;
+                        try { exact = mol.monoisotopicMass(); } catch { }
+                        var canSmiles = "";
+                        try { canSmiles = mol.canonicalSmiles() ?? ""; } catch { try { canSmiles = mol.smiles() ?? ""; } catch { } }
+
+                        string title = "";
+                        string iupac = "";
+                        if (resolvePubChem && !string.IsNullOrWhiteSpace(canSmiles))
+                        {
+                            var resolved = PubChemResolver.ResolveCompound(canSmiles);
+                            title = resolved.CompoundName;
+                            iupac = resolved.IupacName;
+                        }
+
+                        string canInchi = "";
+                        string canInchiKey = "";
+                        try
+                        {
+                            if (IsInchi(input))
+                            {
+                                canInchi = NormalizeInchi(input);
+                                inchi ??= new IndigoInchi(indigo);
+                                canInchiKey = inchi.getInchiKey(canInchi) ?? "";
+                            }
+                            else
+                            {
+                                inchi ??= new IndigoInchi(indigo);
+                                canInchi = inchi.getInchi(mol) ?? "";
+                                if (!string.IsNullOrEmpty(canInchi))
+                                    canInchiKey = inchi.getInchiKey(canInchi) ?? "";
+                            }
+                        }
+                        catch { }
+                        finally
+                        {
+                            inchi?.Dispose();
+                        }
+
+                        return new MoleculeInfo
+                        {
+                            CompoundName = title,
+                            IupacName = iupac,
+                            Formula = rawFormula,
+                            MolecularWeight = mw,
+                            ExactMass = exact,
+                            Smiles = canSmiles,
+                            InChI = canInchi,
+                            InChIKey = canInchiKey,
+                            IsReaction = false
+                        };
+                    }
                 }
             }
             catch { }
@@ -632,7 +709,18 @@ public static class MoleculeRenderer
     private static IndigoObject Parse(Indigo indigo, string input)
     {
         IndigoObject molecule;
-        try { molecule = indigo.loadMolecule(input); }
+        try
+        {
+            if (IsInchi(input))
+            {
+                using var inchi = new IndigoInchi(indigo);
+                molecule = inchi.loadMolecule(NormalizeInchi(input));
+            }
+            else
+            {
+                molecule = indigo.loadMolecule(input);
+            }
+        }
         catch (IndigoException ex) { throw new InvalidSmilesException("Indigo: " + ex.Message); }
         if (molecule.countAtoms() == 0)
         {
@@ -642,5 +730,5 @@ public static class MoleculeRenderer
         return molecule;
     }
 
-    private static InvalidSmilesException Invalid() => new("Invalid SMILES string.");
+    private static InvalidSmilesException Invalid() => new("Invalid SMILES or InChI string.");
 }

@@ -286,7 +286,7 @@ public static partial class KetcherEditor
         }
     }
 
-    public static MoleculeInfo? GetSelectedMoleculeInfo(Excel.Application app)
+    public static MoleculeInfo? GetSelectedMoleculeInfo(Excel.Application app, bool resolvePubChem = false)
     {
         var targetShape = GetSelectedShape(app);
         string? targetData = null;
@@ -298,7 +298,7 @@ public static partial class KetcherEditor
                 var meta = MolstarSessionManager.ParseAltText(targetShape.AlternativeText, targetShape.Title);
                 if (meta != null && !string.IsNullOrWhiteSpace(meta.Pdb))
                 {
-                    var pdbInfo = PubChemResolver.ResolvePdb(meta.Pdb);
+                    (string Title, double? WeightKDa) pdbInfo = resolvePubChem ? PubChemResolver.ResolvePdb(meta.Pdb) : ("", (double?)null);
                     return new MoleculeInfo
                     {
                         CompoundName = !string.IsNullOrEmpty(pdbInfo.Title) ? pdbInfo.Title : $"PDB {meta.Pdb}",
@@ -319,7 +319,7 @@ public static partial class KetcherEditor
         }
 
         if (string.IsNullOrEmpty(targetData)) return null;
-        return MoleculeRenderer.TryGetMoleculeInfo(targetData);
+        return MoleculeRenderer.TryGetMoleculeInfo(targetData, resolvePubChem);
     }
 
     [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy Substance Name")]
@@ -328,7 +328,7 @@ public static partial class KetcherEditor
         try
         {
             var app = (Excel.Application)ExcelDnaUtil.Application;
-            var info = GetSelectedMoleculeInfo(app);
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
             if (info == null || string.IsNullOrWhiteSpace(info.CompoundName))
             {
                 MoleculeNotification.NotifyWarning("Substance Name", "Could not resolve substance name from selected cell or object.");
@@ -349,7 +349,7 @@ public static partial class KetcherEditor
         try
         {
             var app = (Excel.Application)ExcelDnaUtil.Application;
-            var info = GetSelectedMoleculeInfo(app);
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: false);
             if (info == null || string.IsNullOrWhiteSpace(info.Formula))
             {
                 MoleculeNotification.NotifyWarning("Formula", "Could not compute chemical formula from selected cell or object.");
@@ -370,7 +370,7 @@ public static partial class KetcherEditor
         try
         {
             var app = (Excel.Application)ExcelDnaUtil.Application;
-            var info = GetSelectedMoleculeInfo(app);
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: false);
             if (info == null || info.MolecularWeight <= 0)
             {
                 MoleculeNotification.NotifyWarning("Molecular Weight", "Could not compute molecular weight from selected cell or object.");
@@ -392,7 +392,7 @@ public static partial class KetcherEditor
         try
         {
             var app = (Excel.Application)ExcelDnaUtil.Application;
-            var info = GetSelectedMoleculeInfo(app);
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: false);
             if (info == null || string.IsNullOrWhiteSpace(info.InChIKey))
             {
                 MoleculeNotification.NotifyWarning("InChIKey", "Could not generate InChIKey from selected cell or object.");
@@ -413,7 +413,7 @@ public static partial class KetcherEditor
         try
         {
             var app = (Excel.Application)ExcelDnaUtil.Application;
-            var info = GetSelectedMoleculeInfo(app);
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
             if (info == null)
             {
                 MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from selected cell or object.");
@@ -435,7 +435,7 @@ public static partial class KetcherEditor
         try
         {
             var app = (Excel.Application)ExcelDnaUtil.Application;
-            var info = GetSelectedMoleculeInfo(app);
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
             if (info == null)
             {
                 MessageBox.Show(

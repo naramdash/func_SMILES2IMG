@@ -102,25 +102,26 @@
 
 엑셀 버전에 따라 최적의 수식 함수를 선택할 수 있습니다:
 
-### 1. `=SMILES2IMG(smiles_or_ket, [bg], [options])`
+### 1. `=SMILES2IMG(smiles_or_ket, [bg], [options])` 및 `=INCHI2IMG(inchi, [bg], [options])`
 * **지원 버전:** **Microsoft 365** 및 **Excel 2024 이상**
-* 셀 내부에 진짜 **인셀(In-Cell) 그림**으로 쏙 들어갑니다.
+* SMILES, Ketcher KET 또는 IUPAC InChI로부터 셀 내부에 진짜 **인셀(In-Cell) 그림**으로 쏙 들어갑니다.
 * 행 높이와 열 너비를 조절하면 분자 그림이 비율을 유지하며 자동으로 크기가 맞춰집니다.
 * 정렬, 필터, 셀 복사/이동 시 셀 데이터와 일체형으로 함께 동작합니다.
 * VLOOKUP, INDEX/MATCH 등 표준 엑셀 함수 및 조건부 서식과 완벽하게 호환됩니다.
 
-### 2. `=SMILES2IMG.FLOAT(smiles_or_ket, [bg], [options])`
+### 2. `=SMILES2IMG.FLOAT(smiles_or_ket, [bg], [options])` 및 `=INCHI2IMG.FLOAT(inchi, [bg], [options])`
 * **지원 버전:** **Excel 2016 / 2019 / 2021** (또는 플로팅 도형으로 배치가 필요한 경우)
 * 셀 좌표에 고정(`xlMoveAndSize`)되는 플로팅 도형(Shape)으로 삽입됩니다.
 * 수식이 변경되면 고아 도형이 남지 않고 자동으로 교체되며, 셀 이동 및 크기 조절에 연동됩니다.
 
 ### 3. 분자 화학 속성 계산 함수군
 워크시트 수식을 통해 분자 특성을 자동으로 산출할 수 있습니다:
-* `=SMILES2NAME(cell)` / `=KET2NAME(cell)` — PubChem/IUPAC 기반 물질 일반명 자동 조회.
-* `=SMILES2MW(cell)` / `=KET2MW(cell)` — 표준 분자량(MW, g/mol) 자동 계산.
-* `=SMILES2FORMULA(cell)` / `=KET2FORMULA(cell)` — Hill 표기법 화학식 산출 (`C9H8O4` 등).
-* `=SMILES2INCHI(cell)` / `=KET2INCHI(cell)` — IUPAC 표준 InChI 문자열 변환.
-* `=SMILES2INCHIKEY(cell)` / `=KET2INCHIKEY(cell)` — 27자리 InChIKey 고유 해시 생성.
+* `=SMILES2NAME(cell)` / `=KET2NAME(cell)` / `=INCHI2NAME(cell)` — PubChem/IUPAC 기반 물질 일반명 자동 조회.
+* `=SMILES2MW(cell)` / `=KET2MW(cell)` / `=INCHI2MW(cell)` — 표준 분자량(MW, g/mol) 자동 계산 (0ms 순수 로컬).
+* `=SMILES2FORMULA(cell)` / `=KET2FORMULA(cell)` / `=INCHI2FORMULA(cell)` — Hill 표기법 화학식 산출 (`C9H8O4` 등, 0ms 순수 로컬).
+* `=SMILES2INCHI(cell)` / `=KET2INCHI(cell)` — IUPAC 표준 InChI 문자열 변환 (0ms 순수 로컬).
+* `=INCHI2SMILES(cell)` — IUPAC InChI를 Canonical SMILES로 변환 (0ms 순수 로컬).
+* `=SMILES2INCHIKEY(cell)` / `=KET2INCHIKEY(cell)` / `=INCHI2INCHIKEY(cell)` — 27자리 InChIKey 고유 해시 생성 (0ms 순수 로컬).
 
 ---
 
