@@ -27,6 +27,30 @@
 ```
 * **용도:** 반응 화살표, 플러스 기호, 촉매 및 조건 텍스트 주석이 포함된 다단계 유기 화학 반응식(KET 포맷)을 렌더링합니다.
 
+### 4. `INCHI2IMG` 및 `INCHI2IMG.FLOAT`
+```text
+=INCHI2IMG(inchi_string, [background], [options])
+=INCHI2IMG.FLOAT(inchi_string, [background], [options])
+```
+* **용도:** IUPAC 표준 InChI 문자열(`InChI=1S/...` 및 접두사 없는 `1S/...`)로부터 화학 구조식을 직접 렌더링합니다.
+
+---
+
+## 🔬 분자 화학 정보 산출 함수
+
+SMILES, Ketcher KET 또는 IUPAC InChI 구조식 문자열로부터 물질명, 분자량, 화학식, 표준 식별자를 자동 계산/조회하는 함수군입니다:
+
+| 함수 | 반환 타입 | 기능 설명 | 반환값 예시 |
+| :--- | :--- | :--- | :--- |
+| `=SMILES2NAME(smiles)` / `=KET2NAME(ket)` / `=INCHI2NAME(inchi)` | `문자열` | 물질 일반명 자동 조회 (PubChem 연동 + 로컬 캐시) | `"Aspirin"`, `"Caffeine"` |
+| `=SMILES2MW(smiles)` / `=KET2MW(ket)` / `=INCHI2MW(inchi)` | `실수` | IUPAC 분자량 자동 계산 (g/mol, 순수 로컬 계산) | `180.16`, `194.19` |
+| `=SMILES2FORMULA(smiles)` / `=KET2FORMULA(ket)` / `=INCHI2FORMULA(inchi)` | `문자열` | 표준 Hill 표기법 화학식 산출 (순수 로컬 계산) | `"C9H8O4"`, `"C8H10N4O2"` |
+| `=SMILES2INCHI(smiles)` / `=KET2INCHI(ket)` | `문자열` | IUPAC 표준 InChI 문자열 변환 (순수 로컬 계산) | `"InChI=1S/C9H8O4/c1-6(10)13-8-5..."` |
+| `=INCHI2SMILES(inchi)` | `문자열` | InChI를 Canonical SMILES로 변환 (순수 로컬 계산) | `"CC(=O)Oc1ccccc1C(=O)O"` |
+| `=SMILES2INCHIKEY(smiles)` / `=KET2INCHIKEY(ket)` / `=INCHI2INCHIKEY(inchi)` | `문자열` | 27자리 표준 InChIKey 고유 해시 생성 (순수 로컬 계산) | `"BSYNRYMUTXBXSQ-UHFFFAOYSA-N"` |
+
+> 💡 **활용 팁:** 본 함수들은 엑셀 일반 수식과 완벽히 연동되므로, `=SMILES2MW(A2)`나 `=INCHI2MW(A2)`처럼 셀 참조를 지원합니다. 구조 기반 속성 계산(분자량, 화학식, InChIKey, SMILES 변환)은 외부 네트워크 요청 없이 0ms 순수 오프라인으로 고속 수행됩니다. `=SMILES2IMG(A2)` 또는 `=INCHI2IMG(A2)`와 나란히 아래로 드래그하면 수천 건의 화합물 카탈로그를 단 몇 초 만에 일괄 생성할 수 있습니다!
+
 ---
 
 ## ⚙️ 파라미터 규격

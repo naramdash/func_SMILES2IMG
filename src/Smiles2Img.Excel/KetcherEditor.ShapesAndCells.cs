@@ -18,7 +18,7 @@ namespace Smiles2Img;
 public static partial class KetcherEditor
 {
     private static readonly Regex FormulaRefPattern = new(
-        @"(?:SMILES2IMG|KET2IMG)(?:\.FLOAT)?\s*\(\s*(?:""(?<literal>(?:""""|[^""])*)""|(?<ref>(?:'[^']+'!)?[^,)\s]+))",
+        @"(?:SMILES2IMG|KET2IMG|INCHI2IMG)(?:\.FLOAT)?\s*\(\s*(?:""(?<literal>(?:""""|[^""])*)""|(?<ref>(?:'[^']+'!)?[^,)\s]+))",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     public static void EditSelectedMolecule(Excel.Application app)
@@ -26,6 +26,12 @@ public static partial class KetcherEditor
         var shape = GetSelectedShape(app);
         if (shape != null)
         {
+            if (StructureMetadata.IsMolstar(shape.AlternativeText, shape.Title))
+            {
+                ExcelMolstarManager.EditSelectedMolstar(app, shape);
+                return;
+            }
+
             var structStr = ExtractStructure(shape);
             if (!string.IsNullOrEmpty(structStr))
             {
@@ -44,7 +50,7 @@ public static partial class KetcherEditor
         if (app.ActiveCell is Excel.Range cell)
         {
             var sheet = (Excel.Worksheet)app.ActiveSheet;
-            OpenEditor(sheet, cell.Address, preferKet: null);
+            OpenEditor(sheet, cell.Address, StructureFormatPreference.Auto);
         }
     }
 
@@ -52,6 +58,12 @@ public static partial class KetcherEditor
     {
         try
         {
+            if (StructureMetadata.IsMolstar(targetShape.AlternativeText, targetShape.Title))
+            {
+                ExcelMolstarManager.EditSelectedMolstar(app, targetShape);
+                return;
+            }
+
             var currentStructure = ExtractStructure(targetShape);
             if (string.IsNullOrEmpty(currentStructure)) return;
 
@@ -188,6 +200,12 @@ public static partial class KetcherEditor
         string? title = null;
         try { alt = shape.AlternativeText; } catch { }
         try { title = shape.Title; } catch { }
+
+        if (StructureMetadata.IsMolstar(alt, title))
+        {
+            var meta = MolstarSessionManager.ParseAltText(alt, title);
+            return meta != null ? (!string.IsNullOrEmpty(meta.Pdb) ? meta.Pdb : "MOLSTAR") : "MOLSTAR";
+        }
 
         var extracted = StructureMetadata.ExtractStructure(alt, title);
         if (!string.IsNullOrWhiteSpace(extracted))
@@ -368,14 +386,15 @@ public static partial class KetcherEditor
 
             bool isStructureCell = !string.IsNullOrEmpty(formula) &&
                                    (formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                    formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0);
+                                    formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                    formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0);
 
             if (isStructureCell)
             {
                 cancel = true;
                 var address = cell.Address;
                 var sheet = (Excel.Worksheet)sh;
-                ExcelAsyncUtil.QueueAsMacro(() => OpenEditor(sheet, address, preferKet: null));
+                ExcelAsyncUtil.QueueAsMacro(() => OpenEditor(sheet, address, StructureFormatPreference.Auto));
             }
         }
         catch (Exception ex)
@@ -384,7 +403,7 @@ public static partial class KetcherEditor
         }
     }
 
-    internal static void OpenEditor(Excel.Worksheet sheet, string address, bool? preferKet = false)
+    internal static void OpenEditor(Excel.Worksheet sheet, string address, StructureFormatPreference preference = StructureFormatPreference.Auto)
     {
         try
         {
@@ -395,13 +414,15 @@ public static partial class KetcherEditor
             var targetCellToWrite = cell;
             var initialSmiles = "";
             var isFormulaLiteral = false;
-            bool isKetFunction = preferKet.HasValue
-                ? preferKet.Value
-                : formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0;
+            bool isInchiFunction = preference == StructureFormatPreference.InChI ||
+                (preference == StructureFormatPreference.Auto && formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0);
+            bool isKetFunction = preference == StructureFormatPreference.Ket ||
+                (preference == StructureFormatPreference.Auto && formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0);
 
             if (!string.IsNullOrEmpty(formula) &&
                 (formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0))
+                 formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0))
             {
                 var match = FormulaRefPattern.Match(formula);
                 if (match.Success)
@@ -448,20 +469,32 @@ public static partial class KetcherEditor
                 }
 
                 // If user selected SMILES mode but Ketcher couldn't generate SMILES (e.g. multi-component reaction canvas), fallback to KET
-                if (!isKetFunction && string.IsNullOrEmpty(newSmiles) && !string.IsNullOrEmpty(newKet))
+                if (!isKetFunction && !isInchiFunction && string.IsNullOrEmpty(newSmiles) && !string.IsNullOrEmpty(newKet))
                 {
                     isKetFunction = true;
                 }
 
-                var dataToWrite = isKetFunction
-                    ? (!string.IsNullOrEmpty(newKet) ? newKet : newSmiles)
-                    : newSmiles;
+                string? dataToWrite;
+                if (isInchiFunction)
+                {
+                    dataToWrite = MoleculeRenderer.TryConvertToInchi(newSmiles) ?? newSmiles;
+                }
+                else if (isKetFunction)
+                {
+                    dataToWrite = !string.IsNullOrEmpty(newKet) ? newKet : newSmiles;
+                }
+                else
+                {
+                    dataToWrite = newSmiles;
+                }
 
                 if (string.IsNullOrEmpty(dataToWrite)) return;
 
-                var funcName = isKetFunction
-                    ? (CellImages.NativeImagesUnsupported ? "KET2IMG.FLOAT" : "KET2IMG")
-                    : (CellImages.NativeImagesUnsupported ? "SMILES2IMG.FLOAT" : "SMILES2IMG");
+                var funcName = isInchiFunction
+                    ? (CellImages.NativeImagesUnsupported ? "INCHI2IMG.FLOAT" : "INCHI2IMG")
+                    : (isKetFunction
+                        ? (CellImages.NativeImagesUnsupported ? "KET2IMG.FLOAT" : "KET2IMG")
+                        : (CellImages.NativeImagesUnsupported ? "SMILES2IMG.FLOAT" : "SMILES2IMG"));
 
                 if (targetCellToWrite != cell)
                 {

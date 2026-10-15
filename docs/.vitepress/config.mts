@@ -19,14 +19,20 @@ export default defineConfig({
         nav: [
           { text: 'Guide', link: '/guide/getting-started', activeMatch: '^/guide/' },
           { text: 'Reference', link: '/reference/formula', activeMatch: '^/reference/' },
-          { text: 'v1.5.0', link: 'https://github.com/naramdash/func_SMILES2IMG/releases' }
+          { text: 'v1.6.0', link: 'https://github.com/naramdash/func_SMILES2IMG/releases' }
         ],
         sidebar: [
           {
             text: 'Getting Started',
             items: [
-              { text: 'Overview & Installation', link: '/guide/getting-started' },
-              { text: 'Ketcher 2D Editor', link: '/guide/ketcher' }
+              { text: 'Overview & Installation', link: '/guide/getting-started' }
+            ]
+          },
+          {
+            text: 'Editors & 3D Viewers',
+            items: [
+              { text: 'Ketcher 2D Editor', link: '/guide/ketcher' },
+              { text: 'Mol* 3D Viewer', link: '/guide/molstar' }
             ]
           },
           {
@@ -56,7 +62,7 @@ export default defineConfig({
         },
         footer: {
           message: 'Released under the MIT License.',
-          copyright: 'Copyright © 2026 naramdash. Powered by EPAM Indigo & Ketcher.'
+          copyright: 'Copyright © 2026 naramdash. Powered by EPAM Indigo, Ketcher & Mol*.'
         }
       }
     },
@@ -70,14 +76,20 @@ export default defineConfig({
         nav: [
           { text: '가이드', link: '/ko/guide/getting-started', activeMatch: '^/ko/guide/' },
           { text: '수식 레퍼런스', link: '/ko/reference/formula', activeMatch: '^/ko/reference/' },
-          { text: 'v1.5.0', link: 'https://github.com/naramdash/func_SMILES2IMG/releases' }
+          { text: 'v1.6.0', link: 'https://github.com/naramdash/func_SMILES2IMG/releases' }
         ],
         sidebar: [
           {
             text: '시작하기',
             items: [
-              { text: '개요 및 빠른 설치', link: '/ko/guide/getting-started' },
-              { text: 'Ketcher 2D 에디터', link: '/ko/guide/ketcher' }
+              { text: '개요 및 빠른 설치', link: '/ko/guide/getting-started' }
+            ]
+          },
+          {
+            text: '편집기 & 3D 뷰어',
+            items: [
+              { text: 'Ketcher 2D 에디터', link: '/ko/guide/ketcher' },
+              { text: 'Mol* 3D 고분자 뷰어', link: '/ko/guide/molstar' }
             ]
           },
           {

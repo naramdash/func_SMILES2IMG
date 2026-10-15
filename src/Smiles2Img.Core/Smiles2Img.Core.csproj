@@ -16,10 +16,12 @@
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="assets/ketcher.zip" LogicalName="Smiles2Img.Ketcher.zip" />
+    <EmbeddedResource Include="assets/molstar.zip" LogicalName="Smiles2Img.Molstar.zip" />
     <EmbeddedResource Include="$(PkgIndigo_Net)/runtimes/win-x64/native/*.dll"
                       Exclude="$(PkgIndigo_Net)/runtimes/win-x64/native/bingo-nosql.dll"
                       LogicalName="Smiles2Img.Native.x64.%(Filename)%(Extension)" />

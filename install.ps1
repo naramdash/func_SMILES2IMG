@@ -75,24 +75,64 @@ if (-not (Test-Path $suiteDir))  { New-Item -ItemType Directory -Path $suiteDir 
 $tag = if ($Version -eq 'latest' -or [string]::IsNullOrWhiteSpace($Version)) { 'latest' } else { if ($Version -notmatch '^v') { "v$Version" } else { $Version } }
 
 # -------------------------------------------------------------
-# 4. Install Excel Add-in (.xll)
+# 4. Deploy Office Suite Files (%APPDATA%\Microsoft\AddIns\Smiles2Img)
 # -------------------------------------------------------------
-$xllName = if ($bitness -eq 'x64') { 'Smiles2Img-AddIn64-packed.xll' } else { 'Smiles2Img-AddIn-packed.xll' }
-$targetXllPath = Join-Path $addInsDir $xllName
-$isExcelUpdate = Test-Path -LiteralPath $targetXllPath
+$unpackedXllName = if ($bitness -eq 'x64') { 'Smiles2Img-AddIn64.xll' } else { 'Smiles2Img-AddIn.xll' }
+$dnaName         = if ($bitness -eq 'x64') { 'Smiles2Img-AddIn64.dna' } else { 'Smiles2Img-AddIn.dna' }
+$packedXllName   = if ($bitness -eq 'x64') { 'Smiles2Img-AddIn64-packed.xll' } else { 'Smiles2Img-AddIn-packed.xll' }
 
-$localXllPath = if ($PSScriptRoot -and $tag -eq 'latest') { Join-Path $PSScriptRoot "dist\$bitness\$xllName" } else { $null }
-if ($localXllPath -and (Test-Path -LiteralPath $localXllPath)) {
-    Write-Host "[+] Installing Excel Add-in from local build: $localXllPath" -ForegroundColor Cyan
-    Copy-Item -LiteralPath $localXllPath -Destination $targetXllPath -Force
+$localWordDir = if ($PSScriptRoot) { Join-Path $PSScriptRoot "dist\$bitness\Word" } else { $null }
+$localPptDir  = if ($PSScriptRoot) { Join-Path $PSScriptRoot "dist\$bitness\PowerPoint" } else { $null }
+$localBinDir  = if ($PSScriptRoot) { Join-Path $PSScriptRoot "src\Smiles2Img.Excel\bin\Release\net48" } else { $null }
+
+if ($localWordDir -and (Test-Path $localWordDir) -and $localPptDir -and (Test-Path $localPptDir) -and $localBinDir -and (Test-Path $localBinDir)) {
+    Write-Host "[+] Installing Office Suite files from local build..." -ForegroundColor Cyan
+    Copy-Item -Path "$localWordDir\*.dll" -Destination $suiteDir -Force
+    Copy-Item -Path "$localPptDir\*.dll" -Destination $suiteDir -Force
+    Copy-Item -Path "$localBinDir\*.dll" -Destination $suiteDir -Force
+    Copy-Item -LiteralPath (Join-Path $localBinDir $unpackedXllName) -Destination (Join-Path $suiteDir $unpackedXllName) -Force
+    Copy-Item -LiteralPath (Join-Path $localBinDir $dnaName) -Destination (Join-Path $suiteDir $dnaName) -Force
 } else {
-    $downloadUrl = if ($tag -eq 'latest') {
-        "https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/$xllName"
+    # Remote download suite zip
+    $zipName = "Smiles2Img-Office-$bitness.zip"
+    $zipUrl = if ($tag -eq 'latest') {
+        "https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/$zipName"
     } else {
-        "https://github.com/naramdash/func_SMILES2IMG/releases/download/$tag/$xllName"
+        "https://github.com/naramdash/func_SMILES2IMG/releases/download/$tag/$zipName"
     }
-    Write-Host "[+] Downloading Excel Add-in ($tag): $downloadUrl" -ForegroundColor Cyan
-    Invoke-WebRequest -Uri $downloadUrl -OutFile $targetXllPath -UseBasicParsing
+    $tempZip = Join-Path $env:TEMP $zipName
+    try {
+        Write-Host "[+] Downloading Office Suite package ($tag): $zipUrl" -ForegroundColor Cyan
+        Invoke-WebRequest -Uri $zipUrl -OutFile $tempZip -UseBasicParsing
+        Expand-Archive -LiteralPath $tempZip -DestinationPath $suiteDir -Force
+    } catch {
+        Write-Warning "Office Suite zip package not found on release ($($_.Exception.Message))."
+        Write-Warning "Falling back to standalone packed Excel Add-in..."
+    } finally {
+        if (Test-Path $tempZip) { Remove-Item $tempZip -Force -ErrorAction SilentlyContinue }
+    }
+}
+
+# -------------------------------------------------------------
+# 5. Register Excel Add-in (.xll)
+# -------------------------------------------------------------
+$targetXllPath = Join-Path $suiteDir $unpackedXllName
+if (-not (Test-Path -LiteralPath $targetXllPath)) {
+    # Fallback to packed XLL
+    $targetXllPath = Join-Path $addInsDir $packedXllName
+    $localPacked = if ($PSScriptRoot -and $tag -eq 'latest') { Join-Path $PSScriptRoot "dist\$bitness\$packedXllName" } else { $null }
+    if ($localPacked -and (Test-Path -LiteralPath $localPacked)) {
+        Copy-Item -LiteralPath $localPacked -Destination $targetXllPath -Force
+    } else {
+        $downloadUrl = if ($tag -eq 'latest') {
+            "https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/$packedXllName"
+        } else {
+            "https://github.com/naramdash/func_SMILES2IMG/releases/download/$tag/$packedXllName"
+        }
+        Invoke-WebRequest -Uri $downloadUrl -OutFile $targetXllPath -UseBasicParsing
+    }
+    # Clean up legacy slow packed/unpacked XLLs from AddIns root directory if present
+    Get-ChildItem -Path $addInsDir -Filter 'Smiles2Img*.xll' -File -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
 }
 
 Unblock-File -LiteralPath $targetXllPath
@@ -124,35 +164,8 @@ Set-ItemProperty -Path $excelRegPath -Name $openKeyToUse -Value $regValue
 Write-Host "[+] Excel Add-in registered ($openKeyToUse): $regValue" -ForegroundColor Green
 
 # -------------------------------------------------------------
-# 5. Install Word & PowerPoint COM Add-ins (.dll)
+# 6. Register Word & PowerPoint COM Add-ins (.dll)
 # -------------------------------------------------------------
-$localWordDir = if ($PSScriptRoot) { Join-Path $PSScriptRoot "dist\$bitness\Word" } else { $null }
-$localPptDir  = if ($PSScriptRoot) { Join-Path $PSScriptRoot "dist\$bitness\PowerPoint" } else { $null }
-
-if ($localWordDir -and (Test-Path $localWordDir) -and $localPptDir -and (Test-Path $localPptDir)) {
-    Write-Host "[+] Installing Word & PowerPoint Add-ins from local build..." -ForegroundColor Cyan
-    Copy-Item -Path "$localWordDir\*.dll" -Destination $suiteDir -Force
-    Copy-Item -Path "$localPptDir\*.dll" -Destination $suiteDir -Force
-} else {
-    # Remote download suite zip
-    $zipName = "Smiles2Img-Office-$bitness.zip"
-    $zipUrl = if ($tag -eq 'latest') {
-        "https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/$zipName"
-    } else {
-        "https://github.com/naramdash/func_SMILES2IMG/releases/download/$tag/$zipName"
-    }
-    $tempZip = Join-Path $env:TEMP $zipName
-    try {
-        Write-Host "[+] Downloading Office Suite package ($tag): $zipUrl" -ForegroundColor Cyan
-        Invoke-WebRequest -Uri $zipUrl -OutFile $tempZip -UseBasicParsing
-        Expand-Archive -LiteralPath $tempZip -DestinationPath $suiteDir -Force
-    } catch {
-        Write-Warning "Office Suite zip package not found on release ($($_.Exception.Message))."
-        Write-Warning "Word and PowerPoint add-ins can be installed from local build."
-    } finally {
-        if (Test-Path $tempZip) { Remove-Item $tempZip -Force -ErrorAction SilentlyContinue }
-    }
-}
 
 # Unblock all DLLs in suite directory
 Get-ChildItem -Path $suiteDir -Filter "*.dll" | ForEach-Object {

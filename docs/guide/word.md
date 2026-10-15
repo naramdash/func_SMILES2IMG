@@ -29,11 +29,12 @@ The `[SMILES]` tab on Word's ribbon provides one-click access to structure drawi
 </p>
 
 1. **✏️ Insert Structure (`Ctrl+Shift+K`):** Launches the offline Ketcher 2D editor. Draw your molecule or multi-step reaction, then press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (or click **Apply**) to insert it as an inline picture at the current cursor position.
-2. **⚡ Quick Insert:**
+2. **🧬 3D Structure (Mol*):** Opens the embedded Mol* 3D viewer. Download PDB structures (e.g. `1CRN`, `4HHB`) or open local files, then insert as an **interactive 3D model (.glb)** or high-resolution 2D image directly into your Word manuscript. See the [Mol* 3D Viewer Guide](/guide/molstar) for full details.
+3. **⚡ Quick Insert:**
    - If text containing a SMILES string is highlighted in your document, converts it directly into an inline chemical structure in 0.1 seconds.
    - If no text is selected, parses the clipboard and inserts the structure at the cursor position.
-3. **📋 Insert from Clipboard:** Reads clipboard content as SMILES or KET and embeds it as an inline shape.
-4. **🔍 Settings & Diagnostics:** Displays COM add-in status, chemical engine version, and troubleshooting logs.
+4. **📋 Paste Structure:** Reads clipboard content as SMILES or KET and embeds it as an inline shape.
+5. **🔍 Settings & Diagnostics:** Displays COM add-in status, chemical engine version, and troubleshooting logs.
 
 ---
 
@@ -45,16 +46,25 @@ Right-click any chemical structure picture or paragraph in your Word document:
   <img src="/word-context-menu-guide.png" alt="Chemical Structure Context Menu in Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-### Case A: Right-Clicking an Existing Chemical Picture
+### Case A: Right-Clicking an Existing Chemical Picture or 3D Model
 * **✏️ Edit Structure in Ketcher:** Opens the offline editor with the exact molecule or reaction graph loaded.
-* **📋 Copy SMILES / Copy Molfile (KET):** Copies clean chemical notations to the clipboard.
-* **🔬 Copy Molecular Formula:** Calculates the standard Hill-notation formula (e.g. `C8H10N4O2`).
-* **⚖️ Copy Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g. `194.19`).
-* **🎯 Copy Exact Mass:** Copies high-resolution monoisotopic mass (e.g. `194.0804`).
+* **🧬 Edit 3D Structure (Mol*):** Reopens the Mol* 3D viewer with the exact macromolecule, representations, and camera view.
+* **📋 Copy SMILES:** Copies clean SMILES notation to the clipboard.
+* **📋 Copy InChI:** Copies standard IUPAC InChI string instantly.
+* **📋 Copy Canvas Data (KET):** Copies Ketcher native JSON representation.
+* **🔬 Copy Molecule Info (Submenu):**
+  * **Substance Name:** Copies substance common name (PubChem / IUPAC).
+  * **Chemical Formula:** Copies standard Hill-notation formula (e.g. `C9H8O4`).
+  * **Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g. `180.16 g/mol`).
+  * **Copy SMILES / InChI / InChIKey:** Individual one-click copy options.
+  * **All Summary (Text):** Copies full formatted summary to clipboard.
+  * **Detailed Molecule Info Window...:** Opens the full chemical properties dialog.
+  > ⚡ **Non-Blocking Toast:** Each copy action displays a floating pill badge (`✓ Copied {Item}: {Value}`) near your mouse for 1.4s without stealing Word's focus.
 
-### Case B: Right-Clicking Document Text or Blank Paragraph
+### Case B: Right-Clicking Document Text, Table, or Blank Paragraph
 * **✏️ Insert Structure in Ketcher:** Launches Ketcher to draw and insert a new structure at the cursor.
-* **📋 Paste from Clipboard:** Reads clipboard chemical text and embeds it as an inline image.
+* **🧬 3D Structure (Mol*)...:** Launches Mol* to insert a 3D macromolecular model or image.
+* **📋 Paste Structure:** Reads clipboard chemical text and embeds it as an inline image.
 
 ---
 

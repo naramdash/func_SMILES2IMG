@@ -27,6 +27,30 @@ Complete reference for Excel worksheet functions provided by **SMILES for Micros
 ```
 * **Purpose:** Renders multi-component organic chemical reactions, reaction arrows, plus signs, and text annotations directly from Ketcher KET JSON representations.
 
+### 4. `INCHI2IMG` & `INCHI2IMG.FLOAT`
+```text
+=INCHI2IMG(inchi_string, [background], [options])
+=INCHI2IMG.FLOAT(inchi_string, [background], [options])
+```
+* **Purpose:** Renders chemical structures directly from IUPAC standard InChI strings (both `InChI=1S/...` and prefix-less `1S/...`).
+
+---
+
+## 🔬 Molecular Property Functions
+
+These functions compute chemical properties directly from SMILES, Ketcher KET, or IUPAC InChI strings:
+
+| Function | Return Value | Description | Example Output |
+| :--- | :--- | :--- | :--- |
+| `=SMILES2NAME(smiles)` / `=KET2NAME(ket)` / `=INCHI2NAME(inchi)` | `string` | Common Substance Name (via PubChem / IUPAC) | `"Aspirin"`, `"Caffeine"` |
+| `=SMILES2MW(smiles)` / `=KET2MW(ket)` / `=INCHI2MW(inchi)` | `double` | Molecular Weight in g/mol (Pure local calculation) | `180.16`, `194.19` |
+| `=SMILES2FORMULA(smiles)` / `=KET2FORMULA(ket)` / `=INCHI2FORMULA(inchi)` | `string` | Standard Hill-notation chemical formula (Pure local calculation) | `"C9H8O4"`, `"C8H10N4O2"` |
+| `=SMILES2INCHI(smiles)` / `=KET2INCHI(ket)` | `string` | Standard InChI identifier (Pure local calculation) | `"InChI=1S/C9H8O4/c1-6(10)13-8-5..."` |
+| `=INCHI2SMILES(inchi)` | `string` | Canonical SMILES converted from InChI (Pure local calculation) | `"CC(=O)Oc1ccccc1C(=O)O"` |
+| `=SMILES2INCHIKEY(smiles)` / `=KET2INCHIKEY(ket)` / `=INCHI2INCHIKEY(inchi)` | `string` | 27-character standard InChIKey hash (Pure local calculation) | `"BSYNRYMUTXBXSQ-UHFFFAOYSA-N"` |
+
+> 💡 **Tip:** These functions work seamlessly with cell references (e.g. `=SMILES2MW(A2)` or `=INCHI2MW(A2)`). Structural property calculations (MW, Formula, InChIKey, SMILES) run in 0ms purely offline. Drag them down alongside `=SMILES2IMG(A2)` or `=INCHI2IMG(A2)` to generate comprehensive chemical catalogs in seconds!
+
 ---
 
 ## ⚙️ Parameter Reference

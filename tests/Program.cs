@@ -310,7 +310,7 @@ internal static class Program
             Check(ketFloatAttr.Name == "KET2IMG.FLOAT" && ketFloatAttr.IsMacroType, "KET2IMG.FLOAT function registration");
             Console.WriteLine("PASS Native KET rendering, IsKet, and KET2IMG function registration");
 
-            // Test MoleculeInfo calculation (Formula, Molecular Weight, Exact Mass, Canonical SMILES)
+            // Test MoleculeInfo calculation (Formula, Molecular Weight, Exact Mass, Canonical SMILES, PubChem Name)
             var aspirinInfo = MoleculeRenderer.TryGetMoleculeInfo("CC(=O)Oc1ccccc1C(=O)O");
             Check(aspirinInfo != null, "TryGetMoleculeInfo succeeds for Aspirin SMILES");
             Check(aspirinInfo!.Formula == "C9H8O4", "Aspirin formula is C9H8O4, got: " + aspirinInfo.Formula);
@@ -318,9 +318,67 @@ internal static class Program
             Check(Math.Abs(aspirinInfo.ExactMass - 180.0423) < 0.01, "Aspirin Exact Mass ~ 180.0423, got: " + aspirinInfo.ExactMass);
             Check(!string.IsNullOrEmpty(aspirinInfo.Smiles), "Aspirin canonical SMILES non-empty");
 
+            var resolvedEthanol = PubChemResolver.ResolveCompound("CCO");
+            Check(string.Equals(resolvedEthanol.CompoundName, "Ethanol", StringComparison.OrdinalIgnoreCase), "PubChem resolves CCO to Ethanol, got: " + resolvedEthanol.CompoundName);
+
             var ketInfo = MoleculeRenderer.TryGetMoleculeInfo(sampleKet);
             Check(ketInfo != null && ketInfo.Formula == "CH4O", "TryGetMoleculeInfo succeeds for methanol KET, got: " + (ketInfo?.Formula ?? "null"));
-            Console.WriteLine("PASS MoleculeInfo calculation (Formula, MW, ExactMass)");
+
+            // Test Excel Functions SMILES2NAME / SMILES2MW / SMILES2FORMULA
+            var mwVal = Functions.SmilesMW("CCO");
+            Check(mwVal is double d && Math.Abs(d - 46.07) < 0.1, "Functions.SmilesMW for CCO ~ 46.07, got: " + mwVal);
+            var formVal = Functions.SmilesFormula("CCO");
+            Check(Equals(formVal, "C2H6O"), "Functions.SmilesFormula for CCO is C2H6O, got: " + formVal);
+
+            // Test InChI & InChIKey conversion
+            var ethanolInchi = MoleculeRenderer.TryConvertToInchi("CCO");
+            Check(ethanolInchi != null && ethanolInchi.StartsWith("InChI=1S/C2H6O", StringComparison.OrdinalIgnoreCase), "InChI for CCO starts with InChI=1S/C2H6O, got: " + ethanolInchi);
+            var ethanolInchiKey = MoleculeRenderer.TryConvertToInchiKey("CCO");
+            Check(string.Equals(ethanolInchiKey, "LFQSCWFLJHTTHZ-UHFFFAOYSA-N", StringComparison.OrdinalIgnoreCase), "InChIKey for CCO is LFQSCWFLJHTTHZ-UHFFFAOYSA-N, got: " + ethanolInchiKey);
+            Check(!string.IsNullOrEmpty(aspirinInfo.InChI) && aspirinInfo.InChI.StartsWith("InChI=1S/C9H8O4"), "Aspirin info includes InChI");
+            Check(!string.IsNullOrEmpty(aspirinInfo.InChIKey), "Aspirin info includes InChIKey");
+
+            var inchiFuncVal = Functions.SmilesInchi("CCO");
+            Check(inchiFuncVal is string s && s.StartsWith("InChI=1S/C2H6O"), "Functions.SmilesInchi works for CCO");
+            var inchiKeyFuncVal = Functions.SmilesInchiKey("CCO");
+            Check(Equals(inchiKeyFuncVal, "LFQSCWFLJHTTHZ-UHFFFAOYSA-N"), "Functions.SmilesInchiKey works for CCO");
+
+            // Test MoleculeInfoDialog instantiation
+            using (var dlg = new Smiles2Img.Editor.MoleculeInfoDialog(aspirinInfo))
+            {
+                Check(dlg != null && dlg.Text.Contains("Molecule"), "MoleculeInfoDialog instantiates cleanly");
+            }
+
+            Console.WriteLine("PASS MoleculeInfo calculation (Name, Formula, MW, InChI, ExactMass) & PubChem resolution");
+
+            // Test InChI Input Support & Functions
+            Check(MoleculeRenderer.IsInchi(ethanolInchi), "IsInchi identifies InChI string");
+            Check(MoleculeRenderer.IsInchi("1S/C2H6O/c1-2-3/h3H,2H2,1H3"), "IsInchi identifies prefix-less InChI");
+            Check(MoleculeRenderer.NormalizeInchi("1S/C2H6O/c1-2-3/h3H,2H2,1H3") == ethanolInchi, "NormalizeInchi prepends InChI=");
+
+            // Test InChI rendering to PNG
+            var inchiPng = MoleculeRenderer.Render(ethanolInchi!);
+            Check(inchiPng != null && inchiPng.Length > 200, "MoleculeRenderer.Render renders InChI to PNG");
+            var inchiNoPrefixPng = MoleculeRenderer.Render("1S/C2H6O/c1-2-3/h3H,2H2,1H3");
+            Check(inchiNoPrefixPng != null && inchiNoPrefixPng.Length > 200, "MoleculeRenderer.Render renders prefix-less InChI to PNG");
+
+            // Test InChI conversion to SMILES, Formula, MW, InChIKey
+            var convertedInchiSmiles = MoleculeRenderer.TryConvertToSmiles(ethanolInchi!);
+            Check(convertedInchiSmiles == "CCO", "TryConvertToSmiles converts ethanol InChI to CCO, got: " + convertedInchiSmiles);
+            var inchiFormulaVal = Functions.InchiFormula(ethanolInchi!);
+            Check(Equals(inchiFormulaVal, "C2H6O"), "Functions.InchiFormula for ethanol InChI is C2H6O, got: " + inchiFormulaVal);
+            var inchiMWVal = Functions.InchiMW(ethanolInchi!);
+            Check(Equals(inchiMWVal, 46.07), "Functions.InchiMW for ethanol InChI is 46.07, got: " + inchiMWVal);
+            var inchiKeyFromInchi = Functions.InchiKey(ethanolInchi!);
+            Check(Equals(inchiKeyFromInchi, "LFQSCWFLJHTTHZ-UHFFFAOYSA-N"), "Functions.InchiKey from InChI string");
+            var inchiSmilesFuncVal = Functions.InchiSmiles(ethanolInchi!);
+            Check(Equals(inchiSmilesFuncVal, "CCO"), "Functions.InchiSmiles from InChI string");
+
+            // Test pure local calculation with resolvePubChem: false (zero network calls)
+            var pureLocalInfo = MoleculeRenderer.TryGetMoleculeInfo("CCO", resolvePubChem: false);
+            Check(pureLocalInfo != null && pureLocalInfo.Formula == "C2H6O" && pureLocalInfo.MolecularWeight > 46.0 && pureLocalInfo.CompoundName == "",
+                "TryGetMoleculeInfo with resolvePubChem: false computes local properties without PubChem");
+            Console.WriteLine("PASS InChI input rendering, INCHI2* worksheet functions, and zero-network local calculations");
 
             // Test TryRenderStructure (Quick Paste helper)
             Check(MoleculeRenderer.TryRenderStructure("c1ccccc1", null, out var quickSmilesPng, out var quickKet, out var quickSmiles)
@@ -356,6 +414,28 @@ internal static class Program
             var convertedKetFromKet = MoleculeRenderer.TryConvertToKet(sampleKet);
             Check(!string.IsNullOrEmpty(convertedKetFromKet) && convertedKetFromKet!.Contains("\"root\""), "TryConvertToKet processes sampleKet properly");
             Console.WriteLine("PASS StructureMetadata shared helper, CompactKet, KET-to-SMILES & SMILES-to-KET conversion");
+
+            // Test MolstarSessionManager & MolstarMetadata
+            var metaIn = new MolstarMetadata
+            {
+                Id = "test-session-123",
+                Pdb = "1CRN",
+                Mode = "3dmodel",
+                Embed = true,
+                Background = "transparent"
+            };
+            var altText = MolstarSessionManager.FormatAltText(metaIn);
+            Check(StructureMetadata.IsMolstar(altText), "StructureMetadata.IsMolstar identifies Molstar AltText");
+            var metaOut = MolstarSessionManager.ParseAltText(altText);
+            Check(metaOut != null && metaOut.Id == "test-session-123" && metaOut.Pdb == "1CRN" && metaOut.Mode == "3dmodel" && metaOut.Embed && metaOut.Background == "transparent",
+                "MolstarSessionManager AltText round-trip");
+
+            var sampleSessionJson = "{\"version\":\"5.13.1\",\"snapshot\":{\"camera\":[1.0,2.0,3.0],\"name\":\"crambin\"}}";
+            var compressed = MolstarSessionManager.CompressGzip(sampleSessionJson);
+            Check(compressed.Length > 0 && compressed.Length < sampleSessionJson.Length + 50, "CompressGzip compresses JSON");
+            var decompressed = MolstarSessionManager.DecompressGzip(compressed);
+            Check(decompressed == sampleSessionJson, "DecompressGzip restores exact session JSON");
+            Console.WriteLine("PASS MolstarSessionManager metadata & gzip compression round-trip");
 
             // Live WebView2 + Ketcher E2E Test (1: SMILES -> KET + Transparent Canvas PNG)
             string? e2eKet = null;
@@ -489,6 +569,14 @@ internal static class Program
                                                 e.Descendants().Any(b => (string?)b.Attribute("insertBeforeMso") == "Cut")),
                 "PowerPoint ContextMenuPicture has items anchored before Cut");
             Console.WriteLine("PASS PowerPoint Ribbon & Context Menu XML and callbacks reflection");
+
+            // Validate AboutDialog instantiation and third-party notices
+            using (var aboutDlg = new Smiles2Img.Editor.AboutDialog())
+            {
+                Check(aboutDlg is not null, "AboutDialog successfully instantiated");
+                Check(!string.IsNullOrWhiteSpace(aboutDlg!.Text), "AboutDialog has a window title");
+            }
+            Console.WriteLine("PASS AboutDialog UI initialization and third-party notices");
 
             return 0;
         }

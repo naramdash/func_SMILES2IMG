@@ -23,6 +23,12 @@ features:
   - icon: ✏️
     title: 더블 클릭 제자리 수정
     details: 엑셀 셀이나 워드/파워포인트 그림을 마우스로 더블 클릭하면 오프라인 Ketcher 에디터가 즉시 열려 원본 좌표를 유지하며 수정됩니다.
+  - icon: 🧬
+    title: Mol* 3D 거대분자 뷰어
+    details: 단백질, 핵산, 리간드 복합체를 워드와 파워포인트에서 3D로 시각화합니다. 회전 가능한 GLB 3D 모델 및 논문용 2D 이미지를 삽입하고 더블 클릭으로 재편집할 수 있습니다.
+  - icon: 🔬
+    title: 원클릭 분자 정보 복사 및 계산 함수
+    details: 우클릭 서브메뉴로 분자식, 분자량, 물질명, SMILES, InChI, InChIKey를 플로팅 배지와 함께 즉시 복사합니다. 엑셀에서는 =SMILES2MW, =SMILES2NAME 등의 수식으로 직접 계산합니다.
   - icon: 🧪
     title: 무손실 KET 반응식 캔버스
     details: 반응 화살표, 플러스 기호, 화학 텍스트 주석이 문서 파일(.xlsx, .docx, .pptx)에 영구 보존되어 무손실 재편집을 지원합니다.
@@ -59,4 +65,8 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 
 | [📗 Microsoft Excel 가이드](/ko/guide/excel) | [📘 Microsoft Word 가이드](/ko/guide/word) | [📙 Microsoft PowerPoint 가이드](/ko/guide/powerpoint) |
 | :---: | :---: | :---: |
-| 네이티브 인셀 수식(`=SMILES2IMG`), 행/열 연동, 정렬/필터 지원 | 문장 흐름을 따르는 인라인 그림, 표 셀 서식 완벽 보존 | 슬라이드 정중앙 원클릭 배치, 다크 테마 투명 배경 지원 |
+| 네이티브 인셀 수식(`=SMILES2IMG`), 행/열 연동, 정렬/필터 지원, 분자 특성 계산 함수 | 문장 흐름을 따르는 인라인 그림, 표 셀 서식 완벽 보존, Mol* 3D 모델 삽입 | 슬라이드 정중앙 원클릭 배치, 다크 테마 투명 배경 지원, 회전 가능한 3D GLB 모델 |
+
+| [✏️ Ketcher 2D 에디터](/ko/guide/ketcher) | [🧬 Mol* 3D 뷰어](/ko/guide/molstar) | [📐 수식 레퍼런스](/ko/reference/formula) |
+| :---: | :---: | :---: |
+| 100% 오프라인 분자 및 반응식 스케치, KET 무손실 캔버스 | 생체 고분자 3D 구조, RCSB PDB 직접 다운로드, 회전 가능한 3D GLB | 렌더링 옵션 및 분자 특성 계산 함수 상세 규격 |

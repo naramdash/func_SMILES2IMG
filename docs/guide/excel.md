@@ -30,6 +30,7 @@ The custom `[SMILES]` Ribbon tab provides one-click access to all chemical struc
 </p>
 
 * **✏️ Insert Structure (`Ctrl+Shift+K`):** Launches the offline Ketcher 2D editor. Draw structures, reactions, or functional groups, then press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to insert directly into the active cell.
+* **🧬 3D Structure (Mol\*):** Opens the embedded Mol\* 3D Macromolecular Viewer. Download biological macromolecules by PDB ID or open local structure files, and insert interactive 3D models (`.glb`) or 2D images (`.png`) onto your worksheet.
 * **⚡ Quick Insert:** Converts highlighted SMILES strings into rendered structures in 0.1s. If an empty cell is selected, it automatically reads the clipboard.
 * **📋 Insert from Clipboard:** Parses clipboard text as SMILES or Ketcher KET and creates an in-cell chemical structure immediately.
 * **🔍 Settings & Diagnostics:** Opens the real-time engine health monitor, verifying Indigo engine loading, WebView2 bundle integrity, and formula recalculation logs.
@@ -47,15 +48,24 @@ Right-click anywhere in your worksheet to access contextual chemical actions cle
 ### Case A: Right-Clicking a Molecule Cell
 When right-clicking a cell containing a chemical structure or formula:
 * **✏️ Edit Structure in Ketcher:** Opens the Ketcher editor with the current molecule or reaction graph loaded for in-place modification.
-* **📋 Copy SMILES / Copy Molfile (KET):** Copies clean chemical notations to the clipboard.
-* **🔬 Copy Molecular Formula:** Calculates the standard Hill-notation formula (e.g., `C8H10N4O2`).
-* **⚖️ Copy Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g., `194.19`).
-* **🎯 Copy Exact Mass:** Copies high-resolution monoisotopic mass (e.g., `194.0804`).
+* **🧬 3D Structure (Mol\*)...:** Launches the Mol\* 3D viewer. If the active cell contains a PDB ID (e.g., `1CRN`), Mol\* preloads the macromolecule automatically!
+* **📋 Copy SMILES:** Copies clean SMILES notation to clipboard.
+* **📋 Copy InChI:** Generates and copies standard IUPAC InChI string instantly.
+* **📋 Copy Canvas Data (KET):** Copies Ketcher native JSON representation.
+* **🔬 Copy Molecule Info (Submenu):**
+  * **Substance Name:** Copies substance common name (e.g., `Aspirin`, `Ethanol`).
+  * **Chemical Formula:** Copies standard Hill-notation formula (e.g., `C9H8O4`).
+  * **Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g., `180.16 g/mol`).
+  * **Copy SMILES / InChI / InChIKey:** Individual one-click copy options.
+  * **All Summary (Text):** Copies full formatted summary to clipboard.
+  * **Detailed Molecule Info Window...:** Opens the full chemical properties window with 2D SVG preview and complete property table.
+  > ⚡ **Zero Modal Distraction:** Clicking any copy command displays a non-blocking floating toast badge (`✓ Copied {Item}: {Value}`) near your mouse cursor for 1.4 seconds without stealing focus or interrupting your work!
 
-### Case B: Right-Clicking an Empty Cell
-When right-clicking an empty cell or blank worksheet space:
+### Case B: Right-Clicking an Empty Cell or Structure Shape
 * **✏️ Insert Structure in Ketcher:** Launches Ketcher to draw a new chemical structure and place it directly into the selected cell.
-* **📋 Paste from Clipboard:** Automatically detects chemical notation in the clipboard and inserts it as a rendered molecule.
+* **🧬 3D Structure (Mol\*)...:** Launches Mol\* to insert an interactive 3D model or 2D snapshot aligned to the active cell.
+* **✏️ Edit 3D Structure (Mol\*)...:** (When right-clicking a Mol\* 3D model or picture) Re-opens Mol\* in the exact camera angle and representation style.
+* **📋 Paste Structure:** Automatically detects chemical notation in the clipboard and inserts it as a rendered molecule.
 
 ---
 
@@ -92,16 +102,25 @@ For multi-step organic reaction pathways involving reagents, catalysts, temperat
 
 Depending on your Microsoft Excel version, two distinct formula modes are available:
 
-### 1. `=SMILES2IMG(smiles_or_ket, [bg], [options])`
+### 1. `=SMILES2IMG(smiles_or_ket, [bg], [options])` & `=INCHI2IMG(inchi, [bg], [options])`
 * **Target:** **Microsoft 365** and **Excel 2024+**
-* Embeds real **native in-cell pictures** directly into worksheet cell contents.
+* Embeds real **native in-cell pictures** directly into worksheet cell contents from SMILES, Ketcher KET, or InChI.
 * Moves, sorts, filters, and auto-scales with row height and column width.
 * Can be referenced by standard Excel lookup functions, formulas, and conditional formatting rules.
 
-### 2. `=SMILES2IMG.FLOAT(smiles_or_ket, [bg], [options])`
+### 2. `=SMILES2IMG.FLOAT(smiles_or_ket, [bg], [options])` & `=INCHI2IMG.FLOAT(inchi, [bg], [options])`
 * **Target:** **Excel 2016 / 2019 / 2021** (or when floating shapes are explicitly desired)
 * Inserts floating picture shapes locked to cell coordinates (`xlMoveAndSize`).
 * Recalculates automatically, replaces existing shapes without orphan clutter, and moves/resizes with cell boundaries.
+
+### 3. Molecular Property & Formula Calculation Functions
+Calculate chemical characteristics directly in your worksheet:
+* `=SMILES2NAME(cell)` / `=KET2NAME(cell)` / `=INCHI2NAME(cell)` — Resolves chemical substance name via PubChem/IUPAC.
+* `=SMILES2MW(cell)` / `=KET2MW(cell)` / `=INCHI2MW(cell)` — Computes standard molecular weight in g/mol (0ms pure local).
+* `=SMILES2FORMULA(cell)` / `=KET2FORMULA(cell)` / `=INCHI2FORMULA(cell)` — Generates Hill-notation formula (e.g. `C9H8O4`, 0ms pure local).
+* `=SMILES2INCHI(cell)` / `=KET2INCHI(cell)` — Converts to standard IUPAC InChI notation (0ms pure local).
+* `=INCHI2SMILES(cell)` — Converts IUPAC InChI to canonical SMILES (0ms pure local).
+* `=SMILES2INCHIKEY(cell)` / `=KET2INCHIKEY(cell)` / `=INCHI2INCHIKEY(cell)` — Computes 27-character unique InChIKey hash (0ms pure local).
 
 ---
 

@@ -12,3 +12,4 @@ assets/ketcher_bundle/
 node_modules/
 docs/.vitepress/dist/
 docs/.vitepress/cache/
+scratch/

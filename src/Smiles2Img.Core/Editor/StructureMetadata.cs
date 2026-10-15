@@ -14,6 +14,18 @@ public static class StructureMetadata
 {
     public const string KetPrefix = "KET:";
     public const string SmilesPrefix = "SMILES:";
+    public const string MolstarPrefix = "MOLSTAR:";
+
+    public static bool IsMolstar(params string?[] texts)
+    {
+        foreach (var text in texts)
+        {
+            if (string.IsNullOrWhiteSpace(text)) continue;
+            if (text!.IndexOf(MolstarPrefix, StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+        }
+        return false;
+    }
 
     private static readonly Regex SmilesTagRegex = new(
         @"(?:^|\b|\s)SMILES:\s*(?<smiles>[^\r\n]+)",
@@ -75,6 +87,13 @@ public static class StructureMetadata
                 var converted = MoleculeRenderer.TryConvertToSmiles(trimmed);
                 if (!string.IsNullOrEmpty(converted))
                     return converted;
+            }
+            if (MoleculeRenderer.IsInchi(trimmed))
+            {
+                var converted = MoleculeRenderer.TryConvertToSmiles(trimmed);
+                if (!string.IsNullOrEmpty(converted))
+                    return converted;
+                return MoleculeRenderer.NormalizeInchi(trimmed);
             }
         }
 

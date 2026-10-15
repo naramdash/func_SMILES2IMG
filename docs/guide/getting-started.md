@@ -1,6 +1,6 @@
 # Getting Started & Installation
 
-Welcome to **SMILES for Microsoft Office Suite** — an all-in-one chemical structure rendering and visual editing solution for Microsoft Excel, Microsoft Word, and Microsoft PowerPoint.
+Welcome to **SMILES for Microsoft Office Suite** — an all-in-one chemical structure rendering, 3D macromolecular visualization (Mol*), molecular property calculation, and visual editing solution for Microsoft Excel, Microsoft Word, and Microsoft PowerPoint.
 
 ---
 
@@ -29,9 +29,9 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 | Component | Required Version | Notes |
 | :--- | :--- | :--- |
 | **Operating System** | Windows 10 / Windows 11 | 32-bit & 64-bit architectures supported |
-| **Microsoft Office** | Office 2016 / 2019 / 2021 / 2024 / Microsoft 365 | Desktop desktop versions (Click-to-Run or MSI) |
+| **Microsoft Office** | Office 2016 / 2019 / 2021 / 2024 / Microsoft 365 | Desktop versions (Click-to-Run or MSI) |
 | **.NET Framework** | .NET Framework 4.8 or newer | Pre-installed on Windows 10 (1903+) & Windows 11 |
-| **Microsoft Edge WebView2** | Evergreen Runtime | Powers the offline Ketcher 2D molecular editor (pre-installed on Windows 10/11) |
+| **Microsoft Edge WebView2** | Evergreen Runtime | Powers the offline Ketcher 2D editor and Mol* 3D macromolecular viewer (pre-installed on Windows 10/11) |
 
 ---
 
