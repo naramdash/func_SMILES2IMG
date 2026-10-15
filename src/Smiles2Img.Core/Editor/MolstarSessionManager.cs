@@ -129,14 +129,16 @@ public static class MolstarSessionManager
     /// Stores the gzip+base64 session payload into the Office Document's CustomXMLParts.
     /// Works seamlessly across PowerPoint, Excel, and Word.
     /// </summary>
-    public static bool SaveToCustomXmlParts(dynamic document, string sessionId, string pdbId, string snapshotJson)
+    public static bool SaveToCustomXmlParts(object? document, string sessionId, string pdbId, string snapshotJson)
     {
         if (document == null || string.IsNullOrWhiteSpace(sessionId) || string.IsNullOrWhiteSpace(snapshotJson))
             return false;
 
         try
         {
-            if (document.CustomXMLParts == null) return false;
+            dynamic doc = document;
+            dynamic? xmlParts = doc.CustomXMLParts;
+            if (xmlParts == null) return false;
 
             var gz = CompressGzip(snapshotJson);
             var b64 = Convert.ToBase64String(gz);
@@ -145,22 +147,26 @@ public static class MolstarSessionManager
             // Remove any existing part with the same sessionId
             try
             {
-                dynamic parts = document.CustomXMLParts.SelectByNamespace(CustomXmlNamespace);
+                dynamic parts = xmlParts.SelectByNamespace(CustomXmlNamespace);
                 if (parts != null)
                 {
                     for (int i = parts.Count; i >= 1; i--)
                     {
                         dynamic p = parts.Item(i);
-                        if (p != null && p.XML != null && ((string)p.XML).Contains($"id=\"{sessionId}\""))
+                        if (p != null)
                         {
-                            p.Delete();
+                            string? pXml = Convert.ToString((object?)p.XML);
+                            if (!string.IsNullOrEmpty(pXml) && pXml!.Contains($"id=\"{sessionId}\""))
+                            {
+                                p.Delete();
+                            }
                         }
                     }
                 }
             }
             catch { }
 
-            document.CustomXMLParts.Add(xml);
+            xmlParts.Add(xml);
             return true;
         }
         catch (Exception ex)
@@ -173,25 +179,28 @@ public static class MolstarSessionManager
     /// <summary>
     /// Loads and decompresses the session snapshot from the Office Document's CustomXMLParts.
     /// </summary>
-    public static string? LoadFromCustomXmlParts(dynamic document, string sessionId)
+    public static string? LoadFromCustomXmlParts(object? document, string sessionId)
     {
         if (document == null || string.IsNullOrWhiteSpace(sessionId))
             return null;
 
         try
         {
-            if (document.CustomXMLParts == null) return null;
-            dynamic parts = document.CustomXMLParts.SelectByNamespace(CustomXmlNamespace);
+            dynamic doc = document;
+            dynamic? xmlParts = doc.CustomXMLParts;
+            if (xmlParts == null) return null;
+
+            dynamic parts = xmlParts.SelectByNamespace(CustomXmlNamespace);
             if (parts == null) return null;
 
             for (int i = 1; i <= parts.Count; i++)
             {
                 dynamic p = parts.Item(i);
                 if (p == null) continue;
-                string? xml = p.XML;
+                string? xml = Convert.ToString((object?)p.XML);
                 if (!string.IsNullOrEmpty(xml) && xml!.Contains($"id=\"{sessionId}\""))
                 {
-                    var xdoc = XDocument.Parse(xml);
+                    var xdoc = XDocument.Parse(xml!);
                     var b64 = xdoc.Root?.Value;
                     if (!string.IsNullOrWhiteSpace(b64))
                     {

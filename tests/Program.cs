@@ -386,6 +386,28 @@ internal static class Program
             Check(!string.IsNullOrEmpty(convertedKetFromKet) && convertedKetFromKet!.Contains("\"root\""), "TryConvertToKet processes sampleKet properly");
             Console.WriteLine("PASS StructureMetadata shared helper, CompactKet, KET-to-SMILES & SMILES-to-KET conversion");
 
+            // Test MolstarSessionManager & MolstarMetadata
+            var metaIn = new MolstarMetadata
+            {
+                Id = "test-session-123",
+                Pdb = "1CRN",
+                Mode = "3dmodel",
+                Embed = true,
+                Background = "transparent"
+            };
+            var altText = MolstarSessionManager.FormatAltText(metaIn);
+            Check(StructureMetadata.IsMolstar(altText), "StructureMetadata.IsMolstar identifies Molstar AltText");
+            var metaOut = MolstarSessionManager.ParseAltText(altText);
+            Check(metaOut != null && metaOut.Id == "test-session-123" && metaOut.Pdb == "1CRN" && metaOut.Mode == "3dmodel" && metaOut.Embed && metaOut.Background == "transparent",
+                "MolstarSessionManager AltText round-trip");
+
+            var sampleSessionJson = "{\"version\":\"5.13.1\",\"snapshot\":{\"camera\":[1.0,2.0,3.0],\"name\":\"crambin\"}}";
+            var compressed = MolstarSessionManager.CompressGzip(sampleSessionJson);
+            Check(compressed.Length > 0 && compressed.Length < sampleSessionJson.Length + 50, "CompressGzip compresses JSON");
+            var decompressed = MolstarSessionManager.DecompressGzip(compressed);
+            Check(decompressed == sampleSessionJson, "DecompressGzip restores exact session JSON");
+            Console.WriteLine("PASS MolstarSessionManager metadata & gzip compression round-trip");
+
             // Live WebView2 + Ketcher E2E Test (1: SMILES -> KET + Transparent Canvas PNG)
             string? e2eKet = null;
             using (var form1 = new KetcherForm("PowerPoint", "CC(=O)Oc1ccccc1C(=O)O")
