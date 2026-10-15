@@ -11,7 +11,10 @@ $distX64 = Join-Path $repoRoot "dist\x64"
 $wordDll = Join-Path $distX64 "Word\Smiles2Img.Word.dll"
 $pptDll  = Join-Path $distX64 "PowerPoint\Smiles2Img.PowerPoint.dll"
 $coreDll = Join-Path $distX64 "Word\Smiles2Img.Core.dll"
-$xllPath = Join-Path $env:APPDATA "Microsoft\AddIns\Smiles2Img-AddIn64-packed.xll"
+$xllPath = Join-Path $env:APPDATA "Microsoft\AddIns\Smiles2Img\Smiles2Img-AddIn64.xll"
+if (-not (Test-Path $xllPath)) {
+    $xllPath = Join-Path $env:APPDATA "Microsoft\AddIns\Smiles2Img-AddIn64-packed.xll"
+}
 
 [System.Reflection.Assembly]::LoadFrom($coreDll) | Out-Null
 [System.Reflection.Assembly]::LoadFrom($wordDll) | Out-Null

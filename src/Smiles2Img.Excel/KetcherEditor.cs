@@ -47,7 +47,6 @@ public static partial class KetcherEditor
         {
             events = (Excel.Application)ExcelDnaUtil.Application;
             events.SheetBeforeDoubleClick += OnSheetBeforeDoubleClick;
-            RemoveCellContextMenu();
 
             try
             {
@@ -73,7 +72,6 @@ public static partial class KetcherEditor
             }
             mouseHookProc = null;
 
-            RemoveCellContextMenu();
             if (events != null)
             {
                 events.SheetBeforeDoubleClick -= OnSheetBeforeDoubleClick;
@@ -104,31 +102,6 @@ public static partial class KetcherEditor
             catch { }
         }
         return CallNextHookEx(hMouseHook, nCode, wParam, lParam);
-    }
-
-    private static void RemoveCellContextMenu()
-    {
-        try
-        {
-            if (events == null) return;
-            foreach (CommandBar bar in events.CommandBars)
-            {
-                if (bar.Name == "Cell" || bar.Name == "List Range Popup")
-                {
-                    try
-                    {
-                        for (int i = bar.Controls.Count; i >= 1; i--)
-                        {
-                            var ctrl = bar.Controls[i];
-                            if (ctrl.Tag == ContextMenuTag)
-                                ctrl.Delete();
-                        }
-                    }
-                    catch { }
-                }
-            }
-        }
-        catch { }
     }
 
 public enum StructureFormatPreference

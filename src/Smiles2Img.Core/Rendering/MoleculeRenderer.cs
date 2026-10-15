@@ -122,6 +122,7 @@ public static class MoleculeRenderer
 
     public static byte[] Render(string smiles, RenderOptions options)
     {
+        NativeIndigo.EnsureInitialized();
         options ??= new RenderOptions();
         using var indigo = new Indigo();
         using var renderer = new IndigoRenderer(indigo);
@@ -207,6 +208,7 @@ public static class MoleculeRenderer
 
         if (IsInchi(trimmed))
         {
+            NativeIndigo.EnsureInitialized();
             try
             {
                 using var indigo = new Indigo();
@@ -235,6 +237,7 @@ public static class MoleculeRenderer
         if (trimmed.StartsWith("SMILES:", StringComparison.OrdinalIgnoreCase))
             trimmed = trimmed.Substring(7).Trim();
 
+        NativeIndigo.EnsureInitialized();
         try
         {
             using var indigo = new Indigo();
@@ -284,6 +287,7 @@ public static class MoleculeRenderer
         else if (trimmed.StartsWith("SMILES:", StringComparison.OrdinalIgnoreCase))
             trimmed = trimmed.Substring(7).Trim();
 
+        NativeIndigo.EnsureInitialized();
         try
         {
             using var indigo = new Indigo();
@@ -315,6 +319,7 @@ public static class MoleculeRenderer
         var inchiStr = TryConvertToInchi(input);
         if (string.IsNullOrEmpty(inchiStr)) return null;
 
+        NativeIndigo.EnsureInitialized();
         try
         {
             using var indigo = new Indigo();
@@ -330,6 +335,7 @@ public static class MoleculeRenderer
     {
         if (string.IsNullOrWhiteSpace(ket)) return null;
         var cleanKet = CleanKet(ket);
+        NativeIndigo.EnsureInitialized();
         options ??= new RenderOptions();
         using var indigo = new Indigo();
         using var renderer = new IndigoRenderer(indigo);
@@ -402,6 +408,7 @@ public static class MoleculeRenderer
 
     private static MoleculeInfo? TryGetMoleculeInfoCore(string input, bool resolvePubChem)
     {
+        NativeIndigo.EnsureInitialized();
         try
         {
             using var indigo = new Indigo();

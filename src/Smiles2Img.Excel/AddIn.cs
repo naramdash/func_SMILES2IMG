@@ -15,7 +15,7 @@ public sealed class AddIn : IExcelAddIn
     {
         try
         {
-            NativeIndigo.Initialize(Path.GetDirectoryName(ExcelDnaUtil.XllPath)!);
+            NativeIndigo.EnsureInitialized(Path.GetDirectoryName(ExcelDnaUtil.XllPath));
             IntelliSenseServer.Install();
             IsOpen = true;
             ExcelAsyncUtil.QueueAsMacro(() =>
