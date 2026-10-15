@@ -1,5 +1,5 @@
 <DnaLibrary Name="SMILES2IMG" RuntimeVersion="v4.0">
-  <ExternalLibrary Path="Smiles2Img.dll" ExplicitExports="true" LoadFromBytes="true" Pack="true" />
+  <ExternalLibrary Path="Smiles2Img.dll" ExplicitExports="true" Pack="true" />
   <Reference Path="Smiles2Img.Core.dll" Pack="true" />
   <Reference Path="Indigo.Net.dll" Pack="true" />
   <Reference Path="System.Drawing.Common.dll" Pack="true" />

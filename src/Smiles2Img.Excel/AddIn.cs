@@ -15,11 +15,11 @@ public sealed class AddIn : IExcelAddIn
     {
         try
         {
-            NativeIndigo.EnsureInitialized(Path.GetDirectoryName(ExcelDnaUtil.XllPath));
-            IntelliSenseServer.Install();
             IsOpen = true;
             ExcelAsyncUtil.QueueAsMacro(() =>
             {
+                try { IntelliSenseServer.Install(); }
+                catch (Exception error) { LogDisplay.WriteLine("IntelliSense install: " + error.Message); }
                 try { FloatingPictures.Attach(); }
                 catch (Exception error) { LogDisplay.WriteLine("SMILES2IMG.FLOAT events: " + error.Message); }
                 try { KetcherEditor.Attach(); }

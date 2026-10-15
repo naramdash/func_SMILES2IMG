@@ -131,12 +131,8 @@ if (-not (Test-Path -LiteralPath $targetXllPath)) {
         }
         Invoke-WebRequest -Uri $downloadUrl -OutFile $targetXllPath -UseBasicParsing
     }
-} else {
-    # Clean up legacy slow packed XLL from AddIns directory if present
-    $oldPacked = Join-Path $addInsDir $packedXllName
-    if (Test-Path -LiteralPath $oldPacked) {
-        Remove-Item -LiteralPath $oldPacked -Force -ErrorAction SilentlyContinue
-    }
+    # Clean up legacy slow packed/unpacked XLLs from AddIns root directory if present
+    Get-ChildItem -Path $addInsDir -Filter 'Smiles2Img*.xll' -File -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
 }
 
 Unblock-File -LiteralPath $targetXllPath
