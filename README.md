@@ -39,10 +39,10 @@ Open **PowerShell** and run this single command to automatically install, config
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
-::: tip 💡 Preview Release (Mol* 3D across Office & Molecular Property Functions)
-To test the latest preview release featuring the Mol* 3D Viewer across Excel, Word, PowerPoint and Molecular Property functions:
+::: tip 💡 Preview Release (InChI Suite, Mol* 3D across Office & 0ms Local Molecule Properties)
+To test the latest preview release featuring the complete InChI Suite (worksheet functions & ribbon), Mol* 3D Viewer, and 0ms local molecule property copying:
 ```powershell
-$v='v1.6.0-preview.2'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+$v='v1.6.0-preview.3'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 :::
 
