@@ -335,7 +335,7 @@ public sealed class AboutDialog : Form
 
         AddRow("Author / Creator:", new Label
         {
-            Text = "Juho Kim (naramdash)",
+            Text = "KimJuho (naramdash)",
             Font = new Font("Segoe UI", 9.75f, FontStyle.Bold),
             ForeColor = Color.FromArgb(17, 24, 39),
             AutoSize = true
@@ -515,13 +515,13 @@ public sealed class AboutDialog : Form
         var sb = new StringBuilder();
         sb.AppendLine("================================================================================");
         sb.AppendLine(" SMILES for Microsoft Office Suite (func_SMILES2IMG)");
-        sb.AppendLine(" Author: Juho Kim (naramdash)");
+        sb.AppendLine(" Author: KimJuho (naramdash)");
         sb.AppendLine(" Repository: https://github.com/naramdash/func_SMILES2IMG");
         sb.AppendLine(" Documentation: https://naramdash.github.io/func_SMILES2IMG/");
         sb.AppendLine(" License: MIT License");
         sb.AppendLine("================================================================================");
         sb.AppendLine();
-        sb.AppendLine("Copyright (c) 2026 Juho Kim");
+        sb.AppendLine("Copyright (c) 2026 KimJuho");
         sb.AppendLine();
         sb.AppendLine("Permission is hereby granted, free of charge, to any person obtaining a copy");
         sb.AppendLine("of this software and associated documentation files (the \"Software\"), to deal");

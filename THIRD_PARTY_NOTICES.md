@@ -1,7 +1,7 @@
 # Third-Party Open Source Components & Notices
 
 **SMILES for Microsoft Office Suite (`func_SMILES2IMG`)**  
-Author: **Juho Kim ([@naramdash](https://github.com/naramdash))**  
+Author: **KimJuho ([@naramdash](https://github.com/naramdash))**  
 Repository: [https://github.com/naramdash/func_SMILES2IMG](https://github.com/naramdash/func_SMILES2IMG)  
 Documentation: [https://naramdash.github.io/func_SMILES2IMG/](https://naramdash.github.io/func_SMILES2IMG/)  
 Primary License: [MIT License](LICENSE)
