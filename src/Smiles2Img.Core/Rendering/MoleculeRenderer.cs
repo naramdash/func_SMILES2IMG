@@ -557,7 +557,7 @@ public static class MoleculeRenderer
             pngBytes = Render(input, options);
             if (pngBytes != null && pngBytes.Length > 0)
             {
-                smiles = Normalize(input);
+                smiles = IsInchi(input) ? (TryConvertToSmiles(input) ?? NormalizeInchi(input)) : Normalize(input);
                 return true;
             }
         }

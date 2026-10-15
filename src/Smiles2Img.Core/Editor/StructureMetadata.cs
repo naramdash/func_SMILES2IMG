@@ -88,6 +88,13 @@ public static class StructureMetadata
                 if (!string.IsNullOrEmpty(converted))
                     return converted;
             }
+            if (MoleculeRenderer.IsInchi(trimmed))
+            {
+                var converted = MoleculeRenderer.TryConvertToSmiles(trimmed);
+                if (!string.IsNullOrEmpty(converted))
+                    return converted;
+                return MoleculeRenderer.NormalizeInchi(trimmed);
+            }
         }
 
         return null;
