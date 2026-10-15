@@ -13,9 +13,9 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 ```
 
 ::: tip 💡 Preview Releases
-To install preview releases with the newest features (including the Mol* 3D Viewer and Molecular Property functions):
+To install preview releases with the newest features (including the Mol* 3D Viewer across Office and Molecular Property functions):
 ```powershell
-$v='v1.6.0-preview.1'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+$v='v1.6.0-preview.2'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 :::
 

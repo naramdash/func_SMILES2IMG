@@ -13,9 +13,9 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 ```
 
 ::: tip 💡 프리뷰(최신 기능) 버전 설치
-Mol* 3D 뷰어 및 분자 특성 계산 함수가 포함된 최신 프리뷰 버전을 설치하려면 아래와 같이 실행하세요:
+Office 전 제품 Mol* 3D 뷰어 및 엑셀 분자 특성 계산 함수가 포함된 최신 프리뷰 버전을 설치하려면 아래와 같이 실행하세요:
 ```powershell
-$v='v1.6.0-preview.1'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+$v='v1.6.0-preview.2'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 :::
 
