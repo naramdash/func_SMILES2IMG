@@ -23,7 +23,7 @@ foreach ($arch in @('x64', 'x86')) {
     if (Test-Path (Join-Path $excelDir $xllName)) {
         Copy-Item (Join-Path $excelDir $xllName) -Destination $tempDir -Force
         Copy-Item (Join-Path $excelDir $dnaName) -Destination $tempDir -Force
-        Copy-Item (Join-Path $excelDir "Smiles2Img.dll") -Destination $tempDir -Force
+        Copy-Item -Path "$excelDir\*.dll" -Destination $tempDir -Force
     }
 
     $zipPath = Join-Path $distArch "Smiles2Img-Office-$arch.zip"

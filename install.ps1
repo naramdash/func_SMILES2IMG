@@ -89,9 +89,9 @@ if ($localWordDir -and (Test-Path $localWordDir) -and $localPptDir -and (Test-Pa
     Write-Host "[+] Installing Office Suite files from local build..." -ForegroundColor Cyan
     Copy-Item -Path "$localWordDir\*.dll" -Destination $suiteDir -Force
     Copy-Item -Path "$localPptDir\*.dll" -Destination $suiteDir -Force
+    Copy-Item -Path "$localBinDir\*.dll" -Destination $suiteDir -Force
     Copy-Item -LiteralPath (Join-Path $localBinDir $unpackedXllName) -Destination (Join-Path $suiteDir $unpackedXllName) -Force
     Copy-Item -LiteralPath (Join-Path $localBinDir $dnaName) -Destination (Join-Path $suiteDir $dnaName) -Force
-    Copy-Item -LiteralPath (Join-Path $localBinDir 'Smiles2Img.dll') -Destination (Join-Path $suiteDir 'Smiles2Img.dll') -Force
 } else {
     # Remote download suite zip
     $zipName = "Smiles2Img-Office-$bitness.zip"
