@@ -195,7 +195,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnCopyFormula"" />
             <button id=""btnRibbonPptCopyMW""
                     label=""Copy Molecular Weight (MW)""
-                    imageMso=""Calculate""
+                    imageMso=""Calculator""
                     onAction=""OnCopyMolecularWeight"" />
             <button id=""btnRibbonPptSubCopySmiles""
                     label=""Copy SMILES""
@@ -264,7 +264,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyFormula"" />
         <button id=""btnContextPptPictureCopyMW""
                 label=""Copy Molecular Weight (MW)""
-                imageMso=""Calculate""
+                imageMso=""Calculator""
                 onAction=""OnCopyMolecularWeight"" />
         <button id=""btnContextPptPictureSubCopySmiles""
                 label=""Copy SMILES""
@@ -330,7 +330,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyFormula"" />
         <button id=""btnContextPptShapeCopyMW""
                 label=""Copy Molecular Weight (MW)""
-                imageMso=""Calculate""
+                imageMso=""Calculator""
                 onAction=""OnCopyMolecularWeight"" />
         <button id=""btnContextPptShapeSubCopySmiles""
                 label=""Copy SMILES""
@@ -420,7 +420,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnCopyFormula"" />
           <button id=""btnContextPptTextCopyMW""
                   label=""Copy Molecular Weight (MW)""
-                  imageMso=""Calculate""
+                  imageMso=""Calculator""
                   onAction=""OnCopyMolecularWeight"" />
           <button id=""btnContextPptTextSubCopySmiles""
                   label=""Copy SMILES""
@@ -491,7 +491,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnCopyFormula"" />
           <button id=""btnContextPptTableCopyMW""
                   label=""Copy Molecular Weight (MW)""
-                  imageMso=""Calculate""
+                  imageMso=""Calculator""
                   onAction=""OnCopyMolecularWeight"" />
           <button id=""btnContextPptTableSubCopySmiles""
                   label=""Copy SMILES""

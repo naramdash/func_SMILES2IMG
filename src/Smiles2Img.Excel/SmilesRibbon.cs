@@ -42,7 +42,7 @@ public class SmilesRibbon : ExcelRibbon
                   label=""3D Structure (Mol*)""
                   screentip=""Mol* 3D Macromolecular Viewer""
                   supertip=""Opens Mol* 3D viewer to download PDB structures, visualize macromolecules, and insert interactive 3D models (.glb) or 2D images onto the worksheet.""
-                  imageMso=""DesignMode""
+                  imageMso=""Insert3DModelFromFile""
                   size=""large""
                   onAction=""OnInsertMolstar"" />
           <button id=""btnQuickInsert""
@@ -91,7 +91,7 @@ public class SmilesRibbon : ExcelRibbon
                     onAction=""OnCopyFormula"" />
             <button id=""btnRibbonExcelCopyMW""
                     label=""Copy Molecular Weight (MW)""
-                    imageMso=""Calculate""
+                    imageMso=""Calculator""
                     onAction=""OnCopyMolecularWeight"" />
             <button id=""btnRibbonExcelSubCopySmiles""
                     label=""Copy SMILES""
@@ -149,7 +149,7 @@ public class SmilesRibbon : ExcelRibbon
                 onAction=""OnInsertKetMolecule"" />
         <button id=""btnContextInsertMolstarCell""
                 label=""3D Structure (Mol*)...""
-                imageMso=""DesignMode""
+                imageMso=""Insert3DModelFromFile""
                 onAction=""OnInsertMolstar"" />
         <button id=""btnContextQuickInsertCell""
                 label=""Paste Structure""
@@ -182,7 +182,7 @@ public class SmilesRibbon : ExcelRibbon
                   onAction=""OnCopyFormula"" />
           <button id=""btnContextCellCopyMW""
                   label=""Copy Molecular Weight (MW)""
-                  imageMso=""Calculate""
+                  imageMso=""Calculator""
                   onAction=""OnCopyMolecularWeight"" />
           <button id=""btnContextCellSubCopySmiles""
                   label=""Copy SMILES""
@@ -229,7 +229,7 @@ public class SmilesRibbon : ExcelRibbon
                 onAction=""OnInsertKetMolecule"" />
         <button id=""btnContextListInsertMolstar""
                 label=""3D Structure (Mol*)...""
-                imageMso=""DesignMode""
+                imageMso=""Insert3DModelFromFile""
                 onAction=""OnInsertMolstar"" />
         <button id=""btnContextListQuickInsertCell""
                 label=""Paste Structure""
@@ -262,7 +262,7 @@ public class SmilesRibbon : ExcelRibbon
                   onAction=""OnCopyFormula"" />
           <button id=""btnContextListCopyMW""
                   label=""Copy Molecular Weight (MW)""
-                  imageMso=""Calculate""
+                  imageMso=""Calculator""
                   onAction=""OnCopyMolecularWeight"" />
           <button id=""btnContextListSubCopySmiles""
                   label=""Copy SMILES""
@@ -297,7 +297,7 @@ public class SmilesRibbon : ExcelRibbon
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureEditMolstar""
               label=""Edit 3D Structure (Mol*)...""
-              imageMso=""DesignMode""
+              imageMso=""Insert3DModelFromFile""
               onAction=""OnEditMolstar""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureCopySmiles""
@@ -329,7 +329,7 @@ public class SmilesRibbon : ExcelRibbon
                 onAction=""OnCopyFormula"" />
         <button id=""btnContextPicCopyMW""
                 label=""Copy Molecular Weight (MW)""
-                imageMso=""Calculate""
+                imageMso=""Calculator""
                 onAction=""OnCopyMolecularWeight"" />
         <button id=""btnContextPicSubCopySmiles""
                 label=""Copy SMILES""
@@ -363,7 +363,7 @@ public class SmilesRibbon : ExcelRibbon
               insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeEditMolstar""
               label=""Edit 3D Structure (Mol*)...""
-              imageMso=""DesignMode""
+              imageMso=""Insert3DModelFromFile""
               onAction=""OnEditMolstar""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeCopySmiles""
@@ -395,7 +395,7 @@ public class SmilesRibbon : ExcelRibbon
                 onAction=""OnCopyFormula"" />
         <button id=""btnContextShapeCopyMW""
                 label=""Copy Molecular Weight (MW)""
-                imageMso=""Calculate""
+                imageMso=""Calculator""
                 onAction=""OnCopyMolecularWeight"" />
         <button id=""btnContextShapeSubCopySmiles""
                 label=""Copy SMILES""

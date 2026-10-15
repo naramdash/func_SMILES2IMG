@@ -121,7 +121,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnCopyFormula"" />
             <button id=""btnRibbonWordCopyMW""
                     label=""Copy Molecular Weight (MW)""
-                    imageMso=""Calculate""
+                    imageMso=""Calculator""
                     onAction=""OnCopyMolecularWeight"" />
             <button id=""btnRibbonWordSubCopySmiles""
                     label=""Copy SMILES""
@@ -190,7 +190,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyFormula"" />
         <button id=""btnContextInlineCopyMW""
                 label=""Copy Molecular Weight (MW)""
-                imageMso=""Calculate""
+                imageMso=""Calculator""
                 onAction=""OnCopyMolecularWeight"" />
         <button id=""btnContextInlineSubCopySmiles""
                 label=""Copy SMILES""
@@ -256,7 +256,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyFormula"" />
         <button id=""btnContextPictureCopyMW""
                 label=""Copy Molecular Weight (MW)""
-                imageMso=""Calculate""
+                imageMso=""Calculator""
                 onAction=""OnCopyMolecularWeight"" />
         <button id=""btnContextPictureSubCopySmiles""
                 label=""Copy SMILES""
@@ -322,7 +322,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyFormula"" />
         <button id=""btnContextShapeCopyMW""
                 label=""Copy Molecular Weight (MW)""
-                imageMso=""Calculate""
+                imageMso=""Calculator""
                 onAction=""OnCopyMolecularWeight"" />
         <button id=""btnContextShapeSubCopySmiles""
                 label=""Copy SMILES""
@@ -392,7 +392,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnCopyFormula"" />
           <button id=""btnContextTextCopyMW""
                   label=""Copy Molecular Weight (MW)""
-                  imageMso=""Calculate""
+                  imageMso=""Calculator""
                   onAction=""OnCopyMolecularWeight"" />
           <button id=""btnContextTextSubCopySmiles""
                   label=""Copy SMILES""
@@ -463,7 +463,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnCopyFormula"" />
           <button id=""btnContextTableCopyMW""
                   label=""Copy Molecular Weight (MW)""
-                  imageMso=""Calculate""
+                  imageMso=""Calculator""
                   onAction=""OnCopyMolecularWeight"" />
           <button id=""btnContextTableSubCopySmiles""
                   label=""Copy SMILES""
