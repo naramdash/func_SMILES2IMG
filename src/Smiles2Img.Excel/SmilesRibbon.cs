@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using ExcelDna.Integration;
 using ExcelDna.Integration.CustomUI;
 using ExcelDna.Logging;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Smiles2Img;
 
@@ -30,6 +31,13 @@ public class SmilesRibbon : ExcelRibbon
                   imageMso=""SmartArtInsert""
                   size=""large""
                   onAction=""OnInsertKetMolecule"" />
+          <button id=""btnInsertMolstar""
+                  label=""3D Structure (Mol*)""
+                  screentip=""Mol* 3D Macromolecular Viewer""
+                  supertip=""Opens Mol* 3D viewer to download PDB structures, visualize macromolecules, and insert interactive 3D models (.glb) or 2D images onto the worksheet.""
+                  imageMso=""DesignMode""
+                  size=""large""
+                  onAction=""OnInsertMolstar"" />
           <button id=""btnQuickInsert""
                   label=""Paste Structure""
                   screentip=""Paste Structure from Clipboard""
@@ -128,6 +136,10 @@ public class SmilesRibbon : ExcelRibbon
                 label=""Insert / Edit Structure (KET2IMG)...""
                 imageMso=""SmartArtInsert""
                 onAction=""OnInsertKetMolecule"" />
+        <button id=""btnContextInsertMolstarCell""
+                label=""3D Structure (Mol*)...""
+                imageMso=""DesignMode""
+                onAction=""OnInsertMolstar"" />
         <button id=""btnContextQuickInsertCell""
                 label=""Paste Structure""
                 imageMso=""Paste""
@@ -200,6 +212,10 @@ public class SmilesRibbon : ExcelRibbon
                 label=""Insert / Edit Structure (KET2IMG)...""
                 imageMso=""SmartArtInsert""
                 onAction=""OnInsertKetMolecule"" />
+        <button id=""btnContextListInsertMolstar""
+                label=""3D Structure (Mol*)...""
+                imageMso=""DesignMode""
+                onAction=""OnInsertMolstar"" />
         <button id=""btnContextListQuickInsertCell""
                 label=""Paste Structure""
                 imageMso=""Paste""
@@ -264,6 +280,11 @@ public class SmilesRibbon : ExcelRibbon
               imageMso=""DesignMode""
               onAction=""OnEditMolecule""
               insertBeforeMso=""Cut"" />
+      <button id=""btnContextPictureEditMolstar""
+              label=""Edit 3D Structure (Mol*)...""
+              imageMso=""DesignMode""
+              onAction=""OnEditMolstar""
+              insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureCopySmiles""
               label=""Copy SMILES""
               imageMso=""Copy""
@@ -324,6 +345,11 @@ public class SmilesRibbon : ExcelRibbon
               label=""Edit Structure (Ketcher)...""
               imageMso=""DesignMode""
               onAction=""OnEditMolecule""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextShapeEditMolstar""
+              label=""Edit 3D Structure (Mol*)...""
+              imageMso=""DesignMode""
+              onAction=""OnEditMolstar""
               insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeCopySmiles""
               label=""Copy SMILES""
@@ -493,6 +519,24 @@ public class SmilesRibbon : ExcelRibbon
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
             KetcherEditor.CopySelectedAllSummaryCommand();
+        });
+    }
+
+    public void OnInsertMolstar(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            ExcelMolstarManager.InsertMolstarStructure(app);
+        });
+    }
+
+    public void OnEditMolstar(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            ExcelMolstarManager.EditSelectedMolstar(app);
         });
     }
 

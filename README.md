@@ -62,7 +62,7 @@ $v='v1.6.0-preview.1'; irm https://raw.githubusercontent.com/naramdash/func_SMIL
 * 🔬 **Molecular Property Calculation Formulas:** Direct cell formulas `=SMILES2NAME`, `=SMILES2MW`, `=SMILES2FORMULA`, `=SMILES2INCHI`, and `=SMILES2INCHIKEY` (as well as `=KET2*` variants) for high-throughput cheminformatics.
 * 📋 **One-Click Molecule Info & Direct Copy:** Right-click context submenu across Excel, Word, and PowerPoint to instantly copy Substance Name, Formula, MW, SMILES, InChI, or InChIKey with smooth floating badge feedback near the cursor (zero focus-stealing modal dialogs).
 * ✏️ **Embedded Ketcher 2D Visual Sketcher:** 100% offline molecular editor supporting atoms, bonds, rings, charges, and multi-step reaction schemes with arrows and plus signs.
-* 🧬 **Embedded Mol\* 3D Macromolecular Viewer:** Visualize proteins, nucleic acids, and complexes directly in PowerPoint and Word. Download PDB structures by ID, insert rotatable 3D GLB models or 2D publication images, and re-edit anytime with double-click.
+* 🧬 **Embedded Mol\* 3D Macromolecular Viewer:** Visualize proteins, nucleic acids, and complexes directly across Excel, PowerPoint, and Word. Download PDB structures by ID, insert rotatable 3D GLB models or 2D publication images, and re-edit anytime with double-click.
 * 🔄 **Lossless Document Persistence:** KET coordinates, chemical annotations, and Mol* 3D session recipes (`.molj`) are stored losslessly inside document XML metadata (`CustomXMLParts`), allowing seamless re-editing when sharing files with collaborators.
 * 🛡️ **100% Local & Privacy-Preserving:** Powered by embedded EPAM Indigo, EPAM Ketcher, and Mol* runtimes. Zero cloud calls, zero data leakage, works completely offline.
 
@@ -133,7 +133,8 @@ func_SMILES2IMG/
 │   │   ├── FloatingPictures.cs         # Cell-anchored floating shape manager
 │   │   ├── SmilesRibbon.cs             # [SMILES] ribbon tab & right-click context menu handlers (Copy Molecule Info submenu)
 │   │   ├── KetcherEditor.cs            # Ketcher commands, quick paste, molecule info & double-click hooks
-│   │   └── KetcherEditor.ShapesAndCells.cs # KET canvas shape & formula cell extraction/insertion helpers
+│   │   ├── KetcherEditor.ShapesAndCells.cs # KET canvas shape & formula cell extraction/insertion helpers
+│   │   └── ExcelMolstarManager.cs      # Mol* 3D viewer integration, floating GLB/PNG insertion & session re-editing
 │   ├── Smiles2Img.Word/                # Word COM add-in DLL (net48)
 │   │   ├── WordAddIn.cs                # IDTExtensibility2 + IRibbonExtensibility + context menu handlers
 │   │   └── WordStructureManager.cs     # Inline structure images, Mol* 3D models, replacement, quick paste & double-click

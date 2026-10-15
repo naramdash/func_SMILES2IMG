@@ -26,6 +26,12 @@ public static partial class KetcherEditor
         var shape = GetSelectedShape(app);
         if (shape != null)
         {
+            if (StructureMetadata.IsMolstar(shape.AlternativeText, shape.Title))
+            {
+                ExcelMolstarManager.EditSelectedMolstar(app, shape);
+                return;
+            }
+
             var structStr = ExtractStructure(shape);
             if (!string.IsNullOrEmpty(structStr))
             {
@@ -52,6 +58,12 @@ public static partial class KetcherEditor
     {
         try
         {
+            if (StructureMetadata.IsMolstar(targetShape.AlternativeText, targetShape.Title))
+            {
+                ExcelMolstarManager.EditSelectedMolstar(app, targetShape);
+                return;
+            }
+
             var currentStructure = ExtractStructure(targetShape);
             if (string.IsNullOrEmpty(currentStructure)) return;
 
@@ -188,6 +200,12 @@ public static partial class KetcherEditor
         string? title = null;
         try { alt = shape.AlternativeText; } catch { }
         try { title = shape.Title; } catch { }
+
+        if (StructureMetadata.IsMolstar(alt, title))
+        {
+            var meta = MolstarSessionManager.ParseAltText(alt, title);
+            return meta != null ? (!string.IsNullOrEmpty(meta.Pdb) ? meta.Pdb : "MOLSTAR") : "MOLSTAR";
+        }
 
         var extracted = StructureMetadata.ExtractStructure(alt, title);
         if (!string.IsNullOrWhiteSpace(extracted))

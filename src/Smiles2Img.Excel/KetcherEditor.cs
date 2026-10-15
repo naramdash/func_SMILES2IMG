@@ -532,4 +532,32 @@ public static partial class KetcherEditor
                 MessageBoxIcon.Warning);
         }
     }
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Insert 3D Structure (Mol*)")]
+    public static void InsertMolstarCommand()
+    {
+        try
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            ExcelMolstarManager.InsertMolstarStructure(app);
+        }
+        catch (Exception ex)
+        {
+            LogDisplay.WriteLine("Mol* insert error: " + ex.Message);
+        }
+    }
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Edit 3D Structure (Mol*)")]
+    public static void EditMolstarCommand()
+    {
+        try
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            ExcelMolstarManager.EditSelectedMolstar(app);
+        }
+        catch (Exception ex)
+        {
+            LogDisplay.WriteLine("Mol* edit error: " + ex.Message);
+        }
+    }
 }
