@@ -9,7 +9,11 @@
 [CmdletBinding()]
 param(
     [switch]$Force,
-    [string]$Version = $(if ($env:SMILES2IMG_VERSION) { $env:SMILES2IMG_VERSION } else { 'latest' })
+    [string]$Version = $(
+        if ($v) { $v }
+        elseif ($env:SMILES2IMG_VERSION) { $env:SMILES2IMG_VERSION }
+        else { 'latest' }
+    )
 )
 
 try {
