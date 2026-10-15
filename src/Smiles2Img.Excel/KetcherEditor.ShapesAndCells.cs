@@ -50,7 +50,7 @@ public static partial class KetcherEditor
         if (app.ActiveCell is Excel.Range cell)
         {
             var sheet = (Excel.Worksheet)app.ActiveSheet;
-            OpenEditor(sheet, cell.Address, preferKet: null);
+            OpenEditor(sheet, cell.Address, StructureFormatPreference.Auto);
         }
     }
 
@@ -386,14 +386,15 @@ public static partial class KetcherEditor
 
             bool isStructureCell = !string.IsNullOrEmpty(formula) &&
                                    (formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                    formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0);
+                                    formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                    formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0);
 
             if (isStructureCell)
             {
                 cancel = true;
                 var address = cell.Address;
                 var sheet = (Excel.Worksheet)sh;
-                ExcelAsyncUtil.QueueAsMacro(() => OpenEditor(sheet, address, preferKet: null));
+                ExcelAsyncUtil.QueueAsMacro(() => OpenEditor(sheet, address, StructureFormatPreference.Auto));
             }
         }
         catch (Exception ex)
@@ -402,7 +403,7 @@ public static partial class KetcherEditor
         }
     }
 
-    internal static void OpenEditor(Excel.Worksheet sheet, string address, bool? preferKet = false)
+    internal static void OpenEditor(Excel.Worksheet sheet, string address, StructureFormatPreference preference = StructureFormatPreference.Auto)
     {
         try
         {
@@ -413,15 +414,15 @@ public static partial class KetcherEditor
             var targetCellToWrite = cell;
             var initialSmiles = "";
             var isFormulaLiteral = false;
-            bool isInchiFunction = formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0;
-            bool isKetFunction = preferKet.HasValue
-                ? preferKet.Value
-                : formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0;
+            bool isInchiFunction = preference == StructureFormatPreference.InChI ||
+                (preference == StructureFormatPreference.Auto && formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0);
+            bool isKetFunction = preference == StructureFormatPreference.Ket ||
+                (preference == StructureFormatPreference.Auto && formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0);
 
             if (!string.IsNullOrEmpty(formula) &&
                 (formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
                  formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 isInchiFunction))
+                 formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0))
             {
                 var match = FormulaRefPattern.Match(formula);
                 if (match.Success)

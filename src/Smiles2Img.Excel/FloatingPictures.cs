@@ -22,7 +22,7 @@ internal static class FloatingPictures
     private const string NamePrefix = "SMILES2IMG.FLOAT_";
     private const double Padding = 2.0;
     private const int RenderCacheLimit = 256;
-    private static readonly Regex FormulaPattern = new(@"(?:SMILES2IMG|KET2IMG)\.FLOAT\s*\(", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex FormulaPattern = new(@"(?:SMILES2IMG|KET2IMG|INCHI2IMG)\.FLOAT\s*\(", RegexOptions.IgnoreCase | RegexOptions.Compiled);
     private static readonly Dictionary<string, byte[]> Rendered = new();
     private static Excel.Application? events;
 

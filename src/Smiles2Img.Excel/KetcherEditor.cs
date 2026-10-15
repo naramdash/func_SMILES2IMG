@@ -131,19 +131,33 @@ public static partial class KetcherEditor
         catch { }
     }
 
+public enum StructureFormatPreference
+{
+    Auto = 0,
+    Smiles = 1,
+    InChI = 2,
+    Ket = 3
+}
+
     [ExcelCommand(ShortCut = "^+K", MenuName = "SMILES2IMG", MenuText = "Insert/Edit Structure (SMILES2IMG) (Ctrl+Shift+K)")]
     public static void OpenKetcherCommand()
     {
-        OpenKetcherWithPreference(preferKet: false);
+        OpenKetcherWithPreference(StructureFormatPreference.Smiles);
+    }
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Insert/Edit Structure (INCHI2IMG)")]
+    public static void OpenKetcherInchiCommand()
+    {
+        OpenKetcherWithPreference(StructureFormatPreference.InChI);
     }
 
     [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Insert/Edit Structure (KET2IMG)")]
     public static void OpenKetcherKetCommand()
     {
-        OpenKetcherWithPreference(preferKet: true);
+        OpenKetcherWithPreference(StructureFormatPreference.Ket);
     }
 
-    private static void OpenKetcherWithPreference(bool? preferKet)
+    private static void OpenKetcherWithPreference(StructureFormatPreference preference)
     {
         try
         {
@@ -157,7 +171,7 @@ public static partial class KetcherEditor
 
             if (app.ActiveCell is not Excel.Range activeCell) return;
             var sheet = (Excel.Worksheet)app.ActiveSheet;
-            OpenEditor(sheet, activeCell.Address, preferKet);
+            OpenEditor(sheet, activeCell.Address, preference);
         }
         catch (Exception ex)
         {

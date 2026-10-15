@@ -24,6 +24,13 @@ public class SmilesRibbon : ExcelRibbon
                   imageMso=""EquationInsertNew""
                   size=""large""
                   onAction=""OnInsertMolecule"" />
+          <button id=""btnInsertInchiMolecule""
+                  label=""Insert / Edit (InChI)""
+                  screentip=""Insert / Edit Structure (INCHI2IMG)""
+                  supertip=""Opens Ketcher editor to sketch chemical structures and insert them into the active cell as formulas (=INCHI2IMG).""
+                  imageMso=""EquationInsertNew""
+                  size=""large""
+                  onAction=""OnInsertInchiMolecule"" />
           <button id=""btnInsertKetMolecule""
                   label=""Insert / Edit (KET)""
                   screentip=""Insert / Edit Structure (KET2IMG)""
@@ -132,6 +139,10 @@ public class SmilesRibbon : ExcelRibbon
                 label=""Insert / Edit Structure (SMILES2IMG)...""
                 imageMso=""EquationInsertNew""
                 onAction=""OnInsertMolecule"" />
+        <button id=""btnContextInsertInchiMolecule""
+                label=""Insert / Edit Structure (INCHI2IMG)...""
+                imageMso=""EquationInsertNew""
+                onAction=""OnInsertInchiMolecule"" />
         <button id=""btnContextInsertKetMolecule""
                 label=""Insert / Edit Structure (KET2IMG)...""
                 imageMso=""SmartArtInsert""
@@ -208,6 +219,10 @@ public class SmilesRibbon : ExcelRibbon
                 label=""Insert / Edit Structure (SMILES2IMG)...""
                 imageMso=""EquationInsertNew""
                 onAction=""OnInsertMolecule"" />
+        <button id=""btnContextListInsertInchiMolecule""
+                label=""Insert / Edit Structure (INCHI2IMG)...""
+                imageMso=""EquationInsertNew""
+                onAction=""OnInsertInchiMolecule"" />
         <button id=""btnContextListInsertKetMolecule""
                 label=""Insert / Edit Structure (KET2IMG)...""
                 imageMso=""SmartArtInsert""
@@ -415,6 +430,14 @@ public class SmilesRibbon : ExcelRibbon
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
             KetcherEditor.OpenKetcherCommand();
+        });
+    }
+
+    public void OnInsertInchiMolecule(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            KetcherEditor.OpenKetcherInchiCommand();
         });
     }
 

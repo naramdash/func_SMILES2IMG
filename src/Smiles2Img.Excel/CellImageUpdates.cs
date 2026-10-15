@@ -11,7 +11,7 @@ namespace Smiles2Img;
 // formula was deleted or replaced; a stale update only adds an unused cache image.
 internal static class CellImageUpdates
 {
-    private static readonly Regex FormulaPattern = new(@"(?:^=\s*@?|!|\b)(?:_xll\.)?(?:SMILES2IMG|KET2IMG)\s*\((?!\.FLOAT)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex FormulaPattern = new(@"(?:^=\s*@?|!|\b)(?:_xll\.)?(?:SMILES2IMG|KET2IMG|INCHI2IMG)\s*\((?!\.FLOAT)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     internal static void Queue(ExcelReference caller, string smiles, RenderOptions options, byte[] png)
     {
