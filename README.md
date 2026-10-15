@@ -35,16 +35,9 @@ Complete user manuals, visual walkthroughs, parameter recipes, and guides for Ex
 Open **PowerShell** and run this single command to automatically install, configure security, and register the add-in across the entire Microsoft Office suite (Excel, Word, PowerPoint):
 
 ```powershell
-# Stable release (v1.5.0)
+# Stable release (v1.6.0)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
-
-::: tip 💡 Preview Release (InChI Suite, Mol* 3D across Office & 0ms Local Molecule Properties)
-To test the latest preview release featuring the complete InChI Suite (worksheet functions & ribbon), Mol* 3D Viewer, and 0ms local molecule property copying:
-```powershell
-$v='v1.6.0-preview.3'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
-```
-:::
 
 > **What the installer automates:**  
 > 1. Detects your Office bitness (32-bit vs. 64-bit) and installed Office applications (Excel, Word, PowerPoint)  

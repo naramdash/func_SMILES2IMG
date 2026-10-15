@@ -12,13 +12,6 @@ Open **PowerShell** (no Administrator privileges required for standard user inst
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
-::: tip 💡 Preview Releases
-To install preview releases with the newest features (including the InChI Suite, Mol* 3D Viewer across Office, and 0ms local molecule properties):
-```powershell
-$v='v1.6.0-preview.3'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
-```
-:::
-
 ### What the Automated Installer Does
 1. **Detects Office Environment:** Automatically checks whether your Office installation is 32-bit (`x86`) or 64-bit (`x64`) and detects installed apps (Excel, Word, PowerPoint).
 2. **Downloads Latest Binaries:** Fetches the unified release suite from GitHub Releases.
