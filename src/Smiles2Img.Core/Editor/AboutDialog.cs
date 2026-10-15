@@ -327,7 +327,7 @@ public sealed class AboutDialog : Form
 
         AddRow("Version:", new Label
         {
-            Text = "v1.6.0 (Unified Office Edition · Pre-release)",
+            Text = $"{GetProductVersion()} (Unified Office Edition)",
             Font = new Font("Segoe UI", 9.5f, FontStyle.Regular),
             ForeColor = Color.FromArgb(37, 99, 235),
             AutoSize = true
@@ -515,6 +515,7 @@ public sealed class AboutDialog : Form
         var sb = new StringBuilder();
         sb.AppendLine("================================================================================");
         sb.AppendLine(" SMILES for Microsoft Office Suite (func_SMILES2IMG)");
+        sb.AppendLine($" Version: {GetProductVersion()}");
         sb.AppendLine(" Author: KimJuho (naramdash)");
         sb.AppendLine(" Repository: https://github.com/naramdash/func_SMILES2IMG");
         sb.AppendLine(" Documentation: https://naramdash.github.io/func_SMILES2IMG/");
@@ -565,6 +566,28 @@ public sealed class AboutDialog : Form
         sb.AppendLine("the IUPAC/InChI-Trust Licence #1.0.");
 
         return sb.ToString();
+    }
+
+    public static string GetProductVersion()
+    {
+        try
+        {
+            var asm = typeof(AboutDialog).Assembly;
+            var infoVer = asm.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+            if (!string.IsNullOrWhiteSpace(infoVer))
+            {
+                var v = infoVer!;
+                var plusIdx = v.IndexOf('+');
+                if (plusIdx > 0) v = v.Substring(0, plusIdx);
+                return "v" + v;
+            }
+            var ver = asm.GetName().Version;
+            return ver != null ? $"v{ver.Major}.{ver.Minor}.{ver.Build}" : "v1.6.0";
+        }
+        catch
+        {
+            return "v1.6.0";
+        }
     }
 
     private static void OpenBrowser(string url)
