@@ -570,6 +570,14 @@ internal static class Program
                 "PowerPoint ContextMenuPicture has items anchored before Cut");
             Console.WriteLine("PASS PowerPoint Ribbon & Context Menu XML and callbacks reflection");
 
+            // Validate AboutDialog instantiation and third-party notices
+            using (var aboutDlg = new Smiles2Img.Editor.AboutDialog())
+            {
+                Check(aboutDlg is not null, "AboutDialog successfully instantiated");
+                Check(!string.IsNullOrWhiteSpace(aboutDlg!.Text), "AboutDialog has a window title");
+            }
+            Console.WriteLine("PASS AboutDialog UI initialization and third-party notices");
+
             return 0;
         }
         catch (Exception error) { Console.Error.WriteLine(error); return 1; }

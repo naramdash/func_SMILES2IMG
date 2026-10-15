@@ -220,6 +220,15 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnCopyMoleculeInfo"" />
           </menu>
         </group>
+        <group id=""grpPptAbout"" label=""About"">
+          <button id=""btnPptAbout""
+                  label=""About SMILES""
+                  screentip=""About SMILES for Office""
+                  supertip=""Displays creator info, GitHub repository link, and open-source third-party licenses.""
+                  imageMso=""Info""
+                  size=""large""
+                  onAction=""OnAbout"" />
+        </group>
       </tab>
     </tabs>
   </ribbon>
@@ -604,5 +613,10 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
     {
         if (pptApp == null) return;
         PowerPointStructureManager.EditSelectedMolstar(pptApp);
+    }
+
+    public void OnAbout(IRibbonControl control)
+    {
+        Smiles2Img.Editor.AboutDialog.ShowModal();
     }
 }

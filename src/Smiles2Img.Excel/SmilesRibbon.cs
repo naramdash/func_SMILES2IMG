@@ -125,6 +125,15 @@ public class SmilesRibbon : ExcelRibbon
                   size=""large""
                   onAction=""OnShowDiagnostics"" />
         </group>
+        <group id=""grpAbout"" label=""About"">
+          <button id=""btnAbout""
+                  label=""About SMILES""
+                  screentip=""About SMILES for Office""
+                  supertip=""Displays creator info, GitHub repository link, and open-source third-party licenses.""
+                  imageMso=""Info""
+                  size=""large""
+                  onAction=""OnAbout"" />
+        </group>
       </tab>
     </tabs>
   </ribbon>
@@ -568,6 +577,14 @@ public class SmilesRibbon : ExcelRibbon
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
             LogDisplay.Show();
+        });
+    }
+
+    public void OnAbout(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            Smiles2Img.Editor.AboutDialog.ShowModal();
         });
     }
 }

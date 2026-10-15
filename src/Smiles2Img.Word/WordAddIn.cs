@@ -146,6 +146,15 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnCopyMoleculeInfo"" />
           </menu>
         </group>
+        <group id=""grpWordAbout"" label=""About"">
+          <button id=""btnWordAbout""
+                  label=""About SMILES""
+                  screentip=""About SMILES for Office""
+                  supertip=""Displays creator info, GitHub repository link, and open-source third-party licenses.""
+                  imageMso=""Info""
+                  size=""large""
+                  onAction=""OnAbout"" />
+        </group>
       </tab>
     </tabs>
   </ribbon>
@@ -576,5 +585,10 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
     public void OnCopyAllSummary(IRibbonControl control)
     {
         if (wordApp != null) WordStructureManager.CopySelectedAllSummary(wordApp);
+    }
+
+    public void OnAbout(IRibbonControl control)
+    {
+        Smiles2Img.Editor.AboutDialog.ShowModal();
     }
 }
