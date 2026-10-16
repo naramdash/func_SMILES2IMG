@@ -65,6 +65,15 @@ try {
     if ($extractedKet2 -ne $sampleKet) { throw "Word InlineShape #2 KET round-trip mismatch! Got: $extractedKet2" }
     Write-Host "  [PASS] Word KET Canvas Round-Trip (InlineShape #2): KET metadata preserved 100%" -ForegroundColor Green
 
+    # Test 1C: CCO text selection -> CopySelectedAllSummary
+    $word.Selection.Collapse(0)
+    $word.Selection.TypeText("CCO")
+    $doc.Range($doc.Content.End - 4, $doc.Content.End - 1).Select()
+    [Smiles2Img.Word.WordStructureManager]::CopySelectedAllSummary($word)
+    $wordClip = [Smiles2Img.Editor.SafeClipboard]::GetText()
+    if (-not $wordClip -or -not $wordClip.Contains("C2H6O")) { throw "Word CopySelectedAllSummary failed on CCO! Got: $wordClip" }
+    Write-Host "  [PASS] Word CopySelectedAllSummary on CCO: $([string]$wordClip.Substring(0, [math]::Min(50, $wordClip.Length)))..." -ForegroundColor Green
+
     $doc.Close($false)
 } finally {
     if ($word) {
@@ -121,6 +130,13 @@ try {
         if ($pptShape3.Width -lt 20 -or $pptShape3.Height -lt 20) { throw "PowerPoint WebView2 PNG shape has invalid size!" }
         Write-Host "  [PASS] PowerPoint WebView2 Canvas PNG Insertion (Shape #3): $([math]::Round($pptShape3.Width,1))x$([math]::Round($pptShape3.Height,1)) pt (No error icon!)" -ForegroundColor Green
     }
+
+    # Test 2D: PowerPoint CopySelectedAllSummary on Aspirin shape
+    $pptShape1.Select()
+    [Smiles2Img.PowerPoint.PowerPointStructureManager]::CopySelectedAllSummary($ppt)
+    $pptClip = [Smiles2Img.Editor.SafeClipboard]::GetText()
+    if (-not $pptClip -or -not $pptClip.Contains("C9H8O4")) { throw "PowerPoint CopySelectedAllSummary failed! Got: $pptClip" }
+    Write-Host "  [PASS] PowerPoint CopySelectedAllSummary on shape: $([string]$pptClip.Substring(0, [math]::Min(50, $pptClip.Length)))..." -ForegroundColor Green
 
     $pres.Saved = [Microsoft.Office.Core.MsoTriState]::msoTrue
     $pres.Close()
@@ -201,6 +217,24 @@ try {
 
     if ($inchiKeyVal -ne "BSYNRYMUTXBXSQ-UHFFFAOYSA-N") { throw "Excel =SMILES2INCHIKEY(A1) mismatch! Got $inchiKeyVal" }
     Write-Host "  [PASS] Excel =SMILES2INCHIKEY(A1) -> $inchiKeyVal" -ForegroundColor Green
+
+    # Test 3C: Test CCO (Ethanol) - SMILES2FORMULA, SMILES2MW, and CopySelectedAllSummaryCommand
+    $ws.Range("A2").Value2 = "CCO"
+    $ws.Range("B2").Formula = "=SMILES2FORMULA(A2)"
+    $ws.Range("C2").Formula = "=SMILES2MW(A2)"
+    Start-Sleep -Seconds 1
+    $ccoFormula = $ws.Range("B2").Text
+    $ccoMw = [double]$ws.Range("C2").Value2
+    if ($ccoFormula -ne "C2H6O") { throw "Excel CCO Formula mismatch! Expected C2H6O, got $ccoFormula" }
+    if ([math]::Abs($ccoMw - 46.07) -gt 0.1) { throw "Excel CCO MW mismatch! Expected ~46.07, got $ccoMw" }
+    Write-Host "  [PASS] Excel CCO (Ethanol) Formula=$ccoFormula, MW=$ccoMw" -ForegroundColor Green
+
+    $ws.Range("A2").Select() | Out-Null
+    $excel.Run("CopySelectedAllSummaryCommand")
+    Start-Sleep -Milliseconds 500
+    $clipText = [Smiles2Img.Editor.SafeClipboard]::GetText()
+    if (-not $clipText -or -not $clipText.Contains("C2H6O")) { throw "Excel CopySelectedAllSummaryCommand failed to copy CCO info! Got: $clipText" }
+    Write-Host "  [PASS] Excel CopySelectedAllSummaryCommand on CCO copied summary without crashing: $([string]$clipText.Substring(0, [math]::Min(50, $clipText.Length)))..." -ForegroundColor Green
 
     $wb.Close($false)
 } finally {

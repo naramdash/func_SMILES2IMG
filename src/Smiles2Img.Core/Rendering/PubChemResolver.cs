@@ -20,6 +20,50 @@ public static class PubChemResolver
     private static readonly object FileLock = new();
     private static bool _cacheLoaded;
 
+    private static readonly Dictionary<string, (string CompoundName, string IupacName)> BuiltInSmilesToCompound = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["CCO"] = ("Ethanol", "ethanol"),
+        ["OCC"] = ("Ethanol", "ethanol"),
+        ["CO"] = ("Methanol", "methanol"),
+        ["OC"] = ("Methanol", "methanol"),
+        ["O"] = ("Water", "oxidane"),
+        ["CC(C)O"] = ("Isopropanol", "propan-2-ol"),
+        ["CC(=O)C"] = ("Acetone", "propan-2-one"),
+        ["CC(=O)O"] = ("Acetic Acid", "acetic acid"),
+        ["C(=O)O"] = ("Formic Acid", "formic acid"),
+        ["c1ccccc1"] = ("Benzene", "benzene"),
+        ["Cc1ccccc1"] = ("Toluene", "toluene"),
+        ["Oc1ccccc1"] = ("Phenol", "phenol"),
+        ["Nc1ccccc1"] = ("Aniline", "aniline"),
+        ["OC(=O)c1ccccc1"] = ("Benzoic Acid", "benzoic acid"),
+        ["Oc1ccccc1C(=O)O"] = ("Salicylic Acid", "2-hydroxybenzoic acid"),
+        ["CC(=O)Oc1ccccc1C(=O)O"] = ("Aspirin", "2-acetyloxybenzoic acid"),
+        ["Cn1cnc2c1c(=O)n(C)c(=O)n2C"] = ("Caffeine", "1,3,7-trimethylpurine-2,6-dione"),
+        ["CC(=O)Nc1ccc(O)cc1"] = ("Acetaminophen", "N-(4-hydroxyphenyl)acetamide"),
+        ["CC(C)Cc1ccc(C(C)C(=O)O)cc1"] = ("Ibuprofen", "2-[4-(2-methylpropyl)phenyl]propanoic acid"),
+        ["COc1ccc2cc([C@H](C)C(=O)O)ccc2c1"] = ("Naproxen", "(2S)-2-(6-methoxynaphthalen-2-yl)propanoic acid"),
+        ["c1ccncc1"] = ("Pyridine", "pyridine"),
+        ["C1CCOC1"] = ("Tetrahydrofuran", "oxolane"),
+        ["CS(=O)C"] = ("Dimethyl Sulfoxide", "methylsulfinylmethane"),
+        ["CN(C)C=O"] = ("Dimethylformamide", "N,N-dimethylformamide"),
+        ["CC#N"] = ("Acetonitrile", "acetonitrile"),
+        ["ClCCl"] = ("Dichloromethane", "dichloromethane"),
+        ["ClC(Cl)Cl"] = ("Chloroform", "trichloromethane"),
+        ["CCOC(=O)C"] = ("Ethyl Acetate", "ethyl acetate"),
+        ["CCOCC"] = ("Diethyl Ether", "ethoxyethane"),
+        ["CCCCCC"] = ("Hexane", "hexane"),
+        ["C1CCCCC1"] = ("Cyclohexane", "cyclohexane"),
+        ["NCC(=O)O"] = ("Glycine", "2-aminoacetic acid"),
+        ["C[C@H](N)C(=O)O"] = ("Alanine", "(2S)-2-aminopropanoic acid"),
+        ["C[C@H](O)C(=O)O"] = ("L-Lactic Acid", "(2S)-2-hydroxypropanoic acid"),
+        ["OC(=O)CC(O)(C(=O)O)CC(=O)O"] = ("Citric Acid", "2-hydroxypropane-1,2,3-tricarboxylic acid"),
+        ["OC[C@H](O)[C@H]1OC(=O)C(O)=C1O"] = ("Ascorbic Acid", "(5R)-[(1S)-1,2-dihydroxyethyl]-3,4-dihydroxyfuran-2(5H)-one"),
+        ["OC[C@H]1OC(O)[C@H](O)[C@@H](O)[C@@H]1O"] = ("D-Glucose", "(3R,4S,5S,6R)-6-(hydroxymethyl)oxane-2,3,4,5-tetrol"),
+        ["NCCc1ccc(O)c(O)c1"] = ("Dopamine", "4-(2-aminoethyl)benzene-1,2-diol"),
+        ["NCCc1c[nH]c2ccc(O)cc12"] = ("Serotonin", "3-(2-aminoethyl)-1H-indol-5-ol"),
+        ["CNC[C@H](O)c1ccc(O)c(O)c1"] = ("Epinephrine", "4-[(1R)-1-hydroxy-2-(methylamino)ethyl]benzene-1,2-diol")
+    };
+
     private static string GetCacheFilePath()
     {
         var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Smiles2Img");
@@ -81,6 +125,9 @@ public static class PubChemResolver
     {
         if (string.IsNullOrWhiteSpace(smiles)) return ("", "");
         var s = smiles!.Trim();
+
+        if (BuiltInSmilesToCompound.TryGetValue(s, out var builtIn))
+            return builtIn;
 
         EnsureCacheLoaded();
         if (SmilesCache.TryGetValue(s, out var cached))

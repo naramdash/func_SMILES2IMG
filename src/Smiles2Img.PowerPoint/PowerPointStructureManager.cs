@@ -569,7 +569,7 @@ public static class PowerPointStructureManager
                 return;
             }
 
-            Clipboard.SetText(smiles!);
+            SafeClipboard.SetText(smiles!);
             MoleculeNotification.NotifyCopied("SMILES", smiles!);
         }
         catch (Exception ex)
@@ -602,7 +602,7 @@ public static class PowerPointStructureManager
                 return;
             }
 
-            Clipboard.SetText(inchi!);
+            SafeClipboard.SetText(inchi!);
             MoleculeNotification.NotifyCopied("InChI", inchi!);
         }
         catch (Exception ex)
@@ -630,7 +630,7 @@ public static class PowerPointStructureManager
                 return;
             }
 
-            Clipboard.SetText(ket!);
+            SafeClipboard.SetText(ket!);
             MoleculeNotification.NotifyCopied("Canvas Data (KET)", ket!);
         }
         catch (Exception ex)
@@ -757,9 +757,9 @@ public static class PowerPointStructureManager
             catch { }
 
             // 2. Check Windows Clipboard
-            if (Clipboard.ContainsText())
+            if (SafeClipboard.ContainsText())
             {
-                var clipText = Clipboard.GetText()?.Trim();
+                var clipText = SafeClipboard.GetText()?.Trim();
                 if (MoleculeRenderer.TryRenderStructure(clipText, RenderOptions.Default, out var clipPng, out var clipKet, out var clipSmiles) && clipPng != null)
                 {
                     InsertMoleculeAsPicture(app, slide, clipKet, clipSmiles ?? "", clipPng);
@@ -834,7 +834,7 @@ public static class PowerPointStructureManager
                 MoleculeNotification.NotifyWarning("Substance Name", "Could not resolve substance name from the selected structure.");
                 return;
             }
-            Clipboard.SetText(info.CompoundName);
+            SafeClipboard.SetText(info.CompoundName);
             MoleculeNotification.NotifyCopied("Substance Name", info.CompoundName);
         }
         catch (Exception ex)
@@ -853,7 +853,7 @@ public static class PowerPointStructureManager
                 MoleculeNotification.NotifyWarning("Formula", "Could not compute formula from the selected structure.");
                 return;
             }
-            Clipboard.SetText(info.Formula);
+            SafeClipboard.SetText(info.Formula);
             MoleculeNotification.NotifyCopied("Chemical Formula", info.Formula);
         }
         catch (Exception ex)
@@ -873,7 +873,7 @@ public static class PowerPointStructureManager
                 return;
             }
             string mw = info.MolecularWeight.ToString("F2");
-            Clipboard.SetText(mw);
+            SafeClipboard.SetText(mw);
             MoleculeNotification.NotifyCopied("Molecular Weight", $"{mw} g/mol");
         }
         catch (Exception ex)
@@ -892,7 +892,7 @@ public static class PowerPointStructureManager
                 MoleculeNotification.NotifyWarning("InChIKey", "Could not generate InChIKey from the selected structure.");
                 return;
             }
-            Clipboard.SetText(info.InChIKey);
+            SafeClipboard.SetText(info.InChIKey);
             MoleculeNotification.NotifyCopied("InChIKey", info.InChIKey);
         }
         catch (Exception ex)
@@ -912,7 +912,7 @@ public static class PowerPointStructureManager
                 return;
             }
             string summary = info.FormatClipboardSummary();
-            Clipboard.SetText(summary);
+            SafeClipboard.SetText(summary);
             MoleculeNotification.NotifyCopied("Molecule Info", info.SubstanceName ?? info.Formula ?? "Copied summary");
         }
         catch (Exception ex)

@@ -214,7 +214,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnCopyInchi"" />
             <button id=""btnRibbonPptSubCopyInchiKey""
                     label=""Copy InChIKey""
-                    imageMso=""Copy""
+                    imageMso=""SignatureLineInsert""
                     onAction=""OnCopyInchiKey"" />
             <button id=""btnRibbonPptCopyAllSummary""
                     label=""Copy All Summary (Text)""
@@ -230,15 +230,15 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Batch Style""
                 screentip=""Batch Style Normalizer""
                 supertip=""Convert all molecule images in the active presentation to a unified publication style (Color, B&amp;W, White BG, or Dark Mode).""
-                imageMso=""ColorGallery""
+                imageMso=""PictureRecolorGallery""
                 size=""large"">
             <button id=""btnPptBatchColorTrans""
                     label=""Standard Color (Transparent)""
-                    imageMso=""ColorGallery""
+                    imageMso=""ColorMenu""
                     onAction=""OnBatchStyleColorTrans"" />
             <button id=""btnPptBatchBw""
                     label=""Publication B&amp;W (ACS Monochrome)""
-                    imageMso=""ContrastGallery""
+                    imageMso=""BlackAndWhiteGrayscale""
                     onAction=""OnBatchStyleBw"" />
             <button id=""btnPptBatchWhiteBg""
                     label=""White Background (Color)""
@@ -320,7 +320,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyInchi"" />
         <button id=""btnContextPptPictureSubCopyInchiKey""
                 label=""Copy InChIKey""
-                imageMso=""Copy""
+                imageMso=""SignatureLineInsert""
                 onAction=""OnCopyInchiKey"" />
         <button id=""btnContextPptPictureCopyAllSummary""
                 label=""Copy All Summary (Text)""
@@ -391,7 +391,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyInchi"" />
         <button id=""btnContextPptShapeSubCopyInchiKey""
                 label=""Copy InChIKey""
-                imageMso=""Copy""
+                imageMso=""SignatureLineInsert""
                 onAction=""OnCopyInchiKey"" />
         <button id=""btnContextPptShapeCopyAllSummary""
                 label=""Copy All Summary (Text)""
@@ -485,7 +485,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnCopyInchi"" />
           <button id=""btnContextPptTextSubCopyInchiKey""
                   label=""Copy InChIKey""
-                  imageMso=""Copy""
+                  imageMso=""SignatureLineInsert""
                   onAction=""OnCopyInchiKey"" />
           <button id=""btnContextPptTextCopyAllSummary""
                   label=""Copy All Summary (Text)""
@@ -560,7 +560,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnCopyInchi"" />
           <button id=""btnContextPptTableSubCopyInchiKey""
                   label=""Copy InChIKey""
-                  imageMso=""Copy""
+                  imageMso=""SignatureLineInsert""
                   onAction=""OnCopyInchiKey"" />
           <button id=""btnContextPptTableCopyAllSummary""
                   label=""Copy All Summary (Text)""

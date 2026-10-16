@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
+using Smiles2Img.Editor;
 using Smiles2Img.Rendering;
 
 namespace Smiles2Img;
@@ -71,6 +72,11 @@ public sealed class MolstarForm : Form
         MinimumSize = new Size(Math.Min(880, screen.WorkingArea.Width), Math.Min(600, screen.WorkingArea.Height));
         StartPosition = FormStartPosition.CenterScreen;
         BackColor = Color.FromArgb(15, 23, 42);
+
+        if (UiIcons.Molstar3DIcon != null)
+        {
+            try { Icon = UiIcons.Molstar3DIcon; } catch { }
+        }
 
         webView = new WebView2
         {
@@ -155,6 +161,7 @@ public sealed class MolstarForm : Form
         catch (Exception ex)
         {
             _forceDispose = true;
+            _pooledInstance = null;
             string msg = ex.Message;
             if (ex is DllNotFoundException || ex.GetType().Name.Contains("WebView2"))
             {

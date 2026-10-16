@@ -118,6 +118,12 @@ public sealed class AboutDialog : Form
         ShowInTaskbar = false;
         Font = new Font("Segoe UI", 9.25f, FontStyle.Regular);
         BackColor = Color.FromArgb(249, 250, 251);
+
+        if (UiIcons.AboutIcon != null)
+        {
+            try { Icon = UiIcons.AboutIcon; } catch { }
+        }
+
         KeyPreview = true;
         KeyDown += (s, e) =>
         {

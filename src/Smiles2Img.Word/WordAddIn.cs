@@ -109,7 +109,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   label=""Copy SVG""
                   screentip=""Copy Scalable Vector Graphics (SVG)""
                   supertip=""Renders the selected molecule or reaction into crisp vector SVG and copies it to the clipboard for Office 365, Illustrator, Inkscape, or HTML.""
-                  imageMso=""Copy""
+                  imageMso=""CopyPicture""
                   size=""large""
                   onAction=""OnCopySvg"" />
           <menu id=""menuRibbonWordMoleculeInfo""
@@ -140,11 +140,11 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnCopyInchi"" />
             <button id=""btnRibbonWordSubCopyInchiKey""
                     label=""Copy InChIKey""
-                    imageMso=""Copy""
+                    imageMso=""SignatureLineInsert""
                     onAction=""OnCopyInchiKey"" />
             <button id=""btnRibbonWordSubCopySvg""
                     label=""Copy Vector SVG""
-                    imageMso=""Copy""
+                    imageMso=""CopyPicture""
                     onAction=""OnCopySvg"" />
             <button id=""btnRibbonWordCopyAllSummary""
                     label=""Copy All Summary (Text)""
@@ -160,15 +160,15 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Batch Style""
                 screentip=""Batch Normalize Document Molecule Styles""
                 supertip=""Convert all molecular structures in the active Word document to a unified style preset in one click.""
-                imageMso=""ColorGallery""
+                imageMso=""PictureRecolorGallery""
                 size=""large"">
             <button id=""btnWordBatchStyleColorTrans""
                     label=""Standard Color (Transparent)""
-                    imageMso=""ColorGallery""
+                    imageMso=""ColorMenu""
                     onAction=""OnBatchStyleColorTrans"" />
             <button id=""btnWordBatchStyleBw""
                     label=""Publication B&amp;W (ACS Monochrome)""
-                    imageMso=""ContrastGallery""
+                    imageMso=""BlackAndWhiteGrayscale""
                     onAction=""OnBatchStyleBw"" />
             <button id=""btnWordBatchStyleWhiteBg""
                     label=""White Background (Color)""
@@ -221,7 +221,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               insertBeforeMso=""Cut"" />
       <button id=""btnContextInlineCopySvg""
               label=""Copy Vector SVG""
-              imageMso=""Copy""
+              imageMso=""CopyPicture""
               onAction=""OnCopySvg""
               insertBeforeMso=""Cut"" />
       <menu id=""menuContextInlineMoleculeInfo""
@@ -250,7 +250,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyInchi"" />
         <button id=""btnContextInlineSubCopyInchiKey""
                 label=""Copy InChIKey""
-                imageMso=""Copy""
+                imageMso=""SignatureLineInsert""
                 onAction=""OnCopyInchiKey"" />
         <button id=""btnContextInlineCopyAllSummary""
                 label=""Copy All Summary (Text)""
@@ -292,7 +292,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureCopySvg""
               label=""Copy Vector SVG""
-              imageMso=""Copy""
+              imageMso=""CopyPicture""
               onAction=""OnCopySvg""
               insertBeforeMso=""Cut"" />
       <menu id=""menuContextPictureMoleculeInfo""
@@ -321,7 +321,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyInchi"" />
         <button id=""btnContextPictureSubCopyInchiKey""
                 label=""Copy InChIKey""
-                imageMso=""Copy""
+                imageMso=""SignatureLineInsert""
                 onAction=""OnCopyInchiKey"" />
         <button id=""btnContextPictureCopyAllSummary""
                 label=""Copy All Summary (Text)""
@@ -363,7 +363,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeCopySvg""
               label=""Copy Vector SVG""
-              imageMso=""Copy""
+              imageMso=""CopyPicture""
               onAction=""OnCopySvg""
               insertBeforeMso=""Cut"" />
       <menu id=""menuContextShapeMoleculeInfo""
@@ -392,7 +392,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyInchi"" />
         <button id=""btnContextShapeSubCopyInchiKey""
                 label=""Copy InChIKey""
-                imageMso=""Copy""
+                imageMso=""SignatureLineInsert""
                 onAction=""OnCopyInchiKey"" />
         <button id=""btnContextShapeCopyAllSummary""
                 label=""Copy All Summary (Text)""
@@ -438,7 +438,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyKet"" />
         <button id=""btnContextTextCopySvg""
                 label=""Copy Vector SVG""
-                imageMso=""Copy""
+                imageMso=""CopyPicture""
                 onAction=""OnCopySvg"" />
         <menuSeparator id=""sepContextWordTextSubInfo"" />
         <menu id=""menuContextWordTextMoleculeInfo""
@@ -466,7 +466,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnCopyInchi"" />
           <button id=""btnContextTextSubCopyInchiKey""
                   label=""Copy InChIKey""
-                  imageMso=""Copy""
+                  imageMso=""SignatureLineInsert""
                   onAction=""OnCopyInchiKey"" />
           <button id=""btnContextTextCopyAllSummary""
                   label=""Copy All Summary (Text)""
@@ -513,7 +513,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyKet"" />
         <button id=""btnContextTableCopySvg""
                 label=""Copy Vector SVG""
-                imageMso=""Copy""
+                imageMso=""CopyPicture""
                 onAction=""OnCopySvg"" />
         <menuSeparator id=""sepContextWordTableSubInfo"" />
         <menu id=""menuContextWordTableMoleculeInfo""
@@ -541,7 +541,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnCopyInchi"" />
           <button id=""btnContextTableSubCopyInchiKey""
                   label=""Copy InChIKey""
-                  imageMso=""Copy""
+                  imageMso=""SignatureLineInsert""
                   onAction=""OnCopyInchiKey"" />
           <button id=""btnContextTableCopyAllSummary""
                   label=""Copy All Summary (Text)""

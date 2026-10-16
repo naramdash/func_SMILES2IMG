@@ -68,7 +68,8 @@ public static partial class KetcherEditor
             if (string.IsNullOrEmpty(currentStructure)) return;
 
             using var form = KetcherForm.Rent("Canvas", currentStructure ?? "");
-            var result = form.ShowDialog(new Win32Window(ExcelDnaUtil.WindowHandle));
+            var hwnd = ExcelDnaUtil.WindowHandle;
+            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
             {
@@ -97,7 +98,8 @@ public static partial class KetcherEditor
             if (app.ActiveSheet is not Excel.Worksheet sheet) return;
 
             using var form = KetcherForm.Rent("Canvas", "");
-            var result = form.ShowDialog(new Win32Window(ExcelDnaUtil.WindowHandle));
+            var hwnd = ExcelDnaUtil.WindowHandle;
+            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
             {
@@ -474,7 +476,8 @@ public static partial class KetcherEditor
             }
 
             using var form = KetcherForm.Rent(targetCellToWrite.Address, initialSmiles);
-            var result = form.ShowDialog(new Win32Window(ExcelDnaUtil.WindowHandle));
+            var hwnd = ExcelDnaUtil.WindowHandle;
+            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultSmiles) || !string.IsNullOrWhiteSpace(form.ResultKet)))
             {

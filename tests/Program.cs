@@ -578,6 +578,30 @@ internal static class Program
             }
             Console.WriteLine("PASS AboutDialog UI initialization and third-party notices");
 
+            // Validate UiIcons handles
+            Check(Smiles2Img.Editor.UiIcons.MoleculeInfoIcon != null && Smiles2Img.Editor.UiIcons.MoleculeInfoIcon.Handle != IntPtr.Zero, "UiIcons.MoleculeInfoIcon has valid handle");
+            Check(Smiles2Img.Editor.UiIcons.AboutIcon != null && Smiles2Img.Editor.UiIcons.AboutIcon.Handle != IntPtr.Zero, "UiIcons.AboutIcon has valid handle");
+            Check(Smiles2Img.Editor.UiIcons.ChemicalIcon != null && Smiles2Img.Editor.UiIcons.ChemicalIcon.Handle != IntPtr.Zero, "UiIcons.ChemicalIcon has valid handle");
+            Check(Smiles2Img.Editor.UiIcons.Molstar3DIcon != null && Smiles2Img.Editor.UiIcons.Molstar3DIcon.Handle != IntPtr.Zero, "UiIcons.Molstar3DIcon has valid handle");
+
+            // Validate CCO MoleculeInfo and MoleculeInfoDialog instantiation
+            var ccoInfo = MoleculeRenderer.TryGetMoleculeInfo("CCO", resolvePubChem: true);
+            Check(ccoInfo != null, "CCO MoleculeInfo resolved");
+            Check(ccoInfo!.Formula == "C2H6O", $"CCO Formula == C2H6O, got: {ccoInfo.Formula}");
+            using (var ccoDlg = new Smiles2Img.Editor.MoleculeInfoDialog(ccoInfo))
+            {
+                Check(ccoDlg is not null, "MoleculeInfoDialog for CCO successfully instantiated");
+                Check(ccoDlg.Icon != null && ccoDlg.Icon!.Handle != IntPtr.Zero, "MoleculeInfoDialog icon has valid Win32 handle");
+            }
+            string ccoSummary = ccoInfo.FormatClipboardSummary();
+            Check(!string.IsNullOrWhiteSpace(ccoSummary), "CCO summary formatted");
+            var (ethName, ethIupac) = Smiles2Img.Rendering.PubChemResolver.ResolveCompound("CCO");
+            Check(ethName == "Ethanol" && ethIupac == "ethanol", $"ResolveCompound for CCO returned {ethName}, {ethIupac}");
+            Check(Smiles2Img.Editor.SafeClipboard.SetText(ccoSummary), "SafeClipboard.SetText for CCO summary");
+            Check(Smiles2Img.Editor.SafeClipboard.ContainsText(), "SafeClipboard.ContainsText succeeds");
+            Check(Smiles2Img.Editor.SafeClipboard.GetText() == ccoSummary, "SafeClipboard.GetText matches ccoSummary");
+            Console.WriteLine("PASS UiIcons, SafeClipboard, and CCO MoleculeInfoDialog initialization");
+
             // v1.7.0 Tests: Exact Mass, Physicochemical & Drug-Likeness Properties
             Check(aspirinInfo.LogP > 0.5 && aspirinInfo.LogP < 2.5, $"Aspirin LogP in expected range, got: {aspirinInfo.LogP}");
             Check(aspirinInfo.Tpsa > 50 && aspirinInfo.Tpsa < 80, $"Aspirin TPSA in expected range, got: {aspirinInfo.Tpsa}");

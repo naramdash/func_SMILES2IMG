@@ -29,7 +29,7 @@ public class SmilesRibbon : ExcelRibbon
                   label=""Insert / Edit (InChI)""
                   screentip=""Insert / Edit Structure (INCHI2IMG)""
                   supertip=""Opens Ketcher editor to sketch chemical structures and insert them into the active cell as formulas (=INCHI2IMG).""
-                  imageMso=""EquationInsertNew""
+                  imageMso=""FunctionWizard""
                   size=""large""
                   onAction=""OnInsertInchiMolecule"" />
           <button id=""btnInsertKetMolecule""
@@ -80,7 +80,7 @@ public class SmilesRibbon : ExcelRibbon
                   label=""Copy SVG""
                   screentip=""Copy Scalable Vector Graphics (SVG)""
                   supertip=""Renders the selected molecule or reaction into crisp vector SVG and copies it to the clipboard for Office 365, Illustrator, Inkscape, or HTML.""
-                  imageMso=""Copy""
+                  imageMso=""CopyPicture""
                   size=""large""
                   onAction=""OnCopySvg"" />
           <menu id=""menuRibbonExcelMoleculeInfo""
@@ -111,11 +111,11 @@ public class SmilesRibbon : ExcelRibbon
                     onAction=""OnCopyInchi"" />
             <button id=""btnRibbonExcelSubCopyInchiKey""
                     label=""Copy InChIKey""
-                    imageMso=""Copy""
+                    imageMso=""SignatureLineInsert""
                     onAction=""OnCopyInchiKey"" />
             <button id=""btnRibbonExcelSubCopySvg""
                     label=""Copy Vector SVG""
-                    imageMso=""Copy""
+                    imageMso=""CopyPicture""
                     onAction=""OnCopySvg"" />
             <button id=""btnRibbonExcelCopyAllSummary""
                     label=""Copy All Summary (Text)""
@@ -131,15 +131,15 @@ public class SmilesRibbon : ExcelRibbon
                 label=""Batch Style""
                 screentip=""Batch Normalize Molecule Styles""
                 supertip=""Convert all molecular structures on the active worksheet to a unified style preset in one click.""
-                imageMso=""ColorGallery""
+                imageMso=""PictureRecolorGallery""
                 size=""large"">
             <button id=""btnBatchStyleColorTrans""
                     label=""Standard Color (Transparent)""
-                    imageMso=""ColorGallery""
+                    imageMso=""ColorMenu""
                     onAction=""OnBatchStyleColorTrans"" />
             <button id=""btnBatchStyleBw""
                     label=""Publication B&amp;W (ACS Monochrome)""
-                    imageMso=""ContrastGallery""
+                    imageMso=""BlackAndWhiteGrayscale""
                     onAction=""OnBatchStyleBw"" />
             <button id=""btnBatchStyleWhiteBg""
                     label=""White Background (Color)""
@@ -154,11 +154,11 @@ public class SmilesRibbon : ExcelRibbon
                 label=""SDF File""
                 screentip=""Import or Export SDF Chemical Files""
                 supertip=""Import an MDL .sdf chemical table into the worksheet or export worksheet structures to an .sdf file.""
-                imageMso=""FileOpen""
+                imageMso=""DatabaseQueryNew""
                 size=""large"">
             <button id=""btnImportSdf""
                     label=""Import SDF File (.sdf)...""
-                    imageMso=""FileOpen""
+                    imageMso=""ImportTextFile""
                     onAction=""OnImportSdf"" />
             <button id=""btnExportSdf""
                     label=""Export Sheet to SDF (.sdf)...""
@@ -200,7 +200,7 @@ public class SmilesRibbon : ExcelRibbon
                 onAction=""OnInsertMolecule"" />
         <button id=""btnContextInsertInchiMolecule""
                 label=""Insert / Edit Structure (INCHI2IMG)...""
-                imageMso=""EquationInsertNew""
+                imageMso=""FunctionWizard""
                 onAction=""OnInsertInchiMolecule"" />
         <button id=""btnContextInsertKetMolecule""
                 label=""Insert / Edit Structure (KET2IMG)...""
@@ -229,7 +229,7 @@ public class SmilesRibbon : ExcelRibbon
                 onAction=""OnCopyKet"" />
         <button id=""btnContextCopySvgCell""
                 label=""Copy Vector SVG""
-                imageMso=""Copy""
+                imageMso=""CopyPicture""
                 onAction=""OnCopySvg"" />
         <menuSeparator id=""sepContextCellSubInfo"" />
         <menu id=""menuContextExcelCellMoleculeInfo""
@@ -257,7 +257,7 @@ public class SmilesRibbon : ExcelRibbon
                   onAction=""OnCopyInchi"" />
           <button id=""btnContextCellSubCopyInchiKey""
                   label=""Copy InChIKey""
-                  imageMso=""Copy""
+                  imageMso=""SignatureLineInsert""
                   onAction=""OnCopyInchiKey"" />
           <button id=""btnContextCellCopyAllSummary""
                   label=""Copy All Summary (Text)""
@@ -284,7 +284,7 @@ public class SmilesRibbon : ExcelRibbon
                 onAction=""OnInsertMolecule"" />
         <button id=""btnContextListInsertInchiMolecule""
                 label=""Insert / Edit Structure (INCHI2IMG)...""
-                imageMso=""EquationInsertNew""
+                imageMso=""FunctionWizard""
                 onAction=""OnInsertInchiMolecule"" />
         <button id=""btnContextListInsertKetMolecule""
                 label=""Insert / Edit Structure (KET2IMG)...""
@@ -313,7 +313,7 @@ public class SmilesRibbon : ExcelRibbon
                 onAction=""OnCopyKet"" />
         <button id=""btnContextListCopySvgCell""
                 label=""Copy Vector SVG""
-                imageMso=""Copy""
+                imageMso=""CopyPicture""
                 onAction=""OnCopySvg"" />
         <menuSeparator id=""sepContextListSubInfo"" />
         <menu id=""menuContextExcelListMoleculeInfo""
@@ -341,7 +341,7 @@ public class SmilesRibbon : ExcelRibbon
                   onAction=""OnCopyInchi"" />
           <button id=""btnContextListSubCopyInchiKey""
                   label=""Copy InChIKey""
-                  imageMso=""Copy""
+                  imageMso=""SignatureLineInsert""
                   onAction=""OnCopyInchiKey"" />
           <button id=""btnContextListCopyAllSummary""
                   label=""Copy All Summary (Text)""
@@ -384,7 +384,7 @@ public class SmilesRibbon : ExcelRibbon
               insertBeforeMso=""Cut"" />
       <button id=""btnContextPictureCopySvg""
               label=""Copy Vector SVG""
-              imageMso=""Copy""
+              imageMso=""CopyPicture""
               onAction=""OnCopySvg""
               insertBeforeMso=""Cut"" />
       <menu id=""menuContextPictureExcelMoleculeInfo""
@@ -413,7 +413,7 @@ public class SmilesRibbon : ExcelRibbon
                 onAction=""OnCopyInchi"" />
         <button id=""btnContextPicSubCopyInchiKey""
                 label=""Copy InChIKey""
-                imageMso=""Copy""
+                imageMso=""SignatureLineInsert""
                 onAction=""OnCopyInchiKey"" />
         <button id=""btnContextPicCopyAllSummary""
                 label=""Copy All Summary (Text)""
@@ -455,7 +455,7 @@ public class SmilesRibbon : ExcelRibbon
               insertBeforeMso=""Cut"" />
       <button id=""btnContextShapeCopySvg""
               label=""Copy Vector SVG""
-              imageMso=""Copy""
+              imageMso=""CopyPicture""
               onAction=""OnCopySvg""
               insertBeforeMso=""Cut"" />
       <menu id=""menuContextShapeExcelMoleculeInfo""
@@ -484,7 +484,7 @@ public class SmilesRibbon : ExcelRibbon
                 onAction=""OnCopyInchi"" />
         <button id=""btnContextShapeSubCopyInchiKey""
                 label=""Copy InChIKey""
-                imageMso=""Copy""
+                imageMso=""SignatureLineInsert""
                 onAction=""OnCopyInchiKey"" />
         <button id=""btnContextShapeCopyAllSummary""
                 label=""Copy All Summary (Text)""
@@ -502,185 +502,90 @@ public class SmilesRibbon : ExcelRibbon
 </customUI>";
     }
 
-    public void OnInsertMolecule(IRibbonControl control)
+    private static void RunMacroSafe(Action action)
     {
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
-            KetcherEditor.OpenKetcherCommand();
+            try
+            {
+                action();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[SmilesRibbon] Macro execution error: {ex}");
+            }
         });
     }
+
+    public void OnInsertMolecule(IRibbonControl control)
+        => RunMacroSafe(() => KetcherEditor.OpenKetcherCommand());
 
     public void OnInsertInchiMolecule(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.OpenKetcherInchiCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.OpenKetcherInchiCommand());
 
     public void OnInsertKetMolecule(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.OpenKetcherKetCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.OpenKetcherKetCommand());
 
     public void OnInsertCanvasMolecule(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.InsertCanvasMoleculeCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.InsertCanvasMoleculeCommand());
 
     public void OnQuickInsert(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.QuickInsertCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.QuickInsertCommand());
 
     public void OnEditMolecule(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.EditSelectedMoleculeCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.EditSelectedMoleculeCommand());
 
     public void OnCopySmiles(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.CopySelectedMoleculeSmilesCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.CopySelectedMoleculeSmilesCommand());
 
     public void OnCopyInchi(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.CopySelectedMoleculeInchiCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.CopySelectedMoleculeInchiCommand());
 
     public void OnCopyKet(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.CopySelectedMoleculeKetCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.CopySelectedMoleculeKetCommand());
 
     public void OnCopySvg(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.CopySelectedMoleculeSvgCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.CopySelectedMoleculeSvgCommand());
 
     public void OnBatchStyleColorTrans(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.BatchStyleColorTransCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.BatchStyleColorTransCommand());
 
     public void OnBatchStyleBw(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.BatchStyleBwCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.BatchStyleBwCommand());
 
     public void OnBatchStyleWhiteBg(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.BatchStyleWhiteBgCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.BatchStyleWhiteBgCommand());
 
     public void OnBatchStyleDark(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.BatchStyleDarkCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.BatchStyleDarkCommand());
 
     public void OnImportSdf(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.ImportSdfCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.ImportSdfCommand());
 
     public void OnExportSdf(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.ExportSdfCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.ExportSdfCommand());
 
     public void OnCopyMoleculeInfo(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.CopySelectedMoleculeInfoCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.CopySelectedMoleculeInfoCommand());
 
     public void OnCopySubstanceName(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.CopySelectedSubstanceNameCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.CopySelectedSubstanceNameCommand());
 
     public void OnCopyFormula(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.CopySelectedFormulaCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.CopySelectedFormulaCommand());
 
     public void OnCopyMolecularWeight(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.CopySelectedMolecularWeightCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.CopySelectedMolecularWeightCommand());
 
     public void OnCopyInchiKey(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.CopySelectedInchiKeyCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.CopySelectedInchiKeyCommand());
 
     public void OnCopyAllSummary(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            KetcherEditor.CopySelectedAllSummaryCommand();
-        });
-    }
+        => RunMacroSafe(() => KetcherEditor.CopySelectedAllSummaryCommand());
 
     public void OnInsertMolstar(IRibbonControl control)
     {
-        ExcelAsyncUtil.QueueAsMacro(() =>
+        RunMacroSafe(() =>
         {
             var app = (Excel.Application)ExcelDnaUtil.Application;
             ExcelMolstarManager.InsertMolstarStructure(app);
@@ -689,7 +594,7 @@ public class SmilesRibbon : ExcelRibbon
 
     public void OnEditMolstar(IRibbonControl control)
     {
-        ExcelAsyncUtil.QueueAsMacro(() =>
+        RunMacroSafe(() =>
         {
             var app = (Excel.Application)ExcelDnaUtil.Application;
             ExcelMolstarManager.EditSelectedMolstar(app);
@@ -697,16 +602,11 @@ public class SmilesRibbon : ExcelRibbon
     }
 
     public void OnShowDiagnostics(IRibbonControl control)
-    {
-        ExcelAsyncUtil.QueueAsMacro(() =>
-        {
-            LogDisplay.Show();
-        });
-    }
+        => RunMacroSafe(() => LogDisplay.Show());
 
     public void OnAbout(IRibbonControl control)
     {
-        ExcelAsyncUtil.QueueAsMacro(() =>
+        RunMacroSafe(() =>
         {
             try
             {

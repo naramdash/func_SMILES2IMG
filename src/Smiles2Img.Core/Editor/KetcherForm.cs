@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
+using Smiles2Img.Editor;
 using Smiles2Img.Rendering;
 
 namespace Smiles2Img;
@@ -18,10 +19,7 @@ public sealed class Win32Window(IntPtr handle) : IWin32Window
 
 public sealed class KetcherForm : Form
 {
-    [DllImport("user32.dll", CharSet = CharSet.Auto)]
-    private static extern bool DestroyIcon(IntPtr handle);
-
-    private static readonly Icon? AppIcon = CreateAppIcon();
+    private static readonly Icon? AppIcon = UiIcons.ChemicalIcon;
     private static CoreWebView2Environment? _sharedEnvironment;
     private static KetcherForm? _pooledInstance;
 
@@ -183,6 +181,7 @@ public sealed class KetcherForm : Form
         catch (Exception ex)
         {
             _forceDispose = true;
+            _pooledInstance = null;
             string msg = ex.Message;
             if (ex is DllNotFoundException || ex.GetType().Name.Contains("WebView2"))
             {
@@ -327,60 +326,7 @@ public sealed class KetcherForm : Form
                 .Replace("\n", "\\n");
     }
 
-    private static Icon? CreateAppIcon()
-    {
-        try
-        {
-            using var bmp = new Bitmap(32, 32);
-            using var g = Graphics.FromImage(bmp);
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-            // Sleek dark circular background
-            using var bgBrush = new SolidBrush(Color.FromArgb(15, 23, 42));
-            g.FillEllipse(bgBrush, 1, 1, 30, 30);
-
-            // Cyan benzene ring (hexagon)
-            using var ringPen = new Pen(Color.FromArgb(56, 189, 248), 2f);
-            var points = new PointF[]
-            {
-                new(16, 5),
-                new(25, 10.5f),
-                new(25, 21.5f),
-                new(16, 27),
-                new(7, 21.5f),
-                new(7, 10.5f)
-            };
-            g.DrawPolygon(ringPen, points);
-
-            // Inner aromatic ring
-            using var innerPen = new Pen(Color.FromArgb(14, 165, 233), 1.2f);
-            g.DrawEllipse(innerPen, 11, 11, 10, 10);
-
-            // Colored atom nodes (Oxygen red, Nitrogen blue, Emerald green)
-            using var redBrush = new SolidBrush(Color.FromArgb(239, 68, 68));
-            using var blueBrush = new SolidBrush(Color.FromArgb(59, 130, 246));
-            using var greenBrush = new SolidBrush(Color.FromArgb(16, 185, 129));
-
-            g.FillEllipse(redBrush, 13.5f, 2.5f, 5, 5);
-            g.FillEllipse(blueBrush, 22.5f, 19, 5, 5);
-            g.FillEllipse(greenBrush, 4.5f, 19, 5, 5);
-
-            var hIcon = bmp.GetHicon();
-            try
-            {
-                using var temp = Icon.FromHandle(hIcon);
-                return (Icon)temp.Clone();
-            }
-            finally
-            {
-                DestroyIcon(hIcon);
-            }
-        }
-        catch
-        {
-            return null;
-        }
-    }
 
     protected override void Dispose(bool disposing)
     {

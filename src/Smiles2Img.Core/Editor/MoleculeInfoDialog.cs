@@ -42,6 +42,12 @@ public sealed class MoleculeInfoDialog : Form
         ShowInTaskbar = false;
         Font = new Font("Segoe UI", 9.25f, FontStyle.Regular);
         BackColor = Color.FromArgb(249, 250, 251);
+
+        if (UiIcons.MoleculeInfoIcon != null)
+        {
+            try { Icon = UiIcons.MoleculeInfoIcon; } catch { }
+        }
+
         KeyPreview = true;
         KeyDown += (s, e) =>
         {
@@ -139,9 +145,9 @@ public sealed class MoleculeInfoDialog : Form
 
         _lblStatus = new Label
         {
-            Text = "✓ Full summary automatically copied to clipboard. Press Esc to close.",
-            Font = new Font("Segoe UI", 9f, FontStyle.Italic),
-            ForeColor = Color.FromArgb(22, 101, 52),
+            Text = "💡 Click 'Copy All Summary' or individual 'Copy' buttons to copy properties.",
+            Font = new Font("Segoe UI", 9f, FontStyle.Regular),
+            ForeColor = Color.FromArgb(75, 85, 99),
             Dock = DockStyle.Fill,
             TextAlign = ContentAlignment.MiddleLeft,
             AutoEllipsis = true,
@@ -165,7 +171,7 @@ public sealed class MoleculeInfoDialog : Form
         btnCopyAll.FlatAppearance.MouseOverBackColor = Color.FromArgb(30, 95, 150);
         btnCopyAll.Click += (s, e) =>
         {
-            try { Clipboard.SetText(_info.FormatClipboardSummary()); } catch { }
+            try { SafeClipboard.SetText(_info.FormatClipboardSummary()); } catch { }
             FlashCopied(btnCopyAll, "Full Summary");
             _lblStatus.Text = "✓ Full summary copied to clipboard.";
             _lblStatus.ForeColor = Color.FromArgb(22, 101, 52);
@@ -258,7 +264,7 @@ public sealed class MoleculeInfoDialog : Form
             {
                 if (!string.IsNullOrEmpty(copyPayload))
                 {
-                    try { Clipboard.SetText(copyPayload); } catch { }
+                    try { SafeClipboard.SetText(copyPayload); } catch { }
                     FlashCopied(btnCopy, labelText);
                 }
             };
@@ -307,8 +313,6 @@ public sealed class MoleculeInfoDialog : Form
 
         AcceptButton = btnCopyAll;
         CancelButton = btnClose;
-
-        try { Clipboard.SetText(_info.FormatClipboardSummary()); } catch { }
     }
 
     private void FlashCopied(Button btn, string propName)
@@ -327,13 +331,17 @@ public sealed class MoleculeInfoDialog : Form
         var t = new Timer { Interval = 1200 };
         t.Tick += (s, e) =>
         {
-            t.Stop();
-            t.Dispose();
-            if (!btn.IsDisposed)
+            try
             {
-                btn.Text = origText;
-                btn.BackColor = origColor;
+                t.Stop();
+                t.Dispose();
+                if (!btn.IsDisposed)
+                {
+                    btn.Text = origText;
+                    btn.BackColor = origColor;
+                }
             }
+            catch { }
         };
         t.Start();
     }
@@ -341,15 +349,20 @@ public sealed class MoleculeInfoDialog : Form
     public static void ShowModal(MoleculeInfo info, string? title = null, IWin32Window? owner = null)
     {
         using var dlg = new MoleculeInfoDialog(info, title);
-        if (owner != null)
+        if (owner != null && owner.Handle != IntPtr.Zero)
         {
             dlg.StartPosition = FormStartPosition.CenterParent;
-            dlg.ShowDialog(owner);
+            try
+            {
+                dlg.ShowDialog(owner);
+                return;
+            }
+            catch
+            {
+                // Fallback to CenterScreen if owner window is invalid or disconnected
+            }
         }
-        else
-        {
-            dlg.StartPosition = FormStartPosition.CenterScreen;
-            dlg.ShowDialog();
-        }
+        dlg.StartPosition = FormStartPosition.CenterScreen;
+        dlg.ShowDialog();
     }
 }

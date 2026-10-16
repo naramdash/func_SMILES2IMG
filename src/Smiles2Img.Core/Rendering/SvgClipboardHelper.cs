@@ -28,7 +28,7 @@ public static class SvgClipboardHelper
             dataObj.SetData(DataFormats.UnicodeText, true, svgXml);
             dataObj.SetData(DataFormats.Text, true, svgXml);
 
-            Clipboard.SetDataObject(dataObj, true);
+            Clipboard.SetDataObject(dataObj, true, 5, 40);
             return true;
         }
         catch
