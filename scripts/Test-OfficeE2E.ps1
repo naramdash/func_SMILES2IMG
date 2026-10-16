@@ -229,9 +229,12 @@ try {
     if ([math]::Abs($ccoMw - 46.07) -gt 0.1) { throw "Excel CCO MW mismatch! Expected ~46.07, got $ccoMw" }
     Write-Host "  [PASS] Excel CCO (Ethanol) Formula=$ccoFormula, MW=$ccoMw" -ForegroundColor Green
 
+    [System.Windows.Forms.Clipboard]::Clear()
+    $ws.Activate()
     $ws.Range("A2").Select() | Out-Null
+    Start-Sleep -Milliseconds 300
     $excel.Run("CopySelectedAllSummaryCommand")
-    Start-Sleep -Milliseconds 500
+    Start-Sleep -Milliseconds 800
     $clipText = [Smiles2Img.Editor.SafeClipboard]::GetText()
     if (-not $clipText -or -not $clipText.Contains("C2H6O")) { throw "Excel CopySelectedAllSummaryCommand failed to copy CCO info! Got: $clipText" }
     Write-Host "  [PASS] Excel CopySelectedAllSummaryCommand on CCO copied summary without crashing: $([string]$clipText.Substring(0, [math]::Min(50, $clipText.Length)))..." -ForegroundColor Green

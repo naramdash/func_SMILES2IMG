@@ -11,15 +11,71 @@ namespace Smiles2Img.Editor;
 /// </summary>
 public static class SafeClipboard
 {
+    private static void RunInSta(Action action)
+    {
+        if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA)
+        {
+            action();
+            return;
+        }
+
+        Exception? threadEx = null;
+        var thread = new Thread(() =>
+        {
+            try { action(); }
+            catch (Exception ex) { threadEx = ex; }
+        });
+        thread.SetApartmentState(ApartmentState.STA);
+        thread.IsBackground = true;
+        thread.Start();
+        thread.Join();
+
+        if (threadEx != null) throw threadEx;
+    }
+
+    private static T RunInSta<T>(Func<T> func)
+    {
+        if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA)
+        {
+            return func();
+        }
+
+        T result = default!;
+        Exception? threadEx = null;
+        var thread = new Thread(() =>
+        {
+            try { result = func(); }
+            catch (Exception ex) { threadEx = ex; }
+        });
+        thread.SetApartmentState(ApartmentState.STA);
+        thread.IsBackground = true;
+        thread.Start();
+        thread.Join();
+
+        if (threadEx != null) throw threadEx;
+        return result;
+    }
+
     public static bool SetText(string? text, int maxRetries = 5, int delayMs = 40)
     {
         if (string.IsNullOrEmpty(text)) return false;
+        try
+        {
+            return RunInSta(() => SetTextInternal(text!, maxRetries, delayMs));
+        }
+        catch
+        {
+            return false;
+        }
+    }
 
+    private static bool SetTextInternal(string text, int maxRetries, int delayMs)
+    {
         for (int i = 0; i < maxRetries; i++)
         {
             try
             {
-                Clipboard.SetDataObject(text!, true, 5, 40);
+                Clipboard.SetDataObject(text, true, 5, 40);
                 return true;
             }
             catch (ExternalException)
@@ -35,7 +91,7 @@ public static class SafeClipboard
 
         try
         {
-            Clipboard.SetText(text!);
+            Clipboard.SetText(text);
             return true;
         }
         catch
@@ -77,16 +133,31 @@ public static class SafeClipboard
     public static bool SetTextAndHtml(string? plainText, string? htmlSnippet = null, int maxRetries = 5, int delayMs = 40)
     {
         if (string.IsNullOrEmpty(plainText)) return false;
+        try
+        {
+            return RunInSta(() => SetTextAndHtmlInternal(plainText!, htmlSnippet, maxRetries, delayMs));
+        }
+        catch
+        {
+            return false;
+        }
+    }
 
+    private static bool SetTextAndHtmlInternal(string plainText, string? htmlSnippet, int maxRetries, int delayMs)
+    {
         if (string.IsNullOrWhiteSpace(htmlSnippet))
-            return SetText(plainText, maxRetries, delayMs);
+            return SetTextInternal(plainText, maxRetries, delayMs);
 
         var dataObject = new DataObject();
         dataObject.SetData(DataFormats.UnicodeText, plainText);
         dataObject.SetData(DataFormats.Text, plainText);
         try
         {
-            dataObject.SetData(DataFormats.Html, WrapInCfHtml(htmlSnippet!));
+            string cfHtml = WrapInCfHtml(htmlSnippet!);
+            byte[] utf8Bytes = System.Text.Encoding.UTF8.GetBytes(cfHtml);
+            var ms = new System.IO.MemoryStream(utf8Bytes);
+            dataObject.SetData(DataFormats.Html, ms);
+            dataObject.SetData("HTML Format", ms);
         }
         catch { }
 
@@ -108,10 +179,22 @@ public static class SafeClipboard
             }
         }
 
-        return SetText(plainText, maxRetries, delayMs);
+        return SetTextInternal(plainText, maxRetries, delayMs);
     }
 
     public static string? GetText(int maxRetries = 3, int delayMs = 30)
+    {
+        try
+        {
+            return RunInSta(() => GetTextInternal(maxRetries, delayMs));
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static string? GetTextInternal(int maxRetries, int delayMs)
     {
         for (int i = 0; i < maxRetries; i++)
         {
@@ -140,7 +223,7 @@ public static class SafeClipboard
     {
         try
         {
-            return Clipboard.ContainsText();
+            return RunInSta(() => Clipboard.ContainsText());
         }
         catch
         {

@@ -152,7 +152,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnCopyAllSummary"" />
             <button id=""btnRibbonWordCopyMultiLine""
                     label=""Copy as Multi-Line List""
-                    imageMso=""FormatBullet""
+                    imageMso=""Bullets""
                     onAction=""OnCopyMultiLine"" />
             <button id=""btnRibbonWordCopyTsvRow""
                     label=""Copy as Excel Row (TSV Columns)""
@@ -270,7 +270,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyAllSummary"" />
         <button id=""btnContextInlineCopyMultiLine""
                 label=""Copy as Multi-Line List""
-                imageMso=""FormatBullet""
+                imageMso=""Bullets""
                 onAction=""OnCopyMultiLine"" />
         <menuSeparator id=""sepContextInlineSubDialog"" />
         <button id=""btnContextInlineShowDialog""
@@ -345,7 +345,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyAllSummary"" />
         <button id=""btnContextPictureCopyMultiLine""
                 label=""Copy as Multi-Line List""
-                imageMso=""FormatBullet""
+                imageMso=""Bullets""
                 onAction=""OnCopyMultiLine"" />
         <menuSeparator id=""sepContextPictureSubDialog"" />
         <button id=""btnContextPictureShowDialog""
@@ -420,7 +420,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyAllSummary"" />
         <button id=""btnContextShapeCopyMultiLine""
                 label=""Copy as Multi-Line List""
-                imageMso=""FormatBullet""
+                imageMso=""Bullets""
                 onAction=""OnCopyMultiLine"" />
         <menuSeparator id=""sepContextShapeSubDialog"" />
         <button id=""btnContextShapeShowDialog""
@@ -498,7 +498,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnCopyAllSummary"" />
           <button id=""btnContextTextCopyMultiLine""
                   label=""Copy as Multi-Line List""
-                  imageMso=""FormatBullet""
+                  imageMso=""Bullets""
                   onAction=""OnCopyMultiLine"" />
           <menuSeparator id=""sepContextTextSubDialog"" />
           <button id=""btnContextTextShowDialog""
@@ -577,7 +577,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnCopyAllSummary"" />
           <button id=""btnContextTableCopyMultiLine""
                   label=""Copy as Multi-Line List""
-                  imageMso=""FormatBullet""
+                  imageMso=""Bullets""
                   onAction=""OnCopyMultiLine"" />
           <menuSeparator id=""sepContextTableSubDialog"" />
           <button id=""btnContextTableShowDialog""

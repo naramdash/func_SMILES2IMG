@@ -893,8 +893,9 @@ public static class WordStructureManager
                 MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from the selected structure.");
                 return;
             }
-            string summary = info.FormatClipboardSummary();
-            SafeClipboard.SetText(summary);
+            string summary = info.FormatClipboardSummary(MoleculeSummaryFormat.MultiLine);
+            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.MultiLine);
+            SafeClipboard.SetTextAndHtml(summary, html);
             MoleculeNotification.NotifyCopied("Molecule Info", info.SubstanceName ?? info.Formula ?? "Copied summary");
         }
         catch (Exception ex)
@@ -914,7 +915,8 @@ public static class WordStructureManager
                 return;
             }
             string tsv = info.FormatClipboardSummary(MoleculeSummaryFormat.ExcelTsvRow);
-            SafeClipboard.SetText(tsv);
+            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.ExcelTsvRow);
+            SafeClipboard.SetTextAndHtml(tsv, html);
             MoleculeNotification.NotifyCopied("Excel Row (TSV)", info.SubstanceName ?? info.Formula ?? "Copied row");
         }
         catch (Exception ex)
@@ -934,7 +936,7 @@ public static class WordStructureManager
                 return;
             }
             string multi = info.FormatClipboardSummary(MoleculeSummaryFormat.MultiLine);
-            string html = info.FormatHtmlTable();
+            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.MultiLine);
             SafeClipboard.SetTextAndHtml(multi, html);
             MoleculeNotification.NotifyCopied("Multi-Line List", info.SubstanceName ?? info.Formula ?? "Copied list");
         }
@@ -955,7 +957,8 @@ public static class WordStructureManager
                 return;
             }
             string md = info.FormatClipboardSummary(MoleculeSummaryFormat.MarkdownTable);
-            SafeClipboard.SetText(md);
+            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.MarkdownTable);
+            SafeClipboard.SetTextAndHtml(md, html);
             MoleculeNotification.NotifyCopied("Markdown Table", info.SubstanceName ?? info.Formula ?? "Copied table");
         }
         catch (Exception ex)

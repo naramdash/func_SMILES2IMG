@@ -300,9 +300,18 @@ public enum StructureFormatPreference
             }
             targetData = ExtractSmiles(targetShape) ?? ExtractStructure(targetShape);
         }
-        else if (app.ActiveCell is Excel.Range cell)
+        else
         {
-            targetData = ExtractSmilesFromCell(cell) ?? ExtractKetFromCell(cell);
+            Excel.Range? cell = null;
+            try { cell = app.ActiveCell as Excel.Range; } catch { }
+            if (cell == null)
+            {
+                try { cell = app.Selection as Excel.Range; } catch { }
+            }
+            if (cell != null)
+            {
+                targetData = ExtractSmilesFromCell(cell) ?? ExtractKetFromCell(cell);
+            }
         }
 
         if (string.IsNullOrEmpty(targetData)) return null;
@@ -394,7 +403,7 @@ public enum StructureFormatPreference
         }
     }
 
-    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy All Summary")]
+    [ExcelCommand(Name = "CopySelectedAllSummaryCommand", MenuName = "SMILES2IMG", MenuText = "Copy All Summary")]
     public static void CopySelectedAllSummaryCommand()
     {
         try
@@ -406,8 +415,9 @@ public enum StructureFormatPreference
                 MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from selected cell or object.");
                 return;
             }
-            string summary = info.FormatClipboardSummary();
-            SafeClipboard.SetText(summary);
+            string summary = info.FormatClipboardSummary(MoleculeSummaryFormat.ExcelTsvWithHeader);
+            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.ExcelTsvWithHeader);
+            SafeClipboard.SetTextAndHtml(summary, html);
             MoleculeNotification.NotifyCopied("Molecule Info", info.SubstanceName ?? info.Formula ?? "Copied summary");
         }
         catch (Exception ex)
@@ -416,7 +426,7 @@ public enum StructureFormatPreference
         }
     }
 
-    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy as Excel Row (TSV Columns)")]
+    [ExcelCommand(Name = "CopySelectedTsvRowCommand", MenuName = "SMILES2IMG", MenuText = "Copy as Excel Row (TSV Columns)")]
     public static void CopySelectedTsvRowCommand()
     {
         try
@@ -429,7 +439,8 @@ public enum StructureFormatPreference
                 return;
             }
             string tsv = info.FormatClipboardSummary(MoleculeSummaryFormat.ExcelTsvRow);
-            SafeClipboard.SetText(tsv);
+            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.ExcelTsvRow);
+            SafeClipboard.SetTextAndHtml(tsv, html);
             MoleculeNotification.NotifyCopied("Excel Row (TSV)", info.SubstanceName ?? info.Formula ?? "Copied row");
         }
         catch (Exception ex)
@@ -438,7 +449,7 @@ public enum StructureFormatPreference
         }
     }
 
-    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy as Multi-Line List")]
+    [ExcelCommand(Name = "CopySelectedMultiLineCommand", MenuName = "SMILES2IMG", MenuText = "Copy as Multi-Line List")]
     public static void CopySelectedMultiLineCommand()
     {
         try
@@ -451,7 +462,7 @@ public enum StructureFormatPreference
                 return;
             }
             string multi = info.FormatClipboardSummary(MoleculeSummaryFormat.MultiLine);
-            string html = info.FormatHtmlTable();
+            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.MultiLine);
             SafeClipboard.SetTextAndHtml(multi, html);
             MoleculeNotification.NotifyCopied("Multi-Line List", info.SubstanceName ?? info.Formula ?? "Copied list");
         }
@@ -461,7 +472,7 @@ public enum StructureFormatPreference
         }
     }
 
-    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy as Markdown Table")]
+    [ExcelCommand(Name = "CopySelectedMarkdownCommand", MenuName = "SMILES2IMG", MenuText = "Copy as Markdown Table")]
     public static void CopySelectedMarkdownCommand()
     {
         try
@@ -474,7 +485,8 @@ public enum StructureFormatPreference
                 return;
             }
             string md = info.FormatClipboardSummary(MoleculeSummaryFormat.MarkdownTable);
-            SafeClipboard.SetText(md);
+            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.MarkdownTable);
+            SafeClipboard.SetTextAndHtml(md, html);
             MoleculeNotification.NotifyCopied("Markdown Table", info.SubstanceName ?? info.Formula ?? "Copied table");
         }
         catch (Exception ex)

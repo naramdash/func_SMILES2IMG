@@ -620,9 +620,31 @@ internal static class Program
 
             string ccoHtml = ccoInfo.FormatHtmlTable();
             Check(ccoHtml.StartsWith("<table") && ccoHtml.Contains("46.07 g/mol"), "CCO HTML table formatted correctly");
+            Check(!ccoHtml.Contains("&amp;#"), "No double-encoded HTML entities in ccoHtml");
+            Check(ccoHtml.Contains("Å²") || ccoHtml.Contains("&#197;&#178;"), "TPSA unit present in ccoHtml");
+
+            string ccoHorizHtml = ccoInfo.FormatHtmlHorizontalTable(includeHeader: true);
+            Check(ccoHorizHtml.StartsWith("<table") && ccoHorizHtml.Contains(">Name</th>") && ccoHorizHtml.Contains("46.07"), "Horizontal HTML table with header");
+            Check(!ccoHorizHtml.Contains("&amp;#"), "No double-encoded HTML entities in ccoHorizHtml");
+
+            string ccoHorizNoHeader = ccoInfo.FormatHtmlHorizontalTable(includeHeader: false);
+            Check(!ccoHorizNoHeader.Contains("<th"), "Horizontal HTML table without header has no th tags");
+
+            Check(ccoInfo.FormatHtmlForSummary(Smiles2Img.Rendering.MoleculeSummaryFormat.ExcelTsvWithHeader) != null, "FormatHtmlForSummary for ExcelTsvWithHeader");
+            Check(ccoInfo.FormatHtmlForSummary(Smiles2Img.Rendering.MoleculeSummaryFormat.MultiLine) != null, "FormatHtmlForSummary for MultiLine");
+
+            // Verify TSV column integrity when compound name contains tabs or line breaks
+            var dirtyInfo = new MoleculeInfo { CompoundName = "Special\tSubstance\r\nName", Formula = "C6\tH6", Smiles = "c1ccccc1" };
+            string dirtyTsv = dirtyInfo.FormatExcelTsv(includeHeader: false);
+            Check(!dirtyTsv.Contains("\r") && !dirtyTsv.Contains("\n"), "Dirty TSV row contains no line breaks");
+            Check(dirtyTsv.Split('\t').Length == 12, $"Dirty TSV row maintains exactly 12 columns, got: {dirtyTsv.Split('\t').Length}");
 
             Check(Smiles2Img.Editor.SafeClipboard.SetTextAndHtml(ccoMulti, ccoHtml), "SafeClipboard.SetTextAndHtml succeeds");
-            Console.WriteLine("PASS UiIcons, SafeClipboard, and CCO MoleculeInfoDialog initialization with Multi-Format Summaries");
+            var clipDo = System.Windows.Forms.Clipboard.GetDataObject();
+            Check(clipDo != null && clipDo.GetDataPresent(System.Windows.Forms.DataFormats.Html), "Clipboard contains DataFormats.Html");
+
+            Check(Smiles2Img.Editor.SafeClipboard.SetTextAndHtml(ccoTsvHeader, ccoHorizHtml), "SafeClipboard.SetTextAndHtml for horizontal TSV succeeds");
+            Console.WriteLine("PASS UiIcons, SafeClipboard, and CCO MoleculeInfoDialog initialization with Multi-Format Summaries (Crash-Proof CF_HTML)");
 
             // v1.7.0 Tests: Exact Mass, Physicochemical & Drug-Likeness Properties
             Check(aspirinInfo.LogP > 0.5 && aspirinInfo.LogP < 2.5, $"Aspirin LogP in expected range, got: {aspirinInfo.LogP}");
@@ -711,6 +733,12 @@ internal static class Program
             .ToList();
         var duplicates = allIds.GroupBy(x => x).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
         Check(duplicates.Count == 0, $"{appName} duplicate control IDs: {string.Join(", ", duplicates)}");
+
+        var imageMsos = doc.Descendants()
+            .Select(e => (string?)e.Attribute("imageMso"))
+            .Where(img => !string.IsNullOrEmpty(img))
+            .ToList();
+        Check(!imageMsos.Contains("FormatBullet"), $"{appName} must not contain invalid imageMso 'FormatBullet'");
     }
 
     private static void Check(bool condition, string message)

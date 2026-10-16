@@ -127,7 +127,7 @@ public class SmilesRibbon : ExcelRibbon
                     onAction=""OnCopyTsvRow"" />
             <button id=""btnRibbonExcelCopyMultiLine""
                     label=""Copy as Multi-Line List""
-                    imageMso=""FormatBullet""
+                    imageMso=""Bullets""
                     onAction=""OnCopyMultiLine"" />
             <button id=""btnRibbonExcelCopyMarkdown""
                     label=""Copy as Markdown Table""

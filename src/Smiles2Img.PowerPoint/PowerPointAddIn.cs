@@ -222,7 +222,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnCopyAllSummary"" />
             <button id=""btnRibbonPptCopyMultiLine""
                     label=""Copy as Multi-Line List""
-                    imageMso=""FormatBullet""
+                    imageMso=""Bullets""
                     onAction=""OnCopyMultiLine"" />
             <button id=""btnRibbonPptCopyTsvRow""
                     label=""Copy as Excel Row (TSV Columns)""
@@ -340,7 +340,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyAllSummary"" />
         <button id=""btnContextPptPictureCopyMultiLine""
                 label=""Copy as Multi-Line List""
-                imageMso=""FormatBullet""
+                imageMso=""Bullets""
                 onAction=""OnCopyMultiLine"" />
         <menuSeparator id=""sepContextPptPictureSubDialog"" />
         <button id=""btnContextPptPictureShowDialog""
@@ -415,7 +415,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 onAction=""OnCopyAllSummary"" />
         <button id=""btnContextPptShapeCopyMultiLine""
                 label=""Copy as Multi-Line List""
-                imageMso=""FormatBullet""
+                imageMso=""Bullets""
                 onAction=""OnCopyMultiLine"" />
         <menuSeparator id=""sepContextPptShapeSubDialog"" />
         <button id=""btnContextPptShapeShowDialog""
@@ -513,7 +513,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnCopyAllSummary"" />
           <button id=""btnContextPptTextCopyMultiLine""
                   label=""Copy as Multi-Line List""
-                  imageMso=""FormatBullet""
+                  imageMso=""Bullets""
                   onAction=""OnCopyMultiLine"" />
           <menuSeparator id=""sepContextPptTextSubDialog"" />
           <button id=""btnContextPptTextShowDialog""
@@ -592,7 +592,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnCopyAllSummary"" />
           <button id=""btnContextPptTableCopyMultiLine""
                   label=""Copy as Multi-Line List""
-                  imageMso=""FormatBullet""
+                  imageMso=""Bullets""
                   onAction=""OnCopyMultiLine"" />
           <menuSeparator id=""sepContextPptTableSubDialog"" />
           <button id=""btnContextPptTableShowDialog""

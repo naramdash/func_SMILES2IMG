@@ -13,7 +13,7 @@ namespace Smiles2Img.Editor;
 /// </summary>
 public sealed class MoleculeInfoDialog : Form
 {
-    private static MoleculeSummaryFormat _lastUsedFormat = MoleculeSummaryFormat.ExcelTsvRow;
+    private static MoleculeSummaryFormat _lastUsedFormat = MoleculeSummaryFormat.ExcelTsvWithHeader;
 
     private readonly MoleculeInfo _info;
     private readonly Label _lblStatus;
@@ -219,7 +219,7 @@ public sealed class MoleculeInfoDialog : Form
             btnCopyAll.Text = GetFormatButtonLabel(format);
 
             string text = _info.FormatClipboardSummary(format);
-            string? html = (format == MoleculeSummaryFormat.MultiLine) ? _info.FormatHtmlTable() : null;
+            string? html = _info.FormatHtmlForSummary(format);
 
             try { SafeClipboard.SetTextAndHtml(text, html); } catch { }
 

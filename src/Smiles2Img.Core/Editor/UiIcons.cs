@@ -210,38 +210,24 @@ public static class UiIcons
         }
     }
 
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool DestroyIcon(IntPtr hIcon);
+
     private static Icon? ConvertBitmapToIcon(Bitmap bmp)
     {
         try
         {
-            using var pngStream = new System.IO.MemoryStream();
-            bmp.Save(pngStream, System.Drawing.Imaging.ImageFormat.Png);
-            var pngBytes = pngStream.ToArray();
-
-            using var icoStream = new System.IO.MemoryStream();
-            using var writer = new System.IO.BinaryWriter(icoStream);
-
-            // ICONDIR
-            writer.Write((ushort)0); // reserved
-            writer.Write((ushort)1); // type 1 = icon
-            writer.Write((ushort)1); // count = 1
-
-            // ICONDIRENTRY
-            writer.Write((byte)bmp.Width);
-            writer.Write((byte)bmp.Height);
-            writer.Write((byte)0); // color count
-            writer.Write((byte)0); // reserved
-            writer.Write((ushort)1); // planes
-            writer.Write((ushort)32); // bit count
-            writer.Write((uint)pngBytes.Length); // bytes in resource
-            writer.Write((uint)22); // offset (6 + 16)
-
-            // Image data (PNG bytes)
-            writer.Write(pngBytes);
-            writer.Flush();
-
-            icoStream.Position = 0;
-            return new Icon(icoStream);
+            var hIcon = bmp.GetHicon();
+            try
+            {
+                using var temp = Icon.FromHandle(hIcon);
+                return (Icon)temp.Clone();
+            }
+            finally
+            {
+                DestroyIcon(hIcon);
+            }
         }
         catch
         {

@@ -106,6 +106,12 @@ public sealed class MoleculeInfo
         return string.Join("\r\n", lines);
     }
 
+    private static string CleanTsvField(string? s)
+    {
+        if (string.IsNullOrEmpty(s)) return "";
+        return s!.Replace("\t", " ").Replace("\r", "").Replace("\n", " ").Trim();
+    }
+
     public string FormatExcelTsv(bool includeHeader = false)
     {
         if (IsReaction)
@@ -113,8 +119,8 @@ public sealed class MoleculeInfo
 
         var rowValues = new List<string>
         {
-            SubstanceName,
-            Formula,
+            CleanTsvField(SubstanceName),
+            CleanTsvField(Formula),
             MolecularWeight.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
             ExactMass > 0 ? ExactMass.ToString("F4", System.Globalization.CultureInfo.InvariantCulture) : "",
             LogP.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
@@ -123,8 +129,8 @@ public sealed class MoleculeInfo
             HBondAcceptors.ToString(),
             RotatableBonds.ToString(),
             PassesLipinski ? "Pass" : "Fail",
-            Smiles,
-            InChIKey
+            CleanTsvField(Smiles),
+            CleanTsvField(InChIKey)
         };
         string row = string.Join("\t", rowValues);
 
@@ -213,7 +219,7 @@ public sealed class MoleculeInfo
         rows.Add(("Molecular Weight", $"{MolecularWeight:F2} g/mol"));
         if (ExactMass > 0) rows.Add(("Exact Mass", $"{ExactMass:F4}"));
         rows.Add(("LogP", $"{LogP:F2}"));
-        rows.Add(("TPSA", $"{Tpsa:F1} &#197;&#178;"));
+        rows.Add(("TPSA", $"{Tpsa:F1} Å²"));
         rows.Add(("HBD / HBA / RotB", $"{HBondDonors} / {HBondAcceptors} / {RotatableBonds}"));
         rows.Add(("Lipinski Rule of 5", PassesLipinski ? "Passed" : "Failed"));
         rows.Add(("SMILES", Smiles));
@@ -237,6 +243,68 @@ public sealed class MoleculeInfo
         }
         sb.Append("</tbody></table>");
         return sb.ToString();
+    }
+
+    public string FormatHtmlHorizontalTable(bool includeHeader = true)
+    {
+        if (IsReaction)
+        {
+            return "<table style=\"border-collapse:collapse;font-family:'Segoe UI',Arial,sans-serif;font-size:10pt;border:1px solid #d1d5db;\">" +
+                   "<thead><tr style=\"background-color:#184c78;color:#ffffff;\"><th style=\"padding:6px 14px;border:1px solid #d1d5db;text-align:left;\">Type</th><th style=\"padding:6px 14px;border:1px solid #d1d5db;text-align:left;\">SMILES</th></tr></thead>" +
+                   $"<tbody><tr><td style=\"padding:5px 12px;border:1px solid #e5e7eb;\">Reaction</td><td style=\"padding:5px 12px;border:1px solid #e5e7eb;\">{System.Net.WebUtility.HtmlEncode(Smiles)}</td></tr></tbody></table>";
+        }
+
+        var headerValues = new[]
+        {
+            "Name", "Formula", "MW (g/mol)", "Exact Mass", "LogP", "TPSA (Å²)",
+            "HBD", "HBA", "RotB", "Lipinski", "SMILES", "InChIKey"
+        };
+        var rowValues = new[]
+        {
+            CleanTsvField(SubstanceName),
+            CleanTsvField(Formula),
+            MolecularWeight.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
+            ExactMass > 0 ? ExactMass.ToString("F4", System.Globalization.CultureInfo.InvariantCulture) : "",
+            LogP.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
+            Tpsa.ToString("F1", System.Globalization.CultureInfo.InvariantCulture),
+            HBondDonors.ToString(),
+            HBondAcceptors.ToString(),
+            RotatableBonds.ToString(),
+            PassesLipinski ? "Pass" : "Fail",
+            CleanTsvField(Smiles),
+            CleanTsvField(InChIKey)
+        };
+
+        var sb = new System.Text.StringBuilder();
+        sb.Append("<table style=\"border-collapse:collapse;font-family:'Segoe UI',Arial,sans-serif;font-size:10pt;border:1px solid #d1d5db;\">");
+        if (includeHeader)
+        {
+            sb.Append("<thead><tr style=\"background-color:#184c78;color:#ffffff;\">");
+            foreach (var h in headerValues)
+            {
+                sb.Append($"<th style=\"padding:6px 12px;border:1px solid #d1d5db;text-align:left;\">{System.Net.WebUtility.HtmlEncode(h)}</th>");
+            }
+            sb.Append("</tr></thead>");
+        }
+        sb.Append("<tbody><tr>");
+        foreach (var v in rowValues)
+        {
+            sb.Append($"<td style=\"padding:5px 12px;border:1px solid #e5e7eb;color:#111827;\">{System.Net.WebUtility.HtmlEncode(v)}</td>");
+        }
+        sb.Append("</tr></tbody></table>");
+        return sb.ToString();
+    }
+
+    public string? FormatHtmlForSummary(MoleculeSummaryFormat format)
+    {
+        return format switch
+        {
+            MoleculeSummaryFormat.MultiLine => FormatHtmlTable(),
+            MoleculeSummaryFormat.ExcelTsvRow => FormatHtmlHorizontalTable(includeHeader: false),
+            MoleculeSummaryFormat.ExcelTsvWithHeader => FormatHtmlHorizontalTable(includeHeader: true),
+            MoleculeSummaryFormat.MarkdownTable => FormatHtmlTable(),
+            _ => null
+        };
     }
 
     public string FormatDisplayMessage()
