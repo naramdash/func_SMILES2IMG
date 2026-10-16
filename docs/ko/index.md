@@ -33,8 +33,8 @@ features:
     title: Mol* 3D 거대분자 뷰어 (Excel · Word · PPT)
     details: 단백질, 핵산, 리간드 복합체를 엑셀, 워드, 파워포인트 모두에서 3D로 시각화합니다. PDB ID 직접 다운로드 및 회전 가능한 GLB 3D 모델·2D 이미지 삽입을 지원합니다.
   - icon: 🖼️
-    title: 벡터 SVG 복사 & 일괄 스타일 변환기
-    details: Illustrator·Inkscape용 무손실 벡터 그래픽(Copy SVG)을 클립보드로 즉시 복사하거나, 시트/문서/발표자료 전체의 분자를 원클릭으로 ACS 흑백·다크 모드로 일괄 변환(Batch Style)합니다.
+    title: 벡터 SVG 복사 · 다중 서식 요약 · 일괄 스타일 변환
+    details: 무손실 벡터 그래픽(Copy SVG) 복사, 분자 전체 물성의 Excel 가로 행(TSV)·마크다운 표·멀티라인 복사, 문서 전체 ACS 흑백·다크 모드 원클릭 일괄 변환(Batch Style)을 지원합니다.
   - icon: 📂
     title: 엑셀 네이티브 SDF 가져오기 / 내보내기
     details: 다중 분자가 담긴 .sdf 파일을 읽어 구조식과 물성 수식이 포함된 엑셀 표로 자동 생성하거나, 시트의 화합물 목록을 .sdf 파일로 내보냅니다.
@@ -54,8 +54,8 @@ PowerShell을 열고 아래 명령어를 실행하면 Excel, Word, PowerPoint �
 # 안정판 릴리즈 (v1.6.0)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 
-# 최신 프리뷰 릴리즈 (v1.7.0-preview.1 — SAR/약물성 수식, Name2Img, SVG 복사, 일괄 스타일 변환, SDF 입출력)
-$v='v1.7.0-preview.1'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+# 최신 프리뷰 릴리즈 (v1.7.0-preview.3 — 다중 서식 물성 복사, SAR/약물성 수식, Name2Img, SVG 복사, 일괄 스타일 변환, SDF 입출력)
+$v='v1.7.0-preview.3'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
 ::: tip 💡 간편한 업데이트 및 버전 확인

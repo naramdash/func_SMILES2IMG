@@ -61,8 +61,11 @@
   * **화학식 (Chemical Formula):** Hill 표기법 화학식 복사 (`C9H8O4` 등).
   * **분자량 (Molecular Weight):** 정밀 분자량 복사 (`180.16 g/mol` 등).
   * **SMILES / InChI / InChIKey:** 각 표준 식별자 원클릭 즉시 복사.
-  * **전체 요약 복사 (All Summary):** 모든 정보를 한 줄 텍스트로 일괄 복사.
-  * **상세 정보 창 열기...:** 2D SVG 그래픽 뷰어, **LogP / TPSA**, **Lipinski Rule of 5(약물성 규칙)** 및 전체 속성 표가 포함된 상세 다이얼로그 창 실행.
+  * **전체 요약 복사 (Copy All Summary):** 모든 정보를 한 줄 텍스트로 일괄 복사.
+  * **여러 줄 리스트로 복사 (Copy as Multi-Line List):** 항목별로 줄바꿈된 리스트 서식으로 복사.
+  * **엑셀 가로 행으로 복사 (Copy as Excel Row - TSV Columns):** 탭 구분(TSV) 및 HTML 표 스트림으로 복사하여 엑셀 셀 열(Column)이나 워드/파워포인트 표에 즉시 붙여넣기 지원.
+  * **마크다운 표로 복사 (Copy as Markdown Table):** GitHub·노션·연구노트용 마크다운 표 서식 복사.
+  * **상세 정보 창 열기...:** 2D SVG 그래픽 뷰어, **LogP / TPSA**, **Lipinski Rule of 5(약물성 규칙)** 및 다중 포맷 복사 Split Button(JSON 포함)이 탑재된 상세 다이얼로그 창 실행.
   > ⚡ **모달 창 방해 없는 플로팅 토스트:** 복사 항목을 누르면 팝업 확인 창이 뜨는 대신 마우스 커서 바로 옆에 가벼운 플로팅 배지(`✓ Copied {항목}: {값}`)가 1.4초간 나타났다 사라지며, 작업 포커스를 뺏지 않습니다!
 
 ### B. 빈 셀이나 구조식 도형을 우클릭한 경우

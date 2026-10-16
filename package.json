@@ -1,6 +1,6 @@
 {
   "name": "func_smiles2img-docs",
-  "version": "1.7.0-preview.1",
+  "version": "1.7.0-preview.3",
   "description": "SMILES for Microsoft Office Suite Documentation",
   "scripts": {
     "docs:dev": "vitepress dev docs",

@@ -61,8 +61,11 @@ When right-clicking a cell containing a chemical structure or formula:
   * **Chemical Formula:** Copies standard Hill-notation formula (e.g., `C9H8O4`).
   * **Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g., `180.16 g/mol`).
   * **Copy SMILES / InChI / InChIKey:** Individual one-click copy options.
-  * **All Summary (Text):** Copies full formatted summary to clipboard.
-  * **Detailed Molecule Info Window...:** Opens the full chemical properties window with 2D SVG preview, **LogP / TPSA**, **Lipinski Rule of 5**, and complete property table.
+  * **Copy All Summary (Text):** Copies compact one-line formatted summary to clipboard.
+  * **Copy as Multi-Line List:** Copies a multi-line bulleted list of all molecular properties.
+  * **Copy as Excel Row (TSV Columns):** Copies a tab-separated horizontal row (plus HTML table stream) that pastes cleanly across adjacent Excel columns or Word/PowerPoint tables.
+  * **Copy as Markdown Table:** Copies a formatted Markdown table for GitHub, Notion, or lab notebooks.
+  * **Detailed Molecule Info Window...:** Opens the full chemical properties window with 2D SVG preview, **LogP / TPSA**, **Lipinski Rule of 5**, and a split-button multi-format exporter (including JSON).
   > ⚡ **Zero Modal Distraction:** Clicking any copy command displays a non-blocking floating toast badge (`✓ Copied {Item}: {Value}`) near your mouse cursor for 1.4 seconds without stealing focus or interrupting your work!
 
 ### Case B: Right-Clicking an Empty Cell or Structure Shape

@@ -33,8 +33,8 @@ features:
     title: Mol* 3D Macromolecular Viewer
     details: Visualize proteins, nucleic acids, and complexes across Excel, Word, and PowerPoint. Download PDB IDs directly and insert rotatable 3D GLB models or high-res 2D pictures.
   - icon: 🖼️
-    title: Vector SVG Copy & Batch Style Normalizer
-    details: Copy crisp scalable vector graphics (SVG) directly to the clipboard for Illustrator/Inkscape, or convert all structures in a sheet, document, or slide deck to ACS B&W or Dark Mode in one click.
+    title: Vector SVG, Multi-Format Summary & Batch Style
+    details: Copy crisp SVG vectors, export molecule summaries as Excel TSV rows / Markdown tables / JSON, or convert all structures in a sheet, document, or slide deck to ACS B&W or Dark Mode in one click.
   - icon: 📂
     title: Native Excel SDF Import & Export
     details: Import multi-molecule .sdf chemical files directly into formatted Excel tables with live structure and property formulas, or export worksheet libraries back to .sdf.
@@ -54,8 +54,8 @@ Install the entire suite (Excel, Word, PowerPoint) in seconds via **PowerShell**
 # Stable release (v1.6.0)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 
-# Preview release (v1.7.0-preview.1 — SAR, Drug-Likeness, Name2Img, SVG Copy, Batch Style & SDF I/O)
-$v='v1.7.0-preview.1'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+# Preview release (v1.7.0-preview.3 — Multi-Format Summary Copy, SAR, Lipinski, Name2Img, SVG Copy, Batch Style & SDF I/O)
+$v='v1.7.0-preview.3'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
 ::: tip 💡 Automatic Upgrade & In-App Update Check

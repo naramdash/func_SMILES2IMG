@@ -60,8 +60,10 @@ Right-click any chemical structure picture or paragraph in your Word document:
   * **Chemical Formula:** Copies standard Hill-notation formula (e.g. `C9H8O4`).
   * **Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g. `180.16 g/mol`).
   * **Copy SMILES / InChI / InChIKey:** Individual one-click copy options.
-  * **All Summary (Text):** Copies full formatted summary to clipboard.
-  * **Detailed Molecule Info Window...:** Opens the full chemical properties dialog (including **LogP / TPSA** and **Lipinski Rule of 5**).
+  * **Copy All Summary (Text):** Copies compact single-line summary to clipboard.
+  * **Copy as Multi-Line List:** Copies formatted multi-line property list.
+  * **Copy as Excel Row (TSV Columns) / Markdown Table:** (Available from the Ribbon `[Molecule Info]` menu and Detailed Window) Exports properties as TSV/HTML table rows or Markdown tables.
+  * **Detailed Molecule Info Window...:** Opens the full chemical properties dialog (including **LogP / TPSA**, **Lipinski Rule of 5**, and split-button multi-format exporter).
   > ⚡ **Non-Blocking Toast:** Each copy action displays a floating pill badge (`✓ Copied {Item}: {Value}`) near your mouse for 1.4s without stealing Word's focus.
 
 ### Case B: Right-Clicking Document Text, Table, or Blank Paragraph

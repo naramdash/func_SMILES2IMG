@@ -19,7 +19,7 @@ export default defineConfig({
         nav: [
           { text: 'Guide', link: '/guide/getting-started', activeMatch: '^/guide/' },
           { text: 'Reference', link: '/reference/formula', activeMatch: '^/reference/' },
-          { text: 'v1.7.0-preview.1', link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.7.0-preview.1' }
+          { text: 'v1.7.0-preview.3', link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.7.0-preview.3' }
         ],
         sidebar: [
           {
@@ -76,7 +76,7 @@ export default defineConfig({
         nav: [
           { text: '가이드', link: '/ko/guide/getting-started', activeMatch: '^/ko/guide/' },
           { text: '수식 레퍼런스', link: '/ko/reference/formula', activeMatch: '^/ko/reference/' },
-          { text: 'v1.7.0-preview.1', link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.7.0-preview.1' }
+          { text: 'v1.7.0-preview.3', link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.7.0-preview.3' }
         ],
         sidebar: [
           {
