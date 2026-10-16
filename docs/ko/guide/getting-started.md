@@ -12,10 +12,10 @@
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
-::: tip 💡 프리뷰 릴리즈 (`v1.7.0-preview.1`) 설치
-부분구조 검색/유사도(`=SMILES.MATCH`, `=SMILES.SIMILARITY`), 약물성 지표(LogP/TPSA/Lipinski), 이름/CAS 번호 역변환(`=NAME2IMG`), 벡터 SVG 복사, 일괄 스타일 변환(`Batch Style`), SDF 파일 입출력(`SDF File`)이 포함된 최신 프리뷰 버전을 설치하려면 아래와 같이 실행하세요:
+::: tip 💡 프리뷰 릴리즈 (`v1.7.0-preview.3`) 설치
+분자 전체 정보 다중 서식 복사(Excel TSV 가로 행, 멀티라인, 마크다운 표, JSON, Split Button 드롭다운), 부분구조 검색/유사도(`=SMILES.MATCH`, `=SMILES.SIMILARITY`), 약물성 지표(LogP/TPSA/Lipinski), 이름/CAS 번호 역변환(`=NAME2IMG`), 벡터 SVG 복사, 일괄 스타일 변환(`Batch Style`), SDF 파일 입출력(`SDF File`)이 포함된 최신 프리뷰 버전을 설치하려면 아래와 같이 실행하세요:
 ```powershell
-$v='v1.7.0-preview.1'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+$v='v1.7.0-preview.3'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 :::
 

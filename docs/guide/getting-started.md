@@ -12,10 +12,10 @@ Open **PowerShell** (no Administrator privileges required for standard user inst
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
-::: tip 💡 Preview Release (`v1.7.0-preview.1`)
-To test the latest preview release featuring SAR Substructure/Similarity (`=SMILES.MATCH`, `=SMILES.SIMILARITY`), Lipinski/LogP/TPSA, Reverse Name/CAS lookup (`=NAME2IMG`), Vector SVG Copy, Batch Style Normalizer, and Excel SDF Import/Export:
+::: tip 💡 Preview Release (`v1.7.0-preview.3`)
+To test the latest preview release featuring Multi-Format Molecule Summary (Excel TSV Row, Multi-Line, Markdown Table, JSON, Split Button), SAR Substructure/Similarity (`=SMILES.MATCH`, `=SMILES.SIMILARITY`), Lipinski/LogP/TPSA, Reverse Name/CAS lookup (`=NAME2IMG`), Vector SVG Copy, Batch Style Normalizer, and Excel SDF Import/Export:
 ```powershell
-$v='v1.7.0-preview.1'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+$v='v1.7.0-preview.3'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 :::
 
