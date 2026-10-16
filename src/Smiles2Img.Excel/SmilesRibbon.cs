@@ -22,7 +22,7 @@ public class SmilesRibbon : ExcelRibbon
                   label=""Insert / Edit (SMILES)""
                   screentip=""Insert / Edit Structure (SMILES2IMG) (Ctrl+Shift+K)""
                   supertip=""Opens Ketcher editor to sketch chemical structures and insert them into the active cell as formulas (=SMILES2IMG).""
-                  imageMso=""DrawingCanvasInsert""
+                  imageMso=""PensGallery""
                   size=""large""
                   onAction=""OnInsertMolecule"" />
           <button id=""btnInsertInchiMolecule""
@@ -36,7 +36,7 @@ public class SmilesRibbon : ExcelRibbon
                   label=""Insert / Edit (KET)""
                   screentip=""Insert / Edit Structure (KET2IMG)""
                   supertip=""Opens Ketcher editor to sketch chemical structures, reactions, and canvases and insert them into the active cell as formulas (=KET2IMG).""
-                  imageMso=""ShapesGallery""
+                  imageMso=""SmartArtInsert""
                   size=""large""
                   onAction=""OnInsertKetMolecule"" />
           <button id=""btnInsertMolstar""
@@ -73,7 +73,7 @@ public class SmilesRibbon : ExcelRibbon
                   label=""Copy KET""
                   screentip=""Copy Canvas Data (KET)""
                   supertip=""Extracts or converts the selected formula cell or molecule image into native Ketcher JSON (KET) and copies it to the clipboard.""
-                  imageMso=""SourceCodeInsert""
+                  imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopyKet"" />
           <button id=""btnCopySvg""
@@ -91,7 +91,7 @@ public class SmilesRibbon : ExcelRibbon
                 size=""large"">
             <button id=""btnRibbonExcelCopyName""
                     label=""Copy Substance Name""
-                    imageMso=""FontName""
+                    imageMso=""FontSize""
                     onAction=""OnCopySubstanceName"" />
             <button id=""btnRibbonExcelCopyFormula""
                     label=""Copy Chemical Formula""
@@ -111,7 +111,7 @@ public class SmilesRibbon : ExcelRibbon
                     onAction=""OnCopyInchi"" />
             <button id=""btnRibbonExcelSubCopyInchiKey""
                     label=""Copy InChIKey""
-                    imageMso=""Key""
+                    imageMso=""FilePermission""
                     onAction=""OnCopyInchiKey"" />
             <button id=""btnRibbonExcelSubCopySvg""
                     label=""Copy Vector SVG""
@@ -119,7 +119,7 @@ public class SmilesRibbon : ExcelRibbon
                     onAction=""OnCopySvg"" />
             <button id=""btnRibbonExcelCopyAllSummary""
                     label=""Copy All Summary (Text)""
-                    imageMso=""DocumentSummary""
+                    imageMso=""FileDocumentInspect""
                     onAction=""OnCopyAllSummary"" />
             <button id=""btnRibbonExcelCopyTsvRow""
                     label=""Copy as Excel Row (TSV Columns)""
@@ -131,7 +131,7 @@ public class SmilesRibbon : ExcelRibbon
                     onAction=""OnCopyMultiLine"" />
             <button id=""btnRibbonExcelCopyMarkdown""
                     label=""Copy as Markdown Table""
-                    imageMso=""TableCustom""
+                    imageMso=""TableOfContentsGallery""
                     onAction=""OnCopyMarkdown"" />
             <menuSeparator id=""sepRibbonExcelSubDialog"" />
             <button id=""btnRibbonExcelShowDialog""
@@ -155,11 +155,11 @@ public class SmilesRibbon : ExcelRibbon
                     onAction=""OnBatchStyleBw"" />
             <button id=""btnBatchStyleWhiteBg""
                     label=""White Background (Color)""
-                    imageMso=""ShapeFillColorPicker""
+                    imageMso=""BlackAndWhiteLightGrayscale""
                     onAction=""OnBatchStyleWhiteBg"" />
             <button id=""btnBatchStyleDark""
                     label=""Dark Mode (White Ink)""
-                    imageMso=""HighContrast""
+                    imageMso=""BlackAndWhiteBlack""
                     onAction=""OnBatchStyleDark"" />
           </menu>
           <menu id=""menuRibbonExcelSdf""

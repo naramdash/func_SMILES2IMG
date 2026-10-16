@@ -139,7 +139,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   label=""Insert / Edit Structure""
                   screentip=""EPAM Ketcher Molecule Editor""
                   supertip=""Open Ketcher web editor to draw chemical structures and insert into the current slide.""
-                  imageMso=""DrawingCanvasInsert""
+                  imageMso=""PensGallery""
                   size=""large""
                   onAction=""OnInsertMolecule"" />
           <button id=""btnInsertMolstar""
@@ -176,7 +176,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   label=""Copy KET""
                   screentip=""Copy Canvas Data (KET)""
                   supertip=""Extracts or converts the selected molecule image into native Ketcher JSON (KET) and copies it to the clipboard.""
-                  imageMso=""SourceCodeInsert""
+                  imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopyKet"" />
           <button id=""btnPptCopySvg""
@@ -194,7 +194,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 size=""large"">
             <button id=""btnRibbonPptCopyName""
                     label=""Copy Substance Name""
-                    imageMso=""FontName""
+                    imageMso=""FontSize""
                     onAction=""OnCopySubstanceName"" />
             <button id=""btnRibbonPptCopyFormula""
                     label=""Copy Chemical Formula""
@@ -214,11 +214,11 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnCopyInchi"" />
             <button id=""btnRibbonPptSubCopyInchiKey""
                     label=""Copy InChIKey""
-                    imageMso=""Key""
+                    imageMso=""FilePermission""
                     onAction=""OnCopyInchiKey"" />
             <button id=""btnRibbonPptCopyAllSummary""
                     label=""Copy All Summary (Text)""
-                    imageMso=""DocumentSummary""
+                    imageMso=""FileDocumentInspect""
                     onAction=""OnCopyAllSummary"" />
             <button id=""btnRibbonPptCopyMultiLine""
                     label=""Copy as Multi-Line List""
@@ -230,7 +230,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnCopyTsvRow"" />
             <button id=""btnRibbonPptCopyMarkdown""
                     label=""Copy as Markdown Table""
-                    imageMso=""TableCustom""
+                    imageMso=""TableOfContentsGallery""
                     onAction=""OnCopyMarkdown"" />
             <menuSeparator id=""sepRibbonPptSubDialog"" />
             <button id=""btnRibbonPptShowDialog""
@@ -254,11 +254,11 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnBatchStyleBw"" />
             <button id=""btnPptBatchWhiteBg""
                     label=""White Background (Color)""
-                    imageMso=""ShapeFillColorPicker""
+                    imageMso=""BlackAndWhiteLightGrayscale""
                     onAction=""OnBatchStyleWhiteBg"" />
             <button id=""btnPptBatchDark""
                     label=""Dark Mode (White Ink)""
-                    imageMso=""HighContrast""
+                    imageMso=""BlackAndWhiteBlack""
                     onAction=""OnBatchStyleDark"" />
           </menu>
         </group>

@@ -65,7 +65,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   label=""Insert / Edit Structure""
                   screentip=""EPAM Ketcher Molecule Editor""
                   supertip=""Open Ketcher web editor to draw chemical structures and insert into the document.""
-                  imageMso=""DrawingCanvasInsert""
+                  imageMso=""PensGallery""
                   size=""large""
                   onAction=""OnInsertMolecule"" />
           <button id=""btnInsertMolstar""
@@ -102,7 +102,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   label=""Copy KET""
                   screentip=""Copy Canvas Data (KET)""
                   supertip=""Extracts or converts the selected molecule image into native Ketcher JSON (KET) and copies it to the clipboard.""
-                  imageMso=""SourceCodeInsert""
+                  imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopyKet"" />
           <button id=""btnWordCopySvg""
@@ -120,7 +120,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 size=""large"">
             <button id=""btnRibbonWordCopyName""
                     label=""Copy Substance Name""
-                    imageMso=""FontName""
+                    imageMso=""FontSize""
                     onAction=""OnCopySubstanceName"" />
             <button id=""btnRibbonWordCopyFormula""
                     label=""Copy Chemical Formula""
@@ -140,7 +140,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnCopyInchi"" />
             <button id=""btnRibbonWordSubCopyInchiKey""
                     label=""Copy InChIKey""
-                    imageMso=""Key""
+                    imageMso=""FilePermission""
                     onAction=""OnCopyInchiKey"" />
             <button id=""btnRibbonWordSubCopySvg""
                     label=""Copy Vector SVG""
@@ -148,7 +148,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnCopySvg"" />
             <button id=""btnRibbonWordCopyAllSummary""
                     label=""Copy All Summary (Text)""
-                    imageMso=""DocumentSummary""
+                    imageMso=""FileDocumentInspect""
                     onAction=""OnCopyAllSummary"" />
             <button id=""btnRibbonWordCopyMultiLine""
                     label=""Copy as Multi-Line List""
@@ -160,7 +160,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnCopyTsvRow"" />
             <button id=""btnRibbonWordCopyMarkdown""
                     label=""Copy as Markdown Table""
-                    imageMso=""TableCustom""
+                    imageMso=""TableOfContentsGallery""
                     onAction=""OnCopyMarkdown"" />
             <menuSeparator id=""sepRibbonWordSubDialog"" />
             <button id=""btnRibbonWordShowDialog""
@@ -184,11 +184,11 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnBatchStyleBw"" />
             <button id=""btnWordBatchStyleWhiteBg""
                     label=""White Background (Color)""
-                    imageMso=""ShapeFillColorPicker""
+                    imageMso=""BlackAndWhiteLightGrayscale""
                     onAction=""OnBatchStyleWhiteBg"" />
             <button id=""btnWordBatchStyleDark""
                     label=""Dark Mode (White Ink)""
-                    imageMso=""HighContrast""
+                    imageMso=""BlackAndWhiteBlack""
                     onAction=""OnBatchStyleDark"" />
           </menu>
         </group>

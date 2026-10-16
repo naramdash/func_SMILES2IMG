@@ -746,6 +746,49 @@ internal static class Program
         catch (Exception error) { Console.Error.WriteLine(error); return 1; }
     }
 
+    private static readonly System.Collections.Generic.HashSet<string> KnownInvalidImageMsos = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "FormatBullet", "Key", "FontName", "ShapesGallery", "HighContrast",
+        "TableCustom", "DocumentSummary", "SourceCodeInsert", "DrawingCanvasInsert", "ShapeFillColorPicker",
+        "Tag", "InvertColors", "Dark", "NightMode"
+    };
+
+    private static readonly System.Collections.Generic.HashSet<string> VerifiedValidOfficeImageMsos = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "PensGallery",
+        "TextBoxInsert",
+        "SmartArtInsert",
+        "Insert3DModelFromFile",
+        "Paste",
+        "Copy",
+        "SignatureLineInsert",
+        "CopyPicture",
+        "FileProperties",
+        "FontSize",
+        "Subscript",
+        "Calculator",
+        "FilePermission",
+        "FileDocumentInspect",
+        "TableInsert",
+        "Bullets",
+        "TableOfContentsGallery",
+        "PictureRecolorGallery",
+        "ColorMenu",
+        "BlackAndWhiteGrayscale",
+        "BlackAndWhiteLightGrayscale",
+        "BlackAndWhiteBlack",
+        "DatabaseQueryNew",
+        "ImportTextFile",
+        "FileSaveAs",
+        "WatchWindow",
+        "Info",
+        "DesignMode",
+        "EquationInsertNew",
+        "FunctionWizard",
+        "GroupTaskProperties",
+        "PropertySheet"
+    };
+
     private static void ValidateRibbonXml(string xml, Type addInType, string appName)
     {
         Check(!string.IsNullOrWhiteSpace(xml), $"{appName} Ribbon XML is non-empty");
@@ -775,7 +818,11 @@ internal static class Program
             .Select(e => (string?)e.Attribute("imageMso"))
             .Where(img => !string.IsNullOrEmpty(img))
             .ToList();
-        Check(!imageMsos.Contains("FormatBullet"), $"{appName} must not contain invalid imageMso 'FormatBullet'");
+        foreach (var img in imageMsos)
+        {
+            Check(!KnownInvalidImageMsos.Contains(img!), $"{appName} uses forbidden/invalid imageMso '{img}'");
+            Check(VerifiedValidOfficeImageMsos.Contains(img!), $"{appName} uses unverified imageMso '{img}'. Please verify it is a valid Office button icon and add to VerifiedValidOfficeImageMsos in tests/Program.cs and AGENTS.md.");
+        }
     }
 
     private static void Check(bool condition, string message)

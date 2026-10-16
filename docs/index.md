@@ -54,8 +54,8 @@ Install the entire suite (Excel, Word, PowerPoint) in seconds via **PowerShell**
 # Stable release (v1.6.0)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 
-# Preview release (v1.7.0-preview.6 — Intuitive Ribbon Icons, Molecule Info Grid Per-Row Icons, DataGridView Table, SAR, Lipinski, Name2Img, SVG Copy, Batch Style & SDF I/O)
-$v='v1.7.0-preview.6'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+# Preview release (v1.7.0-preview.7 — Verified Ribbon Icons, Black/White Square Batch Styles, Molecule Info Per-Row Icons, SAR, Lipinski, Name2Img, SVG Copy & SDF I/O)
+$v='v1.7.0-preview.7'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
 ::: tip 💡 Automatic Upgrade & In-App Update Check
