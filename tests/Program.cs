@@ -639,6 +639,16 @@ internal static class Program
             Check(!dirtyTsv.Contains("\r") && !dirtyTsv.Contains("\n"), "Dirty TSV row contains no line breaks");
             Check(dirtyTsv.Split('\t').Length == 12, $"Dirty TSV row maintains exactly 12 columns, got: {dirtyTsv.Split('\t').Length}");
 
+            // Verify CopiedToast.Show runs safely in background STA thread without crashing
+            Smiles2Img.Editor.CopiedToast.Show("Test Molecule", "CCO", isWarning: false);
+            Smiles2Img.Editor.CopiedToast.Show("Test Warning", "Notice", isWarning: true);
+
+            // Verify IsLikelySmiles and plain text CCO resolution
+            Check(Smiles2Img.KetcherEditor.IsLikelySmiles("CCO"), "IsLikelySmiles('CCO') is true");
+            Check(Smiles2Img.KetcherEditor.IsLikelySmiles("c1ccccc1"), "IsLikelySmiles('c1ccccc1') is true");
+            var plainCco = MoleculeRenderer.TryGetMoleculeInfo("CCO", resolvePubChem: true);
+            Check(plainCco != null && plainCco.Formula == "C2H6O", "Plain text CCO resolves to Formula C2H6O");
+
             Check(Smiles2Img.Editor.SafeClipboard.SetTextAndHtml(ccoMulti, ccoHtml), "SafeClipboard.SetTextAndHtml succeeds");
             var clipDo = System.Windows.Forms.Clipboard.GetDataObject();
             Check(clipDo != null && clipDo.GetDataPresent(System.Windows.Forms.DataFormats.Html), "Clipboard contains DataFormats.Html");

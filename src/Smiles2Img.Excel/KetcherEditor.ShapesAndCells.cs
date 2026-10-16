@@ -18,7 +18,7 @@ namespace Smiles2Img;
 public static partial class KetcherEditor
 {
     private static readonly Regex FormulaRefPattern = new(
-        @"(?:SMILES2IMG|KET2IMG|INCHI2IMG|NAME2IMG)(?:\.FLOAT)?\s*\(\s*(?:""(?<literal>(?:""""|[^""])*)""|(?<ref>(?:'[^']+'!)?[^,)\s]+))",
+        @"(?:SMILES[A-Z0-9_.]*|KET2IMG(?:\.FLOAT)?|INCHI[A-Z0-9_.]*|NAME2IMG(?:\.FLOAT)?)\s*\(\s*(?:""(?<literal>(?:""""|[^""])*)""|(?<ref>(?:'[^']+'!)?[^,)\s]+))",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     public static void EditSelectedMolecule(Excel.Application app)
@@ -254,13 +254,19 @@ public static partial class KetcherEditor
     {
         try
         {
+            if (cell == null) return null;
+            if (cell.Count > 1)
+            {
+                try { cell = (Excel.Range)cell.Cells[1, 1]; } catch { }
+            }
+
             string formula = Convert.ToString((object?)cell.Formula) ?? "";
-            string val = Convert.ToString((object?)cell.Value2) ?? "";
+            string val = Convert.ToString((object?)cell.Value2)?.Trim() ?? "";
 
             if (!string.IsNullOrEmpty(formula) &&
-                (formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                (formula.IndexOf("SMILES", StringComparison.OrdinalIgnoreCase) >= 0 ||
                  formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 formula.IndexOf("INCHI", StringComparison.OrdinalIgnoreCase) >= 0 ||
                  formula.IndexOf("NAME2IMG", StringComparison.OrdinalIgnoreCase) >= 0))
             {
                 var match = FormulaRefPattern.Match(formula);
@@ -277,6 +283,7 @@ public static partial class KetcherEditor
                             var sheet = (Excel.Worksheet)cell.Parent;
                             var app = (Excel.Application)sheet.Application;
                             Excel.Range refCell = refAddr.Contains("!") ? (Excel.Range)app.Range[refAddr] : (Excel.Range)sheet.Range[refAddr];
+                            if (refCell.Count > 1) refCell = (Excel.Range)refCell.Cells[1, 1];
                             rawData = (Convert.ToString(refCell.Value2) ?? "").Trim();
                         }
                         catch { }
@@ -295,8 +302,27 @@ public static partial class KetcherEditor
                 }
             }
 
-            if (IsLikelySmiles(val))
-                return val.Trim();
+            if (!string.IsNullOrEmpty(val))
+            {
+                val = val.Trim().Trim('"', '\'');
+                if (IsLikelySmiles(val))
+                    return val;
+
+                if (MoleculeRenderer.IsInchi(val))
+                    return MoleculeRenderer.NormalizeInchi(val);
+
+                if (MoleculeRenderer.IsKet(val))
+                {
+                    var smiles = MoleculeRenderer.TryConvertToSmiles(val);
+                    if (!string.IsNullOrEmpty(smiles)) return smiles;
+                    return val;
+                }
+
+                // Check common drug / substance name (e.g. "Aspirin", "Ethanol")
+                var resolvedSmiles = PubChemResolver.ResolveNameToSmiles(val);
+                if (!string.IsNullOrEmpty(resolvedSmiles))
+                    return resolvedSmiles;
+            }
         }
         catch { }
 
@@ -584,6 +610,7 @@ public static partial class KetcherEditor
         if (double.TryParse(text, out _)) return false;
         if (!Regex.IsMatch(text, @"[CNOFPSKBrIcnops]")) return false;
 
+        NativeIndigo.EnsureInitialized();
         try
         {
             MoleculeRenderer.Normalize(text);
@@ -593,7 +620,16 @@ public static partial class KetcherEditor
         }
         catch
         {
-            return false;
+            try
+            {
+                using var indigo = new Indigo();
+                using var rxn = indigo.loadReaction(text);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

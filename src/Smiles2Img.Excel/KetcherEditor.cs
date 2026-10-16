@@ -310,6 +310,10 @@ public enum StructureFormatPreference
             }
             if (cell != null)
             {
+                if (cell.Count > 1)
+                {
+                    try { cell = (Excel.Range)cell.Cells[1, 1]; } catch { }
+                }
                 targetData = ExtractSmilesFromCell(cell) ?? ExtractKetFromCell(cell);
             }
         }

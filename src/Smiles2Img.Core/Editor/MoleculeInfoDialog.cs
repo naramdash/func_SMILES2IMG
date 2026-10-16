@@ -460,6 +460,29 @@ public sealed class MoleculeInfoDialog : Form
 
     public static void ShowModal(MoleculeInfo info, string? title = null, IWin32Window? owner = null)
     {
+        if (info == null) return;
+
+        if (System.Threading.Thread.CurrentThread.GetApartmentState() == System.Threading.ApartmentState.STA)
+        {
+            ShowModalInternal(info, title, owner);
+        }
+        else
+        {
+            var hwnd = owner?.Handle ?? IntPtr.Zero;
+            var t = new System.Threading.Thread(() =>
+            {
+                IWin32Window? winOwner = hwnd != IntPtr.Zero ? new Win32Window(hwnd) : null;
+                ShowModalInternal(info, title, winOwner);
+            });
+            t.SetApartmentState(System.Threading.ApartmentState.STA);
+            t.IsBackground = true;
+            t.Start();
+            t.Join();
+        }
+    }
+
+    private static void ShowModalInternal(MoleculeInfo info, string? title, IWin32Window? owner)
+    {
         using var dlg = new MoleculeInfoDialog(info, title);
         if (owner != null && owner.Handle != IntPtr.Zero)
         {

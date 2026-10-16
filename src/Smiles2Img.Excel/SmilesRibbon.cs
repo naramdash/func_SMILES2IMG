@@ -545,6 +545,18 @@ public class SmilesRibbon : ExcelRibbon
         });
     }
 
+    private static void RunDirectSafe(Action action)
+    {
+        try
+        {
+            action();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[SmilesRibbon] Direct UI execution error: {ex}");
+        }
+    }
+
     public void OnInsertMolecule(IRibbonControl control)
         => RunMacroSafe(() => KetcherEditor.OpenKetcherCommand());
 
@@ -564,16 +576,16 @@ public class SmilesRibbon : ExcelRibbon
         => RunMacroSafe(() => KetcherEditor.EditSelectedMoleculeCommand());
 
     public void OnCopySmiles(IRibbonControl control)
-        => RunMacroSafe(() => KetcherEditor.CopySelectedMoleculeSmilesCommand());
+        => RunDirectSafe(() => KetcherEditor.CopySelectedMoleculeSmilesCommand());
 
     public void OnCopyInchi(IRibbonControl control)
-        => RunMacroSafe(() => KetcherEditor.CopySelectedMoleculeInchiCommand());
+        => RunDirectSafe(() => KetcherEditor.CopySelectedMoleculeInchiCommand());
 
     public void OnCopyKet(IRibbonControl control)
-        => RunMacroSafe(() => KetcherEditor.CopySelectedMoleculeKetCommand());
+        => RunDirectSafe(() => KetcherEditor.CopySelectedMoleculeKetCommand());
 
     public void OnCopySvg(IRibbonControl control)
-        => RunMacroSafe(() => KetcherEditor.CopySelectedMoleculeSvgCommand());
+        => RunDirectSafe(() => KetcherEditor.CopySelectedMoleculeSvgCommand());
 
     public void OnBatchStyleColorTrans(IRibbonControl control)
         => RunMacroSafe(() => KetcherEditor.BatchStyleColorTransCommand());
@@ -594,31 +606,31 @@ public class SmilesRibbon : ExcelRibbon
         => RunMacroSafe(() => KetcherEditor.ExportSdfCommand());
 
     public void OnCopyMoleculeInfo(IRibbonControl control)
-        => RunMacroSafe(() => KetcherEditor.CopySelectedMoleculeInfoCommand());
+        => RunDirectSafe(() => KetcherEditor.CopySelectedMoleculeInfoCommand());
 
     public void OnCopySubstanceName(IRibbonControl control)
-        => RunMacroSafe(() => KetcherEditor.CopySelectedSubstanceNameCommand());
+        => RunDirectSafe(() => KetcherEditor.CopySelectedSubstanceNameCommand());
 
     public void OnCopyFormula(IRibbonControl control)
-        => RunMacroSafe(() => KetcherEditor.CopySelectedFormulaCommand());
+        => RunDirectSafe(() => KetcherEditor.CopySelectedFormulaCommand());
 
     public void OnCopyMolecularWeight(IRibbonControl control)
-        => RunMacroSafe(() => KetcherEditor.CopySelectedMolecularWeightCommand());
+        => RunDirectSafe(() => KetcherEditor.CopySelectedMolecularWeightCommand());
 
     public void OnCopyInchiKey(IRibbonControl control)
-        => RunMacroSafe(() => KetcherEditor.CopySelectedInchiKeyCommand());
+        => RunDirectSafe(() => KetcherEditor.CopySelectedInchiKeyCommand());
 
     public void OnCopyAllSummary(IRibbonControl control)
-        => RunMacroSafe(() => KetcherEditor.CopySelectedAllSummaryCommand());
+        => RunDirectSafe(() => KetcherEditor.CopySelectedAllSummaryCommand());
 
     public void OnCopyTsvRow(IRibbonControl control)
-        => RunMacroSafe(() => KetcherEditor.CopySelectedTsvRowCommand());
+        => RunDirectSafe(() => KetcherEditor.CopySelectedTsvRowCommand());
 
     public void OnCopyMultiLine(IRibbonControl control)
-        => RunMacroSafe(() => KetcherEditor.CopySelectedMultiLineCommand());
+        => RunDirectSafe(() => KetcherEditor.CopySelectedMultiLineCommand());
 
     public void OnCopyMarkdown(IRibbonControl control)
-        => RunMacroSafe(() => KetcherEditor.CopySelectedMarkdownCommand());
+        => RunDirectSafe(() => KetcherEditor.CopySelectedMarkdownCommand());
 
     public void OnInsertMolstar(IRibbonControl control)
     {

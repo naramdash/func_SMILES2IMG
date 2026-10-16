@@ -115,8 +115,18 @@ public sealed class CopiedToast : Form
     {
         try
         {
-            var toast = new CopiedToast(title, value, isWarning);
-            toast.Show();
+            var thread = new System.Threading.Thread(() =>
+            {
+                try
+                {
+                    using var toast = new CopiedToast(title, value, isWarning);
+                    Application.Run(toast);
+                }
+                catch { }
+            });
+            thread.SetApartmentState(System.Threading.ApartmentState.STA);
+            thread.IsBackground = true;
+            thread.Start();
         }
         catch { }
     }
