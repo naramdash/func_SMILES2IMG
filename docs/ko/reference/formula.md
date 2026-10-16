@@ -132,6 +132,19 @@ SMILES, Ketcher KET 또는 IUPAC InChI 구조식 문자열로부터 물질명, �
   =NAME2IMG("50-78-2")
   =NAME2IMG("Ibuprofen", "white")
   ```
+* **인셀 화학정보학(SAR) 부분구조 스크리닝:**
+  ```text
+  =SMILES.MATCH(A2, "c1ccccc1")
+  =SMILES.MATCH(A2, "[#6]~[#7]")
+  ```
+* **리드 화합물 대비 2D 분자 지문 유사도 계산:**
+  ```text
+  =SMILES.SIMILARITY(A2, $B$1, "tanimoto")
+  ```
+* **경구 약물성(Lipinski Rule of 5) 자동 판정:**
+  ```text
+  =SMILES2LIPINSKI(A2)
+  ```
 * **특허 출원용 흑백 선화:**
   ```text
   =SMILES2IMG(A2, "", "bw")

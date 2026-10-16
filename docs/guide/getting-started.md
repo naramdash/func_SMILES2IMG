@@ -12,8 +12,14 @@ Open **PowerShell** (no Administrator privileges required for standard user inst
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
-::: tip 💡 What's New in `v1.7.0`
-The `v1.7.0` release features Verified Ribbon Icons, Black/White Square Batch Styles, Molecule Info Grid Per-Row Chemical Icons, DataGridView Molecule Info Table, Multi-Format Molecule Summary (Excel TSV Row, Multi-Line, Markdown Table, JSON, Split Button), SAR Substructure/Similarity (`=SMILES.MATCH`, `=SMILES.SIMILARITY`), Lipinski/LogP/TPSA, Reverse Name/CAS lookup (`=NAME2IMG`), Vector SVG Copy, Batch Style Normalizer, and Excel SDF Import/Export.
+::: tip 💡 What's New in `v1.7.0` (Stable Release)
+* **🔬 In-Cell SAR & Drug-Likeness:** Screen compounds in 0ms with `=SMILES.MATCH`, `=SMILES.SIMILARITY`, `=SMILES2LIPINSKI`, `=SMILES2LOGP`, and `=SMILES2TPSA`.
+* **🏷️ Reverse Name/CAS Lookup:** Render structures directly from chemical names or CAS numbers via `=NAME2IMG("Aspirin")` or `=NAME2SMILES("50-78-2")`.
+* **🎨 Document-Wide Batch Style:** Unify all structures across Excel, Word, or PowerPoint into **Standard Color**, **Publication B&W (ACS Monochrome)**, **White Background**, or **Dark Mode** in one click.
+* **🖼️ Vector SVG Copy (`Copy SVG`):** Copy losslessly into Adobe Illustrator, Inkscape, or ChemDraw as native scalable vector graphics.
+* **📂 Native SDF Chemical Database I/O:** Import `.sdf` files into formatted Excel tables with live pictures and formulas, or export worksheet data back to `.sdf`.
+* **📋 Redesigned Molecule Info Dialog:** DataGridView table with high-DPI vector chemical icons per property row, and multi-format export split button (Excel TSV row, Multi-Line list, Markdown table, JSON).
+* **⚡ Instant Reopen (<0.05s):** WebView2 warm instance pooling for both Ketcher 2D editor and Mol* 3D macromolecular viewer.
 :::
 
 ### What the Automated Installer Does

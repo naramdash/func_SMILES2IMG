@@ -34,9 +34,23 @@ The `[SMILES]` tab on Word's ribbon provides one-click access to structure drawi
    - If text containing a SMILES string is highlighted in your document, converts it directly into an inline chemical structure in 0.1 seconds.
    - If no text is selected, parses the clipboard and inserts the structure at the cursor position.
 4. **📋 Paste Structure:** Reads clipboard content as SMILES or KET and embeds it as an inline shape.
-5. **🖼️ Copy SVG *(New in v1.7.0)*:** Renders the selected structure as a crisp scalable vector graphic (`SVG`) and copies it to the Windows Clipboard for Adobe Illustrator or Inkscape.
-6. **🎨 Batch Style *(New in v1.7.0)*:** Converts all chemical structures in the active Word document to a unified style preset (**Standard Color (Transparent)**, **Publication B&W (ACS Monochrome)**, **White Background (Color)**, or **Dark Mode (White Ink)**) in one click.
-7. **🔍 Settings & Diagnostics:** Displays COM add-in status, chemical engine version, and troubleshooting logs.
+5. **🖼️ Copy SVG *(New in v1.7.0)*:** Renders the selected structure as a crisp scalable vector graphic (`SVG`) and copies it to the Windows Clipboard as both `image/svg+xml` and raw XML text for lossless pasting into Adobe Illustrator, Inkscape, or ChemDraw.
+6. **🎨 Batch Style *(New in v1.7.0)*:** Converts all chemical structures in the selection or active Word document to a unified style preset (**Standard Color**, **Publication B&W**, **White Background**, or **Dark Mode**) in one click.
+7. **🔬 Molecule Info Dropdown:** Directly copies chemical properties, exports summary rows for Word tables, or launches the full **Molecule Info Dialog**.
+8. **🔍 Settings & Diagnostics:** Displays COM add-in status, chemical engine version, and troubleshooting logs.
+
+---
+
+### 🎨 Manuscript-Wide Batch Style Normalization
+
+Ensure your journal submission or grant proposal adheres to publisher style guides without manually re-exporting dozens of figures:
+
+| Preset Name | Ribbon Icon (`imageMso`) | Document Output & Ideal Manuscript Use Case |
+| :--- | :--- | :--- |
+| **Standard Color** | `ColorMenu` | Full IUPAC element colors with **transparent background** (ideal for color thesis chapters and digital PDFs). |
+| **Publication B&W** | `BlackAndWhiteGrayscale` | High-contrast **ACS / Wiley / Elsevier monochrome line art** (clean black bonds and labels for print journals). |
+| **White Background** | `BlackAndWhiteLightGrayscale` | Full color with **solid white rectangular background** (ensures visibility across colored Word tables or callout boxes). |
+| **Dark Mode** | `BlackAndWhiteBlack` | High-contrast **white ink on transparent background** (designed for dark presentation templates and digital readers). |
 
 ---
 
@@ -55,15 +69,16 @@ Right-click any chemical structure picture or paragraph in your Word document:
 * **📋 Copy InChI:** Copies standard IUPAC InChI string instantly.
 * **📋 Copy Canvas Data (KET):** Copies Ketcher native JSON representation.
 * **🖼️ Copy Vector Graphic (SVG):** Renders the structure as a scalable vector graphic (`SVG`) and copies it to the clipboard for Adobe Illustrator or Inkscape.
-* **🔬 Copy Molecule Info (Submenu):**
+* **🔬 Copy Molecule Info (Submenu & Dialog):**
   * **Substance Name:** Copies substance common name (PubChem / IUPAC).
   * **Chemical Formula:** Copies standard Hill-notation formula (e.g. `C9H8O4`).
   * **Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g. `180.16 g/mol`).
   * **Copy SMILES / InChI / InChIKey:** Individual one-click copy options.
   * **Copy All Summary (Text):** Copies compact single-line summary to clipboard.
   * **Copy as Multi-Line List:** Copies formatted multi-line property list.
-  * **Copy as Excel Row (TSV Columns) / Markdown Table:** (Available from the Ribbon `[Molecule Info]` menu and Detailed Window) Exports properties as TSV/HTML table rows or Markdown tables.
-  * **Detailed Molecule Info Window...:** Opens the full chemical properties dialog (including **LogP / TPSA**, **Lipinski Rule of 5**, and split-button multi-format exporter).
+  * **Copy as Excel Row (TSV Columns):** Copies tab-separated values that paste directly as structured cells into Word tables!
+  * **Copy as Markdown Table:** Formatted Markdown table for documentation and lab notebooks.
+  * **Detailed Molecule Info Window...:** Opens the full chemical properties dialog with **DataGridView table**, custom GDI+ vector chemical icons, **LogP / TPSA**, **Lipinski Rule of 5**, and split-button multi-format exporter (including JSON).
   > ⚡ **Non-Blocking Toast:** Each copy action displays a floating pill badge (`✓ Copied {Item}: {Value}`) near your mouse for 1.4s without stealing Word's focus.
 
 ### Case B: Right-Clicking Document Text, Table, or Blank Paragraph

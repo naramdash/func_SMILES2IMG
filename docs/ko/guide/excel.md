@@ -33,10 +33,36 @@
 * **🧬 3D 구조식 (Mol\*):** 공식 Mol\* 3D 고분자/단백질 뷰어를 실행합니다. RCSB PDB ID로 생체 고분자 구조를 직접 다운로드하거나 로컬 구조 파일을 열어, 회전 가능한 인터랙티브 3D 모델(`.glb`) 또는 고해상도 2D 이미지(`.png`)를 시트에 삽입합니다.
 * **⚡ 퀵 인서트 (Quick Insert):** 워크시트에서 SMILES 텍스트가 입력된 셀을 선택한 상태에서 클릭하면 0.1초 만에 인셀 구조식 그림으로 즉시 변환합니다. 빈 셀인 경우 클립보드 내용을 자동 감지하여 삽입합니다.
 * **📋 클립보드에서 붙여넣기:** 웹사이트나 논문, ChemDraw 등에서 복사한 SMILES 또는 KET 문자열을 해석하여 현재 셀에 고화질 이미지로 삽입합니다.
-* **🖼️ Copy SVG *(v1.7.0 신규)*:** 선택된 분자를 무손실 벡터 그래픽(`SVG`)으로 렌더링하여 클립보드에 복사합니다 (Adobe Illustrator, Inkscape 등에 즉시 붙여넣기 가능).
-* **🎨 Batch Style *(v1.7.0 신규)*:** 현재 워크시트 내의 모든 화학 구조식을 클릭 한 번으로 통일된 스타일 프리셋(**투명 컬러**, **논문/특허용 흑백(ACS Monochrome)**, **흰색 배경 컬러**, **다크 모드 흰색 잉크**)으로 일괄 변환합니다.
+* **🖼️ Copy SVG *(v1.7.0 신규)*:** 선택된 분자를 무손실 벡터 그래픽(`SVG`)으로 렌더링하여 클립보드에 복사합니다 (`image/svg+xml` 스트림 및 raw XML 텍스트 동시 복사로 Adobe Illustrator, Inkscape, ChemDraw 등에 즉시 붙여넣기 가능).
+* **🎨 Batch Style *(v1.7.0 신규)*:** 현재 워크시트 선택 영역 또는 시트 전체의 모든 화학 구조식을 클릭 한 번으로 통일된 스타일 프리셋(**표준 컬러**, **논문/특허용 흑백**, **흰색 배경**, **다크 모드**)으로 일괄 변환합니다.
 * **📂 SDF File (`Import .sdf` / `Export .sdf`) *(v1.7.0 신규)*:** 다중 분자가 담긴 표준 `.sdf` 화학 데이터 파일을 읽어 `=SMILES2IMG(...)` 수식과 분자량·화학식·속성 컬럼이 포함된 엑셀 표로 자동 생성하거나, 시트의 분자 목록을 `.sdf` 파일로 내보냅니다.
 * **🔍 설정 및 진단 (Settings & Diagnostics):** EPAM Indigo 화학 엔진 구동 상태, 내장 Ketcher 캐시 파일 무결성, 렌더링 벤치마크 로그를 실시간 확인할 수 있는 추가 기능 진단 콘솔 창을 엽니다.
+
+---
+
+### 🎨 문서 전체 일괄 스타일 변환 (Batch Style)
+
+발표 슬라이드나 논문 투고용 문서에 맞춰 시트 내 모든 화학 구조식을 한 번에 통일할 수 있습니다:
+
+| 스타일 프리셋 | 리본 아이콘 (`imageMso`) | 시각적 특징 및 권장 용도 |
+| :--- | :--- | :--- |
+| **Standard Color** | `ColorMenu` | IUPAC 표준 CPK 원소 색상 + **투명 배경** (일반적인 엑셀 시트 작업용). |
+| **Publication B&W** | `BlackAndWhiteGrayscale` | 고대비 **ACS / 특허청 논문용 흑백 선화** (인쇄 및 학술 논문 투고 표준). |
+| **White Background** | `BlackAndWhiteLightGrayscale` | CPK 원소 색상 + **불투명 흰색 사각형 배경** (색상이 들어간 셀이나 줄무늬 행에서도 선명하게 표시). |
+| **Dark Mode** | `BlackAndWhiteBlack` | 고대비 **흰색 결합선 잉크 + 검은색/투명 배경** (다크 테마 엑셀 및 OLED 발표 슬라이드에 최적화). |
+
+---
+
+### 📂 대용량 화학 라이브러리 SDF 가져오기 / 내보내기
+
+상단 리본의 **`[SDF File]`** 메뉴를 이용하면 외부 변환 도구 없이 다중 화합물 Structure-Data File(.sdf)을 직접 다룰 수 있습니다:
+
+* **📥 Import `.sdf` File...:** 다중 화합물이 포함된 `.sdf` 파일을 선택하면 다음과 같은 엑셀 표(Table)를 자동 생성합니다:
+  1. 셀 크기에 맞춰 자동 확대/축소되는 고화질 구조식 이미지 (`=SMILES2IMG(...)`)
+  2. 표준 Canonical SMILES 문자열
+  3. 실시간 분자 특성 수식 (`=SMILES2FORMULA`, `=SMILES2MW`)
+  4. 파일에 포함된 모든 SD 태그 속성 (예: `<Compound_ID>`, `<IC50>`, `<Target>`, `<Activity>` 등)
+* **📤 Export `.sdf` File...:** 워크시트에서 SMILES 컬럼과 속성 헤더 영역을 선택한 후 클릭하면 표준 V2000 `.sdf` 라이브러리 파일로 즉시 저장됩니다.
 
 ---
 
@@ -56,7 +82,7 @@
 * **📋 Copy InChI:** 표준 IUPAC InChI 문자열을 즉시 변환하여 복사합니다.
 * **📋 Copy Canvas Data (KET):** 반응식이 포함된 KET JSON 데이터를 복사합니다.
 * **🖼️ Copy Vector Graphic (SVG):** 분자 구조식을 무손실 벡터 그래픽(`SVG`)으로 렌더링하여 클립보드에 복사합니다 (Adobe Illustrator, Inkscape 등에 즉시 붙여넣기).
-* **🔬 Copy Molecule Info (분자 정보 서브메뉴):**
+* **🔬 Copy Molecule Info (분자 정보 서브메뉴 & 상세창):**
   * **물질명 (Substance Name):** PubChem/IUPAC 기반 일반 물질명 복사 (`Aspirin`, `Ethanol` 등).
   * **화학식 (Chemical Formula):** Hill 표기법 화학식 복사 (`C9H8O4` 등).
   * **분자량 (Molecular Weight):** 정밀 분자량 복사 (`180.16 g/mol` 등).
@@ -65,7 +91,10 @@
   * **여러 줄 리스트로 복사 (Copy as Multi-Line List):** 항목별로 줄바꿈된 리스트 서식으로 복사.
   * **엑셀 가로 행으로 복사 (Copy as Excel Row - TSV Columns):** 탭 구분(TSV) 및 HTML 표 스트림으로 복사하여 엑셀 셀 열(Column)이나 워드/파워포인트 표에 즉시 붙여넣기 지원.
   * **마크다운 표로 복사 (Copy as Markdown Table):** GitHub·노션·연구노트용 마크다운 표 서식 복사.
-  * **상세 정보 창 열기...:** 2D SVG 그래픽 뷰어, **LogP / TPSA**, **Lipinski Rule of 5(약물성 규칙)** 및 다중 포맷 복사 Split Button(JSON 포함)이 탑재된 상세 다이얼로그 창 실행.
+  * **상세 정보 창 열기...:** 다음 기능이 탑재된 전문 분자 물성 다이얼로그 실행:
+    - **DataGridView 표 그리드:** Substance Name, MW, Formula, Exact Mass, LogP, TPSA, Lipinski Ro5 등 행별 **GDI+ 벡터 케미컬 아이콘** 시각화.
+    - **다중 서식 내보내기 Split Button:** 엑셀 행(TSV), 마크다운 표, 줄바꿈 목록, 텍스트 요약, **JSON 내보내기** 원클릭 지원.
+    - **인터랙티브 SVG 프리뷰:** 크기 조절이 가능한 고화질 2D 벡터 구조식 뷰어.
   > ⚡ **모달 창 방해 없는 플로팅 토스트:** 복사 항목을 누르면 팝업 확인 창이 뜨는 대신 마우스 커서 바로 옆에 가벼운 플로팅 배지(`✓ Copied {항목}: {값}`)가 1.4초간 나타났다 사라지며, 작업 포커스를 뺏지 않습니다!
 
 ### B. 빈 셀이나 구조식 도형을 우클릭한 경우
@@ -133,6 +162,13 @@
 * `=SMILES2HBD(cell)`, `=SMILES2HBA(cell)`, `=SMILES2ROTBONDS(cell)` — 수소 결합 공여체/수용체 수 및 회전 결합 수 산출 (0ms 순수 로컬).
 * `=SMILES2LIPINSKI(cell)` — Lipinski's Rule of 5 약물성 규칙 통과 여부 (`"PASS"` / `"FAIL"`, 0ms 순수 로컬).
 * `=SMILES.MATCH(target, query)` 및 `=SMILES.SIMILARITY(mol1, mol2, [metric])` — SMILES/SMARTS 부분구조 포함 여부(`TRUE`/`FALSE`) 및 Tanimoto/Tversky 2D 지문 유사도(`0.0 ~ 1.0`, 0ms 순수 로컬).
+
+::: tip 💡 엑셀 기반 실전 신약 가상 스크리닝(Virtual Screening) 레시피
+지연 시간(0ms) 없는 이 수식들을 엑셀 **자동 필터** 및 **조건부 서식**과 결합하면 강력한 스크리닝 시트가 완성됩니다:
+1. **스캐폴드/모이어티 필터링:** `=SMILES.MATCH(A2, "c1ccccc1")` 수식으로 특정 약효 골격(벤젠 고리, 헤테로고리 등)이 포함된 화합물만 `TRUE`로 필터링.
+2. **리드 물질 유사도 정렬:** `=SMILES.SIMILARITY(A2, $B$1)`로 기준 활성 물질(`$B$1`)과의 Tanimoto 유사도를 계산한 뒤 내림차순 정렬하여 상위 유사 후보군 발굴.
+3. **경구 흡수 약물성(Lipinski Ro5) 검증:** `=SMILES2LIPINSKI(A2)` 수식을 걸어 `"PASS"` 화합물만 합성/구매 목록으로 추출.
+:::
 
 ---
 

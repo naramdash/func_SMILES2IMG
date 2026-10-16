@@ -33,10 +33,36 @@ The custom `[SMILES]` Ribbon tab provides one-click access to all chemical struc
 * **🧬 3D Structure (Mol\*):** Opens the embedded Mol\* 3D Macromolecular Viewer. Download biological macromolecules by PDB ID or open local structure files, and insert interactive 3D models (`.glb`) or 2D images (`.png`) onto your worksheet.
 * **⚡ Quick Insert:** Converts highlighted SMILES strings into rendered structures in 0.1s. If an empty cell is selected, it automatically reads the clipboard.
 * **📋 Insert from Clipboard:** Parses clipboard text as SMILES or Ketcher KET and creates an in-cell chemical structure immediately.
-* **🖼️ Copy SVG *(New in v1.7.0)*:** Renders the selected molecule as a scalable vector graphic (`SVG`) and copies it to the Windows Clipboard for lossless pasting into Adobe Illustrator, Inkscape, or vector design tools.
-* **🎨 Batch Style *(New in v1.7.0)*:** Converts all chemical structures in the active worksheet to a unified style preset (**Standard Color (Transparent)**, **Publication B&W (ACS Monochrome)**, **White Background (Color)**, or **Dark Mode (White Ink)**) in one click.
+* **🖼️ Copy SVG *(New in v1.7.0)*:** Renders the selected molecule as a scalable vector graphic (`SVG`) and copies it to the Windows Clipboard as both `image/svg+xml` and raw XML text for lossless pasting into Adobe Illustrator, Inkscape, or ChemDraw.
+* **🎨 Batch Style *(New in v1.7.0)*:** Converts all chemical structures in the selection or active worksheet to a unified style preset (**Standard Color**, **Publication B&W**, **White Background**, or **Dark Mode**) in one click.
 * **📂 SDF File (`Import .sdf` / `Export .sdf`) *(New in v1.7.0)*:** Imports multi-molecule `.sdf` chemical databases directly into an Excel table with auto-generated `=SMILES2IMG(...)`, Formula, MW, and property columns, or exports worksheet molecules back to `.sdf`.
 * **🔍 Settings & Diagnostics:** Opens the real-time engine health monitor, verifying Indigo engine loading, WebView2 bundle integrity, and formula recalculation logs.
+
+---
+
+### 🎨 Batch Style Normalization Presets
+
+Quickly normalize presentation or manuscript structures across your entire sheet:
+
+| Preset Name | Ribbon Icon (`imageMso`) | Visual Output & Ideal Use Case |
+| :--- | :--- | :--- |
+| **Standard Color** | `ColorMenu` | IUPAC CPK element colors with **transparent background** (ideal for general spreadsheet viewing). |
+| **Publication B&W** | `BlackAndWhiteGrayscale` | High-contrast **ACS / Patent monochrome line art** (clean black bonds and atom labels for print manuscripts). |
+| **White Background** | `BlackAndWhiteLightGrayscale` | CPK element colors on a **solid opaque white background** (ensures visibility across colored or banded rows). |
+| **Dark Mode** | `BlackAndWhiteBlack` | Crisp **white ink bonds on dark/transparent background** (optimized for dark theme Excel and OLED presentations). |
+
+---
+
+### 📂 Chemical Database SDF Import & Export
+
+The **`[SDF File]`** menu enables native handling of multi-molecule Structure-Data Files without external conversion tools:
+
+* **📥 Import `.sdf` File...:** Select any multi-compound `.sdf` file. The add-in automatically parses all molecular records and generates a structured Excel Table with:
+  1. High-resolution rendered chemical structures (`=SMILES2IMG(...)`).
+  2. Canonical SMILES strings.
+  3. Live molecular property formulas (`=SMILES2FORMULA`, `=SMILES2MW`).
+  4. Individual columns for every SD property field (e.g., `<Compound_ID>`, `<IC50>`, `<Target>`, `<Activity>`).
+* **📤 Export `.sdf` File...:** Select rows in your worksheet containing SMILES strings and property headers, then click **Export `.sdf` File...** to write a clean, standard V2000 `.sdf` library file.
 
 ---
 
@@ -56,16 +82,19 @@ When right-clicking a cell containing a chemical structure or formula:
 * **📋 Copy InChI:** Generates and copies standard IUPAC InChI string instantly.
 * **📋 Copy Canvas Data (KET):** Copies Ketcher native JSON representation.
 * **🖼️ Copy Vector Graphic (SVG):** Renders the structure as a crisp scalable vector graphic (`SVG`) and copies it to the clipboard for Adobe Illustrator or Inkscape.
-* **🔬 Copy Molecule Info (Submenu):**
-  * **Substance Name:** Copies substance common name (e.g., `Aspirin`, `Ethanol`).
+* **🔬 Copy Molecule Info (Submenu & Dialog):**
+  * **Substance Name:** Copies common name (e.g., `Aspirin`, `Ethanol`).
   * **Chemical Formula:** Copies standard Hill-notation formula (e.g., `C9H8O4`).
   * **Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g., `180.16 g/mol`).
   * **Copy SMILES / InChI / InChIKey:** Individual one-click copy options.
-  * **Copy All Summary (Text):** Copies compact one-line formatted summary to clipboard.
+  * **Copy All Summary (Text):** Copies compact one-line formatted summary.
   * **Copy as Multi-Line List:** Copies a multi-line bulleted list of all molecular properties.
   * **Copy as Excel Row (TSV Columns):** Copies a tab-separated horizontal row (plus HTML table stream) that pastes cleanly across adjacent Excel columns or Word/PowerPoint tables.
   * **Copy as Markdown Table:** Copies a formatted Markdown table for GitHub, Notion, or lab notebooks.
-  * **Detailed Molecule Info Window...:** Opens the full chemical properties window with 2D SVG preview, **LogP / TPSA**, **Lipinski Rule of 5**, and a split-button multi-format exporter (including JSON).
+  * **Detailed Molecule Info Window...:** Opens the full chemical properties window featuring:
+    - **DataGridView Table:** High-DPI GDI+ vector chemical icons for each row (name, formula, MW, exact mass, LogP, TPSA, Lipinski Ro5).
+    - **Split-Button Multi-Format Exporter:** One-click copy to TSV, Markdown Table, Multi-Line, Text, or **JSON**.
+    - **Interactive SVG Preview:** Zoomable 2D structure visualizer.
   > ⚡ **Zero Modal Distraction:** Clicking any copy command displays a non-blocking floating toast badge (`✓ Copied {Item}: {Value}`) near your mouse cursor for 1.4 seconds without stealing focus or interrupting your work!
 
 ### Case B: Right-Clicking an Empty Cell or Structure Shape
@@ -133,6 +162,13 @@ Calculate chemical characteristics and screen compound libraries directly in you
 * `=SMILES2HBD(cell)`, `=SMILES2HBA(cell)`, `=SMILES2ROTBONDS(cell)` — Counts H-bond donors, H-bond acceptors, and rotatable single bonds (0ms pure local).
 * `=SMILES2LIPINSKI(cell)` — Evaluates Lipinski's Rule of 5 (`"PASS"` or `"FAIL"`, 0ms pure local).
 * `=SMILES.MATCH(target, query)` & `=SMILES.SIMILARITY(mol1, mol2, [metric])` — Substructure matching (`TRUE`/`FALSE`) and Tanimoto/Tversky 2D fingerprint similarity (`0.0` to `1.0`, 0ms pure local).
+
+::: tip 💡 Real-World Virtual Screening Recipe
+Combine these zero-latency formulas with standard Excel AutoFilter and Conditional Formatting:
+1. **Scaffold Filtering:** `=SMILES.MATCH(A2, "c1ccccc1")` to flag molecules containing specific rings or pharmacophores (`TRUE`/`FALSE`).
+2. **Hit Similarity Ranking:** `=SMILES.SIMILARITY(A2, $B$1)` where `$B$1` holds your lead compound; sort descending to prioritize top analogs.
+3. **Oral Bioavailability Gate:** `=SMILES2LIPINSKI(A2)` to highlight Ro5-compliant compounds before synthesis or ordering.
+:::
 
 ---
 

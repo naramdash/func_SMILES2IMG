@@ -34,6 +34,19 @@ Yes! On the Excel **`[SMILES]`** ribbon tab, click **`[SDF File]`** in the **Dat
 * **Import `.sdf` File...:** Parses multi-record `.sdf` files into a clean worksheet table with automatic `=SMILES2IMG` pictures, SMILES, Molecular Formula, Molecular Weight, and all SD `<TAG>` properties.
 * **Export `.sdf` File...:** Exports selected rows or the active table of SMILES strings and adjacent columns into a standard V2000 `.sdf` file.
 
+### Q. Are my chemical structures sent to the cloud or external servers?
+**No. 100% strictly local and offline.** All chemical engines (EPAM Indigo C++, EPAM Ketcher 2D, and Mol* 3D) are packaged locally inside the add-in. Structures and reaction graphs are computed entirely in-memory on your CPU/GPU without cloud telemetry, making it completely safe for proprietary drug candidates, patents, and confidential corporate research. *(The only optional web call is PubChem common name lookup for unknown SMILES, which can also be pre-cached).*
+
+### Q. How do I use the new Molecule Info Dialog and export multi-format data?
+Right-click any chemical cell or picture and select **Chemical Structure ➔ Copy Molecule Info ➔ Detailed Molecule Info Window...** (or click **`[Molecule Info]`** on the ribbon).
+* Inspect all chemical properties in a clean **DataGridView table** featuring custom high-DPI vector chemical icons for each metric.
+* Use the **Export Split Button** at the bottom to copy properties in one click as:
+  - **Excel Row (TSV):** Tab-separated columns that paste across adjacent Excel cells or Word/PowerPoint table rows.
+  - **Markdown Table:** GitHub-flavored markdown table for lab notebooks and documentation.
+  - **Multi-Line List:** Bulleted property list for PowerPoint slides and notes.
+  - **One-Line Text:** Compact text summary.
+  - **JSON:** Formatted JSON data payload for computational chemistry workflows.
+
 ### Q. How do I check for updates or upgrade to the latest version?
 Click **`[SMILES] ➔ [About SMILES]`** in Excel, Word, or PowerPoint, then click **`[Check for Updates]`**. If a newer release is available on GitHub, confirm the prompt to launch the automated one-click PowerShell updater.
 

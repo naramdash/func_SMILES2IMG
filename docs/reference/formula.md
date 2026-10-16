@@ -132,6 +132,19 @@ Option tokens can be formatted with any standard delimiter:
   =NAME2IMG("50-78-2")
   =NAME2IMG("Ibuprofen", "white")
   ```
+* **In-Cell SAR Substructure Screening:**
+  ```text
+  =SMILES.MATCH(A2, "c1ccccc1")
+  =SMILES.MATCH(A2, "[#6]~[#7]")
+  ```
+* **Hit Compound 2D Fingerprint Similarity:**
+  ```text
+  =SMILES.SIMILARITY(A2, $B$1, "tanimoto")
+  ```
+* **Drug-Likeness (Lipinski Rule of 5) Oral Bioavailability Evaluation:**
+  ```text
+  =SMILES2LIPINSKI(A2)
+  ```
 * **Monochrome Patent Line Art:**
   ```text
   =SMILES2IMG(A2, "", "bw")
@@ -144,7 +157,7 @@ Option tokens can be formatted with any standard delimiter:
   ```text
   =SMILES2IMG(A2, "", "num stereo")
   ```
-* **Full Multi-Step Organic Reaction:**
+* **Full Multi-Step Organic Reaction Scheme:**
   ```text
   =KET2IMG(B2)
   ```

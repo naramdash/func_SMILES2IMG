@@ -12,8 +12,14 @@
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
-::: tip 💡 `v1.7.0` 주요 신기능 안내
-`v1.7.0` 정식 릴리즈에는 검증된 리본/메뉴 아이콘 전면 개편, 흑백 사각형 일괄 스타일(Batch Style), 분자 정보 그리드 행별 화학 전용 아이콘, DataGridView 그리드 표, 분자 전체 정보 다중 서식 복사(Excel TSV 가로 행, 멀티라인, 마크다운 표, JSON, Split Button 드롭다운), 부분구조 검색/유사도(`=SMILES.MATCH`, `=SMILES.SIMILARITY`), 약물성 지표(LogP/TPSA/Lipinski), 이름/CAS 번호 역변환(`=NAME2IMG`), 벡터 SVG 복사, 일괄 스타일 변환(`Batch Style`), SDF 파일 입출력(`SDF File`)이 모두 포함되어 있습니다.
+::: tip 💡 `v1.7.0` 주요 신기능 안내 (정식 안정판)
+* **🔬 인셀 SAR 부분구조 & 약물성(Lipinski) 스크리닝:** `=SMILES.MATCH`, `=SMILES.SIMILARITY`, `=SMILES2LIPINSKI`, `=SMILES2LOGP`, `=SMILES2TPSA`로 외부 툴 없이 0ms 실시간 분석
+* **🏷️ 화합물명/CAS 번호 역변환:** `=NAME2IMG("Aspirin")`, `=NAME2SMILES("50-78-2")`로 화합물 일반명과 CAS 번호에서 직접 구조식 렌더링
+* **🎨 문서 전체 일괄 스타일 변환 (`Batch Style`):** 시트, 슬라이드, 문서 내 모든 구조식을 클릭 한 번으로 **표준 컬러**, **ACS 논문 흑백**, **흰색 배경**, **다크 모드**로 일괄 통일
+* **🖼️ 무손실 벡터 SVG 복사 (`Copy SVG`):** Illustrator, Inkscape, ChemDraw에 벡터로 바로 붙여넣는 네이티브 SVG 클립보드 복사
+* **📂 화학 데이터베이스 SDF 입출력:** `.sdf` 파일을 읽어 라이브 구조식과 물성 수식이 포함된 엑셀 표로 자동 생성하거나, 시트 데이터를 `.sdf`로 내보내기
+* **📋 개편된 분자 정보 창 (Molecule Info):** 물성 행별 고해상도 GDI+ 벡터 케미컬 아이콘, DataGridView 표 레이아웃, 다중 서식 내보내기 Split Button (엑셀 TSV 행, 줄바꿈 목록, 마크다운 표, JSON)
+* **⚡ 초고속 재실행 (<0.05초):** WebView2 웜 인스턴스 풀링으로 Ketcher 2D 에디터와 Mol* 3D 뷰어 즉각 오픈
 :::
 
 ### 설치 스크립트가 자동으로 수행하는 작업

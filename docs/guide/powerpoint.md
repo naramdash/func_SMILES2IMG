@@ -34,9 +34,23 @@ The custom `[SMILES]` tab on PowerPoint's ribbon provides one-click slide insert
    - If a text box or shape containing SMILES text is selected on the slide, converts the text frame into a high-resolution molecule shape in 0.1s.
    - If no shape is selected, automatically reads chemical text from the clipboard and places it onto the slide.
 4. **📋 Paste Structure:** Reads clipboard SMILES/KET and embeds it as a vector-crisp slide image.
-5. **🖼️ Copy SVG *(New in v1.7.0)*:** Renders the selected molecule shape as a scalable vector graphic (`SVG`) and copies it to the Windows Clipboard.
-6. **🎨 Batch Style *(New in v1.7.0)*:** Converts all chemical structures across the active presentation to a unified style preset (**Standard Color (Transparent)**, **Publication B&W (ACS Monochrome)**, **White Background (Color)**, or **Dark Mode (White Ink)**) in one click.
-7. **🔍 Settings & Diagnostics:** Opens engine diagnostic logs and troubleshooting metrics.
+5. **🖼️ Copy SVG *(New in v1.7.0)*:** Renders the selected molecule shape as a scalable vector graphic (`SVG`) and copies it to the Windows Clipboard as both `image/svg+xml` and raw XML text for lossless pasting into vector design tools.
+6. **🎨 Batch Style *(New in v1.7.0)*:** Converts all chemical structures in the selection or across the active presentation to a unified style preset (**Standard Color**, **Publication B&W**, **White Background**, or **Dark Mode**) in one click.
+7. **🔬 Molecule Info Dropdown:** Copies molecular properties directly for slide bullet points, or launches the full **Molecule Info Dialog**.
+8. **🔍 Settings & Diagnostics:** Opens engine diagnostic logs and troubleshooting metrics.
+
+---
+
+### 🎨 Presentation-Wide Batch Style Normalization
+
+Quickly align every chemical structure in your slide deck to match your presentation theme:
+
+| Preset Name | Ribbon Icon (`imageMso`) | Slide Visuals & Ideal Presentation Use Case |
+| :--- | :--- | :--- |
+| **Standard Color** | `ColorMenu` | IUPAC CPK element colors with **transparent background** (great for light-colored or gradient slide themes). |
+| **Publication B&W** | `BlackAndWhiteGrayscale` | High-contrast **ACS monochrome line art** (clean black bonds for academic seminar printouts). |
+| **White Background** | `BlackAndWhiteLightGrayscale` | CPK element colors on a **solid white rectangular background** (ensures visibility when placed over complex photos or textures). |
+| **Dark Mode** | `BlackAndWhiteBlack` | High-contrast **white ink on transparent background** (specifically designed for dark slide themes and OLED projection). |
 
 ---
 
@@ -55,15 +69,15 @@ Right-click any chemical shape or blank presentation slide area:
 * **📋 Copy InChI:** Copies standard IUPAC InChI string instantly.
 * **📋 Copy Canvas Data (KET):** Copies Ketcher native JSON representation.
 * **🖼️ Copy Vector Graphic (SVG):** Renders the structure as a scalable vector graphic (`SVG`) and copies it to the clipboard for Adobe Illustrator or Inkscape.
-* **🔬 Copy Molecule Info (Submenu):**
+* **🔬 Copy Molecule Info (Submenu & Dialog):**
   * **Substance Name:** Copies substance name (PubChem / IUPAC).
   * **Chemical Formula:** Copies standard Hill-notation formula (e.g. `C9H8O4`).
   * **Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g. `180.16 g/mol`).
   * **Copy SMILES / InChI / InChIKey:** Individual one-click copy options.
   * **Copy All Summary (Text):** Copies compact single-line summary to clipboard.
-  * **Copy as Multi-Line List:** Copies formatted multi-line property list for slide bullet points.
-  * **Copy as Excel Row (TSV Columns) / Markdown Table:** (Available from the Ribbon `[Molecule Info]` menu and Detailed Window) Exports properties as TSV/HTML table rows or Markdown tables.
-  * **Detailed Molecule Info Window...:** Opens the full chemical properties dialog (including **LogP / TPSA**, **Lipinski Rule of 5**, and split-button multi-format exporter).
+  * **Copy as Multi-Line List:** Copies formatted multi-line property list (ready to paste directly into PowerPoint text boxes as bullet points!).
+  * **Copy as Excel Row (TSV Columns) / Markdown Table:** Copies structured table rows for presentation tables or notes.
+  * **Detailed Molecule Info Window...:** Opens the full chemical properties dialog with **DataGridView table**, custom GDI+ vector chemical icons, **LogP / TPSA**, **Lipinski Rule of 5**, and split-button multi-format exporter (including JSON).
   > ⚡ **Non-Blocking Toast:** Each copy action displays a floating pill badge (`✓ Copied {Item}: {Value}`) near your mouse for 1.4s without stealing PowerPoint's focus.
 
 ### Case B: Right-Clicking Blank Slide Canvas

@@ -34,9 +34,23 @@
    - 본문에서 SMILES 텍스트를 드래그한 상태로 누르면 해당 텍스트가 0.1초 만에 분자 그림으로 즉시 치환됩니다.
    - 드래그한 텍스트가 없으면 클립보드의 SMILES를 읽어 커서 위치에 바로 그림으로 넣습니다.
 4. **📋 구조식 붙여넣기:** 외부 논문이나 웹페이지에서 복사한 SMILES 또는 KET를 읽어 커서 위치에 인라인 그림으로 삽입합니다.
-5. **🖼️ Copy SVG *(v1.7.0 신규)*:** 선택된 분자를 무손실 벡터 그래픽(`SVG`)으로 렌더링하여 클립보드에 복사합니다.
-6. **🎨 Batch Style *(v1.7.0 신규)*:** 현재 워드 문서 내의 모든 화학 구조식을 클릭 한 번으로 통일된 스타일 프리셋(**투명 컬러**, **논문/특허용 흑백(ACS Monochrome)**, **흰색 배경 컬러**, **다크 모드 흰색 잉크**)으로 일괄 변환합니다.
-7. **🔍 설정 및 진단 (Settings & Diagnostics):** Indigo 엔진 및 COM 추가 기능 연동 상태와 로그를 확인합니다.
+5. **🖼️ Copy SVG *(v1.7.0 신규)*:** 선택된 분자를 무손실 벡터 그래픽(`SVG`)으로 렌더링하여 클립보드에 복사합니다 (`image/svg+xml` 스트림 및 raw XML 텍스트 동시 복사로 Adobe Illustrator, Inkscape, ChemDraw 등에 즉시 붙여넣기 지원).
+6. **🎨 Batch Style *(v1.7.0 신규)*:** 현재 워드 문서 내의 모든 화학 구조식(또는 선택 영역)을 클릭 한 번으로 통일된 스타일 프리셋(**표준 컬러**, **논문/특허용 흑백**, **흰색 배경**, **다크 모드**)으로 일괄 변환합니다.
+7. **🔬 Molecule Info 드롭다운:** 화학 물성 정보 복사, 워드 표에 바로 붙여넣는 행(TSV) 복사, 또는 전체 **Molecule Info 상세 창**을 실행합니다.
+8. **🔍 설정 및 진단 (Settings & Diagnostics):** Indigo 엔진 및 COM 추가 기능 연동 상태와 로그를 확인합니다.
+
+---
+
+### 🎨 학술 논문 및 보고서 일괄 스타일 변환 (Batch Style)
+
+학술지 투고 규정이나 보고서 양식에 맞춰 수십 개의 화학 그림을 하나하나 다시 내보낼 필요 없이 원클릭으로 통일할 수 있습니다:
+
+| 스타일 프리셋 | 리본 아이콘 (`imageMso`) | 시각적 결과 및 권장 논문 용도 |
+| :--- | :--- | :--- |
+| **Standard Color** | `ColorMenu` | IUPAC CPK 원소 색상 + **투명 배경** (컬러 학위 논문 및 전자 PDF 파일용). |
+| **Publication B&W** | `BlackAndWhiteGrayscale` | 고대비 **ACS / Wiley / Elsevier 논문용 흑백 선화** (인쇄 학술지 투고 표준). |
+| **White Background** | `BlackAndWhiteLightGrayscale` | CPK 원소 색상 + **불투명 흰색 사각형 배경** (음영이 들어간 워드 표나 본문 박스에서도 선명하게 표시). |
+| **Dark Mode** | `BlackAndWhiteBlack` | 고대비 **흰색 결합선 잉크 + 투명 배경** (다크 테마 서식 및 전자 문서용). |
 
 ---
 
@@ -55,15 +69,16 @@
 * **📋 Copy InChI:** 표준 IUPAC InChI 문자열을 즉시 변환하여 복사합니다.
 * **📋 Copy Canvas Data (KET):** 반응식이 포함된 KET JSON 데이터를 복사합니다.
 * **🖼️ Copy Vector Graphic (SVG):** 분자를 무손실 벡터 그래픽(`SVG`)으로 렌더링하여 클립보드에 복사합니다.
-* **🔬 Copy Molecule Info (분자 정보 서브메뉴):**
+* **🔬 Copy Molecule Info (분자 정보 서브메뉴 & 상세창):**
   * **물질명 (Substance Name):** PubChem/IUPAC 기반 일반 물질명 복사 (`Aspirin`, `Ethanol` 등).
   * **화학식 (Chemical Formula):** Hill 표기법 화학식 복사 (`C9H8O4` 등).
   * **분자량 (Molecular Weight):** 정밀 분자량 복사 (`180.16 g/mol` 등).
   * **SMILES / InChI / InChIKey:** 각 표준 식별자 원클릭 즉시 복사.
   * **전체 요약 복사 (Copy All Summary):** 모든 정보를 한 줄 텍스트로 일괄 복사.
   * **여러 줄 리스트로 복사 (Copy as Multi-Line List):** 항목별로 줄바꿈된 리스트 서식으로 복사.
-  * **표 행(TSV Columns) / 마크다운 표 복사:** (리본 `[Molecule Info]` 메뉴 및 상세 창 지원) 워드 표나 엑셀에 바로 붙여넣을 수 있는 TSV/HTML 표 행 또는 마크다운 표로 복사.
-  * **상세 정보 창 열기...:** 2D SVG 그래픽 뷰어, **LogP / TPSA**, **Lipinski Rule of 5** 및 다중 서식 복사 Split Button(JSON 포함)이 포함된 상세 다이얼로그 창 실행.
+  * **워드 표 행으로 복사 (Copy as Excel Row - TSV Columns):** 탭 구분값(TSV)으로 복사되어 워드 표(Table)에 붙여넣으면 각 셀로 자동 분할 삽입됩니다!
+  * **마크다운 표로 복사 (Copy as Markdown Table):** GitHub, 노션, 연구노트용 마크다운 표 서식 복사.
+  * **상세 정보 창 열기...:** 물성 행별 **GDI+ 벡터 케미컬 아이콘**, DataGridView 그리드 표, **LogP / TPSA**, **Lipinski Rule of 5**, 다중 서식 내보내기 Split Button(JSON 포함)이 탑재된 전문 분자 물성 다이얼로그 실행.
   > ⚡ **모달 창 방해 없는 플로팅 토스트:** 복사 항목을 누르면 팝업 확인 창이 뜨는 대신 마우스 커서 바로 옆에 가벼운 플로팅 배지(`✓ Copied {항목}: {값}`)가 1.4초간 나타났다 사라지며, 문서 작성 중 작업 포커스를 뺏지 않습니다!
 
 ### B. 본문 텍스트, 표, 빈 문단을 우클릭한 경우
