@@ -220,6 +220,18 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                     label=""Copy All Summary (Text)""
                     imageMso=""FileDocumentInspect""
                     onAction=""OnCopyAllSummary"" />
+            <button id=""btnRibbonPptCopyMultiLine""
+                    label=""Copy as Multi-Line List""
+                    imageMso=""FormatBullet""
+                    onAction=""OnCopyMultiLine"" />
+            <button id=""btnRibbonPptCopyTsvRow""
+                    label=""Copy as Excel Row (TSV Columns)""
+                    imageMso=""TableInsert""
+                    onAction=""OnCopyTsvRow"" />
+            <button id=""btnRibbonPptCopyMarkdown""
+                    label=""Copy as Markdown Table""
+                    imageMso=""TableOfContentsGallery""
+                    onAction=""OnCopyMarkdown"" />
             <menuSeparator id=""sepRibbonPptSubDialog"" />
             <button id=""btnRibbonPptShowDialog""
                     label=""Detailed Molecule Info Window...""
@@ -326,6 +338,10 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Copy All Summary (Text)""
                 imageMso=""FileDocumentInspect""
                 onAction=""OnCopyAllSummary"" />
+        <button id=""btnContextPptPictureCopyMultiLine""
+                label=""Copy as Multi-Line List""
+                imageMso=""FormatBullet""
+                onAction=""OnCopyMultiLine"" />
         <menuSeparator id=""sepContextPptPictureSubDialog"" />
         <button id=""btnContextPptPictureShowDialog""
                 label=""Detailed Molecule Info Window...""
@@ -397,6 +413,10 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Copy All Summary (Text)""
                 imageMso=""FileDocumentInspect""
                 onAction=""OnCopyAllSummary"" />
+        <button id=""btnContextPptShapeCopyMultiLine""
+                label=""Copy as Multi-Line List""
+                imageMso=""FormatBullet""
+                onAction=""OnCopyMultiLine"" />
         <menuSeparator id=""sepContextPptShapeSubDialog"" />
         <button id=""btnContextPptShapeShowDialog""
                 label=""Detailed Molecule Info Window...""
@@ -491,6 +511,10 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   label=""Copy All Summary (Text)""
                   imageMso=""FileDocumentInspect""
                   onAction=""OnCopyAllSummary"" />
+          <button id=""btnContextPptTextCopyMultiLine""
+                  label=""Copy as Multi-Line List""
+                  imageMso=""FormatBullet""
+                  onAction=""OnCopyMultiLine"" />
           <menuSeparator id=""sepContextPptTextSubDialog"" />
           <button id=""btnContextPptTextShowDialog""
                   label=""Detailed Molecule Info Window...""
@@ -566,6 +590,10 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   label=""Copy All Summary (Text)""
                   imageMso=""FileDocumentInspect""
                   onAction=""OnCopyAllSummary"" />
+          <button id=""btnContextPptTableCopyMultiLine""
+                  label=""Copy as Multi-Line List""
+                  imageMso=""FormatBullet""
+                  onAction=""OnCopyMultiLine"" />
           <menuSeparator id=""sepContextPptTableSubDialog"" />
           <button id=""btnContextPptTableShowDialog""
                   label=""Detailed Molecule Info Window...""
@@ -679,6 +707,21 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
     public void OnCopyAllSummary(IRibbonControl control)
     {
         if (pptApp != null) PowerPointStructureManager.CopySelectedAllSummary(pptApp);
+    }
+
+    public void OnCopyMultiLine(IRibbonControl control)
+    {
+        if (pptApp != null) PowerPointStructureManager.CopySelectedMultiLine(pptApp);
+    }
+
+    public void OnCopyTsvRow(IRibbonControl control)
+    {
+        if (pptApp != null) PowerPointStructureManager.CopySelectedTsvRow(pptApp);
+    }
+
+    public void OnCopyMarkdown(IRibbonControl control)
+    {
+        if (pptApp != null) PowerPointStructureManager.CopySelectedMarkdown(pptApp);
     }
 
     public void OnInsertMolstar(IRibbonControl control)

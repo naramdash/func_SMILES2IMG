@@ -416,6 +416,73 @@ public enum StructureFormatPreference
         }
     }
 
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy as Excel Row (TSV Columns)")]
+    public static void CopySelectedTsvRowCommand()
+    {
+        try
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
+            if (info == null)
+            {
+                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from selected cell or object.");
+                return;
+            }
+            string tsv = info.FormatClipboardSummary(MoleculeSummaryFormat.ExcelTsvRow);
+            SafeClipboard.SetText(tsv);
+            MoleculeNotification.NotifyCopied("Excel Row (TSV)", info.SubstanceName ?? info.Formula ?? "Copied row");
+        }
+        catch (Exception ex)
+        {
+            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying TSV row: " + ex.Message);
+        }
+    }
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy as Multi-Line List")]
+    public static void CopySelectedMultiLineCommand()
+    {
+        try
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
+            if (info == null)
+            {
+                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from selected cell or object.");
+                return;
+            }
+            string multi = info.FormatClipboardSummary(MoleculeSummaryFormat.MultiLine);
+            string html = info.FormatHtmlTable();
+            SafeClipboard.SetTextAndHtml(multi, html);
+            MoleculeNotification.NotifyCopied("Multi-Line List", info.SubstanceName ?? info.Formula ?? "Copied list");
+        }
+        catch (Exception ex)
+        {
+            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying multi-line list: " + ex.Message);
+        }
+    }
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy as Markdown Table")]
+    public static void CopySelectedMarkdownCommand()
+    {
+        try
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
+            if (info == null)
+            {
+                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from selected cell or object.");
+                return;
+            }
+            string md = info.FormatClipboardSummary(MoleculeSummaryFormat.MarkdownTable);
+            SafeClipboard.SetText(md);
+            MoleculeNotification.NotifyCopied("Markdown Table", info.SubstanceName ?? info.Formula ?? "Copied table");
+        }
+        catch (Exception ex)
+        {
+            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying markdown table: " + ex.Message);
+        }
+    }
+
     [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Molecule Info (Name, MW & Formula)...")]
     public static void CopySelectedMoleculeInfoCommand()
     {

@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Smiles2Img.Notifications;
 using Smiles2Img.Rendering;
 
 namespace Smiles2Img.Editor;
@@ -12,6 +13,8 @@ namespace Smiles2Img.Editor;
 /// </summary>
 public sealed class MoleculeInfoDialog : Form
 {
+    private static MoleculeSummaryFormat _lastUsedFormat = MoleculeSummaryFormat.ExcelTsvRow;
+
     private readonly MoleculeInfo _info;
     private readonly Label _lblStatus;
 
@@ -145,7 +148,7 @@ public sealed class MoleculeInfoDialog : Form
 
         _lblStatus = new Label
         {
-            Text = "💡 Click 'Copy All Summary' or individual 'Copy' buttons to copy properties.",
+            Text = "💡 Click 'Copy All' or '▾' to choose format (Excel TSV, Multi-Line, Markdown, JSON).",
             Font = new Font("Segoe UI", 9f, FontStyle.Regular),
             ForeColor = Color.FromArgb(75, 85, 99),
             Dock = DockStyle.Fill,
@@ -154,31 +157,119 @@ public sealed class MoleculeInfoDialog : Form
             Padding = new Padding(6, 0, 10, 0)
         };
 
+        var pnlSplitCopy = new TableLayoutPanel
+        {
+            RowCount = 1,
+            ColumnCount = 2,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            Margin = new Padding(0, 2, 12, 0),
+            Padding = Padding.Empty,
+            BackColor = Color.FromArgb(24, 76, 120)
+        };
+        pnlSplitCopy.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
+        pnlSplitCopy.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+        pnlSplitCopy.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, Math.Max(26f, 24f * dpiScale)));
+
         var btnCopyAll = new Button
         {
-            Text = "Copy All Summary",
+            Text = GetFormatButtonLabel(_lastUsedFormat),
             Font = new Font("Segoe UI", 9.25f, FontStyle.Bold),
             ForeColor = Color.White,
             BackColor = Color.FromArgb(24, 76, 120),
             FlatStyle = FlatStyle.Flat,
             AutoSize = true,
             AutoSizeMode = AutoSizeMode.GrowAndShrink,
-            Padding = new Padding(14, 6, 14, 6),
+            Padding = new Padding(12, 6, 8, 6),
             Cursor = Cursors.Hand,
-            Margin = new Padding(0, 2, 12, 0)
+            Margin = Padding.Empty,
+            Dock = DockStyle.Fill
         };
         btnCopyAll.FlatAppearance.BorderSize = 0;
         btnCopyAll.FlatAppearance.MouseOverBackColor = Color.FromArgb(30, 95, 150);
-        btnCopyAll.Click += (s, e) =>
+
+        var btnCopyMenu = new Button
         {
-            try { SafeClipboard.SetText(_info.FormatClipboardSummary()); } catch { }
-            FlashCopied(btnCopyAll, "Full Summary");
-            _lblStatus.Text = "✓ Full summary copied to clipboard.";
-            _lblStatus.ForeColor = Color.FromArgb(22, 101, 52);
+            Text = "▾",
+            Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
+            ForeColor = Color.White,
+            BackColor = Color.FromArgb(24, 76, 120),
+            FlatStyle = FlatStyle.Flat,
+            Cursor = Cursors.Hand,
+            Margin = Padding.Empty,
+            Dock = DockStyle.Fill
+        };
+        btnCopyMenu.FlatAppearance.BorderSize = 0;
+        btnCopyMenu.FlatAppearance.MouseOverBackColor = Color.FromArgb(30, 95, 150);
+
+        pnlSplitCopy.Paint += (s, e) =>
+        {
+            try
+            {
+                using var pen = new Pen(Color.FromArgb(40, 110, 170), 1f);
+                int x = btnCopyMenu.Left;
+                e.Graphics.DrawLine(pen, x, 4, x, pnlSplitCopy.Height - 4);
+            }
+            catch { }
         };
 
+        void ExecuteCopy(MoleculeSummaryFormat format)
+        {
+            _lastUsedFormat = format;
+            btnCopyAll.Text = GetFormatButtonLabel(format);
+
+            string text = _info.FormatClipboardSummary(format);
+            string? html = (format == MoleculeSummaryFormat.MultiLine) ? _info.FormatHtmlTable() : null;
+
+            try { SafeClipboard.SetTextAndHtml(text, html); } catch { }
+
+            string displayName = format switch
+            {
+                MoleculeSummaryFormat.ExcelTsvRow => "Excel TSV Row",
+                MoleculeSummaryFormat.ExcelTsvWithHeader => "Excel Table with Headers",
+                MoleculeSummaryFormat.MultiLine => "Multi-Line List",
+                MoleculeSummaryFormat.MarkdownTable => "Markdown Table",
+                MoleculeSummaryFormat.Json => "JSON",
+                _ => "Compact Summary"
+            };
+
+            FlashCopied(btnCopyAll, displayName);
+            _lblStatus.Text = $"✓ Copied full info as {displayName} to clipboard.";
+            _lblStatus.ForeColor = Color.FromArgb(22, 101, 52);
+            MoleculeNotification.NotifyCopied($"Molecule Info ({displayName})", _info.SubstanceName ?? _info.Formula ?? "All properties");
+        }
+
+        btnCopyAll.Click += (s, e) => ExecuteCopy(_lastUsedFormat);
+
+        btnCopyMenu.Click += (s, e) =>
+        {
+            var menu = new ContextMenuStrip { Font = new Font("Segoe UI", 9.25f), ShowImageMargin = false };
+
+            void AddMenuItem(string label, MoleculeSummaryFormat fmt)
+            {
+                var item = new ToolStripMenuItem(label, null, (ms, me) => ExecuteCopy(fmt))
+                {
+                    Checked = (_lastUsedFormat == fmt)
+                };
+                menu.Items.Add(item);
+            }
+
+            AddMenuItem("📋 Excel Row (TSV for Spreadsheets)", MoleculeSummaryFormat.ExcelTsvRow);
+            AddMenuItem("📊 Excel Table (With Header Row)", MoleculeSummaryFormat.ExcelTsvWithHeader);
+            AddMenuItem("📑 Multi-Line List (Rich Table for Word/Slides)", MoleculeSummaryFormat.MultiLine);
+            AddMenuItem("📐 Markdown Table (Notion / GitHub / Obsidian)", MoleculeSummaryFormat.MarkdownTable);
+            AddMenuItem("💻 JSON (for Python / Data Scripts)", MoleculeSummaryFormat.Json);
+            menu.Items.Add(new ToolStripSeparator());
+            AddMenuItem("💬 Compact Single-Line Summary", MoleculeSummaryFormat.CompactOneLine);
+
+            menu.Show(pnlSplitCopy, new Point(0, pnlSplitCopy.Height));
+        };
+
+        pnlSplitCopy.Controls.Add(btnCopyAll, 0, 0);
+        pnlSplitCopy.Controls.Add(btnCopyMenu, 1, 0);
+
         pnlButtons.Controls.Add(btnClose);
-        pnlButtons.Controls.Add(btnCopyAll);
+        pnlButtons.Controls.Add(pnlSplitCopy);
 
         pnlBottom.Controls.Add(_lblStatus);
         pnlBottom.Controls.Add(pnlButtons);
@@ -315,12 +406,32 @@ public sealed class MoleculeInfoDialog : Form
         CancelButton = btnClose;
     }
 
+    private static string GetFormatButtonLabel(MoleculeSummaryFormat format) => format switch
+    {
+        MoleculeSummaryFormat.ExcelTsvRow => "Copy All (Excel TSV)",
+        MoleculeSummaryFormat.ExcelTsvWithHeader => "Copy All (Excel Table)",
+        MoleculeSummaryFormat.MultiLine => "Copy All (Multi-Line)",
+        MoleculeSummaryFormat.MarkdownTable => "Copy All (Markdown)",
+        MoleculeSummaryFormat.Json => "Copy All (JSON)",
+        _ => "Copy All Summary"
+    };
+
     private void FlashCopied(Button btn, string propName)
     {
         var origText = btn.Text;
         var origColor = btn.BackColor;
+        var origForeColor = btn.ForeColor;
+
         btn.Text = "✓ Copied!";
-        btn.BackColor = Color.FromArgb(220, 252, 231);
+        if (origForeColor == Color.White)
+        {
+            btn.BackColor = Color.FromArgb(22, 101, 52);
+        }
+        else
+        {
+            btn.BackColor = Color.FromArgb(220, 252, 231);
+            btn.ForeColor = Color.FromArgb(22, 101, 52);
+        }
 
         if (_lblStatus != null)
         {
@@ -339,6 +450,7 @@ public sealed class MoleculeInfoDialog : Form
                 {
                     btn.Text = origText;
                     btn.BackColor = origColor;
+                    btn.ForeColor = origForeColor;
                 }
             }
             catch { }

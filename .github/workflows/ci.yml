@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+  pull_request:
+    branches:
+      - dev
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build & Test (Windows net48)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build Solution (Release)
+        shell: pwsh
+        run: |
+          dotnet build Smiles2Img.sln -c Release -v minimal
+
+      - name: Run Unit Test Suite
+        shell: pwsh
+        run: |
+          ./tests/bin/Release/net48/Smiles2Img.Tests.exe

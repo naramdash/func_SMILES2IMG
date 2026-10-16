@@ -8,6 +8,16 @@ namespace Smiles2Img.Rendering;
 [Serializable]
 public sealed class InvalidSmilesException(string message) : Exception(message);
 
+public enum MoleculeSummaryFormat
+{
+    CompactOneLine,
+    MultiLine,
+    ExcelTsvRow,
+    ExcelTsvWithHeader,
+    MarkdownTable,
+    Json
+}
+
 public sealed class MoleculeInfo
 {
     public string CompoundName { get; set; } = "";
@@ -28,7 +38,20 @@ public sealed class MoleculeInfo
     public string InChI { get; set; } = "";
     public string InChIKey { get; set; } = "";
 
-    public string FormatClipboardSummary()
+    public string FormatClipboardSummary(MoleculeSummaryFormat format = MoleculeSummaryFormat.CompactOneLine)
+    {
+        return format switch
+        {
+            MoleculeSummaryFormat.MultiLine => FormatMultiLine(),
+            MoleculeSummaryFormat.ExcelTsvRow => FormatExcelTsv(includeHeader: false),
+            MoleculeSummaryFormat.ExcelTsvWithHeader => FormatExcelTsv(includeHeader: true),
+            MoleculeSummaryFormat.MarkdownTable => FormatMarkdownTable(),
+            MoleculeSummaryFormat.Json => FormatJson(),
+            _ => FormatCompactOneLine()
+        };
+    }
+
+    public string FormatCompactOneLine()
     {
         if (IsReaction)
             return $"Reaction SMILES: {Smiles}";
@@ -52,6 +75,168 @@ public sealed class MoleculeInfo
             parts.Add($"InChIKey: {InChIKey}");
 
         return string.Join(" | ", parts);
+    }
+
+    public string FormatMultiLine()
+    {
+        if (IsReaction)
+            return $"Reaction SMILES:\r\n{Smiles}";
+
+        var lines = new List<string>();
+        if (!string.IsNullOrWhiteSpace(CompoundName))
+            lines.Add($"Substance Name: {CompoundName}");
+        if (!string.IsNullOrWhiteSpace(IupacName) && !string.Equals(IupacName, CompoundName, StringComparison.OrdinalIgnoreCase))
+            lines.Add($"IUPAC Name: {IupacName}");
+        lines.Add($"Formula: {Formula}");
+        lines.Add($"Molecular Weight: {MolecularWeight:F2} g/mol");
+        if (ExactMass > 0)
+            lines.Add($"Exact Mass: {ExactMass:F4}");
+        lines.Add($"LogP: {LogP:F2}");
+        lines.Add($"TPSA: {Tpsa:F1} Å²");
+        lines.Add($"H-Bond Donors: {HBondDonors}");
+        lines.Add($"H-Bond Acceptors: {HBondAcceptors}");
+        lines.Add($"Rotatable Bonds: {RotatableBonds}");
+        lines.Add($"Lipinski Rule of 5: {(PassesLipinski ? "Passed" : "Failed")}");
+        lines.Add($"SMILES: {Smiles}");
+        if (!string.IsNullOrWhiteSpace(InChI))
+            lines.Add($"InChI: {InChI}");
+        if (!string.IsNullOrWhiteSpace(InChIKey))
+            lines.Add($"InChIKey: {InChIKey}");
+
+        return string.Join("\r\n", lines);
+    }
+
+    public string FormatExcelTsv(bool includeHeader = false)
+    {
+        if (IsReaction)
+            return includeHeader ? "Type\tSMILES\r\nReaction\t" + Smiles : "Reaction\t" + Smiles;
+
+        var rowValues = new List<string>
+        {
+            SubstanceName,
+            Formula,
+            MolecularWeight.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
+            ExactMass > 0 ? ExactMass.ToString("F4", System.Globalization.CultureInfo.InvariantCulture) : "",
+            LogP.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
+            Tpsa.ToString("F1", System.Globalization.CultureInfo.InvariantCulture),
+            HBondDonors.ToString(),
+            HBondAcceptors.ToString(),
+            RotatableBonds.ToString(),
+            PassesLipinski ? "Pass" : "Fail",
+            Smiles,
+            InChIKey
+        };
+        string row = string.Join("\t", rowValues);
+
+        if (!includeHeader)
+            return row;
+
+        var headerValues = new[]
+        {
+            "Name", "Formula", "MW (g/mol)", "Exact Mass", "LogP", "TPSA (Å²)",
+            "HBD", "HBA", "RotB", "Lipinski", "SMILES", "InChIKey"
+        };
+        string header = string.Join("\t", headerValues);
+        return header + "\r\n" + row;
+    }
+
+    public string FormatMarkdownTable()
+    {
+        if (IsReaction)
+            return "| Property | Value |\r\n| :--- | :--- |\r\n| **Type** | Chemical Reaction |\r\n| **SMILES** | `" + Smiles + "` |\r\n";
+
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("| Property | Value |");
+        sb.AppendLine("| :--- | :--- |");
+        if (!string.IsNullOrWhiteSpace(SubstanceName))
+            sb.AppendLine($"| **Substance Name** | {SubstanceName} |");
+        if (!string.IsNullOrWhiteSpace(IupacName) && !string.Equals(IupacName, CompoundName, StringComparison.OrdinalIgnoreCase))
+            sb.AppendLine($"| **IUPAC Name** | {IupacName} |");
+        sb.AppendLine($"| **Formula** | {Formula} |");
+        sb.AppendLine($"| **Molecular Weight** | {MolecularWeight:F2} g/mol |");
+        if (ExactMass > 0)
+            sb.AppendLine($"| **Exact Mass** | {ExactMass:F4} |");
+        sb.AppendLine($"| **LogP** | {LogP:F2} |");
+        sb.AppendLine($"| **TPSA** | {Tpsa:F1} Å² |");
+        sb.AppendLine($"| **HBD / HBA / RotB** | {HBondDonors} / {HBondAcceptors} / {RotatableBonds} |");
+        sb.AppendLine($"| **Lipinski Rule of 5** | {(PassesLipinski ? "Passed" : "Failed")} |");
+        sb.AppendLine($"| **SMILES** | `{Smiles}` |");
+        if (!string.IsNullOrWhiteSpace(InChI))
+            sb.AppendLine($"| **InChI** | `{InChI}` |");
+        if (!string.IsNullOrWhiteSpace(InChIKey))
+            sb.AppendLine($"| **InChIKey** | `{InChIKey}` |");
+
+        return sb.ToString().TrimEnd();
+    }
+
+    public string FormatJson()
+    {
+        if (IsReaction)
+            return "{\r\n  \"type\": \"reaction\",\r\n  \"smiles\": \"" + EscapeJson(Smiles) + "\"\r\n}";
+
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("{");
+        sb.AppendLine($"  \"name\": \"{EscapeJson(SubstanceName)}\",");
+        if (!string.IsNullOrWhiteSpace(IupacName) && !string.Equals(IupacName, CompoundName, StringComparison.OrdinalIgnoreCase))
+            sb.AppendLine($"  \"iupacName\": \"{EscapeJson(IupacName)}\",");
+        sb.AppendLine($"  \"formula\": \"{EscapeJson(Formula)}\",");
+        sb.AppendLine($"  \"molecularWeight\": {MolecularWeight.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)},");
+        if (ExactMass > 0)
+            sb.AppendLine($"  \"exactMass\": {ExactMass.ToString("F4", System.Globalization.CultureInfo.InvariantCulture)},");
+        sb.AppendLine($"  \"logP\": {LogP.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)},");
+        sb.AppendLine($"  \"tpsa\": {Tpsa.ToString("F1", System.Globalization.CultureInfo.InvariantCulture)},");
+        sb.AppendLine($"  \"hBondDonors\": {HBondDonors},");
+        sb.AppendLine($"  \"hBondAcceptors\": {HBondAcceptors},");
+        sb.AppendLine($"  \"rotatableBonds\": {RotatableBonds},");
+        sb.AppendLine($"  \"passesLipinski\": {(PassesLipinski ? "true" : "false")},");
+        sb.AppendLine($"  \"smiles\": \"{EscapeJson(Smiles)}\",");
+        if (!string.IsNullOrWhiteSpace(InChI))
+            sb.AppendLine($"  \"inchi\": \"{EscapeJson(InChI)}\",");
+        sb.AppendLine($"  \"inchiKey\": \"{EscapeJson(InChIKey)}\"");
+        sb.Append("}");
+        return sb.ToString();
+    }
+
+    private static string EscapeJson(string? s)
+    {
+        if (string.IsNullOrEmpty(s)) return "";
+        return s!.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t");
+    }
+
+    public string FormatHtmlTable()
+    {
+        var rows = new List<(string Key, string Val)>();
+        if (!string.IsNullOrWhiteSpace(SubstanceName)) rows.Add(("Substance Name", SubstanceName));
+        if (!string.IsNullOrWhiteSpace(IupacName) && !string.Equals(IupacName, CompoundName, StringComparison.OrdinalIgnoreCase))
+            rows.Add(("IUPAC Name", IupacName));
+        rows.Add(("Formula", Formula));
+        rows.Add(("Molecular Weight", $"{MolecularWeight:F2} g/mol"));
+        if (ExactMass > 0) rows.Add(("Exact Mass", $"{ExactMass:F4}"));
+        rows.Add(("LogP", $"{LogP:F2}"));
+        rows.Add(("TPSA", $"{Tpsa:F1} &#197;&#178;"));
+        rows.Add(("HBD / HBA / RotB", $"{HBondDonors} / {HBondAcceptors} / {RotatableBonds}"));
+        rows.Add(("Lipinski Rule of 5", PassesLipinski ? "Passed" : "Failed"));
+        rows.Add(("SMILES", Smiles));
+        if (!string.IsNullOrWhiteSpace(InChIKey)) rows.Add(("InChIKey", InChIKey));
+
+        var sb = new System.Text.StringBuilder();
+        sb.Append("<table style=\"border-collapse:collapse;font-family:'Segoe UI',Arial,sans-serif;font-size:10pt;border:1px solid #d1d5db;\">");
+        sb.Append("<thead><tr style=\"background-color:#184c78;color:#ffffff;\">");
+        sb.Append("<th style=\"padding:6px 14px;border:1px solid #d1d5db;text-align:left;\">Property</th>");
+        sb.Append("<th style=\"padding:6px 14px;border:1px solid #d1d5db;text-align:left;\">Value</th>");
+        sb.Append("</tr></thead><tbody>");
+        bool alt = false;
+        foreach (var (k, v) in rows)
+        {
+            string bg = alt ? "#f9fafb" : "#ffffff";
+            sb.Append($"<tr style=\"background-color:{bg};\">");
+            sb.Append($"<td style=\"padding:5px 12px;border:1px solid #e5e7eb;font-weight:600;color:#374151;\">{System.Net.WebUtility.HtmlEncode(k)}</td>");
+            sb.Append($"<td style=\"padding:5px 12px;border:1px solid #e5e7eb;color:#111827;\">{System.Net.WebUtility.HtmlEncode(v)}</td>");
+            sb.Append("</tr>");
+            alt = !alt;
+        }
+        sb.Append("</tbody></table>");
+        return sb.ToString();
     }
 
     public string FormatDisplayMessage()

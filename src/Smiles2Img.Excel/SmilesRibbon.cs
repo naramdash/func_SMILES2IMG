@@ -121,6 +121,18 @@ public class SmilesRibbon : ExcelRibbon
                     label=""Copy All Summary (Text)""
                     imageMso=""FileDocumentInspect""
                     onAction=""OnCopyAllSummary"" />
+            <button id=""btnRibbonExcelCopyTsvRow""
+                    label=""Copy as Excel Row (TSV Columns)""
+                    imageMso=""TableInsert""
+                    onAction=""OnCopyTsvRow"" />
+            <button id=""btnRibbonExcelCopyMultiLine""
+                    label=""Copy as Multi-Line List""
+                    imageMso=""FormatBullet""
+                    onAction=""OnCopyMultiLine"" />
+            <button id=""btnRibbonExcelCopyMarkdown""
+                    label=""Copy as Markdown Table""
+                    imageMso=""TableOfContentsGallery""
+                    onAction=""OnCopyMarkdown"" />
             <menuSeparator id=""sepRibbonExcelSubDialog"" />
             <button id=""btnRibbonExcelShowDialog""
                     label=""Detailed Molecule Info Window...""
@@ -263,6 +275,10 @@ public class SmilesRibbon : ExcelRibbon
                   label=""Copy All Summary (Text)""
                   imageMso=""FileDocumentInspect""
                   onAction=""OnCopyAllSummary"" />
+          <button id=""btnContextCellCopyTsvRow""
+                  label=""Copy as Excel Row (TSV Columns)""
+                  imageMso=""TableInsert""
+                  onAction=""OnCopyTsvRow"" />
           <menuSeparator id=""sepContextCellSubDialog"" />
           <button id=""btnContextCellShowDialog""
                   label=""Detailed Molecule Info Window...""
@@ -347,6 +363,10 @@ public class SmilesRibbon : ExcelRibbon
                   label=""Copy All Summary (Text)""
                   imageMso=""FileDocumentInspect""
                   onAction=""OnCopyAllSummary"" />
+          <button id=""btnContextListCopyTsvRow""
+                  label=""Copy as Excel Row (TSV Columns)""
+                  imageMso=""TableInsert""
+                  onAction=""OnCopyTsvRow"" />
           <menuSeparator id=""sepContextListSubDialog"" />
           <button id=""btnContextListShowDialog""
                   label=""Detailed Molecule Info Window...""
@@ -419,6 +439,10 @@ public class SmilesRibbon : ExcelRibbon
                 label=""Copy All Summary (Text)""
                 imageMso=""FileDocumentInspect""
                 onAction=""OnCopyAllSummary"" />
+        <button id=""btnContextPicCopyTsvRow""
+                label=""Copy as Excel Row (TSV Columns)""
+                imageMso=""TableInsert""
+                onAction=""OnCopyTsvRow"" />
         <menuSeparator id=""sepContextPicSubDialog"" />
         <button id=""btnContextPicShowDialog""
                 label=""Detailed Molecule Info Window...""
@@ -490,6 +514,10 @@ public class SmilesRibbon : ExcelRibbon
                 label=""Copy All Summary (Text)""
                 imageMso=""FileDocumentInspect""
                 onAction=""OnCopyAllSummary"" />
+        <button id=""btnContextShapeCopyTsvRow""
+                label=""Copy as Excel Row (TSV Columns)""
+                imageMso=""TableInsert""
+                onAction=""OnCopyTsvRow"" />
         <menuSeparator id=""sepContextShapeSubDialog"" />
         <button id=""btnContextShapeShowDialog""
                 label=""Detailed Molecule Info Window...""
@@ -582,6 +610,15 @@ public class SmilesRibbon : ExcelRibbon
 
     public void OnCopyAllSummary(IRibbonControl control)
         => RunMacroSafe(() => KetcherEditor.CopySelectedAllSummaryCommand());
+
+    public void OnCopyTsvRow(IRibbonControl control)
+        => RunMacroSafe(() => KetcherEditor.CopySelectedTsvRowCommand());
+
+    public void OnCopyMultiLine(IRibbonControl control)
+        => RunMacroSafe(() => KetcherEditor.CopySelectedMultiLineCommand());
+
+    public void OnCopyMarkdown(IRibbonControl control)
+        => RunMacroSafe(() => KetcherEditor.CopySelectedMarkdownCommand());
 
     public void OnInsertMolstar(IRibbonControl control)
     {

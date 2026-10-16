@@ -591,7 +591,8 @@ internal static class Program
             using (var ccoDlg = new Smiles2Img.Editor.MoleculeInfoDialog(ccoInfo))
             {
                 Check(ccoDlg is not null, "MoleculeInfoDialog for CCO successfully instantiated");
-                Check(ccoDlg.Icon != null && ccoDlg.Icon!.Handle != IntPtr.Zero, "MoleculeInfoDialog icon has valid Win32 handle");
+                var icon = ccoDlg?.Icon;
+                Check(icon != null && icon.Handle != IntPtr.Zero, "MoleculeInfoDialog icon has valid Win32 handle");
             }
             string ccoSummary = ccoInfo.FormatClipboardSummary();
             Check(!string.IsNullOrWhiteSpace(ccoSummary), "CCO summary formatted");
@@ -600,7 +601,28 @@ internal static class Program
             Check(Smiles2Img.Editor.SafeClipboard.SetText(ccoSummary), "SafeClipboard.SetText for CCO summary");
             Check(Smiles2Img.Editor.SafeClipboard.ContainsText(), "SafeClipboard.ContainsText succeeds");
             Check(Smiles2Img.Editor.SafeClipboard.GetText() == ccoSummary, "SafeClipboard.GetText matches ccoSummary");
-            Console.WriteLine("PASS UiIcons, SafeClipboard, and CCO MoleculeInfoDialog initialization");
+
+            // Multi-Format Molecule Summary Tests
+            string ccoTsv = ccoInfo.FormatClipboardSummary(Smiles2Img.Rendering.MoleculeSummaryFormat.ExcelTsvRow);
+            Check(ccoTsv.Contains("C2H6O") && ccoTsv.Contains("\t"), $"CCO TSV row contains formula and tabs: {ccoTsv}");
+
+            string ccoTsvHeader = ccoInfo.FormatClipboardSummary(Smiles2Img.Rendering.MoleculeSummaryFormat.ExcelTsvWithHeader);
+            Check(ccoTsvHeader.Contains("MW (g/mol)") && ccoTsvHeader.Contains("\r\n"), "CCO TSV with header has header row");
+
+            string ccoMulti = ccoInfo.FormatClipboardSummary(Smiles2Img.Rendering.MoleculeSummaryFormat.MultiLine);
+            Check(ccoMulti.Contains("Molecular Weight: 46.07 g/mol") && ccoMulti.Contains("\r\n"), "CCO MultiLine formatted with line breaks");
+
+            string ccoMd = ccoInfo.FormatClipboardSummary(Smiles2Img.Rendering.MoleculeSummaryFormat.MarkdownTable);
+            Check(ccoMd.StartsWith("| Property | Value |") && ccoMd.Contains("| **Formula** | C2H6O |"), "CCO Markdown table formatted correctly");
+
+            string ccoJson = ccoInfo.FormatClipboardSummary(Smiles2Img.Rendering.MoleculeSummaryFormat.Json);
+            Check(ccoJson.Contains("\"formula\": \"C2H6O\"") && ccoJson.Contains("\"molecularWeight\": 46.07"), "CCO JSON formatted correctly");
+
+            string ccoHtml = ccoInfo.FormatHtmlTable();
+            Check(ccoHtml.StartsWith("<table") && ccoHtml.Contains("46.07 g/mol"), "CCO HTML table formatted correctly");
+
+            Check(Smiles2Img.Editor.SafeClipboard.SetTextAndHtml(ccoMulti, ccoHtml), "SafeClipboard.SetTextAndHtml succeeds");
+            Console.WriteLine("PASS UiIcons, SafeClipboard, and CCO MoleculeInfoDialog initialization with Multi-Format Summaries");
 
             // v1.7.0 Tests: Exact Mass, Physicochemical & Drug-Likeness Properties
             Check(aspirinInfo.LogP > 0.5 && aspirinInfo.LogP < 2.5, $"Aspirin LogP in expected range, got: {aspirinInfo.LogP}");

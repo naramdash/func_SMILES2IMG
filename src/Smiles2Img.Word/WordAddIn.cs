@@ -150,6 +150,18 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                     label=""Copy All Summary (Text)""
                     imageMso=""FileDocumentInspect""
                     onAction=""OnCopyAllSummary"" />
+            <button id=""btnRibbonWordCopyMultiLine""
+                    label=""Copy as Multi-Line List""
+                    imageMso=""FormatBullet""
+                    onAction=""OnCopyMultiLine"" />
+            <button id=""btnRibbonWordCopyTsvRow""
+                    label=""Copy as Excel Row (TSV Columns)""
+                    imageMso=""TableInsert""
+                    onAction=""OnCopyTsvRow"" />
+            <button id=""btnRibbonWordCopyMarkdown""
+                    label=""Copy as Markdown Table""
+                    imageMso=""TableOfContentsGallery""
+                    onAction=""OnCopyMarkdown"" />
             <menuSeparator id=""sepRibbonWordSubDialog"" />
             <button id=""btnRibbonWordShowDialog""
                     label=""Detailed Molecule Info Window...""
@@ -256,6 +268,10 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Copy All Summary (Text)""
                 imageMso=""FileDocumentInspect""
                 onAction=""OnCopyAllSummary"" />
+        <button id=""btnContextInlineCopyMultiLine""
+                label=""Copy as Multi-Line List""
+                imageMso=""FormatBullet""
+                onAction=""OnCopyMultiLine"" />
         <menuSeparator id=""sepContextInlineSubDialog"" />
         <button id=""btnContextInlineShowDialog""
                 label=""Detailed Molecule Info Window...""
@@ -327,6 +343,10 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Copy All Summary (Text)""
                 imageMso=""FileDocumentInspect""
                 onAction=""OnCopyAllSummary"" />
+        <button id=""btnContextPictureCopyMultiLine""
+                label=""Copy as Multi-Line List""
+                imageMso=""FormatBullet""
+                onAction=""OnCopyMultiLine"" />
         <menuSeparator id=""sepContextPictureSubDialog"" />
         <button id=""btnContextPictureShowDialog""
                 label=""Detailed Molecule Info Window...""
@@ -398,6 +418,10 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Copy All Summary (Text)""
                 imageMso=""FileDocumentInspect""
                 onAction=""OnCopyAllSummary"" />
+        <button id=""btnContextShapeCopyMultiLine""
+                label=""Copy as Multi-Line List""
+                imageMso=""FormatBullet""
+                onAction=""OnCopyMultiLine"" />
         <menuSeparator id=""sepContextShapeSubDialog"" />
         <button id=""btnContextShapeShowDialog""
                 label=""Detailed Molecule Info Window...""
@@ -472,6 +496,10 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   label=""Copy All Summary (Text)""
                   imageMso=""FileDocumentInspect""
                   onAction=""OnCopyAllSummary"" />
+          <button id=""btnContextTextCopyMultiLine""
+                  label=""Copy as Multi-Line List""
+                  imageMso=""FormatBullet""
+                  onAction=""OnCopyMultiLine"" />
           <menuSeparator id=""sepContextTextSubDialog"" />
           <button id=""btnContextTextShowDialog""
                   label=""Detailed Molecule Info Window...""
@@ -547,6 +575,10 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   label=""Copy All Summary (Text)""
                   imageMso=""FileDocumentInspect""
                   onAction=""OnCopyAllSummary"" />
+          <button id=""btnContextTableCopyMultiLine""
+                  label=""Copy as Multi-Line List""
+                  imageMso=""FormatBullet""
+                  onAction=""OnCopyMultiLine"" />
           <menuSeparator id=""sepContextTableSubDialog"" />
           <button id=""btnContextTableShowDialog""
                   label=""Detailed Molecule Info Window...""
@@ -672,6 +704,21 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
     public void OnCopyAllSummary(IRibbonControl control)
     {
         if (wordApp != null) WordStructureManager.CopySelectedAllSummary(wordApp);
+    }
+
+    public void OnCopyMultiLine(IRibbonControl control)
+    {
+        if (wordApp != null) WordStructureManager.CopySelectedMultiLine(wordApp);
+    }
+
+    public void OnCopyTsvRow(IRibbonControl control)
+    {
+        if (wordApp != null) WordStructureManager.CopySelectedTsvRow(wordApp);
+    }
+
+    public void OnCopyMarkdown(IRibbonControl control)
+    {
+        if (wordApp != null) WordStructureManager.CopySelectedMarkdown(wordApp);
     }
 
     public void OnAbout(IRibbonControl control)

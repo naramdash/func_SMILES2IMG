@@ -921,6 +921,67 @@ public static class PowerPointStructureManager
         }
     }
 
+    public static void CopySelectedTsvRow(MSPowerPoint.Application app)
+    {
+        try
+        {
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
+            if (info == null)
+            {
+                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from the selected structure.");
+                return;
+            }
+            string tsv = info.FormatClipboardSummary(MoleculeSummaryFormat.ExcelTsvRow);
+            SafeClipboard.SetText(tsv);
+            MoleculeNotification.NotifyCopied("Excel Row (TSV)", info.SubstanceName ?? info.Formula ?? "Copied row");
+        }
+        catch (Exception ex)
+        {
+            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying TSV row: " + ex.Message);
+        }
+    }
+
+    public static void CopySelectedMultiLine(MSPowerPoint.Application app)
+    {
+        try
+        {
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
+            if (info == null)
+            {
+                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from the selected structure.");
+                return;
+            }
+            string multi = info.FormatClipboardSummary(MoleculeSummaryFormat.MultiLine);
+            string html = info.FormatHtmlTable();
+            SafeClipboard.SetTextAndHtml(multi, html);
+            MoleculeNotification.NotifyCopied("Multi-Line List", info.SubstanceName ?? info.Formula ?? "Copied list");
+        }
+        catch (Exception ex)
+        {
+            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying multi-line list: " + ex.Message);
+        }
+    }
+
+    public static void CopySelectedMarkdown(MSPowerPoint.Application app)
+    {
+        try
+        {
+            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
+            if (info == null)
+            {
+                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from the selected structure.");
+                return;
+            }
+            string md = info.FormatClipboardSummary(MoleculeSummaryFormat.MarkdownTable);
+            SafeClipboard.SetText(md);
+            MoleculeNotification.NotifyCopied("Markdown Table", info.SubstanceName ?? info.Formula ?? "Copied table");
+        }
+        catch (Exception ex)
+        {
+            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying markdown table: " + ex.Message);
+        }
+    }
+
     public static void ShowSelectedMoleculeInfo(MSPowerPoint.Application app)
     {
         try
