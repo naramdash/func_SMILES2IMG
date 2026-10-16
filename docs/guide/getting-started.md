@@ -12,6 +12,13 @@ Open **PowerShell** (no Administrator privileges required for standard user inst
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
+::: tip 💡 Preview Release (`v1.7.0-preview.1`)
+To test the latest preview release featuring SAR Substructure/Similarity (`=SMILES.MATCH`, `=SMILES.SIMILARITY`), Lipinski/LogP/TPSA, Reverse Name/CAS lookup (`=NAME2IMG`), Vector SVG Copy, Batch Style Normalizer, and Excel SDF Import/Export:
+```powershell
+$v='v1.7.0-preview.1'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+```
+:::
+
 ### What the Automated Installer Does
 1. **Detects Office Environment:** Automatically checks whether your Office installation is 32-bit (`x86`) or 64-bit (`x64`) and detects installed apps (Excel, Word, PowerPoint).
 2. **Downloads Latest Binaries:** Fetches the unified release suite from GitHub Releases.

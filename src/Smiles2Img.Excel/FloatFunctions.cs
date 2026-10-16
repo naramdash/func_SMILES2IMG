@@ -95,6 +95,21 @@ public static class FloatFunctions
         [ExcelArgument(Name = "transform", Description = "Optional: orientation (flip, flipy, rot90, rot180, rot270).")] object? transform = null)
         => ImgFloat(inchi, background, style, transform);
 
+    [ExcelFunction(Name = "NAME2IMG.FLOAT", Category = "SMILES",
+        Description = "[Excel 2016+] Resolves a chemical name or CAS number and places its molecular structure picture over the cell.", IsMacroType = true)]
+    public static object NameImgFloat(
+        [ExcelArgument(Name = "name", Description = "Chemical name or CAS number (e.g. \"Aspirin\", \"50-78-2\").")] string name,
+        [ExcelArgument(Name = "background", Description = "Optional: \"trans\" (default), \"white\", CSS color, or hex (#RRGGBB).")] object? background = null,
+        [ExcelArgument(Name = "style", Description = "Optional: \"color\" (default), \"bw\", \"num\", \"stereo\", \"h\", \"all-c\", \"white\", \"hl:<query>\".")] object? style = null,
+        [ExcelArgument(Name = "transform", Description = "Optional: orientation (flip, flipy, rot90, rot180, rot270).")] object? transform = null)
+    {
+        if (ExcelDnaUtil.IsInFunctionWizard()) return "NAME2IMG.FLOAT";
+        if (string.IsNullOrWhiteSpace(name)) return ExcelError.ExcelErrorValue;
+        var smiles = PubChemResolver.ResolveNameToSmiles(name);
+        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorNA;
+        return ImgFloat(smiles!, background, style, transform);
+    }
+
     [ExcelCommand(MenuName = "SMILES", MenuText = "Refit floating images")]
     public static void RefitFloatingImages()
     {

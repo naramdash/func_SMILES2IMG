@@ -34,7 +34,9 @@ The `[SMILES]` tab on Word's ribbon provides one-click access to structure drawi
    - If text containing a SMILES string is highlighted in your document, converts it directly into an inline chemical structure in 0.1 seconds.
    - If no text is selected, parses the clipboard and inserts the structure at the cursor position.
 4. **📋 Paste Structure:** Reads clipboard content as SMILES or KET and embeds it as an inline shape.
-5. **🔍 Settings & Diagnostics:** Displays COM add-in status, chemical engine version, and troubleshooting logs.
+5. **🖼️ Copy SVG *(New in v1.7.0)*:** Renders the selected structure as a crisp scalable vector graphic (`SVG`) and copies it to the Windows Clipboard for Adobe Illustrator or Inkscape.
+6. **🎨 Batch Style *(New in v1.7.0)*:** Converts all chemical structures in the active Word document to a unified style preset (**Standard Color (Transparent)**, **Publication B&W (ACS Monochrome)**, **White Background (Color)**, or **Dark Mode (White Ink)**) in one click.
+7. **🔍 Settings & Diagnostics:** Displays COM add-in status, chemical engine version, and troubleshooting logs.
 
 ---
 

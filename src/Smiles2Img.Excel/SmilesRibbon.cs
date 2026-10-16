@@ -76,6 +76,13 @@ public class SmilesRibbon : ExcelRibbon
                   imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopyKet"" />
+          <button id=""btnCopySvg""
+                  label=""Copy SVG""
+                  screentip=""Copy Scalable Vector Graphics (SVG)""
+                  supertip=""Renders the selected molecule or reaction into crisp vector SVG and copies it to the clipboard for Office 365, Illustrator, Inkscape, or HTML.""
+                  imageMso=""Copy""
+                  size=""large""
+                  onAction=""OnCopySvg"" />
           <menu id=""menuRibbonExcelMoleculeInfo""
                 label=""Molecule Info""
                 screentip=""Copy Molecule Info &amp; Substance Properties""
@@ -106,6 +113,10 @@ public class SmilesRibbon : ExcelRibbon
                     label=""Copy InChIKey""
                     imageMso=""Copy""
                     onAction=""OnCopyInchiKey"" />
+            <button id=""btnRibbonExcelSubCopySvg""
+                    label=""Copy Vector SVG""
+                    imageMso=""Copy""
+                    onAction=""OnCopySvg"" />
             <button id=""btnRibbonExcelCopyAllSummary""
                     label=""Copy All Summary (Text)""
                     imageMso=""FileDocumentInspect""
@@ -115,6 +126,44 @@ public class SmilesRibbon : ExcelRibbon
                     label=""Detailed Molecule Info Window...""
                     imageMso=""GroupTaskProperties""
                     onAction=""OnCopyMoleculeInfo"" />
+          </menu>
+          <menu id=""menuRibbonExcelBatchStyle""
+                label=""Batch Style""
+                screentip=""Batch Normalize Molecule Styles""
+                supertip=""Convert all molecular structures on the active worksheet to a unified style preset in one click.""
+                imageMso=""ColorGallery""
+                size=""large"">
+            <button id=""btnBatchStyleColorTrans""
+                    label=""Standard Color (Transparent)""
+                    imageMso=""ColorGallery""
+                    onAction=""OnBatchStyleColorTrans"" />
+            <button id=""btnBatchStyleBw""
+                    label=""Publication B&amp;W (ACS Monochrome)""
+                    imageMso=""ContrastGallery""
+                    onAction=""OnBatchStyleBw"" />
+            <button id=""btnBatchStyleWhiteBg""
+                    label=""White Background (Color)""
+                    imageMso=""ShapeFillColorPicker""
+                    onAction=""OnBatchStyleWhiteBg"" />
+            <button id=""btnBatchStyleDark""
+                    label=""Dark Mode (White Ink)""
+                    imageMso=""ThemeColorsGallery""
+                    onAction=""OnBatchStyleDark"" />
+          </menu>
+          <menu id=""menuRibbonExcelSdf""
+                label=""SDF File""
+                screentip=""Import or Export SDF Chemical Files""
+                supertip=""Import an MDL .sdf chemical table into the worksheet or export worksheet structures to an .sdf file.""
+                imageMso=""FileOpen""
+                size=""large"">
+            <button id=""btnImportSdf""
+                    label=""Import SDF File (.sdf)...""
+                    imageMso=""FileOpen""
+                    onAction=""OnImportSdf"" />
+            <button id=""btnExportSdf""
+                    label=""Export Sheet to SDF (.sdf)...""
+                    imageMso=""FileSaveAs""
+                    onAction=""OnExportSdf"" />
           </menu>
         </group>
         <group id=""grpDiagnostics"" label=""Diagnostics"">
@@ -178,6 +227,10 @@ public class SmilesRibbon : ExcelRibbon
                 label=""Copy Canvas Data (KET)""
                 imageMso=""Copy""
                 onAction=""OnCopyKet"" />
+        <button id=""btnContextCopySvgCell""
+                label=""Copy Vector SVG""
+                imageMso=""Copy""
+                onAction=""OnCopySvg"" />
         <menuSeparator id=""sepContextCellSubInfo"" />
         <menu id=""menuContextExcelCellMoleculeInfo""
               label=""Copy Molecule Info""
@@ -258,6 +311,10 @@ public class SmilesRibbon : ExcelRibbon
                 label=""Copy Canvas Data (KET)""
                 imageMso=""Copy""
                 onAction=""OnCopyKet"" />
+        <button id=""btnContextListCopySvgCell""
+                label=""Copy Vector SVG""
+                imageMso=""Copy""
+                onAction=""OnCopySvg"" />
         <menuSeparator id=""sepContextListSubInfo"" />
         <menu id=""menuContextExcelListMoleculeInfo""
               label=""Copy Molecule Info""
@@ -325,6 +382,11 @@ public class SmilesRibbon : ExcelRibbon
               imageMso=""Copy""
               onAction=""OnCopyKet""
               insertBeforeMso=""Cut"" />
+      <button id=""btnContextPictureCopySvg""
+              label=""Copy Vector SVG""
+              imageMso=""Copy""
+              onAction=""OnCopySvg""
+              insertBeforeMso=""Cut"" />
       <menu id=""menuContextPictureExcelMoleculeInfo""
             label=""Copy Molecule Info""
             imageMso=""GroupTaskProperties""
@@ -390,6 +452,11 @@ public class SmilesRibbon : ExcelRibbon
               label=""Copy Canvas Data (KET)""
               imageMso=""Copy""
               onAction=""OnCopyKet""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextShapeCopySvg""
+              label=""Copy Vector SVG""
+              imageMso=""Copy""
+              onAction=""OnCopySvg""
               insertBeforeMso=""Cut"" />
       <menu id=""menuContextShapeExcelMoleculeInfo""
             label=""Copy Molecule Info""
@@ -504,6 +571,62 @@ public class SmilesRibbon : ExcelRibbon
         ExcelAsyncUtil.QueueAsMacro(() =>
         {
             KetcherEditor.CopySelectedMoleculeKetCommand();
+        });
+    }
+
+    public void OnCopySvg(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            KetcherEditor.CopySelectedMoleculeSvgCommand();
+        });
+    }
+
+    public void OnBatchStyleColorTrans(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            KetcherEditor.BatchStyleColorTransCommand();
+        });
+    }
+
+    public void OnBatchStyleBw(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            KetcherEditor.BatchStyleBwCommand();
+        });
+    }
+
+    public void OnBatchStyleWhiteBg(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            KetcherEditor.BatchStyleWhiteBgCommand();
+        });
+    }
+
+    public void OnBatchStyleDark(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            KetcherEditor.BatchStyleDarkCommand();
+        });
+    }
+
+    public void OnImportSdf(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            KetcherEditor.ImportSdfCommand();
+        });
+    }
+
+    public void OnExportSdf(IRibbonControl control)
+    {
+        ExcelAsyncUtil.QueueAsMacro(() =>
+        {
+            KetcherEditor.ExportSdfCommand();
         });
     }
 

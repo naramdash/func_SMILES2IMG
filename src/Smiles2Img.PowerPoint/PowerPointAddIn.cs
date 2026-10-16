@@ -179,6 +179,13 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopyKet"" />
+          <button id=""btnPptCopySvg""
+                  label=""Copy SVG""
+                  screentip=""Copy Vector Graphic (SVG)""
+                  supertip=""Renders the selected molecule as a scalable vector graphic (SVG) and copies it to the clipboard for Illustrator or Inkscape.""
+                  imageMso=""CopyPicture""
+                  size=""large""
+                  onAction=""OnCopySvg"" />
           <menu id=""menuRibbonPptMoleculeInfo""
                 label=""Molecule Info""
                 screentip=""Copy Molecule Info &amp; Substance Properties""
@@ -219,6 +226,29 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                     imageMso=""GroupTaskProperties""
                     onAction=""OnCopyMoleculeInfo"" />
           </menu>
+          <menu id=""menuRibbonPptBatchStyle""
+                label=""Batch Style""
+                screentip=""Batch Style Normalizer""
+                supertip=""Convert all molecule images in the active presentation to a unified publication style (Color, B&amp;W, White BG, or Dark Mode).""
+                imageMso=""ColorGallery""
+                size=""large"">
+            <button id=""btnPptBatchColorTrans""
+                    label=""Standard Color (Transparent)""
+                    imageMso=""ColorGallery""
+                    onAction=""OnBatchStyleColorTrans"" />
+            <button id=""btnPptBatchBw""
+                    label=""Publication B&amp;W (ACS Monochrome)""
+                    imageMso=""ContrastGallery""
+                    onAction=""OnBatchStyleBw"" />
+            <button id=""btnPptBatchWhiteBg""
+                    label=""White Background (Color)""
+                    imageMso=""ShapeFillColorPicker""
+                    onAction=""OnBatchStyleWhiteBg"" />
+            <button id=""btnPptBatchDark""
+                    label=""Dark Mode (White Ink)""
+                    imageMso=""ThemeColorsGallery""
+                    onAction=""OnBatchStyleDark"" />
+          </menu>
         </group>
         <group id=""grpPptAbout"" label=""About"">
           <button id=""btnPptAbout""
@@ -258,6 +288,11 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               label=""Copy Canvas Data (KET)""
               imageMso=""Copy""
               onAction=""OnCopyKet""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPptPictureCopySvg""
+              label=""Copy Vector Graphic (SVG)""
+              imageMso=""CopyPicture""
+              onAction=""OnCopySvg""
               insertBeforeMso=""Cut"" />
       <menu id=""menuContextPptPictureMoleculeInfo""
             label=""Copy Molecule Info""
@@ -324,6 +359,11 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
               label=""Copy Canvas Data (KET)""
               imageMso=""Copy""
               onAction=""OnCopyKet""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextPptShapeCopySvg""
+              label=""Copy Vector Graphic (SVG)""
+              imageMso=""CopyPicture""
+              onAction=""OnCopySvg""
               insertBeforeMso=""Cut"" />
       <menu id=""menuContextPptShapeMoleculeInfo""
             label=""Copy Molecule Info""
@@ -415,6 +455,10 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Copy Canvas Data (KET)""
                 imageMso=""Copy""
                 onAction=""OnCopyKet"" />
+        <button id=""btnContextPptTextCopySvg""
+                label=""Copy Vector Graphic (SVG)""
+                imageMso=""CopyPicture""
+                onAction=""OnCopySvg"" />
         <menuSeparator id=""sepContextPptTextSubInfo"" />
         <menu id=""menuContextPptTextMoleculeInfo""
               label=""Copy Molecule Info""
@@ -486,6 +530,10 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Copy Canvas Data (KET)""
                 imageMso=""Copy""
                 onAction=""OnCopyKet"" />
+        <button id=""btnContextPptTableCopySvg""
+                label=""Copy Vector Graphic (SVG)""
+                imageMso=""CopyPicture""
+                onAction=""OnCopySvg"" />
         <menuSeparator id=""sepContextPptTableSubInfo"" />
         <menu id=""menuContextPptTableMoleculeInfo""
               label=""Copy Molecule Info""
@@ -570,6 +618,36 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
     {
         if (pptApp == null) return;
         PowerPointStructureManager.CopySelectedMoleculeKet(pptApp);
+    }
+
+    public void OnCopySvg(IRibbonControl control)
+    {
+        if (pptApp == null) return;
+        PowerPointStructureManager.CopySelectedMoleculeSvg(pptApp);
+    }
+
+    public void OnBatchStyleColorTrans(IRibbonControl control)
+    {
+        if (pptApp == null) return;
+        PowerPointStructureManager.ApplyBatchStyle(pptApp, "transparent", "color", "Standard Color (Transparent)");
+    }
+
+    public void OnBatchStyleBw(IRibbonControl control)
+    {
+        if (pptApp == null) return;
+        PowerPointStructureManager.ApplyBatchStyle(pptApp, "transparent", "bw", "Publication B&W");
+    }
+
+    public void OnBatchStyleWhiteBg(IRibbonControl control)
+    {
+        if (pptApp == null) return;
+        PowerPointStructureManager.ApplyBatchStyle(pptApp, "white", "color", "White Background (Color)");
+    }
+
+    public void OnBatchStyleDark(IRibbonControl control)
+    {
+        if (pptApp == null) return;
+        PowerPointStructureManager.ApplyBatchStyle(pptApp, "transparent", "white", "Dark Mode (White Ink)");
     }
 
     public void OnCopyMoleculeInfo(IRibbonControl control)

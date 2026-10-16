@@ -242,7 +242,104 @@ public sealed class AboutDialog : Form
             catch { }
         };
 
+        var btnCheckUpdate = new Button
+        {
+            Text = "Check for Updates",
+            Size = new Size((int)(136 * dpiScale), (int)(34 * dpiScale)),
+            Dock = DockStyle.Left,
+            BackColor = Color.White,
+            ForeColor = Color.FromArgb(2, 132, 199),
+            FlatStyle = FlatStyle.Flat,
+            Cursor = Cursors.Hand,
+            Font = new Font("Segoe UI", 9.25f, FontStyle.Bold),
+            Margin = new Padding(8, 0, 0, 0)
+        };
+        btnCheckUpdate.FlatAppearance.BorderColor = Color.FromArgb(186, 230, 253);
+        btnCheckUpdate.Click += async (s, e) =>
+        {
+            try
+            {
+                btnCheckUpdate.Enabled = false;
+                btnCheckUpdate.Text = "Checking...";
+                var currentVerStr = GetProductVersion();
+
+                var latestTag = await System.Threading.Tasks.Task.Run(() => FetchLatestGitHubReleaseTag());
+                if (IsDisposed) return;
+
+                if (string.IsNullOrWhiteSpace(latestTag))
+                {
+                    btnCheckUpdate.Text = "Check for Updates";
+                    btnCheckUpdate.Enabled = true;
+                    MessageBox.Show(
+                        this,
+                        "Could not reach GitHub Releases API. Opening releases page in browser instead.",
+                        "Update Check",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                    OpenBrowser("https://github.com/naramdash/func_SMILES2IMG/releases");
+                    return;
+                }
+
+                var cleanLatest = latestTag!.Trim().TrimStart('v', 'V');
+                var cleanCurrent = currentVerStr.Trim().TrimStart('v', 'V');
+
+                bool isNewer = false;
+                if (Version.TryParse(cleanLatest, out var vLatest) && Version.TryParse(cleanCurrent, out var vCurrent))
+                {
+                    isNewer = vLatest > vCurrent;
+                }
+                else
+                {
+                    isNewer = !string.Equals(cleanLatest, cleanCurrent, StringComparison.OrdinalIgnoreCase);
+                }
+
+                if (isNewer)
+                {
+                    btnCheckUpdate.Text = $"Update: v{cleanLatest}";
+                    btnCheckUpdate.BackColor = Color.FromArgb(254, 243, 199);
+                    btnCheckUpdate.ForeColor = Color.FromArgb(180, 83, 9);
+                    btnCheckUpdate.Enabled = true;
+
+                    var updateCmd = "irm https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/install.ps1 | iex";
+                    var dr = MessageBox.Show(
+                        this,
+                        $"A new version (v{cleanLatest}) is available! (Current: v{cleanCurrent})\n\n" +
+                        "Click [Yes] to copy the 1-line PowerShell update command to your clipboard and open the release page.",
+                        "New Update Available",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Information);
+
+                    if (dr == DialogResult.Yes)
+                    {
+                        try { Clipboard.SetText(updateCmd); } catch { }
+                        OpenBrowser("https://github.com/naramdash/func_SMILES2IMG/releases/latest");
+                    }
+                }
+                else
+                {
+                    btnCheckUpdate.Text = $"✓ Up to Date (v{cleanCurrent})";
+                    btnCheckUpdate.BackColor = Color.FromArgb(236, 253, 245);
+                    btnCheckUpdate.ForeColor = Color.FromArgb(16, 149, 102);
+                    btnCheckUpdate.Enabled = true;
+                }
+            }
+            catch
+            {
+                if (!IsDisposed)
+                {
+                    btnCheckUpdate.Text = "Check for Updates";
+                    btnCheckUpdate.Enabled = true;
+                }
+            }
+        };
+
+        var sepLeft1 = new Panel { Width = 8, Dock = DockStyle.Left, BackColor = Color.Transparent };
+        var sepLeft2 = new Panel { Width = 8, Dock = DockStyle.Left, BackColor = Color.Transparent };
+
+        pnlBottom.Controls.Add(btnCheckUpdate);
+        pnlBottom.Controls.Add(sepLeft2);
         pnlBottom.Controls.Add(btnCopyAll);
+        pnlBottom.Controls.Add(sepLeft1);
         pnlBottom.Controls.Add(btnOpenGitHub);
         pnlBottom.Controls.Add(btnClose);
 
@@ -588,6 +685,35 @@ public sealed class AboutDialog : Form
         {
             return "v1.6.0";
         }
+    }
+
+    private static string? FetchLatestGitHubReleaseTag()
+    {
+        try
+        {
+            System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls12;
+            var req = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(
+                "https://api.github.com/repos/naramdash/func_SMILES2IMG/releases/latest");
+            req.Method = "GET";
+            req.UserAgent = "Smiles2Img-OfficeAddIn";
+            req.Accept = "application/vnd.github+json";
+            req.Timeout = 4000;
+            req.ReadWriteTimeout = 4000;
+
+            using var resp = (System.Net.HttpWebResponse)req.GetResponse();
+            using var stream = resp.GetResponseStream();
+            if (stream == null) return null;
+            using var reader = new System.IO.StreamReader(stream, System.Text.Encoding.UTF8);
+            var json = reader.ReadToEnd();
+            var match = System.Text.RegularExpressions.Regex.Match(
+                json,
+                "\"tag_name\"\\s*:\\s*\"([^\"]+)\"",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (match.Success)
+                return match.Groups[1].Value.Trim();
+        }
+        catch { }
+        return null;
     }
 
     private static void OpenBrowser(string url)

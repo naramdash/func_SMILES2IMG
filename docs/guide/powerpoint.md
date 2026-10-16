@@ -34,7 +34,9 @@ The custom `[SMILES]` tab on PowerPoint's ribbon provides one-click slide insert
    - If a text box or shape containing SMILES text is selected on the slide, converts the text frame into a high-resolution molecule shape in 0.1s.
    - If no shape is selected, automatically reads chemical text from the clipboard and places it onto the slide.
 4. **📋 Paste Structure:** Reads clipboard SMILES/KET and embeds it as a vector-crisp slide image.
-5. **🔍 Settings & Diagnostics:** Opens engine diagnostic logs and troubleshooting metrics.
+5. **🖼️ Copy SVG *(New in v1.7.0)*:** Renders the selected molecule shape as a scalable vector graphic (`SVG`) and copies it to the Windows Clipboard.
+6. **🎨 Batch Style *(New in v1.7.0)*:** Converts all chemical structures across the active presentation to a unified style preset (**Standard Color (Transparent)**, **Publication B&W (ACS Monochrome)**, **White Background (Color)**, or **Dark Mode (White Ink)**) in one click.
+7. **🔍 Settings & Diagnostics:** Opens engine diagnostic logs and troubleshooting metrics.
 
 ---
 

@@ -18,7 +18,7 @@ namespace Smiles2Img;
 public static partial class KetcherEditor
 {
     private static readonly Regex FormulaRefPattern = new(
-        @"(?:SMILES2IMG|KET2IMG|INCHI2IMG)(?:\.FLOAT)?\s*\(\s*(?:""(?<literal>(?:""""|[^""])*)""|(?<ref>(?:'[^']+'!)?[^,)\s]+))",
+        @"(?:SMILES2IMG|KET2IMG|INCHI2IMG|NAME2IMG)(?:\.FLOAT)?\s*\(\s*(?:""(?<literal>(?:""""|[^""])*)""|(?<ref>(?:'[^']+'!)?[^,)\s]+))",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     public static void EditSelectedMolecule(Excel.Application app)
@@ -67,7 +67,7 @@ public static partial class KetcherEditor
             var currentStructure = ExtractStructure(targetShape);
             if (string.IsNullOrEmpty(currentStructure)) return;
 
-            using var form = new KetcherForm("Canvas", currentStructure ?? "");
+            using var form = KetcherForm.Rent("Canvas", currentStructure ?? "");
             var result = form.ShowDialog(new Win32Window(ExcelDnaUtil.WindowHandle));
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
@@ -96,7 +96,7 @@ public static partial class KetcherEditor
         {
             if (app.ActiveSheet is not Excel.Worksheet sheet) return;
 
-            using var form = new KetcherForm("Canvas", "");
+            using var form = KetcherForm.Rent("Canvas", "");
             var result = form.ShowDialog(new Win32Window(ExcelDnaUtil.WindowHandle));
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
@@ -257,7 +257,9 @@ public static partial class KetcherEditor
 
             if (!string.IsNullOrEmpty(formula) &&
                 (formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0))
+                 formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 formula.IndexOf("NAME2IMG", StringComparison.OrdinalIgnoreCase) >= 0))
             {
                 var match = FormulaRefPattern.Match(formula);
                 if (match.Success)
@@ -280,6 +282,9 @@ public static partial class KetcherEditor
 
                     if (!string.IsNullOrEmpty(rawData))
                     {
+                        if (formula.IndexOf("NAME2IMG", StringComparison.OrdinalIgnoreCase) >= 0)
+                            rawData = PubChemResolver.ResolveNameToSmiles(rawData) ?? rawData;
+
                         var smiles = MoleculeRenderer.TryConvertToSmiles(rawData);
                         if (!string.IsNullOrEmpty(smiles))
                             return smiles;
@@ -305,7 +310,9 @@ public static partial class KetcherEditor
 
             if (!string.IsNullOrEmpty(formula) &&
                 (formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0))
+                 formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 formula.IndexOf("NAME2IMG", StringComparison.OrdinalIgnoreCase) >= 0))
             {
                 var match = FormulaRefPattern.Match(formula);
                 if (match.Success)
@@ -328,6 +335,9 @@ public static partial class KetcherEditor
 
                     if (!string.IsNullOrEmpty(rawData))
                     {
+                        if (formula.IndexOf("NAME2IMG", StringComparison.OrdinalIgnoreCase) >= 0)
+                            rawData = PubChemResolver.ResolveNameToSmiles(rawData) ?? rawData;
+
                         var ket = MoleculeRenderer.TryConvertToKet(rawData);
                         if (!string.IsNullOrEmpty(ket))
                             return ket;
@@ -387,7 +397,8 @@ public static partial class KetcherEditor
             bool isStructureCell = !string.IsNullOrEmpty(formula) &&
                                    (formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
                                     formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                    formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0);
+                                    formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                    formula.IndexOf("NAME2IMG", StringComparison.OrdinalIgnoreCase) >= 0);
 
             if (isStructureCell)
             {
@@ -422,7 +433,8 @@ public static partial class KetcherEditor
             if (!string.IsNullOrEmpty(formula) &&
                 (formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
                  formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0))
+                 formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 formula.IndexOf("NAME2IMG", StringComparison.OrdinalIgnoreCase) >= 0))
             {
                 var match = FormulaRefPattern.Match(formula);
                 if (match.Success)
@@ -449,6 +461,11 @@ public static partial class KetcherEditor
                         isFormulaLiteral = true;
                         initialSmiles = match.Groups["literal"].Value.Replace("\"\"", "\"");
                     }
+
+                    if (formula.IndexOf("NAME2IMG", StringComparison.OrdinalIgnoreCase) >= 0 && !string.IsNullOrWhiteSpace(initialSmiles))
+                    {
+                        initialSmiles = PubChemResolver.ResolveNameToSmiles(initialSmiles) ?? initialSmiles;
+                    }
                 }
             }
             else
@@ -456,7 +473,7 @@ public static partial class KetcherEditor
                 initialSmiles = val;
             }
 
-            using var form = new KetcherForm(targetCellToWrite.Address, initialSmiles);
+            using var form = KetcherForm.Rent(targetCellToWrite.Address, initialSmiles);
             var result = form.ShowDialog(new Win32Window(ExcelDnaUtil.WindowHandle));
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultSmiles) || !string.IsNullOrWhiteSpace(form.ResultKet)))

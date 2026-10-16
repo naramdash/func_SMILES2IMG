@@ -33,6 +33,9 @@ The custom `[SMILES]` Ribbon tab provides one-click access to all chemical struc
 * **🧬 3D Structure (Mol\*):** Opens the embedded Mol\* 3D Macromolecular Viewer. Download biological macromolecules by PDB ID or open local structure files, and insert interactive 3D models (`.glb`) or 2D images (`.png`) onto your worksheet.
 * **⚡ Quick Insert:** Converts highlighted SMILES strings into rendered structures in 0.1s. If an empty cell is selected, it automatically reads the clipboard.
 * **📋 Insert from Clipboard:** Parses clipboard text as SMILES or Ketcher KET and creates an in-cell chemical structure immediately.
+* **🖼️ Copy SVG *(New in v1.7.0)*:** Renders the selected molecule as a scalable vector graphic (`SVG`) and copies it to the Windows Clipboard for lossless pasting into Adobe Illustrator, Inkscape, or vector design tools.
+* **🎨 Batch Style *(New in v1.7.0)*:** Converts all chemical structures in the active worksheet to a unified style preset (**Standard Color (Transparent)**, **Publication B&W (ACS Monochrome)**, **White Background (Color)**, or **Dark Mode (White Ink)**) in one click.
+* **📂 SDF File (`Import .sdf` / `Export .sdf`) *(New in v1.7.0)*:** Imports multi-molecule `.sdf` chemical databases directly into an Excel table with auto-generated `=SMILES2IMG(...)`, Formula, MW, and property columns, or exports worksheet molecules back to `.sdf`.
 * **🔍 Settings & Diagnostics:** Opens the real-time engine health monitor, verifying Indigo engine loading, WebView2 bundle integrity, and formula recalculation logs.
 
 ---

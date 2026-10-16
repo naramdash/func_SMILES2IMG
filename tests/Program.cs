@@ -578,6 +578,64 @@ internal static class Program
             }
             Console.WriteLine("PASS AboutDialog UI initialization and third-party notices");
 
+            // v1.7.0 Tests: Exact Mass, Physicochemical & Drug-Likeness Properties
+            Check(aspirinInfo.LogP > 0.5 && aspirinInfo.LogP < 2.5, $"Aspirin LogP in expected range, got: {aspirinInfo.LogP}");
+            Check(aspirinInfo.Tpsa > 50 && aspirinInfo.Tpsa < 80, $"Aspirin TPSA in expected range, got: {aspirinInfo.Tpsa}");
+            Check(aspirinInfo.HBondDonors == 1, $"Aspirin HBD == 1, got: {aspirinInfo.HBondDonors}");
+            Check(aspirinInfo.HBondAcceptors >= 3, $"Aspirin HBA >= 3, got: {aspirinInfo.HBondAcceptors}");
+            Check(aspirinInfo.RotatableBonds >= 2, $"Aspirin RotBonds >= 2, got: {aspirinInfo.RotatableBonds}");
+            Check(aspirinInfo.PassesLipinski == true, "Aspirin passes Lipinski Rule of 5");
+
+            Check(Functions.SmilesExactMass("CCO") is double em1 && Math.Abs(em1 - 46.0419) < 0.01, "SMILES2EXACTMASS for CCO");
+            Check(Functions.InchiExactMass(ethanolInchi!) is double em2 && Math.Abs(em2 - 46.0419) < 0.01, "INCHI2EXACTMASS for ethanol");
+            Check(Functions.KetExactMass(sampleKet) is double em3 && Math.Abs(em3 - 32.0262) < 0.01, "KET2EXACTMASS for methanol KET");
+            Check(Functions.SmilesLogP("CC(=O)Oc1ccccc1C(=O)O") is double lp && lp > 0.5, "SMILES2LOGP for Aspirin");
+            Check(Functions.SmilesTpsa("CC(=O)Oc1ccccc1C(=O)O") is double tpsa && tpsa > 50, "SMILES2TPSA for Aspirin");
+            Check(Equals(Functions.SmilesHbd("CC(=O)Oc1ccccc1C(=O)O"), 1), "SMILES2HBD for Aspirin == 1");
+            Check(Functions.SmilesHba("CC(=O)Oc1ccccc1C(=O)O") is int hba && hba >= 3, "SMILES2HBA for Aspirin >= 3");
+            Check(Functions.SmilesRotBonds("CC(=O)Oc1ccccc1C(=O)O") is int rb && rb >= 2, "SMILES2ROTBONDS for Aspirin >= 2");
+            Check(Equals(Functions.SmilesLipinski("CC(=O)Oc1ccccc1C(=O)O"), "PASS"), "SMILES2LIPINSKI for Aspirin == PASS");
+            Console.WriteLine("PASS v1.7.0 Exact Mass, LogP, TPSA, HBD, HBA, RotBonds, and Lipinski Rule of 5");
+
+            // v1.7.0 Tests: Substructure Matching, Similarity, and Substructure Highlighting
+            Check(Equals(Functions.SmilesMatch("CC(=O)Oc1ccccc1C(=O)O", "c1ccccc1"), true), "SMILES.MATCH finds benzene in Aspirin");
+            Check(Equals(Functions.SmilesMatch("CCO", "c1ccccc1"), false), "SMILES.MATCH returns false for benzene in Ethanol");
+            Check(Functions.SmilesSimilarity("c1ccccc1", "Cc1ccccc1", "tanimoto") is double sim && sim > 0.3 && sim <= 1.0, "SMILES.SIMILARITY Tanimoto between benzene and toluene");
+            Check(Functions.SmilesSimilarity("CCO", "CCO", "tanimoto") is double simSelf && Math.Abs(simSelf - 1.0) < 1e-6, "SMILES.SIMILARITY identical molecule == 1.0");
+            Check(Functions.SmilesSimilarity("c1ccccc1", "Cc1ccccc1", "tversky") is double simTv && simTv > 0.3 && simTv <= 1.0, "SMILES.SIMILARITY Tversky");
+
+            var hlOpts = Functions.ParseOptions(null, "hl:c1ccccc1,num", null);
+            Check(hlOpts.HighlightQuery == "c1ccccc1" && hlOpts.AtomNumbers == true, "ParseOptions extracts hl:c1ccccc1 and num");
+            var hlPng = MoleculeRenderer.Render("CC(=O)Oc1ccccc1C(=O)O", hlOpts);
+            Check(hlPng != null && hlPng.Length > 200, "Substructure highlighted PNG rendered");
+            Console.WriteLine("PASS v1.7.0 SMILES.MATCH, SMILES.SIMILARITY, and Substructure Highlighting");
+
+            // v1.7.0 Tests: Reverse Name / CAS-to-Structure Resolution
+            Check(Functions.NameSmiles("Aspirin") is string aspSmiles && !string.IsNullOrEmpty(aspSmiles), "NAME2SMILES resolves Aspirin");
+            Check(Functions.NameSmiles("50-78-2") is string casSmiles && !string.IsNullOrEmpty(casSmiles), "NAME2SMILES resolves CAS 50-78-2");
+            Check(Functions.NameSmiles("Caffeine") is string cafSmiles && !string.IsNullOrEmpty(cafSmiles), "NAME2SMILES resolves Caffeine");
+            Console.WriteLine("PASS v1.7.0 NAME2SMILES & CAS-to-SMILES resolution");
+
+            // v1.7.0 Tests: Vector SVG Rendering & Clipboard Helper
+            var svgXml = MoleculeRenderer.RenderSvg("CC(=O)Oc1ccccc1C(=O)O");
+            Check(!string.IsNullOrEmpty(svgXml) && svgXml!.Contains("<svg") && svgXml.Contains("</svg>"), "MoleculeRenderer.RenderSvg generates valid SVG XML");
+            Check(SvgClipboardHelper.CopySvgToClipboard(svgXml), "SvgClipboardHelper copies SVG to Windows Clipboard");
+            Console.WriteLine("PASS v1.7.0 Vector SVG rendering & clipboard helper");
+
+            // v1.7.0 Tests: SDF File Import / Export Round-Trip
+            var sdfInput = new[]
+            {
+                new SdfRecord { Smiles = "CCO", Name = "Ethanol", Properties = new System.Collections.Generic.Dictionary<string, string> { ["Source"] = "UnitTest" } },
+                new SdfRecord { Smiles = "CC(=O)Oc1ccccc1C(=O)O", Name = "Aspirin" }
+            };
+            var sdfBytes = SdfManager.WriteSdfBytes(sdfInput);
+            Check(sdfBytes != null && sdfBytes.Length > 100, "SdfManager.WriteSdfBytes produces non-empty SDF bytes");
+            var sdfRecords = SdfManager.ReadSdfBytes(sdfBytes!);
+            Check(sdfRecords.Count == 2, $"SdfManager.ReadSdfBytes read 2 records, got: {sdfRecords.Count}");
+            Check(sdfRecords[0].Formula == "C2H6O", $"SDF record 0 formula is C2H6O, got: {sdfRecords[0].Formula}");
+            Check(sdfRecords[1].Formula == "C9H8O4", $"SDF record 1 formula is C9H8O4, got: {sdfRecords[1].Formula}");
+            Console.WriteLine("PASS v1.7.0 SDF Import / Export round-trip");
+
             return 0;
         }
         catch (Exception error) { Console.Error.WriteLine(error); return 1; }

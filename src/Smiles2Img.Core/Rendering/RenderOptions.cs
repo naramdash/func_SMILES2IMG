@@ -14,10 +14,11 @@ public sealed class RenderOptions
     public bool AllCarbons { get; set; }
     public string? Background { get; set; } = "transparent";
     public string? Transform { get; set; }
+    public string? HighlightQuery { get; set; }
 
     public string ToKeyString()
     {
-        var parts = new List<string>(8)
+        var parts = new List<string>(9)
         {
             Color ? "C" : "BW"
         };
@@ -36,11 +37,14 @@ public sealed class RenderOptions
             parts.Add("BG-" + Background!.Trim().ToLowerInvariant());
         if (!string.IsNullOrWhiteSpace(Transform))
             parts.Add("TR-" + Transform!.Trim().ToLowerInvariant());
+        if (!string.IsNullOrWhiteSpace(HighlightQuery))
+            parts.Add("HL-" + HighlightQuery!.Trim());
 
         return string.Join("_", parts);
     }
 
-    private static readonly char[] StyleSeparators = [' ', ',', '|', ';', '+', '/'];
+    private static readonly char[] PrimaryStyleSeparators = [' ', ',', '|', ';'];
+    private static readonly char[] SecondaryStyleSeparators = ['+', '/'];
     private static readonly char[] TransformSeparators = [' ', ',', '|', ';'];
 
     /// <summary>
@@ -83,44 +87,62 @@ public sealed class RenderOptions
         }
         else if (styleArg is string sStr && !string.IsNullOrWhiteSpace(sStr))
         {
-            var tokens = sStr.Split(StyleSeparators, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var rawToken in tokens)
+            var primaryTokens = sStr.Split(PrimaryStyleSeparators, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var primaryRaw in primaryTokens)
             {
-                var token = rawToken.Trim().ToLowerInvariant();
-                switch (token)
+                var trimmedPrimary = primaryRaw.Trim();
+                if (TryExtractHighlightQuery(trimmedPrimary, out var hlQuery))
                 {
-                    case "bw" or "mono" or "monochrome" or "black" or "gray" or "grayscale" or "false":
-                        options.Color = false;
-                        break;
-                    case "color" or "colour" or "cpk" or "true":
-                        options.Color = true;
-                        break;
-                    case "white" or "light":
-                        options.BaseColor = "white";
-                        break;
-                    case "num" or "number" or "numbers" or "idx" or "index" or "atom-num" or "atom-nums" or "atom-ids" or "atom-number":
-                        options.AtomNumbers = true;
-                        break;
-                    case "stereo" or "chiral" or "abs" or "ext" or "stereochemistry":
-                        options.StereoLabels = true;
-                        break;
-                    case "h" or "hydrogen" or "hydrogens" or "unfoldh" or "all-h":
-                        options.UnfoldHydrogens = true;
-                        break;
-                    case "carbon" or "carbons" or "all-c" or "c":
-                        options.AllCarbons = true;
-                        break;
-                    case "flip" or "flipx" or "flipy" or "rot90" or "rot180" or "rot270":
-                        extraTransforms.Add(token);
-                        break;
-                    default:
-                        if (token.StartsWith("ink=", StringComparison.Ordinal) ||
-                            token.StartsWith("line=", StringComparison.Ordinal) ||
-                            token.StartsWith("base=", StringComparison.Ordinal))
-                        {
-                            options.BaseColor = ColorHelper.Normalize(token);
-                        }
-                        break;
+                    options.HighlightQuery = hlQuery;
+                    continue;
+                }
+
+                var subTokens = trimmedPrimary.Split(SecondaryStyleSeparators, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var rawToken in subTokens)
+                {
+                    var trimmed = rawToken.Trim();
+                    if (TryExtractHighlightQuery(trimmed, out var subHlQuery))
+                    {
+                        options.HighlightQuery = subHlQuery;
+                        continue;
+                    }
+
+                    var token = trimmed.ToLowerInvariant();
+                    switch (token)
+                    {
+                        case "bw" or "mono" or "monochrome" or "black" or "gray" or "grayscale" or "false":
+                            options.Color = false;
+                            break;
+                        case "color" or "colour" or "cpk" or "true":
+                            options.Color = true;
+                            break;
+                        case "white" or "light":
+                            options.BaseColor = "white";
+                            break;
+                        case "num" or "number" or "numbers" or "idx" or "index" or "atom-num" or "atom-nums" or "atom-ids" or "atom-number":
+                            options.AtomNumbers = true;
+                            break;
+                        case "stereo" or "chiral" or "abs" or "ext" or "stereochemistry":
+                            options.StereoLabels = true;
+                            break;
+                        case "h" or "hydrogen" or "hydrogens" or "unfoldh" or "all-h":
+                            options.UnfoldHydrogens = true;
+                            break;
+                        case "carbon" or "carbons" or "all-c" or "c":
+                            options.AllCarbons = true;
+                            break;
+                        case "flip" or "flipx" or "flipy" or "rot90" or "rot180" or "rot270":
+                            extraTransforms.Add(token);
+                            break;
+                        default:
+                            if (token.StartsWith("ink=", StringComparison.Ordinal) ||
+                                token.StartsWith("line=", StringComparison.Ordinal) ||
+                                token.StartsWith("base=", StringComparison.Ordinal))
+                            {
+                                options.BaseColor = ColorHelper.Normalize(token);
+                            }
+                            break;
+                    }
                 }
             }
         }
@@ -141,5 +163,24 @@ public sealed class RenderOptions
             options.Transform = string.Join(",", transforms);
 
         return options;
+    }
+
+    private static bool TryExtractHighlightQuery(string token, out string query)
+    {
+        query = "";
+        string[] prefixes = ["highlight:", "highlight=", "hl:", "hl="];
+        foreach (var prefix in prefixes)
+        {
+            if (token.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            {
+                var extracted = token.Substring(prefix.Length).Trim();
+                if (!string.IsNullOrEmpty(extracted))
+                {
+                    query = extracted;
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

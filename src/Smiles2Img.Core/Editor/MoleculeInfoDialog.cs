@@ -287,6 +287,9 @@ public sealed class MoleculeInfoDialog : Form
             AddPropertyRow("Chemical Formula:", _info.Formula, _info.Formula, isBold: true);
             if (_info.ExactMass > 0)
                 AddPropertyRow("Monoisotopic Mass:", $"{_info.ExactMass:F4}", _info.ExactMass.ToString("F4"));
+            AddPropertyRow("LogP / TPSA:", $"LogP: {_info.LogP:F2}   |   TPSA: {_info.Tpsa:F1} Å²", $"LogP: {_info.LogP:F2}, TPSA: {_info.Tpsa:F1}");
+            var lipinskiStatus = _info.PassesLipinski ? "Pass" : "Violation";
+            AddPropertyRow("Lipinski Rule of 5:", $"{lipinskiStatus} (HBD: {_info.HBondDonors}, HBA: {_info.HBondAcceptors}, RotBonds: {_info.RotatableBonds})", $"{lipinskiStatus} (HBD={_info.HBondDonors}, HBA={_info.HBondAcceptors}, RotBonds={_info.RotatableBonds})");
         }
 
         AddPropertyRow("Canonical SMILES:", _info.Smiles, _info.Smiles, isCode: true);

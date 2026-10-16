@@ -66,7 +66,7 @@ public static class ExcelMolstarManager
             }
             catch { }
 
-            using var form = new MolstarForm("Excel Worksheet", initialPdb);
+            using var form = MolstarForm.Rent("Excel Worksheet", initialPdb);
             var result = form.ShowDialog(new Win32Window(ExcelDnaUtil.WindowHandle));
 
             if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))
@@ -126,7 +126,7 @@ public static class ExcelMolstarManager
                 catch { }
             }
 
-            using var form = new MolstarForm("Excel Worksheet", meta.Pdb, snapshotJson);
+            using var form = MolstarForm.Rent("Excel Worksheet", meta.Pdb, snapshotJson);
             var result = form.ShowDialog(new Win32Window(ExcelDnaUtil.WindowHandle));
 
             if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))

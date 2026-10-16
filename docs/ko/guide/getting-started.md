@@ -12,6 +12,13 @@
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
+::: tip 💡 프리뷰 릴리즈 (`v1.7.0-preview.1`) 설치
+부분구조 검색/유사도(`=SMILES.MATCH`, `=SMILES.SIMILARITY`), 약물성 지표(LogP/TPSA/Lipinski), 이름/CAS 번호 역변환(`=NAME2IMG`), 벡터 SVG 복사, 일괄 스타일 변환(`Batch Style`), SDF 파일 입출력(`SDF File`)이 포함된 최신 프리뷰 버전을 설치하려면 아래와 같이 실행하세요:
+```powershell
+$v='v1.7.0-preview.1'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+```
+:::
+
 ### 설치 스크립트가 자동으로 수행하는 작업
 1. **Office 환경 자동 감지:** 설치된 Office가 32비트(`x86`)인지 64비트(`x64`)인지 확인하고 Excel, Word, PowerPoint 설치 여부를 판별합니다.
 2. **최신 바이너리 다운로드:** GitHub Releases 최신 통합 배포 패키지를 다운로드합니다.

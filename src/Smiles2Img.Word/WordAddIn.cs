@@ -105,6 +105,13 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   imageMso=""Copy""
                   size=""large""
                   onAction=""OnCopyKet"" />
+          <button id=""btnWordCopySvg""
+                  label=""Copy SVG""
+                  screentip=""Copy Scalable Vector Graphics (SVG)""
+                  supertip=""Renders the selected molecule or reaction into crisp vector SVG and copies it to the clipboard for Office 365, Illustrator, Inkscape, or HTML.""
+                  imageMso=""Copy""
+                  size=""large""
+                  onAction=""OnCopySvg"" />
           <menu id=""menuRibbonWordMoleculeInfo""
                 label=""Molecule Info""
                 screentip=""Copy Molecule Info &amp; Substance Properties""
@@ -135,6 +142,10 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                     label=""Copy InChIKey""
                     imageMso=""Copy""
                     onAction=""OnCopyInchiKey"" />
+            <button id=""btnRibbonWordSubCopySvg""
+                    label=""Copy Vector SVG""
+                    imageMso=""Copy""
+                    onAction=""OnCopySvg"" />
             <button id=""btnRibbonWordCopyAllSummary""
                     label=""Copy All Summary (Text)""
                     imageMso=""FileDocumentInspect""
@@ -144,6 +155,29 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                     label=""Detailed Molecule Info Window...""
                     imageMso=""GroupTaskProperties""
                     onAction=""OnCopyMoleculeInfo"" />
+          </menu>
+          <menu id=""menuRibbonWordBatchStyle""
+                label=""Batch Style""
+                screentip=""Batch Normalize Document Molecule Styles""
+                supertip=""Convert all molecular structures in the active Word document to a unified style preset in one click.""
+                imageMso=""ColorGallery""
+                size=""large"">
+            <button id=""btnWordBatchStyleColorTrans""
+                    label=""Standard Color (Transparent)""
+                    imageMso=""ColorGallery""
+                    onAction=""OnBatchStyleColorTrans"" />
+            <button id=""btnWordBatchStyleBw""
+                    label=""Publication B&amp;W (ACS Monochrome)""
+                    imageMso=""ContrastGallery""
+                    onAction=""OnBatchStyleBw"" />
+            <button id=""btnWordBatchStyleWhiteBg""
+                    label=""White Background (Color)""
+                    imageMso=""ShapeFillColorPicker""
+                    onAction=""OnBatchStyleWhiteBg"" />
+            <button id=""btnWordBatchStyleDark""
+                    label=""Dark Mode (White Ink)""
+                    imageMso=""ThemeColorsGallery""
+                    onAction=""OnBatchStyleDark"" />
           </menu>
         </group>
         <group id=""grpWordAbout"" label=""About"">
@@ -184,6 +218,11 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               label=""Copy Canvas Data (KET)""
               imageMso=""Copy""
               onAction=""OnCopyKet""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextInlineCopySvg""
+              label=""Copy Vector SVG""
+              imageMso=""Copy""
+              onAction=""OnCopySvg""
               insertBeforeMso=""Cut"" />
       <menu id=""menuContextInlineMoleculeInfo""
             label=""Copy Molecule Info""
@@ -251,6 +290,11 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               imageMso=""Copy""
               onAction=""OnCopyKet""
               insertBeforeMso=""Cut"" />
+      <button id=""btnContextPictureCopySvg""
+              label=""Copy Vector SVG""
+              imageMso=""Copy""
+              onAction=""OnCopySvg""
+              insertBeforeMso=""Cut"" />
       <menu id=""menuContextPictureMoleculeInfo""
             label=""Copy Molecule Info""
             imageMso=""GroupTaskProperties""
@@ -316,6 +360,11 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
               label=""Copy Canvas Data (KET)""
               imageMso=""Copy""
               onAction=""OnCopyKet""
+              insertBeforeMso=""Cut"" />
+      <button id=""btnContextShapeCopySvg""
+              label=""Copy Vector SVG""
+              imageMso=""Copy""
+              onAction=""OnCopySvg""
               insertBeforeMso=""Cut"" />
       <menu id=""menuContextShapeMoleculeInfo""
             label=""Copy Molecule Info""
@@ -387,6 +436,10 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Copy Canvas Data (KET)""
                 imageMso=""Copy""
                 onAction=""OnCopyKet"" />
+        <button id=""btnContextTextCopySvg""
+                label=""Copy Vector SVG""
+                imageMso=""Copy""
+                onAction=""OnCopySvg"" />
         <menuSeparator id=""sepContextWordTextSubInfo"" />
         <menu id=""menuContextWordTextMoleculeInfo""
               label=""Copy Molecule Info""
@@ -458,6 +511,10 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Copy Canvas Data (KET)""
                 imageMso=""Copy""
                 onAction=""OnCopyKet"" />
+        <button id=""btnContextTableCopySvg""
+                label=""Copy Vector SVG""
+                imageMso=""Copy""
+                onAction=""OnCopySvg"" />
         <menuSeparator id=""sepContextWordTableSubInfo"" />
         <menu id=""menuContextWordTableMoleculeInfo""
               label=""Copy Molecule Info""
@@ -554,6 +611,36 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
     {
         if (wordApp == null) return;
         WordStructureManager.CopySelectedMoleculeKet(wordApp);
+    }
+
+    public void OnCopySvg(IRibbonControl control)
+    {
+        if (wordApp == null) return;
+        WordStructureManager.CopySelectedMoleculeSvg(wordApp);
+    }
+
+    public void OnBatchStyleColorTrans(IRibbonControl control)
+    {
+        if (wordApp == null) return;
+        WordStructureManager.ApplyBatchStyle(wordApp, "trans", "color", "Standard Color (Transparent)");
+    }
+
+    public void OnBatchStyleBw(IRibbonControl control)
+    {
+        if (wordApp == null) return;
+        WordStructureManager.ApplyBatchStyle(wordApp, "trans", "bw", "Publication B&W");
+    }
+
+    public void OnBatchStyleWhiteBg(IRibbonControl control)
+    {
+        if (wordApp == null) return;
+        WordStructureManager.ApplyBatchStyle(wordApp, "white", "color", "White Background");
+    }
+
+    public void OnBatchStyleDark(IRibbonControl control)
+    {
+        if (wordApp == null) return;
+        WordStructureManager.ApplyBatchStyle(wordApp, "trans", "white", "Dark Mode (White Ink)");
     }
 
     public void OnCopyMoleculeInfo(IRibbonControl control)

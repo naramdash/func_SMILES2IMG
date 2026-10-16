@@ -22,12 +22,18 @@ public sealed class KetcherForm : Form
     private static extern bool DestroyIcon(IntPtr handle);
 
     private static readonly Icon? AppIcon = CreateAppIcon();
+    private static CoreWebView2Environment? _sharedEnvironment;
+    private static KetcherForm? _pooledInstance;
 
     private readonly WebView2 webView;
-    private readonly string cellAddress;
-    private readonly string initialStructure;
+    private string cellAddress;
+    private string initialStructure;
     private bool initialized;
+    private bool isWebViewReady;
+    private bool needsReinitOnShow;
+    private bool _forceDispose;
 
+    public bool IsPooled { get; set; }
     public string? ResultSmiles { get; private set; }
     public string? ResultKet { get; private set; }
     public string? ResultMolfile { get; private set; }
@@ -36,19 +42,31 @@ public sealed class KetcherForm : Form
     public bool AutoApplyAfterLoadForTest { get; set; }
     public bool ToggleWhiteBackgroundForTest { get; set; }
 
+    /// <summary>
+    /// Rents a warm, reusable KetcherForm instance so subsequent editor launches open in &lt;50ms
+    /// without re-initializing WebView2 or reloading the Ketcher React bundle.
+    /// </summary>
+    public static KetcherForm Rent(string cellAddress, string initialStructure)
+    {
+        if (_pooledInstance != null && !_pooledInstance.IsDisposed)
+        {
+            _pooledInstance.Reconfigure(cellAddress, initialStructure);
+            return _pooledInstance;
+        }
+
+        _pooledInstance = new KetcherForm(cellAddress, initialStructure)
+        {
+            IsPooled = true
+        };
+        return _pooledInstance;
+    }
+
     public KetcherForm(string cellAddress, string initialStructure)
     {
         this.cellAddress = cellAddress ?? "";
         this.initialStructure = initialStructure ?? "";
 
-        string titleContext = this.cellAddress switch
-        {
-            "Word" => "Word Document",
-            "PowerPoint" => "PowerPoint Slide",
-            "" => "Chemical Structure",
-            _ => $"Excel [{this.cellAddress}]"
-        };
-        Text = $"EPAM Ketcher Molecular Editor - {titleContext}";
+        UpdateWindowTitle();
 
         float dpiScale = 1.0f;
         try
@@ -77,14 +95,46 @@ public sealed class KetcherForm : Form
         };
         Controls.Add(webView);
 
-        Shown += async (s, e) =>
+        VisibleChanged += async (s, e) =>
         {
+            if (!Visible) return;
             if (!initialized)
             {
                 initialized = true;
                 await InitializeWebViewAsync();
             }
+            else if (needsReinitOnShow && isWebViewReady)
+            {
+                needsReinitOnShow = false;
+                SendInitScriptToWebView();
+            }
         };
+    }
+
+    public void Reconfigure(string newCellAddress, string newInitialStructure)
+    {
+        cellAddress = newCellAddress ?? "";
+        initialStructure = newInitialStructure ?? "";
+        ResultSmiles = null;
+        ResultKet = null;
+        ResultMolfile = null;
+        ResultPngBytes = null;
+        ResultBackground = "transparent";
+        DialogResult = DialogResult.None;
+        UpdateWindowTitle();
+        needsReinitOnShow = true;
+    }
+
+    private void UpdateWindowTitle()
+    {
+        string titleContext = cellAddress switch
+        {
+            "Word" => "Word Document",
+            "PowerPoint" => "PowerPoint Slide",
+            "" => "Chemical Structure",
+            _ => $"Excel [{cellAddress}]"
+        };
+        Text = $"EPAM Ketcher Molecular Editor - {titleContext}";
     }
 
     private async Task InitializeWebViewAsync()
@@ -104,19 +154,18 @@ public sealed class KetcherForm : Form
             var procUserDataFolder = Path.Combine(baseUserDataFolder, procName);
             Directory.CreateDirectory(procUserDataFolder);
 
-            CoreWebView2Environment env;
             try
             {
-                env = await CoreWebView2Environment.CreateAsync(null, procUserDataFolder, null);
-                await webView.EnsureCoreWebView2Async(env);
+                _sharedEnvironment ??= await CoreWebView2Environment.CreateAsync(null, procUserDataFolder, null);
+                await webView.EnsureCoreWebView2Async(_sharedEnvironment);
             }
             catch (Exception ex) when (ex.HResult == unchecked((int)0x800700AA) || ex.Message.Contains("0x800700AA") || ex.Message.IndexOf("in use", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 // Fallback to a dedicated unique session directory if locked by an orphaned browser process
                 string fallbackFolder = Path.Combine(Path.GetTempPath(), "Smiles2Img_WV2_" + procName + "_" + Guid.NewGuid().ToString("N"));
                 Directory.CreateDirectory(fallbackFolder);
-                env = await CoreWebView2Environment.CreateAsync(null, fallbackFolder, null);
-                await webView.EnsureCoreWebView2Async(env);
+                _sharedEnvironment = await CoreWebView2Environment.CreateAsync(null, fallbackFolder, null);
+                await webView.EnsureCoreWebView2Async(_sharedEnvironment);
             }
 
             webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
@@ -133,6 +182,7 @@ public sealed class KetcherForm : Form
         }
         catch (Exception ex)
         {
+            _forceDispose = true;
             string msg = ex.Message;
             if (ex is DllNotFoundException || ex.GetType().Name.Contains("WebView2"))
             {
@@ -148,6 +198,67 @@ public sealed class KetcherForm : Form
         }
     }
 
+    private void SendInitScriptToWebView()
+    {
+        if (webView.CoreWebView2 == null) return;
+
+        string buttonText = cellAddress switch
+        {
+            "Word" => "Apply to Document (Ctrl+Enter)",
+            "PowerPoint" => "Apply to Slide (Ctrl+Enter)",
+            "Canvas" => "Apply to Sheet (Ctrl+Enter)",
+            _ => "Apply to Cell (Ctrl+Enter)"
+        };
+        string badgeText = cellAddress switch
+        {
+            "Word" => "Word Document (Cursor)",
+            "PowerPoint" => "PowerPoint (Active Slide)",
+            "Canvas" => "Excel Sheet (Canvas)",
+            _ => string.IsNullOrEmpty(cellAddress) ? "Chemical Structure" : $"Cell: {cellAddress}"
+        };
+
+        var clearOrLoadJs = string.IsNullOrWhiteSpace(initialStructure)
+            ? "if (window.ketcher && window.ketcher.setMolecule) { window.ketcher.setMolecule(''); }"
+            : "";
+
+        var script = $@"
+            currentBackground = 'transparent';
+            var dot = document.getElementById('bg-dot'); if (dot) dot.className = 'bg-dot transparent';
+            var lbl = document.getElementById('bg-label'); if (lbl) lbl.innerText = 'Background: Transparent';
+            if (window.initEditor) {{
+                window.initEditor('{EscapeJs(cellAddress)}', '{EscapeJs(initialStructure)}');
+            }}
+            {clearOrLoadJs}
+            var b = document.getElementById('btn-apply');
+            if (b) b.innerText = '{EscapeJs(buttonText)}';
+            var ind = document.getElementById('cell-indicator');
+            if (ind) ind.innerText = '{EscapeJs(badgeText)}';
+        ";
+        if (AutoApplyAfterLoadForTest)
+        {
+            var toggleJs = ToggleWhiteBackgroundForTest ? "if (window.toggleBackground) window.toggleBackground();" : "";
+            script += $@"
+                (function() {{
+                    var attempts = 0;
+                    var iv = setInterval(function() {{
+                        attempts++;
+                        if (window.ketcher && window.ketcher.editor && window.ketcher.editor.render && window.ketcher.editor.render.paper) {{
+                            clearInterval(iv);
+                            setTimeout(function() {{
+                                {toggleJs}
+                                if (window.onApply) window.onApply();
+                            }}, 1000);
+                        }} else if (attempts > 100) {{
+                            clearInterval(iv);
+                            if (window.onApply) window.onApply();
+                        }}
+                    }}, 100);
+                }})();
+            ";
+        }
+        webView.ExecuteScriptAsync(script);
+    }
+
     private void OnWebMessageReceived(object? sender, CoreWebView2WebMessageReceivedEventArgs e)
     {
         try
@@ -157,53 +268,9 @@ public sealed class KetcherForm : Form
 
             if (msg == "ready")
             {
-                string buttonText = cellAddress switch
-                {
-                    "Word" => "Apply to Document (Ctrl+Enter)",
-                    "PowerPoint" => "Apply to Slide (Ctrl+Enter)",
-                    "Canvas" => "Apply to Sheet (Ctrl+Enter)",
-                    _ => "Apply to Cell (Ctrl+Enter)"
-                };
-                string badgeText = cellAddress switch
-                {
-                    "Word" => "Word Document (Cursor)",
-                    "PowerPoint" => "PowerPoint (Active Slide)",
-                    "Canvas" => "Excel Sheet (Canvas)",
-                    _ => string.IsNullOrEmpty(cellAddress) ? "Chemical Structure" : $"Cell: {cellAddress}"
-                };
-
-                var script = $@"
-                    if (window.initEditor) {{
-                        window.initEditor('{EscapeJs(cellAddress)}', '{EscapeJs(initialStructure)}');
-                    }}
-                    var b = document.getElementById('btn-apply');
-                    if (b) b.innerText = '{EscapeJs(buttonText)}';
-                    var ind = document.getElementById('cell-indicator');
-                    if (ind) ind.innerText = '{EscapeJs(badgeText)}';
-                ";
-                if (AutoApplyAfterLoadForTest)
-                {
-                    var toggleJs = ToggleWhiteBackgroundForTest ? "if (window.toggleBackground) window.toggleBackground();" : "";
-                    script += $@"
-                        (function() {{
-                            var attempts = 0;
-                            var iv = setInterval(function() {{
-                                attempts++;
-                                if (window.ketcher && window.ketcher.editor && window.ketcher.editor.render && window.ketcher.editor.render.paper) {{
-                                    clearInterval(iv);
-                                    setTimeout(function() {{
-                                        {toggleJs}
-                                        if (window.onApply) window.onApply();
-                                    }}, 1000);
-                                }} else if (attempts > 100) {{
-                                    clearInterval(iv);
-                                    if (window.onApply) window.onApply();
-                                }}
-                            }}, 100);
-                        }})();
-                    ";
-                }
-                webView.ExecuteScriptAsync(script);
+                isWebViewReady = true;
+                needsReinitOnShow = false;
+                SendInitScriptToWebView();
             }
             else if (msg.StartsWith("{", StringComparison.Ordinal) && msg.Contains("\"action\":\"apply\""))
             {
@@ -317,6 +384,11 @@ public sealed class KetcherForm : Form
 
     protected override void Dispose(bool disposing)
     {
+        if (IsPooled && !_forceDispose)
+        {
+            return;
+        }
+
         if (disposing)
         {
             webView?.Dispose();

@@ -35,7 +35,7 @@ public static class WordStructureManager
             }
 
             var hwnd = GetHwnd(app);
-            using var form = new KetcherForm("Word", "");
+            using var form = KetcherForm.Rent("Word", "");
             var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
@@ -88,7 +88,7 @@ public static class WordStructureManager
             }
 
             var hwnd = GetHwnd(app);
-            using var form = new KetcherForm("Word", currentStructure ?? "");
+            using var form = KetcherForm.Rent("Word", currentStructure ?? "");
             var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
@@ -143,7 +143,7 @@ public static class WordStructureManager
             }
 
             var hwnd = GetHwnd(app);
-            using var form = new MolstarForm("Word", "");
+            using var form = MolstarForm.Rent("Word", "");
             var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
             if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))
@@ -206,7 +206,7 @@ public static class WordStructureManager
             }
 
             var hwnd = GetHwnd(app);
-            using var form = new MolstarForm("Word", meta.Pdb, snapshotJson);
+            using var form = MolstarForm.Rent("Word", meta.Pdb, snapshotJson);
             var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
             if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))
@@ -932,6 +932,125 @@ public static class WordStructureManager
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
+    }
+
+    public static void CopySelectedMoleculeSvg(MSWord.Application app)
+    {
+        try
+        {
+            var sel = app.Selection;
+            string? targetData = null;
+
+            if (sel != null)
+            {
+                if (sel.InlineShapes.Count > 0)
+                {
+                    var targetInline = sel.InlineShapes[1];
+                    targetData = ExtractStructure(targetInline.AlternativeText, targetInline.Title)
+                                 ?? ExtractSmiles(targetInline.Title, targetInline.AlternativeText);
+                }
+                else if (sel.ShapeRange.Count > 0)
+                {
+                    var targetShape = sel.ShapeRange[1];
+                    targetData = ExtractStructure(targetShape.AlternativeText, targetShape.Title)
+                                 ?? ExtractSmiles(targetShape.Title, targetShape.AlternativeText);
+                }
+                else if (sel.Start != sel.End && !string.IsNullOrWhiteSpace(sel.Text))
+                {
+                    targetData = sel.Text.Trim();
+                }
+            }
+
+            var svg = MoleculeRenderer.RenderSvg(targetData);
+            if (string.IsNullOrEmpty(svg) || !SvgClipboardHelper.CopySvgToClipboard(svg))
+            {
+                MoleculeNotification.NotifyWarning("Copy SVG", "Could not render SVG from the selected structure or text.");
+                return;
+            }
+
+            MoleculeNotification.NotifyCopied("Vector SVG", "Scalable SVG copied to clipboard");
+        }
+        catch (Exception ex)
+        {
+            MoleculeNotification.NotifyWarning("Copy SVG", "Error copying SVG: " + ex.Message);
+        }
+    }
+
+    public static int ApplyBatchStyle(MSWord.Application app, string background, string style, string presetLabel = "Preset")
+    {
+        int updated = 0;
+        try
+        {
+            if (app.Documents.Count == 0 || app.ActiveDocument == null)
+                return 0;
+
+            var doc = app.ActiveDocument;
+            var options = RenderOptions.Parse(background, style, null);
+
+            var inlineList = new System.Collections.Generic.List<MSWord.InlineShape>();
+            foreach (MSWord.InlineShape s in doc.InlineShapes)
+            {
+                try
+                {
+                    if (StructureMetadata.IsMolstar(s.AlternativeText, s.Title))
+                        continue;
+                    if (!string.IsNullOrEmpty(ExtractStructure(s.AlternativeText, s.Title)))
+                        inlineList.Add(s);
+                }
+                catch { }
+            }
+
+            foreach (var s in inlineList)
+            {
+                try
+                {
+                    var raw = ExtractStructure(s.AlternativeText, s.Title);
+                    if (MoleculeRenderer.TryRenderStructure(raw, options, out var pngBytes, out var ket, out var smiles) && pngBytes != null)
+                    {
+                        ReplaceInlineShape(s, ket, smiles ?? "", pngBytes);
+                        updated++;
+                    }
+                }
+                catch { }
+            }
+
+            var floatList = new System.Collections.Generic.List<MSWord.Shape>();
+            foreach (MSWord.Shape s in doc.Shapes)
+            {
+                try
+                {
+                    if (StructureMetadata.IsMolstar(s.AlternativeText, s.Title))
+                        continue;
+                    if (!string.IsNullOrEmpty(ExtractStructure(s.AlternativeText, s.Title)))
+                        floatList.Add(s);
+                }
+                catch { }
+            }
+
+            foreach (var s in floatList)
+            {
+                try
+                {
+                    var raw = ExtractStructure(s.AlternativeText, s.Title);
+                    if (MoleculeRenderer.TryRenderStructure(raw, options, out var pngBytes, out var ket, out var smiles) && pngBytes != null)
+                    {
+                        ReplaceShape(s, ket, smiles ?? "", pngBytes);
+                        updated++;
+                    }
+                }
+                catch { }
+            }
+
+            if (updated > 0)
+                MoleculeNotification.NotifyCopied("Batch Style", $"Updated {updated} structure(s) to {presetLabel}");
+            else
+                MoleculeNotification.NotifyWarning("Batch Style", "No SMILES structures found in the active document.");
+        }
+        catch (Exception ex)
+        {
+            MoleculeNotification.NotifyWarning("Batch Style", "Error applying batch style: " + ex.Message);
+        }
+        return updated;
     }
 
     private static IntPtr GetHwnd(MSWord.Application app)

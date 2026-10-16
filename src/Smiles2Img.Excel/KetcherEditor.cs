@@ -547,4 +547,336 @@ public enum StructureFormatPreference
             LogDisplay.WriteLine("Mol* edit error: " + ex.Message);
         }
     }
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy as Vector SVG")]
+    public static void CopySelectedMoleculeSvgCommand()
+    {
+        try
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            var targetShape = GetSelectedShape(app);
+            string? targetData = null;
+
+            if (targetShape != null)
+                targetData = ExtractStructure(targetShape) ?? ExtractSmiles(targetShape);
+            else if (app.ActiveCell is Excel.Range cell)
+                targetData = ExtractKetFromCell(cell) ?? ExtractSmilesFromCell(cell);
+
+            var svg = MoleculeRenderer.RenderSvg(targetData);
+            if (string.IsNullOrEmpty(svg) || !SvgClipboardHelper.CopySvgToClipboard(svg))
+            {
+                MoleculeNotification.NotifyWarning("Copy SVG", "Could not render SVG from the selected cell or object.");
+                return;
+            }
+
+            MoleculeNotification.NotifyCopied("Vector SVG", "Scalable SVG copied to clipboard");
+        }
+        catch (Exception ex)
+        {
+            MoleculeNotification.NotifyWarning("Copy SVG", "Error copying SVG: " + ex.Message);
+        }
+    }
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Batch Style: Standard Color (Transparent)")]
+    public static void BatchStyleColorTransCommand()
+        => ApplyBatchStyle("trans", "color", "Standard Color (Transparent)");
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Batch Style: Publication B&W (ACS Style)")]
+    public static void BatchStyleBwCommand()
+        => ApplyBatchStyle("trans", "bw", "Publication B&W");
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Batch Style: White Background (Color)")]
+    public static void BatchStyleWhiteBgCommand()
+        => ApplyBatchStyle("white", "color", "White Background");
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Batch Style: Dark Mode (White Ink)")]
+    public static void BatchStyleDarkCommand()
+        => ApplyBatchStyle("trans", "white", "Dark Mode (White Ink)");
+
+    public static int ApplyBatchStyle(string background, string style, string presetLabel = "Preset")
+    {
+        int updated = 0;
+        try
+        {
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            if (app.ActiveSheet is not Excel.Worksheet sheet) return 0;
+
+            var options = RenderOptions.Parse(background, style, null);
+            var formulaRegex = new System.Text.RegularExpressions.Regex(
+                @"^=\s*(?<fn>(?:SMILES2IMG|KET2IMG|INCHI2IMG|NAME2IMG)(?:\.FLOAT)?)\s*\(\s*(?<arg1>""(?:""""|[^""])*""|[^,)]+)(?:\s*,\s*[^,)]*)*\s*\)\s*$",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+            var used = sheet.UsedRange;
+            if (used != null)
+            {
+                int rows = Math.Min(used.Rows.Count, 500);
+                int cols = Math.Min(used.Columns.Count, 50);
+                for (int r = 1; r <= rows; r++)
+                {
+                    for (int c = 1; c <= cols; c++)
+                    {
+                        try
+                        {
+                            var cell = (Excel.Range)used.Cells[r, c];
+                            string formula = Convert.ToString((object?)cell.Formula) ?? "";
+                            if (string.IsNullOrEmpty(formula) || !formula.StartsWith("=", StringComparison.Ordinal))
+                                continue;
+
+                            var m = formulaRegex.Match(formula);
+                            if (m.Success)
+                            {
+                                var fn = m.Groups["fn"].Value;
+                                var arg1 = m.Groups["arg1"].Value.Trim();
+                                cell.Formula = $"={fn}({arg1}, \"{background}\", \"{style}\")";
+                                updated++;
+                            }
+                        }
+                        catch { }
+                    }
+                }
+            }
+
+            // Also update standalone canvas shapes (not managed by FloatingPictures)
+            try
+            {
+                var shapesToUpdate = new System.Collections.Generic.List<Excel.Shape>();
+                foreach (Excel.Shape s in sheet.Shapes)
+                {
+                    string? title = null;
+                    try { title = s.Title; } catch { }
+                    if (!string.IsNullOrEmpty(title) && FloatingPictures.TryParseTitle(title, out _, out _))
+                        continue; // Managed by formula
+
+                    if (StructureMetadata.IsMolstar(s.AlternativeText, title))
+                        continue;
+
+                    if (!string.IsNullOrEmpty(ExtractStructure(s)))
+                        shapesToUpdate.Add(s);
+                }
+
+                foreach (var s in shapesToUpdate)
+                {
+                    var raw = ExtractStructure(s);
+                    if (MoleculeRenderer.TryRenderStructure(raw, options, out var pngBytes, out var ket, out var smiles) && pngBytes != null)
+                    {
+                        ReplaceShape(s, ket, smiles, pngBytes);
+                        updated++;
+                    }
+                }
+            }
+            catch { }
+
+            if (updated > 0)
+                MoleculeNotification.NotifyCopied("Batch Style", $"Updated {updated} structure(s) to {presetLabel}");
+            else
+                MoleculeNotification.NotifyWarning("Batch Style", "No SMILES structures found on the active sheet.");
+        }
+        catch (Exception ex)
+        {
+            MoleculeNotification.NotifyWarning("Batch Style", "Error applying batch style: " + ex.Message);
+        }
+        return updated;
+    }
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Import SDF File...")]
+    public static void ImportSdfCommand()
+    {
+        try
+        {
+            using var ofd = new OpenFileDialog
+            {
+                Title = "Import Chemical Structure Data File (.sdf)",
+                Filter = "MDL Structure Data Files (*.sdf;*.mol)|*.sdf;*.mol|All Files (*.*)|*.*",
+                Multiselect = false
+            };
+
+            var hwnd = ExcelDnaUtil.WindowHandle;
+            var dr = hwnd != IntPtr.Zero ? ofd.ShowDialog(new Win32Window(hwnd)) : ofd.ShowDialog();
+            if (dr != DialogResult.OK || string.IsNullOrWhiteSpace(ofd.FileName))
+                return;
+
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            int count = ImportSdfFromFile(app, ofd.FileName);
+            if (count > 0)
+                MoleculeNotification.NotifyCopied("SDF Import", $"Imported {count} molecule(s) from {System.IO.Path.GetFileName(ofd.FileName)}");
+            else
+                MoleculeNotification.NotifyWarning("SDF Import", "No valid molecules found in the selected SDF file.");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error importing SDF file:\n" + ex.Message, "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    public static int ImportSdfFromFile(Excel.Application app, string filePath)
+    {
+        if (app.ActiveSheet is not Excel.Worksheet sheet)
+            return 0;
+
+        var records = SdfManager.ReadSdfFile(filePath, maxRecords: 500);
+        if (records.Count == 0)
+            return 0;
+
+        bool prevScreenUpdating = app.ScreenUpdating;
+        try
+        {
+            app.ScreenUpdating = false;
+
+            int startRow = 1;
+            try
+            {
+                var used = sheet.UsedRange;
+                if (used != null && (used.Rows.Count > 1 || used.Columns.Count > 1 || Convert.ToString((object?)((Excel.Range)sheet.Cells[1, 1]).Value2) != null))
+                {
+                    startRow = used.Row + used.Rows.Count + 1;
+                }
+            }
+            catch { }
+
+            // Header row
+            string[] headers = ["Name", "Structure", "SMILES", "Formula", "MW (g/mol)", "Exact Mass", "LogP", "Lipinski"];
+            for (int c = 0; c < headers.Length; c++)
+            {
+                var hCell = (Excel.Range)sheet.Cells[startRow, c + 1];
+                hCell.Value2 = headers[c];
+                hCell.Font.Bold = true;
+            }
+
+            try
+            {
+                ((Excel.Range)sheet.Columns[1]).ColumnWidth = 18;
+                ((Excel.Range)sheet.Columns[2]).ColumnWidth = 18;
+                ((Excel.Range)sheet.Columns[3]).ColumnWidth = 28;
+                ((Excel.Range)sheet.Columns[4]).ColumnWidth = 14;
+                ((Excel.Range)sheet.Columns[5]).ColumnWidth = 12;
+                ((Excel.Range)sheet.Columns[6]).ColumnWidth = 14;
+                ((Excel.Range)sheet.Columns[7]).ColumnWidth = 10;
+                ((Excel.Range)sheet.Columns[8]).ColumnWidth = 10;
+            }
+            catch { }
+
+            string imgFunc = CellImages.NativeImagesUnsupported ? "SMILES2IMG.FLOAT" : "SMILES2IMG";
+            int imported = 0;
+            for (int i = 0; i < records.Count; i++)
+            {
+                var rec = records[i];
+                int row = startRow + 1 + i;
+                var rowRange = (Excel.Range)sheet.Rows[row];
+                try { if (Convert.ToDouble(rowRange.RowHeight) < 75) rowRange.RowHeight = 80; } catch { }
+
+                ((Excel.Range)sheet.Cells[row, 1]).Value2 = !string.IsNullOrWhiteSpace(rec.Name) ? rec.Name : $"Compound #{i + 1}";
+                ((Excel.Range)sheet.Cells[row, 3]).Value2 = rec.Smiles;
+                ((Excel.Range)sheet.Cells[row, 2]).Formula = $"={imgFunc}(C{row})";
+                ((Excel.Range)sheet.Cells[row, 4]).Formula = $"=SMILES2FORMULA(C{row})";
+                ((Excel.Range)sheet.Cells[row, 5]).Formula = $"=SMILES2MW(C{row})";
+                ((Excel.Range)sheet.Cells[row, 6]).Formula = $"=SMILES2EXACTMASS(C{row})";
+                ((Excel.Range)sheet.Cells[row, 7]).Formula = $"=SMILES2LOGP(C{row})";
+                ((Excel.Range)sheet.Cells[row, 8]).Formula = $"=SMILES2LIPINSKI(C{row})";
+                imported++;
+            }
+
+            return imported;
+        }
+        finally
+        {
+            try { app.ScreenUpdating = prevScreenUpdating; } catch { }
+        }
+    }
+
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Export Sheet to SDF...")]
+    public static void ExportSdfCommand()
+    {
+        try
+        {
+            using var sfd = new SaveFileDialog
+            {
+                Title = "Export Worksheet Molecules to SDF (.sdf)",
+                Filter = "MDL Structure Data File (*.sdf)|*.sdf|All Files (*.*)|*.*",
+                FileName = "molecules_export.sdf",
+                DefaultExt = "sdf"
+            };
+
+            var hwnd = ExcelDnaUtil.WindowHandle;
+            var dr = hwnd != IntPtr.Zero ? sfd.ShowDialog(new Win32Window(hwnd)) : sfd.ShowDialog();
+            if (dr != DialogResult.OK || string.IsNullOrWhiteSpace(sfd.FileName))
+                return;
+
+            var app = (Excel.Application)ExcelDnaUtil.Application;
+            int count = ExportSdfToFile(app, sfd.FileName);
+            if (count > 0)
+                MoleculeNotification.NotifyCopied("SDF Export", $"Exported {count} molecule(s) to {System.IO.Path.GetFileName(sfd.FileName)}");
+            else
+                MoleculeNotification.NotifyWarning("SDF Export", "No valid SMILES structures found on the active worksheet to export.");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error exporting SDF file:\n" + ex.Message, "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    public static int ExportSdfToFile(Excel.Application app, string filePath)
+    {
+        if (app.ActiveSheet is not Excel.Worksheet sheet)
+            return 0;
+
+        var records = new System.Collections.Generic.List<SdfRecord>();
+        var seenSmilesRows = new System.Collections.Generic.HashSet<int>();
+
+        var used = sheet.UsedRange;
+        if (used != null)
+        {
+            int rows = Math.Min(used.Rows.Count, 1000);
+            int cols = Math.Min(used.Columns.Count, 30);
+
+            for (int r = 1; r <= rows; r++)
+            {
+                string? rowSmiles = null;
+                string? rowName = null;
+
+                for (int c = 1; c <= cols; c++)
+                {
+                    try
+                    {
+                        var cell = (Excel.Range)used.Cells[r, c];
+                        string? extracted = ExtractSmilesFromCell(cell);
+                        if (!string.IsNullOrWhiteSpace(extracted) && string.IsNullOrEmpty(rowSmiles))
+                        {
+                            rowSmiles = extracted;
+                        }
+                        else
+                        {
+                            string val = Convert.ToString((object?)cell.Value2)?.Trim() ?? "";
+                            string formula = Convert.ToString((object?)cell.Formula) ?? "";
+                            if (string.IsNullOrEmpty(rowName) &&
+                                !string.IsNullOrEmpty(val) &&
+                                !formula.StartsWith("=", StringComparison.Ordinal) &&
+                                !string.Equals(val, "Name", StringComparison.OrdinalIgnoreCase) &&
+                                !string.Equals(val, "SMILES", StringComparison.OrdinalIgnoreCase) &&
+                                !IsLikelySmiles(val) &&
+                                !double.TryParse(val, out _))
+                            {
+                                rowName = val;
+                            }
+                        }
+                    }
+                    catch { }
+                }
+
+                if (!string.IsNullOrWhiteSpace(rowSmiles) && seenSmilesRows.Add(r))
+                {
+                    records.Add(new SdfRecord
+                    {
+                        Name = rowName ?? $"Row_{r}",
+                        Smiles = rowSmiles!
+                    });
+                }
+            }
+        }
+
+        if (records.Count == 0)
+            return 0;
+
+        SdfManager.WriteSdfFile(filePath, records);
+        return records.Count;
+    }
 }

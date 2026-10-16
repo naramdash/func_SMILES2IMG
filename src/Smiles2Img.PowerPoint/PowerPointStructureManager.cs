@@ -38,7 +38,7 @@ public static class PowerPointStructureManager
             }
 
             var hwnd = GetHwnd(app);
-            using var form = new KetcherForm("PowerPoint", "");
+            using var form = KetcherForm.Rent("PowerPoint", "");
             var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
@@ -87,7 +87,7 @@ public static class PowerPointStructureManager
             }
 
             var hwnd = GetHwnd(app);
-            using var form = new MolstarForm("PowerPoint", "");
+            using var form = MolstarForm.Rent("PowerPoint", "");
             var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
             if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))
@@ -150,7 +150,7 @@ public static class PowerPointStructureManager
             }
 
             var hwnd = GetHwnd(app);
-            using var form = new MolstarForm("PowerPoint", meta.Pdb, snapshotJson);
+            using var form = MolstarForm.Rent("PowerPoint", meta.Pdb, snapshotJson);
             var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
             if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))
@@ -206,7 +206,7 @@ public static class PowerPointStructureManager
             }
 
             var hwnd = GetHwnd(app);
-            using var form = new KetcherForm("PowerPoint", currentStructure ?? "");
+            using var form = KetcherForm.Rent("PowerPoint", currentStructure ?? "");
             var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
@@ -290,7 +290,7 @@ public static class PowerPointStructureManager
         }
     }
 
-    private static void ReplaceShape(MSPowerPoint.Shape oldShape, string? newKet, string newSmiles, byte[] pngBytes)
+    private static void ReplaceShape(MSPowerPoint.Shape oldShape, string? newKet, string newSmiles, byte[] pngBytes, bool selectNew = true)
     {
         var tempFile = Path.Combine(Path.GetTempPath(), $"structure_{Guid.NewGuid():N}.png");
         try
@@ -312,7 +312,10 @@ public static class PowerPointStructureManager
                 Height: newHeight);
 
             ApplyShapeMetadata(newShape, newKet, newSmiles);
-            newShape.Select();
+            if (selectNew)
+            {
+                try { newShape.Select(); } catch { }
+            }
         }
         finally
         {
@@ -633,6 +636,90 @@ public static class PowerPointStructureManager
         catch (Exception ex)
         {
             MoleculeNotification.NotifyWarning("Canvas Data (KET)", "Error copying canvas data: " + ex.Message);
+        }
+    }
+
+    public static void CopySelectedMoleculeSvg(MSPowerPoint.Application app)
+    {
+        try
+        {
+            var sel = app.ActiveWindow?.Selection;
+            string? targetData = null;
+
+            if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 0)
+            {
+                var shape = sel.ShapeRange[1];
+                targetData = ExtractStructure(shape) ?? ExtractSmiles(shape);
+            }
+            else if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionText && sel.TextRange != null)
+            {
+                targetData = sel.TextRange.Text?.Trim();
+            }
+
+            if (string.IsNullOrEmpty(targetData))
+            {
+                MoleculeNotification.NotifyWarning("SVG Vector", "Please select a molecular structure picture or text first.");
+                return;
+            }
+
+            var svg = MoleculeRenderer.RenderSvg(targetData, RenderOptions.Default);
+            if (string.IsNullOrEmpty(svg))
+            {
+                MoleculeNotification.NotifyWarning("SVG Vector", "Could not generate SVG vector image from the selected structure.");
+                return;
+            }
+
+            SvgClipboardHelper.CopySvgToClipboard(svg);
+            MoleculeNotification.NotifyCopied("SVG Vector", "Vector graphic copied to clipboard");
+        }
+        catch (Exception ex)
+        {
+            MoleculeNotification.NotifyWarning("SVG Vector", "Error copying SVG: " + ex.Message);
+        }
+    }
+
+    public static void ApplyBatchStyle(MSPowerPoint.Application app, string background, string style, string presetLabel)
+    {
+        try
+        {
+            if (app.Presentations.Count == 0)
+            {
+                MoleculeNotification.NotifyWarning("Batch Style", "No active PowerPoint presentation found.");
+                return;
+            }
+
+            var opts = RenderOptions.Parse(background, style, null);
+            var shapesToUpdate = new System.Collections.Generic.List<MSPowerPoint.Shape>();
+
+            foreach (MSPowerPoint.Slide slide in app.ActivePresentation.Slides)
+            {
+                foreach (MSPowerPoint.Shape s in slide.Shapes)
+                {
+                    if (!StructureMetadata.IsMolstar(s.AlternativeText, s.Title) && !string.IsNullOrEmpty(ExtractStructure(s)))
+                        shapesToUpdate.Add(s);
+                }
+            }
+
+            int updated = 0;
+            foreach (var s in shapesToUpdate)
+            {
+                var raw = ExtractStructure(s);
+                var smiles = ExtractSmiles(s) ?? "";
+                if (!string.IsNullOrEmpty(raw) && MoleculeRenderer.TryRenderStructure(raw, opts, out var pngBytes, out var ket, out var resolvedSmiles) && pngBytes != null)
+                {
+                    ReplaceShape(s, ket ?? (raw!.TrimStart().StartsWith("{") ? raw : null), !string.IsNullOrEmpty(smiles) ? smiles : (resolvedSmiles ?? ""), pngBytes, selectNew: false);
+                    updated++;
+                }
+            }
+
+            if (updated > 0)
+                MoleculeNotification.NotifyCopied("Batch Style Applied", $"Updated {updated} structure(s) to {presetLabel}");
+            else
+                MoleculeNotification.NotifyWarning("Batch Style", "No SMILES/KET structures found in the active presentation.");
+        }
+        catch (Exception ex)
+        {
+            MoleculeNotification.NotifyWarning("Batch Style", "Error applying batch style: " + ex.Message);
         }
     }
 

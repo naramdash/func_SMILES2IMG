@@ -12,12 +12,19 @@ namespace Smiles2Img;
 
 public sealed class MolstarForm : Form
 {
-    private readonly WebView2 webView;
-    private readonly string contextTitle;
-    private readonly string initialStructure;
-    private readonly string? initialSnapshotJson;
-    private bool initialized;
+    private static CoreWebView2Environment? _sharedEnvironment;
+    private static MolstarForm? _pooledInstance;
 
+    private readonly WebView2 webView;
+    private string contextTitle;
+    private string initialStructure;
+    private string? initialSnapshotJson;
+    private bool initialized;
+    private bool isWebViewReady;
+    private bool needsReinitOnShow;
+    private bool _forceDispose;
+
+    public bool IsPooled { get; set; }
     public string ResultMode { get; private set; } = "image"; // "image" or "3dmodel"
     public string ResultPdbId { get; private set; } = "4HHB";
     public byte[]? ResultImageBytes { get; private set; }
@@ -25,6 +32,21 @@ public sealed class MolstarForm : Form
     public string? ResultSnapshotJson { get; private set; }
     public bool ResultEmbedInDoc { get; private set; } = true;
     public string ResultBackground { get; private set; } = "transparent";
+
+    public static MolstarForm Rent(string contextTitle, string initialStructure, string? initialSnapshotJson = null)
+    {
+        if (_pooledInstance != null && !_pooledInstance.IsDisposed)
+        {
+            _pooledInstance.Reconfigure(contextTitle, initialStructure, initialSnapshotJson);
+            return _pooledInstance;
+        }
+
+        _pooledInstance = new MolstarForm(contextTitle, initialStructure, initialSnapshotJson)
+        {
+            IsPooled = true
+        };
+        return _pooledInstance;
+    }
 
     public MolstarForm(string contextTitle, string initialStructure, string? initialSnapshotJson = null)
     {
@@ -56,14 +78,37 @@ public sealed class MolstarForm : Form
         };
         Controls.Add(webView);
 
-        Shown += async (s, e) =>
+        VisibleChanged += async (s, e) =>
         {
+            if (!Visible) return;
             if (!initialized)
             {
                 initialized = true;
                 await InitializeWebViewAsync();
             }
+            else if (needsReinitOnShow && isWebViewReady)
+            {
+                needsReinitOnShow = false;
+                SendInitScriptToWebView();
+            }
         };
+    }
+
+    public void Reconfigure(string newContextTitle, string newInitialStructure, string? newInitialSnapshotJson = null)
+    {
+        contextTitle = newContextTitle ?? "PowerPoint Slide";
+        initialStructure = newInitialStructure ?? "";
+        initialSnapshotJson = newInitialSnapshotJson;
+        ResultMode = "image";
+        ResultPdbId = "4HHB";
+        ResultImageBytes = null;
+        ResultGlbBytes = null;
+        ResultSnapshotJson = null;
+        ResultEmbedInDoc = true;
+        ResultBackground = "transparent";
+        DialogResult = DialogResult.None;
+        Text = $"Mol* 3D Molecular Viewer - {contextTitle}";
+        needsReinitOnShow = true;
     }
 
     private async Task InitializeWebViewAsync()
@@ -82,18 +127,17 @@ public sealed class MolstarForm : Form
             var procUserDataFolder = Path.Combine(baseUserDataFolder, procName + "_Molstar");
             Directory.CreateDirectory(procUserDataFolder);
 
-            CoreWebView2Environment env;
             try
             {
-                env = await CoreWebView2Environment.CreateAsync(null, procUserDataFolder, null);
-                await webView.EnsureCoreWebView2Async(env);
+                _sharedEnvironment ??= await CoreWebView2Environment.CreateAsync(null, procUserDataFolder, null);
+                await webView.EnsureCoreWebView2Async(_sharedEnvironment);
             }
             catch (Exception ex) when (ex.HResult == unchecked((int)0x800700AA) || ex.Message.Contains("0x800700AA") || ex.Message.IndexOf("in use", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 string fallbackFolder = Path.Combine(Path.GetTempPath(), "Smiles2Img_WV2_Mol_" + procName + "_" + Guid.NewGuid().ToString("N"));
                 Directory.CreateDirectory(fallbackFolder);
-                env = await CoreWebView2Environment.CreateAsync(null, fallbackFolder, null);
-                await webView.EnsureCoreWebView2Async(env);
+                _sharedEnvironment = await CoreWebView2Environment.CreateAsync(null, fallbackFolder, null);
+                await webView.EnsureCoreWebView2Async(_sharedEnvironment);
             }
 
             webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
@@ -110,6 +154,7 @@ public sealed class MolstarForm : Form
         }
         catch (Exception ex)
         {
+            _forceDispose = true;
             string msg = ex.Message;
             if (ex is DllNotFoundException || ex.GetType().Name.Contains("WebView2"))
             {
@@ -125,6 +170,28 @@ public sealed class MolstarForm : Form
         }
     }
 
+    private void SendInitScriptToWebView()
+    {
+        if (webView.CoreWebView2 == null) return;
+        var escapedContext = EscapeJs(contextTitle);
+        var escapedInitial = EscapeJs(initialStructure);
+        var escapedSnapshot = EscapeJs(initialSnapshotJson);
+
+        var script = $@"
+            (async function() {{
+                try {{
+                    if (typeof viewer !== 'undefined' && viewer && viewer.plugin && viewer.plugin.clear) {{
+                        await viewer.plugin.clear();
+                    }}
+                }} catch (e) {{}}
+                if (window.initMolstar) {{
+                    window.initMolstar('{escapedContext}', '{escapedInitial}', '{escapedSnapshot}');
+                }}
+            }})();
+        ";
+        webView.ExecuteScriptAsync(script);
+    }
+
     private void OnWebMessageReceived(object? sender, CoreWebView2WebMessageReceivedEventArgs e)
     {
         try
@@ -134,12 +201,9 @@ public sealed class MolstarForm : Form
 
             if (msg == "ready")
             {
-                var escapedContext = EscapeJs(contextTitle);
-                var escapedInitial = EscapeJs(initialStructure);
-                var escapedSnapshot = EscapeJs(initialSnapshotJson);
-
-                var script = $"if (window.initMolstar) {{ window.initMolstar('{escapedContext}', '{escapedInitial}', '{escapedSnapshot}'); }}";
-                webView.ExecuteScriptAsync(script);
+                isWebViewReady = true;
+                needsReinitOnShow = false;
+                SendInitScriptToWebView();
             }
             else if (msg.StartsWith("{", StringComparison.Ordinal) && msg.Contains("\"action\":\"apply\""))
             {
@@ -204,6 +268,11 @@ public sealed class MolstarForm : Form
 
     protected override void Dispose(bool disposing)
     {
+        if (IsPooled && !_forceDispose)
+        {
+            return;
+        }
+
         if (disposing)
         {
             webView?.Dispose();
