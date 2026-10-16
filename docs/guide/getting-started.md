@@ -12,11 +12,8 @@ Open **PowerShell** (no Administrator privileges required for standard user inst
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
-::: tip 💡 Preview Release (`v1.7.0-preview.7`)
-To test the latest preview release featuring Verified Ribbon Icons, Black/White Square Batch Styles, Molecule Info Grid Per-Row Chemical Icons, DataGridView Molecule Info Table, Multi-Format Molecule Summary (Excel TSV Row, Multi-Line, Markdown Table, JSON, Split Button), SAR Substructure/Similarity (`=SMILES.MATCH`, `=SMILES.SIMILARITY`), Lipinski/LogP/TPSA, Reverse Name/CAS lookup (`=NAME2IMG`), Vector SVG Copy, Batch Style Normalizer, and Excel SDF Import/Export:
-```powershell
-$v='v1.7.0-preview.7'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
-```
+::: tip 💡 What's New in `v1.7.0`
+The `v1.7.0` release features Verified Ribbon Icons, Black/White Square Batch Styles, Molecule Info Grid Per-Row Chemical Icons, DataGridView Molecule Info Table, Multi-Format Molecule Summary (Excel TSV Row, Multi-Line, Markdown Table, JSON, Split Button), SAR Substructure/Similarity (`=SMILES.MATCH`, `=SMILES.SIMILARITY`), Lipinski/LogP/TPSA, Reverse Name/CAS lookup (`=NAME2IMG`), Vector SVG Copy, Batch Style Normalizer, and Excel SDF Import/Export.
 :::
 
 ### What the Automated Installer Does

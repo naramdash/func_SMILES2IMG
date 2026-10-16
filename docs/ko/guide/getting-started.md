@@ -12,11 +12,8 @@
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
-::: tip 💡 프리뷰 릴리즈 (`v1.7.0-preview.7`) 설치
-검증된 리본/메뉴 아이콘 전면 개편, 흑백 사각형 일괄 스타일(Batch Style), 분자 정보 그리드 행별 화학 전용 아이콘, DataGridView 그리드 표, 분자 전체 정보 다중 서식 복사(Excel TSV 가로 행, 멀티라인, 마크다운 표, JSON, Split Button 드롭다운), 부분구조 검색/유사도(`=SMILES.MATCH`, `=SMILES.SIMILARITY`), 약물성 지표(LogP/TPSA/Lipinski), 이름/CAS 번호 역변환(`=NAME2IMG`), 벡터 SVG 복사, 일괄 스타일 변환(`Batch Style`), SDF 파일 입출력(`SDF File`)이 포함된 최신 프리뷰 버전을 설치하려면 아래와 같이 실행하세요:
-```powershell
-$v='v1.7.0-preview.7'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
-```
+::: tip 💡 `v1.7.0` 주요 신기능 안내
+`v1.7.0` 정식 릴리즈에는 검증된 리본/메뉴 아이콘 전면 개편, 흑백 사각형 일괄 스타일(Batch Style), 분자 정보 그리드 행별 화학 전용 아이콘, DataGridView 그리드 표, 분자 전체 정보 다중 서식 복사(Excel TSV 가로 행, 멀티라인, 마크다운 표, JSON, Split Button 드롭다운), 부분구조 검색/유사도(`=SMILES.MATCH`, `=SMILES.SIMILARITY`), 약물성 지표(LogP/TPSA/Lipinski), 이름/CAS 번호 역변환(`=NAME2IMG`), 벡터 SVG 복사, 일괄 스타일 변환(`Batch Style`), SDF 파일 입출력(`SDF File`)이 모두 포함되어 있습니다.
 :::
 
 ### 설치 스크립트가 자동으로 수행하는 작업

@@ -35,11 +35,8 @@ Complete user manuals, visual walkthroughs, parameter recipes, and guides for Ex
 Open **PowerShell** and run this single command to automatically install, configure security, and register the add-in across the entire Microsoft Office suite (Excel, Word, PowerPoint):
 
 ```powershell
-# Stable release (v1.6.0)
+# Stable release (v1.7.0)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
-
-# Preview release (v1.7.0-preview.7 — Verified Ribbon Icons, Black/White Square Batch Styles, Molecule Info Per-Row Icons, SAR, Lipinski, Name2Img, SVG Copy & SDF I/O)
-$v='v1.7.0-preview.7'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
 > **What the installer automates:**  

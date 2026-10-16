@@ -51,11 +51,8 @@ features:
 PowerShell을 열고 아래 명령어를 실행하면 Excel, Word, PowerPoint 전체에 원클릭으로 자동 설치됩니다:
 
 ```powershell
-# 안정판 릴리즈 (v1.6.0)
+# 안정판 릴리즈 (v1.7.0)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
-
-# 최신 프리뷰 릴리즈 (v1.7.0-preview.7 — 검증된 리본 아이콘 전면 개편, 흑백 사각형 일괄 스타일, 분자 정보 그리드 행별 화학 아이콘, SAR/약물성 수식, Name2Img, SVG 복사, SDF 입출력)
-$v='v1.7.0-preview.7'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
 ::: tip 💡 간편한 업데이트 및 버전 확인
