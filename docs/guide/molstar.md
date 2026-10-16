@@ -9,6 +9,7 @@
 Mol\* (pronounced *"mol-star"*) is the modern open-source standard for visualizing biological macromolecules, protein structures, nucleic acids, and small-molecule complexes.
 
 * **100% Local & Offline:** The entire viewer bundle is packaged directly inside the add-in. Structures render with hardware-accelerated WebGL entirely on your local GPU without cloud servers.
+* **Instant Re-Open (`<0.05s` Warm Pooling):** Maintains a warm WebView2 viewer instance across the Office session so re-opening or double-clicking 3D structures happens in under `0.05 seconds`.
 * **Dual Output Modes:**
   * **Interactive 3D Model (`.glb`):** Insert genuine, rotatable, zoomable 3D models directly into PowerPoint slides, Word documents, and Excel worksheets!
   * **Publication 2D Image (`.png`):** Export crisp, high-resolution 2D figures with optional transparent background for print publications, presentations, and spreadsheets.

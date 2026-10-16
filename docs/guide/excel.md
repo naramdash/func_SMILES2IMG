@@ -55,13 +55,14 @@ When right-clicking a cell containing a chemical structure or formula:
 * **📋 Copy SMILES:** Copies clean SMILES notation to clipboard.
 * **📋 Copy InChI:** Generates and copies standard IUPAC InChI string instantly.
 * **📋 Copy Canvas Data (KET):** Copies Ketcher native JSON representation.
+* **🖼️ Copy Vector Graphic (SVG):** Renders the structure as a crisp scalable vector graphic (`SVG`) and copies it to the clipboard for Adobe Illustrator or Inkscape.
 * **🔬 Copy Molecule Info (Submenu):**
   * **Substance Name:** Copies substance common name (e.g., `Aspirin`, `Ethanol`).
   * **Chemical Formula:** Copies standard Hill-notation formula (e.g., `C9H8O4`).
   * **Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g., `180.16 g/mol`).
   * **Copy SMILES / InChI / InChIKey:** Individual one-click copy options.
   * **All Summary (Text):** Copies full formatted summary to clipboard.
-  * **Detailed Molecule Info Window...:** Opens the full chemical properties window with 2D SVG preview and complete property table.
+  * **Detailed Molecule Info Window...:** Opens the full chemical properties window with 2D SVG preview, **LogP / TPSA**, **Lipinski Rule of 5**, and complete property table.
   > ⚡ **Zero Modal Distraction:** Clicking any copy command displays a non-blocking floating toast badge (`✓ Copied {Item}: {Value}`) near your mouse cursor for 1.4 seconds without stealing focus or interrupting your work!
 
 ### Case B: Right-Clicking an Empty Cell or Structure Shape
@@ -74,7 +75,7 @@ When right-clicking a cell containing a chemical structure or formula:
 
 ## 🧪 Ketcher 2D Molecule & Reaction Editor
 
-Double-clicking any chemical cell or pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> opens the embedded, 100% offline Ketcher 2D chemical structure editor:
+Double-clicking any chemical cell or pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> opens the embedded, 100% offline Ketcher 2D chemical structure editor (with `<0.05s` warm WebView2 instance pooling for instant reopening):
 
 <p align="center">
   <img src="/ketcher-guide.png" alt="Embedded Ketcher 2D Editor Window" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
@@ -105,25 +106,30 @@ For multi-step organic reaction pathways involving reagents, catalysts, temperat
 
 Depending on your Microsoft Excel version, two distinct formula modes are available:
 
-### 1. `=SMILES2IMG(smiles_or_ket, [bg], [options])` & `=INCHI2IMG(inchi, [bg], [options])`
+### 1. `=SMILES2IMG`, `=INCHI2IMG`, `=KET2IMG`, & `=NAME2IMG`
 * **Target:** **Microsoft 365** and **Excel 2024+**
-* Embeds real **native in-cell pictures** directly into worksheet cell contents from SMILES, Ketcher KET, or InChI.
+* Embeds real **native in-cell pictures** directly into worksheet cell contents from SMILES, Ketcher KET, IUPAC InChI, or chemical names/CAS numbers (`=NAME2IMG("Aspirin")`, `=NAME2IMG("50-78-2")`).
 * Moves, sorts, filters, and auto-scales with row height and column width.
 * Can be referenced by standard Excel lookup functions, formulas, and conditional formatting rules.
 
-### 2. `=SMILES2IMG.FLOAT(smiles_or_ket, [bg], [options])` & `=INCHI2IMG.FLOAT(inchi, [bg], [options])`
+### 2. `=SMILES2IMG.FLOAT`, `=INCHI2IMG.FLOAT`, `=KET2IMG.FLOAT`, & `=NAME2IMG.FLOAT`
 * **Target:** **Excel 2016 / 2019 / 2021** (or when floating shapes are explicitly desired)
 * Inserts floating picture shapes locked to cell coordinates (`xlMoveAndSize`).
 * Recalculates automatically, replaces existing shapes without orphan clutter, and moves/resizes with cell boundaries.
 
-### 3. Molecular Property & Formula Calculation Functions
-Calculate chemical characteristics directly in your worksheet:
+### 3. Molecular Property, Drug-Likeness & SAR Functions
+Calculate chemical characteristics and screen compound libraries directly in your worksheet:
 * `=SMILES2NAME(cell)` / `=KET2NAME(cell)` / `=INCHI2NAME(cell)` — Resolves chemical substance name via PubChem/IUPAC.
+* `=NAME2SMILES(name_or_cas)` — Resolves chemical common name or CAS Registry Number (`"50-78-2"`) to canonical SMILES.
 * `=SMILES2MW(cell)` / `=KET2MW(cell)` / `=INCHI2MW(cell)` — Computes standard molecular weight in g/mol (0ms pure local).
+* `=SMILES2EXACTMASS(cell)` / `=KET2EXACTMASS(cell)` / `=INCHI2EXACTMASS(cell)` — Computes monoisotopic exact mass in Da for HRMS/MS (0ms pure local).
 * `=SMILES2FORMULA(cell)` / `=KET2FORMULA(cell)` / `=INCHI2FORMULA(cell)` — Generates Hill-notation formula (e.g. `C9H8O4`, 0ms pure local).
-* `=SMILES2INCHI(cell)` / `=KET2INCHI(cell)` — Converts to standard IUPAC InChI notation (0ms pure local).
-* `=INCHI2SMILES(cell)` — Converts IUPAC InChI to canonical SMILES (0ms pure local).
+* `=SMILES2INCHI(cell)` / `=KET2INCHI(cell)` & `=INCHI2SMILES(cell)` — Bidirectional conversion between SMILES/KET and IUPAC InChI (0ms pure local).
 * `=SMILES2INCHIKEY(cell)` / `=KET2INCHIKEY(cell)` / `=INCHI2INCHIKEY(cell)` — Computes 27-character unique InChIKey hash (0ms pure local).
+* `=SMILES2LOGP(cell)` & `=SMILES2TPSA(cell)` — Computes Wildman-Crippen LogP and Topological Polar Surface Area (Å², 0ms pure local).
+* `=SMILES2HBD(cell)`, `=SMILES2HBA(cell)`, `=SMILES2ROTBONDS(cell)` — Counts H-bond donors, H-bond acceptors, and rotatable single bonds (0ms pure local).
+* `=SMILES2LIPINSKI(cell)` — Evaluates Lipinski's Rule of 5 (`"PASS"` or `"FAIL"`, 0ms pure local).
+* `=SMILES.MATCH(target, query)` & `=SMILES.SIMILARITY(mol1, mol2, [metric])` — Substructure matching (`TRUE`/`FALSE`) and Tanimoto/Tversky 2D fingerprint similarity (`0.0` to `1.0`, 0ms pure local).
 
 ---
 
@@ -135,12 +141,13 @@ Options can be combined freely using spaces, commas, semicolons, or pipe symbols
 | :--- | :--- | :--- |
 | `bw` / `monochrome` | High-contrast black-and-white line art (ACS / USPTO patent standard) | `=SMILES2IMG(A2, "", "bw")` |
 | `colored` | Standard IUPAC element color-coded atoms | `=SMILES2IMG(A2, "", "colored")` |
+| `hl:<smarts>` | Highlights atoms and bonds matching a SMILES/SMARTS substructure query | `=SMILES2IMG(A2, "trans", "hl:c1ccccc1")` |
 | `num` / `numbers` | Displays atom index numbers (ideal for NMR/MS peak assignments) | `=SMILES2IMG(A2, "", "num")` |
 | `stereo` | Forces CIP stereochemistry labels (*R/S*, *E/Z*) | `=SMILES2IMG(A2, "", "stereo")` |
-| `d=2.0` / `d=1.5` | High-DPI supersampling multiplier for ultra-sharp rasterization | `=SMILES2IMG(A2, "", "d=2.0")` |
+| `h` / `all-c` | Unfolds explicit hydrogens (`h`) or displays all carbon symbols (`all-c`) | `=SMILES2IMG(A2, "", "h all-c")` |
+| `white` / `ink=#HEX` | White or custom hex ink color for dark backgrounds | `=SMILES2IMG(A2, "#1e1e1e", "white")` |
 | `flip` / `flipv` | Flips structure horizontally or vertically | `=SMILES2IMG(A2, "", "flip")` |
 | `rot90` / `rot180` | Rotates molecule in 90-degree increments | `=SMILES2IMG(A2, "", "rot90")` |
-| `w=300 h=200` | Custom pixel dimensions for floating images | `=SMILES2IMG.FLOAT(A2, "", "w=300 h=200")` |
 
 <p align="center">
   <img src="/excel-matrix-showcase.png" alt="Excel Matrix Styling Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />

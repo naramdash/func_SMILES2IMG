@@ -11,6 +11,7 @@
 </p>
 
 * **100% Offline & Private:** Operates entirely locally within your machine. No web connections, external telemetry, or cloud servers are accessed. Research proprietary chemical structures remain strictly confidential.
+* **Instant Re-Open (`<0.05s` Warm Pooling):** Pre-initializes a singleton WebView2 editor instance in the background and hides on close instead of destroying the browser process, so subsequent launches and double-click edits open instantaneously.
 * **Full Chemical Drawing Arsenal:** Single, double, triple, and aromatic bonds; stereochemical wedges/hashes; heteroatoms; charges; valence tools; and functional group templates.
 * **Organic Reaction Mapping:** Multi-step reaction schemes with curved/straight reaction arrows, plus signs, and reaction condition text.
 * **Real-Time Property Calculation:** Automatically computes the molecular formula (Hill notation), molecular weight (MW in g/mol), and exact monoisotopic mass as you draw.
@@ -22,7 +23,7 @@
 Draw complete chemical reaction schemes with multiple reactants, reagents, catalysts, reaction arrows, and final products:
 
 * **Lossless Storage:** Ketcher's native `KET` format stores 2D layout coordinates, reaction arrows, catalyst labels (e.g. $H_2SO_4$, 55 °C), and text notes with zero degradation.
-* **Double-Click In-Place Re-editing:** Double-clicking the reaction cell or image re-opens Ketcher with all reaction arrows, plus signs, and conditions fully editable.
+* **Double-Click In-Place Re-editing:** Double-clicking the reaction cell or image re-opens Ketcher in `<0.05s` with all reaction arrows, plus signs, and conditions fully editable.
 
 ---
 

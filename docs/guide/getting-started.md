@@ -62,13 +62,20 @@ Turning off Smart App Control **never disables Microsoft Defender Antivirus**. R
 
 If your IT policies restrict running remote PowerShell web scripts:
 
-1. Download the latest `Smiles2Img-vX.X.X.zip` package from [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases).
+1. Download the latest `Smiles2Img-Office-x64.zip` (or `Smiles2Img-Office-x86.zip`) and `install.ps1` from [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases).
 2. Right-click the downloaded `.zip` file ➔ **Properties** ➔ check **Unblock** ➔ click **OK**.
 3. Extract the contents to `%APPDATA%\Microsoft\AddIns\Smiles2Img`.
 4. Run `install.ps1` locally inside PowerShell:
    ```powershell
    powershell -ExecutionPolicy Bypass -File install.ps1
    ```
+
+---
+
+## 🔄 Checking for Updates & Upgrading
+
+* **In-App Update Checker:** In Excel, Word, or PowerPoint, open the **`[SMILES]`** ribbon tab, click **`[About SMILES]`**, and click **`[Check for Updates]`**. If a newer release is available on GitHub, the dialog offers a one-click copy of the upgrade command and opens the release page.
+* **Command-Line Upgrade:** Running the one-line `install.ps1` command again at any time automatically replaces existing binaries with the newest release.
 
 ---
 

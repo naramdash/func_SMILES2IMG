@@ -19,7 +19,7 @@ export default defineConfig({
         nav: [
           { text: 'Guide', link: '/guide/getting-started', activeMatch: '^/guide/' },
           { text: 'Reference', link: '/reference/formula', activeMatch: '^/reference/' },
-          { text: 'v1.7.0-preview.3', link: 'https://github.com/naramdash/func_SMILES2IMG/releases' }
+          { text: 'v1.7.0-preview.1', link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.7.0-preview.1' }
         ],
         sidebar: [
           {
@@ -62,7 +62,7 @@ export default defineConfig({
         },
         footer: {
           message: 'Released under the MIT License.',
-          copyright: 'Copyright © 2026 naramdash. Powered by EPAM Indigo, Ketcher & Mol*.'
+          copyright: 'Copyright © 2026 KimJuho. Powered by EPAM Indigo, Ketcher & Mol*.'
         }
       }
     },
@@ -76,7 +76,7 @@ export default defineConfig({
         nav: [
           { text: '가이드', link: '/ko/guide/getting-started', activeMatch: '^/ko/guide/' },
           { text: '수식 레퍼런스', link: '/ko/reference/formula', activeMatch: '^/ko/reference/' },
-          { text: 'v1.7.0-preview.3', link: 'https://github.com/naramdash/func_SMILES2IMG/releases' }
+          { text: 'v1.7.0-preview.1', link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.7.0-preview.1' }
         ],
         sidebar: [
           {
@@ -119,7 +119,7 @@ export default defineConfig({
         },
         footer: {
           message: 'MIT 라이선스에 따라 제공됩니다.',
-          copyright: 'Copyright © 2026 naramdash. Powered by EPAM Indigo & Ketcher.'
+          copyright: 'Copyright © 2026 KimJuho. Powered by EPAM Indigo, Ketcher & Mol*.'
         }
       }
     }

@@ -62,13 +62,20 @@ Windows 11에서 **스마트 앱 컨트롤(SAC)**이 켜져 있는 경우 *"파�
 
 보안 정책으로 온라인 PowerShell 스크립트 실행이 차단되는 환경:
 
-1. [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases)에서 최신 `Smiles2Img-vX.X.X.zip`을 다운로드합니다.
+1. [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases)에서 최신 `Smiles2Img-Office-x64.zip` (또는 `Smiles2Img-Office-x86.zip`) 및 `install.ps1`을 다운로드합니다.
 2. 다운로드한 `.zip` 파일을 우클릭 ➔ **속성** ➔ 하단 **[차단 해제(Unblock)]** 체크 후 **[확인]**을 누릅니다.
 3. 압축을 `%APPDATA%\Microsoft\AddIns\Smiles2Img` 경로에 해제합니다.
 4. 해당 폴더에서 PowerShell을 열고 `install.ps1`을 로컬 실행합니다:
    ```powershell
    powershell -ExecutionPolicy Bypass -File install.ps1
    ```
+
+---
+
+## 🔄 버전 확인 및 업그레이드 방법
+
+* **인앱 업데이트 확인:** Excel, Word, PowerPoint 상단 **`[SMILES]`** 리본 탭에서 **`[About SMILES]`** 버튼을 누른 뒤 **`[Check for Updates]`**를 클릭하면 GitHub 최신 릴리즈 버전을 즉시 확인하고 업그레이드 명령어를 복사할 수 있습니다.
+* **명령어 업그레이드:** 언제든 빠른 설치 명령어(`irm ... | iex`)를 다시 실행하면 최신 버전으로 덮어쓰기 업그레이드됩니다.
 
 ---
 

@@ -54,13 +54,14 @@ Right-click any chemical shape or blank presentation slide area:
 * **📋 Copy SMILES:** Copies clean SMILES notation to the clipboard.
 * **📋 Copy InChI:** Copies standard IUPAC InChI string instantly.
 * **📋 Copy Canvas Data (KET):** Copies Ketcher native JSON representation.
+* **🖼️ Copy Vector Graphic (SVG):** Renders the structure as a scalable vector graphic (`SVG`) and copies it to the clipboard for Adobe Illustrator or Inkscape.
 * **🔬 Copy Molecule Info (Submenu):**
   * **Substance Name:** Copies substance name (PubChem / IUPAC).
   * **Chemical Formula:** Copies standard Hill-notation formula (e.g. `C9H8O4`).
   * **Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g. `180.16 g/mol`).
   * **Copy SMILES / InChI / InChIKey:** Individual one-click copy options.
   * **All Summary (Text):** Copies full formatted summary to clipboard.
-  * **Detailed Molecule Info Window...:** Opens the full chemical properties dialog.
+  * **Detailed Molecule Info Window...:** Opens the full chemical properties dialog (including **LogP / TPSA** and **Lipinski Rule of 5**).
   > ⚡ **Non-Blocking Toast:** Each copy action displays a floating pill badge (`✓ Copied {Item}: {Value}`) near your mouse for 1.4s without stealing PowerPoint's focus.
 
 ### Case B: Right-Clicking Blank Slide Canvas
@@ -72,7 +73,7 @@ Right-click any chemical shape or blank presentation slide area:
 
 ## 🧪 Ketcher 2D Molecule & Reaction Editor
 
-Double-click any molecule shape on your slide or press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> to launch Ketcher:
+Double-click any molecule shape on your slide or press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> to launch Ketcher (with `<0.05s` warm WebView2 instance pooling for instant reopening):
 
 <p align="center">
   <img src="/ketcher-guide.png" alt="Embedded Ketcher 2D Editor Window" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />

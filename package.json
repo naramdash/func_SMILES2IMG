@@ -1,6 +1,6 @@
 {
   "name": "func_smiles2img-docs",
-  "version": "1.5.0",
+  "version": "1.7.0-preview.1",
   "description": "SMILES for Microsoft Office Suite Documentation",
   "scripts": {
     "docs:dev": "vitepress dev docs",
@@ -14,13 +14,15 @@
   "keywords": [
     "smiles",
     "chemistry",
+    "cheminformatics",
     "office",
     "excel",
     "word",
     "powerpoint",
-    "ketcher"
+    "ketcher",
+    "molstar"
   ],
-  "author": "naramdash",
+  "author": "KimJuho",
   "license": "MIT",
   "devDependencies": {
     "vitepress": "^1.6.4"

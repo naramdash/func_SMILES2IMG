@@ -54,13 +54,14 @@
 * **📋 Copy SMILES:** 표준 SMILES 문자열을 클립보드로 복사합니다.
 * **📋 Copy InChI:** 표준 IUPAC InChI 문자열을 즉시 변환하여 복사합니다.
 * **📋 Copy Canvas Data (KET):** 반응식이 포함된 KET JSON 데이터를 복사합니다.
+* **🖼️ Copy Vector Graphic (SVG):** 분자를 무손실 벡터 그래픽(`SVG`)으로 렌더링하여 클립보드에 복사합니다.
 * **🔬 Copy Molecule Info (분자 정보 서브메뉴):**
   * **물질명 (Substance Name):** PubChem/IUPAC 기반 일반 물질명 복사 (`Aspirin`, `Ethanol` 등).
   * **화학식 (Chemical Formula):** Hill 표기법 화학식 복사 (`C9H8O4` 등).
   * **분자량 (Molecular Weight):** 정밀 분자량 복사 (`180.16 g/mol` 등).
   * **SMILES / InChI / InChIKey:** 각 표준 식별자 원클릭 즉시 복사.
   * **전체 요약 복사 (All Summary):** 모든 정보를 한 줄 텍스트로 일괄 복사.
-  * **상세 정보 창 열기...:** 2D SVG 그래픽 뷰어 및 전체 속성 표가 포함된 상세 다이얼로그 창 실행.
+  * **상세 정보 창 열기...:** 2D SVG 그래픽 뷰어, **LogP / TPSA**, **Lipinski Rule of 5** 및 전체 속성 표가 포함된 상세 다이얼로그 창 실행.
   > ⚡ **모달 창 방해 없는 플로팅 토스트:** 복사 항목을 누르면 팝업 확인 창이 뜨는 대신 마우스 커서 바로 옆에 가벼운 플로팅 배지(`✓ Copied {항목}: {값}`)가 1.4초간 나타났다 사라지며, 문서 작성 중 작업 포커스를 뺏지 않습니다!
 
 ### B. 본문 텍스트, 표, 빈 문단을 우클릭한 경우
@@ -72,7 +73,7 @@
 
 ## 🧪 내장 Ketcher 2D 화학 에디터
 
-워드 본문의 화학 그림을 더블 클릭하거나 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누르면 오프라인 Ketcher 에디터가 실행됩니다:
+워드 본문의 화학 그림을 더블 클릭하거나 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누르면 오프라인 Ketcher 에디터가 실행됩니다 (WebView2 웜 인스턴스 풀링으로 첫 실행 이후 `<0.05초` 만에 즉시 열림):
 
 <p align="center">
   <img src="/ketcher-guide.png" alt="Embedded Ketcher 2D Editor Window" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />

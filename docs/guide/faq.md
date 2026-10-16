@@ -24,6 +24,18 @@ Images scale automatically to preserve aspect ratios without clipping. Increase 
   ```text
   =SMILES2IMG(A2, "#1a1a1a", "white")
   ```
+* **1-Click Whole-Document Normalization (`[Batch Style]`):** In Excel, Word, or PowerPoint, click **`[SMILES] ➔ [Batch Style]`** on the ribbon to convert all structures in the selection, active worksheet/slide, or entire document to **ACS Standard (B&W)**, **Dark Mode (White Ink, Transparent)**, **Color (Transparent)**, or **Color (White BG)** in one click.
+
+### Q. How do I export crisp vector graphics (`.svg`) for Adobe Illustrator, Inkscape, or LaTeX?
+Select any chemical cell or structure picture in Excel, Word, or PowerPoint and click **`[SMILES] ➔ [Copy SVG]`** (or right-click ➔ **`Chemical Structure ➔ Copy Vector Graphic (SVG)`**). Both the `image/svg+xml` MIME clipboard stream and raw `<svg>` XML text are placed onto the Windows clipboard for lossless pasting.
+
+### Q. Can I import or export multi-molecule `.sdf` files in Excel?
+Yes! On the Excel **`[SMILES]`** ribbon tab, click **`[SDF File]`** in the **Data Exchange** group:
+* **Import `.sdf` File...:** Parses multi-record `.sdf` files into a clean worksheet table with automatic `=SMILES2IMG` pictures, SMILES, Molecular Formula, Molecular Weight, and all SD `<TAG>` properties.
+* **Export `.sdf` File...:** Exports selected rows or the active table of SMILES strings and adjacent columns into a standard V2000 `.sdf` file.
+
+### Q. How do I check for updates or upgrade to the latest version?
+Click **`[SMILES] ➔ [About SMILES]`** in Excel, Word, or PowerPoint, then click **`[Check for Updates]`**. If a newer release is available on GitHub, confirm the prompt to launch the automated one-click PowerShell updater.
 
 ---
 

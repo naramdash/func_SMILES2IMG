@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: "func_SMILES2IMG"
-  text: "Free & Open-Source Office Chemical Add-in"
-  tagline: "Free, open-source 2D chemical structure rendering, real-time in-cell formulas, seamless double-click editing, and lossless KET reaction canvases across Excel, Word, and PowerPoint — 100% offline & local."
+  text: "Free & Open-Source Office Chemical Add-in Suite"
+  tagline: "Publication-quality 2D chemical rendering (SMILES · InChI · KET · Name/CAS), embedded Ketcher 2D sketcher, Mol* 3D macromolecular viewer, SAR & drug-likeness formulas, Vector SVG copy, Batch Style normalizer, and SDF I/O across Excel, Word, and PowerPoint — 100% local & offline."
   actions:
     - theme: brand
       text: Get Started
@@ -13,46 +13,53 @@ hero:
       text: Excel Guide
       link: /guide/excel
     - theme: alt
+      text: Formula Reference
+      link: /reference/formula
+    - theme: alt
       text: View on GitHub
       link: https://github.com/naramdash/func_SMILES2IMG
 
 features:
   - icon: ⚡
-    title: Real-Time In-Cell Formulas
-    details: Render structures directly into Excel cells with =SMILES2IMG(A2). Automatically scales with cell size and recalculates seamlessly.
+    title: Real-Time In-Cell Formulas & Highlighting
+    details: Render structures directly into Excel cells via =SMILES2IMG, =INCHI2IMG, =KET2IMG, or =NAME2IMG("Aspirin"). Supports SMARTS substructure highlighting ("hl:c1ccccc1") and auto-scales with cells.
+  - icon: 🔬
+    title: Cheminformatics SAR & Drug-Likeness
+    details: Screen compound libraries in 0ms purely offline with =SMILES.MATCH, =SMILES.SIMILARITY, =SMILES2LIPINSKI, =SMILES2LOGP, =SMILES2TPSA, =SMILES2EXACTMASS, =SMILES2MW, and =SMILES2FORMULA.
   - icon: ✏️
-    title: Double-Click In-Place Editing
-    details: Double-click any rendered molecule or reaction in Excel, Word, or PowerPoint to launch the embedded Ketcher 2D editor.
+    title: Instant Ketcher 2D Sketcher (<0.05s)
+    details: Double-click any molecule or reaction in Excel, Word, or PowerPoint to edit in-place with EPAM Ketcher v3.18.0, powered by warm WebView2 instance pooling for instant reopening.
   - icon: 🧬
     title: Mol* 3D Macromolecular Viewer
-    details: Visualize proteins, nucleic acids, and complexes in Word & PowerPoint. Embed rotatable 3D GLB models or publication 2D images with double-click re-editing.
-  - icon: 🔬
-    title: One-Click Property Extraction & Formulas
-    details: Right-click context submenu to copy Formula, MW, Name, SMILES, InChI, and InChIKey with smooth floating badges. Native Excel calculation formulas (=SMILES2MW, =SMILES2NAME, etc.).
-  - icon: 🧪
-    title: Lossless KET Reaction Canvases
-    details: Preserves multi-step reaction pathways, arrows, plus signs, and chemical annotations losslessly in .xlsx, .docx, and .pptx documents.
+    details: Visualize proteins, nucleic acids, and complexes across Excel, Word, and PowerPoint. Download PDB IDs directly and insert rotatable 3D GLB models or high-res 2D pictures.
+  - icon: 🖼️
+    title: Vector SVG Copy & Batch Style Normalizer
+    details: Copy crisp scalable vector graphics (SVG) directly to the clipboard for Illustrator/Inkscape, or convert all structures in a sheet, document, or slide deck to ACS B&W or Dark Mode in one click.
+  - icon: 📂
+    title: Native Excel SDF Import & Export
+    details: Import multi-molecule .sdf chemical files directly into formatted Excel tables with live structure and property formulas, or export worksheet libraries back to .sdf.
   - icon: 🛡️
     title: 100% Local & Privacy-Safe
-    details: Powered by embedded EPAM Indigo and Ketcher runtimes. Zero cloud calls, zero external API dependencies, 100% offline.
-  - icon: 🎨
-    title: Publication & Patent Quality
-    details: ACS 1996 drawing specifications, high-contrast monochrome patent line art, dark theme palettes, and transparent backgrounds.
+    details: Powered by embedded EPAM Indigo, Ketcher, and Mol* runtimes. Zero cloud telemetry, zero data leakage, and lossless CustomXMLParts document persistence.
   - icon: 📦
-    title: Unified Office Suite Installer
-    details: One single PowerShell command automates setup, file unblocking, and registry configuration for Excel, Word, and PowerPoint.
+    title: One-Line Installer & Auto Update Check
+    details: A single PowerShell command installs, unblocks, and registers the entire suite for Excel, Word, and PowerPoint without admin rights, complete with an in-app update checker.
 ---
 
 ## ⚡ Quick Install
 
-Install the entire suite in seconds via **PowerShell**:
+Install the entire suite (Excel, Word, PowerPoint) in seconds via **PowerShell**:
 
 ```powershell
+# Stable release (v1.6.0)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+
+# Preview release (v1.7.0-preview.1 — SAR, Drug-Likeness, Name2Img, SVG Copy, Batch Style & SDF I/O)
+$v='v1.7.0-preview.1'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
-::: tip 💡 Automatic Upgrade
-Running this exact command anytime upgrades your installation to the latest release!
+::: tip 💡 Automatic Upgrade & In-App Update Check
+Running the install command anytime upgrades your installation to the latest release, or click **[SMILES] ➔ [About SMILES] ➔ [Check for Updates]** directly inside Excel, Word, or PowerPoint!
 :::
 
 ---
@@ -65,8 +72,8 @@ Running this exact command anytime upgrades your installation to the latest rele
 
 | [📗 Microsoft Excel](/guide/excel) | [📘 Microsoft Word](/guide/word) | [📙 Microsoft PowerPoint](/guide/powerpoint) |
 | :---: | :---: | :---: |
-| Native in-cell formulas (`=SMILES2IMG`), cell resizing, sorting & filtering, molecular property functions | Inline shapes flowing with paragraphs, table cell preservation, embedded Mol* 3D models | Center slide auto-placement, dark theme transparent background, rotatable 3D GLB models |
+| In-cell formulas (`=SMILES2IMG`, `=NAME2IMG`), SAR & Lipinski screening, `.sdf` table import/export, Batch Style & SVG copy | Inline shapes flowing with paragraphs, table layout preservation, Mol* 3D models, Batch Style & Vector SVG copy | One-click slide placement, dark theme transparent backgrounds, rotatable 3D GLB models, presentation-wide Batch Style |
 
 | [✏️ Ketcher 2D Editor](/guide/ketcher) | [🧬 Mol* 3D Viewer](/guide/molstar) | [📐 Formula Reference](/reference/formula) |
 | :---: | :---: | :---: |
-| Offline molecule & reaction drawing, KET canvas format | Biological macromolecules, direct PDB ID download, rotatable GLB 3D | Full specification for rendering & property calculation formulas |
+| `<0.05s` warm-pooled 2D molecule & reaction sketcher, lossless KET format | Macromolecular 3D viewer across Excel, Word & PowerPoint, PDB download & GLB 3D | Complete reference for 25+ rendering, property, Lipinski & SAR worksheet functions |
