@@ -54,8 +54,8 @@ Install the entire suite (Excel, Word, PowerPoint) in seconds via **PowerShell**
 # Stable release (v1.6.0)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 
-# Preview release (v1.7.0-preview.4 — Icon Fixes, Crash-Proof Summary Copy, SAR, Lipinski, Name2Img, SVG Copy, Batch Style & SDF I/O)
-$v='v1.7.0-preview.4'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+# Preview release (v1.7.0-preview.5 — DataGridView Molecule Info Table, Crash-Proof Summary Copy, SAR, Lipinski, Name2Img, SVG Copy, Batch Style & SDF I/O)
+$v='v1.7.0-preview.5'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
 ::: tip 💡 Automatic Upgrade & In-App Update Check

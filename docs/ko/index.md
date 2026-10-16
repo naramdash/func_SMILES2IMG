@@ -54,8 +54,8 @@ PowerShell을 열고 아래 명령어를 실행하면 Excel, Word, PowerPoint �
 # 안정판 릴리즈 (v1.6.0)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 
-# 최신 프리뷰 릴리즈 (v1.7.0-preview.4 — 아이콘 오류 해결, 다중 서식 복사 안정화, SAR/약물성 수식, Name2Img, SVG 복사, 일괄 스타일 변환, SDF 입출력)
-$v='v1.7.0-preview.4'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+# 최신 프리뷰 릴리즈 (v1.7.0-preview.5 — 분자 정보 DataGridView 그리드 표 개편, 다중 서식 복사, SAR/약물성 수식, Name2Img, SVG 복사, 일괄 스타일 변환, SDF 입출력)
+$v='v1.7.0-preview.5'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
 ::: tip 💡 간편한 업데이트 및 버전 확인

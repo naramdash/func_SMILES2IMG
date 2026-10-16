@@ -17,6 +17,22 @@ internal static class Program
     [STAThread]
     private static int Main(string[] args)
     {
+        if (args.Length > 0 && args[0] == "--capture-dialog")
+        {
+            NativeIndigo.Initialize(AppDomain.CurrentDomain.BaseDirectory);
+            var info = MoleculeRenderer.TryGetMoleculeInfo("C1C=CC=C1", resolvePubChem: true);
+            using var dlg = new Smiles2Img.Editor.MoleculeInfoDialog(info!);
+            dlg.Show();
+            dlg.Refresh();
+            System.Windows.Forms.Application.DoEvents();
+            using var bmp = new Bitmap(dlg.Width, dlg.Height);
+            dlg.DrawToBitmap(bmp, new Rectangle(0, 0, dlg.Width, dlg.Height));
+            string outPath = args.Length > 1 ? args[1] : "dialog_capture.png";
+            bmp.Save(outPath, System.Drawing.Imaging.ImageFormat.Png);
+            Console.WriteLine("SAVED:" + outPath);
+            return 0;
+        }
+
         try
         {
             NativeIndigo.Initialize(AppDomain.CurrentDomain.BaseDirectory);
