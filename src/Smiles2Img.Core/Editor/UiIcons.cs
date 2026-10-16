@@ -234,4 +234,180 @@ public static class UiIcons
             return null;
         }
     }
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, Bitmap> _propIconCache = new();
+
+    /// <summary>
+    /// Returns a clean, modern, high-DPI aware vector-rendered bitmap icon for each molecule info property row.
+    /// </summary>
+    public static Bitmap GetPropertyIcon(string propertyName, float dpiScale = 1.0f)
+    {
+        string key = $"{propertyName}_{dpiScale:F2}";
+        return _propIconCache.GetOrAdd(key, _ => CreatePropertyBitmap(propertyName, dpiScale));
+    }
+
+    private static Bitmap CreatePropertyBitmap(string propertyName, float dpiScale)
+    {
+        int size = Math.Max(18, (int)Math.Round(20 * dpiScale));
+        var bmp = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+        using var g = Graphics.FromImage(bmp);
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+        g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+        g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
+        float s = size / 20f; // normalize to 20x20 base canvas
+
+        switch (propertyName)
+        {
+            case "Substance Name":
+            {
+                // Blue Label Tag with rounded corner and punch hole
+                using var brush = new SolidBrush(Color.FromArgb(37, 99, 235));
+                using var path = new GraphicsPath();
+                path.AddPolygon(new PointF[]
+                {
+                    new(3 * s, 4 * s),
+                    new(11 * s, 4 * s),
+                    new(17 * s, 10 * s),
+                    new(11 * s, 16 * s),
+                    new(3 * s, 16 * s)
+                });
+                g.FillPath(brush, path);
+                using var holeBrush = new SolidBrush(Color.White);
+                g.FillEllipse(holeBrush, 5.5f * s, 8.5f * s, 3 * s, 3 * s);
+                break;
+            }
+            case "IUPAC Name":
+            {
+                // Indigo Official IUPAC Document with text lines
+                using var docBrush = new SolidBrush(Color.FromArgb(79, 70, 229));
+                g.FillRectangle(docBrush, 4 * s, 3 * s, 12 * s, 14 * s);
+                using var whitePen = new Pen(Color.White, 1.2f * s);
+                g.DrawLine(whitePen, 6.5f * s, 6.5f * s, 13.5f * s, 6.5f * s);
+                g.DrawLine(whitePen, 6.5f * s, 9.5f * s, 13.5f * s, 9.5f * s);
+                g.DrawLine(whitePen, 6.5f * s, 12.5f * s, 11f * s, 12.5f * s);
+                break;
+            }
+            case "Chemical Formula":
+            {
+                // Emerald Atomic Orbital
+                using var orbPen = new Pen(Color.FromArgb(16, 185, 129), 1.3f * s);
+                g.DrawEllipse(orbPen, 3 * s, 6 * s, 14 * s, 8 * s);
+                var state = g.Save();
+                g.TranslateTransform(10 * s, 10 * s);
+                g.RotateTransform(60);
+                g.TranslateTransform(-10 * s, -10 * s);
+                g.DrawEllipse(orbPen, 3 * s, 6 * s, 14 * s, 8 * s);
+                g.Restore(state);
+                using var nucleus = new SolidBrush(Color.FromArgb(5, 150, 105));
+                g.FillEllipse(nucleus, 8.5f * s, 8.5f * s, 3 * s, 3 * s);
+                break;
+            }
+            case "Molecular Weight":
+            {
+                // Amber Precision Balance / Scale
+                using var scalePen = new Pen(Color.FromArgb(217, 119, 6), 1.5f * s);
+                g.DrawLine(scalePen, 10 * s, 3 * s, 10 * s, 16 * s); // pillar
+                g.DrawLine(scalePen, 4 * s, 6 * s, 16 * s, 6 * s);   // beam
+                g.DrawLine(scalePen, 6 * s, 16 * s, 14 * s, 16 * s); // base
+
+                // Pans
+                using var panBrush = new SolidBrush(Color.FromArgb(245, 158, 11));
+                g.DrawLine(scalePen, 4 * s, 6 * s, 2.5f * s, 11 * s);
+                g.DrawLine(scalePen, 4 * s, 6 * s, 5.5f * s, 11 * s);
+                g.FillPie(panBrush, 1.5f * s, 9.5f * s, 5 * s, 3.5f * s, 0, 180);
+
+                g.DrawLine(scalePen, 16 * s, 6 * s, 14.5f * s, 11 * s);
+                g.DrawLine(scalePen, 16 * s, 6 * s, 17.5f * s, 11 * s);
+                g.FillPie(panBrush, 13.5f * s, 9.5f * s, 5 * s, 3.5f * s, 0, 180);
+                break;
+            }
+            case "Monoisotopic Mass":
+            {
+                // Violet Microscope / Mass Spec Spectrometry
+                using var brush = new SolidBrush(Color.FromArgb(124, 58, 237));
+                using var pen = new Pen(Color.FromArgb(124, 58, 237), 1.8f * s);
+                g.DrawLine(pen, 13 * s, 4 * s, 7 * s, 12 * s); // tube
+                g.FillEllipse(brush, 11.5f * s, 2.5f * s, 4 * s, 3 * s); // eyepiece
+                g.FillRectangle(brush, 5 * s, 12 * s, 7 * s, 2 * s);     // stage
+                g.DrawLine(pen, 9 * s, 12 * s, 9 * s, 16 * s);           // arm
+                g.FillRectangle(brush, 4 * s, 15.5f * s, 10 * s, 2 * s); // base
+                break;
+            }
+            case "LogP / TPSA":
+            {
+                // Cyan / Teal Partition Droplet (Octanol/Water)
+                using var path = new GraphicsPath();
+                path.AddBezier(10 * s, 2 * s, 16 * s, 10 * s, 16 * s, 16 * s, 10 * s, 17.5f * s);
+                path.AddBezier(10 * s, 17.5f * s, 4 * s, 16 * s, 4 * s, 10 * s, 10 * s, 2 * s);
+                using var brushTeal = new SolidBrush(Color.FromArgb(14, 165, 233));
+                g.FillPath(brushTeal, path);
+                using var innerPen = new Pen(Color.White, 1.2f * s);
+                g.DrawLine(innerPen, 10 * s, 4 * s, 10 * s, 16 * s);
+                break;
+            }
+            case "Lipinski Rule of 5":
+            {
+                // Rose Pharmaceutical Capsule Pill
+                var state = g.Save();
+                g.TranslateTransform(10 * s, 10 * s);
+                g.RotateTransform(-45);
+                using var roseBrush = new SolidBrush(Color.FromArgb(225, 29, 72));
+                using var slateBrush = new SolidBrush(Color.FromArgb(148, 163, 184));
+                g.FillPie(roseBrush, -4 * s, -8 * s, 8 * s, 8 * s, 180, 180);
+                g.FillRectangle(roseBrush, -4 * s, -4 * s, 8 * s, 4 * s);
+                g.FillRectangle(slateBrush, -4 * s, 0, 8 * s, 4 * s);
+                g.FillPie(slateBrush, -4 * s, 0, 8 * s, 8 * s, 0, 180);
+                g.Restore(state);
+                break;
+            }
+            case "Canonical SMILES":
+            {
+                // Slate Chemical Chain (Benzene Ring + Double Bond)
+                using var bondPen = new Pen(Color.FromArgb(51, 65, 85), 1.6f * s);
+                PointF[] pts =
+                {
+                    new(10 * s, 3.5f * s),
+                    new(16 * s, 7 * s),
+                    new(16 * s, 13 * s),
+                    new(10 * s, 16.5f * s),
+                    new(4 * s, 13 * s),
+                    new(4 * s, 7 * s)
+                };
+                g.DrawPolygon(bondPen, pts);
+                using var innerPen = new Pen(Color.FromArgb(100, 116, 139), 1.0f * s);
+                g.DrawLine(innerPen, 6.5f * s, 8.5f * s, 6.5f * s, 11.5f * s);
+                break;
+            }
+            case "InChI":
+            {
+                // Teal IUPAC Landmark Column / Badge
+                using var badgeBrush = new SolidBrush(Color.FromArgb(13, 148, 136));
+                g.FillPolygon(badgeBrush, new PointF[] { new(10 * s, 3 * s), new(16 * s, 6 * s), new(4 * s, 6 * s) });
+                g.FillRectangle(badgeBrush, 5 * s, 7 * s, 2 * s, 7 * s);
+                g.FillRectangle(badgeBrush, 9 * s, 7 * s, 2 * s, 7 * s);
+                g.FillRectangle(badgeBrush, 13 * s, 7 * s, 2 * s, 7 * s);
+                g.FillRectangle(badgeBrush, 4 * s, 14.5f * s, 12 * s, 2.5f * s);
+                break;
+            }
+            case "InChIKey":
+            {
+                // Golden Hash Security Key
+                using var keyPen = new Pen(Color.FromArgb(202, 138, 4), 1.8f * s);
+                g.DrawEllipse(keyPen, 4 * s, 4 * s, 6 * s, 6 * s);
+                g.DrawLine(keyPen, 9 * s, 9 * s, 16 * s, 16 * s); // stem
+                g.DrawLine(keyPen, 13 * s, 13 * s, 15 * s, 11 * s); // tooth 1
+                g.DrawLine(keyPen, 15 * s, 15 * s, 17 * s, 13 * s); // tooth 2
+                break;
+            }
+            default:
+            {
+                // Generic property bullet
+                using var brush = new SolidBrush(Color.FromArgb(100, 116, 139));
+                g.FillEllipse(brush, 6 * s, 6 * s, 8 * s, 8 * s);
+                break;
+            }
+        }
+
+        return bmp;
+    }
 }

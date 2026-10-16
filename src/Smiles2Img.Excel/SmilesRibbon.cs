@@ -22,21 +22,21 @@ public class SmilesRibbon : ExcelRibbon
                   label=""Insert / Edit (SMILES)""
                   screentip=""Insert / Edit Structure (SMILES2IMG) (Ctrl+Shift+K)""
                   supertip=""Opens Ketcher editor to sketch chemical structures and insert them into the active cell as formulas (=SMILES2IMG).""
-                  imageMso=""EquationInsertNew""
+                  imageMso=""DrawingCanvasInsert""
                   size=""large""
                   onAction=""OnInsertMolecule"" />
           <button id=""btnInsertInchiMolecule""
                   label=""Insert / Edit (InChI)""
                   screentip=""Insert / Edit Structure (INCHI2IMG)""
                   supertip=""Opens Ketcher editor to sketch chemical structures and insert them into the active cell as formulas (=INCHI2IMG).""
-                  imageMso=""FunctionWizard""
+                  imageMso=""TextBoxInsert""
                   size=""large""
                   onAction=""OnInsertInchiMolecule"" />
           <button id=""btnInsertKetMolecule""
                   label=""Insert / Edit (KET)""
                   screentip=""Insert / Edit Structure (KET2IMG)""
                   supertip=""Opens Ketcher editor to sketch chemical structures, reactions, and canvases and insert them into the active cell as formulas (=KET2IMG).""
-                  imageMso=""SmartArtInsert""
+                  imageMso=""ShapesGallery""
                   size=""large""
                   onAction=""OnInsertKetMolecule"" />
           <button id=""btnInsertMolstar""
@@ -66,14 +66,14 @@ public class SmilesRibbon : ExcelRibbon
                   label=""Copy InChI""
                   screentip=""Copy IUPAC InChI""
                   supertip=""Extracts and copies IUPAC InChI string from the selected formula cell or molecule image to the clipboard.""
-                  imageMso=""Copy""
+                  imageMso=""SignatureLineInsert""
                   size=""large""
                   onAction=""OnCopyInchi"" />
           <button id=""btnCopyKet""
                   label=""Copy KET""
                   screentip=""Copy Canvas Data (KET)""
                   supertip=""Extracts or converts the selected formula cell or molecule image into native Ketcher JSON (KET) and copies it to the clipboard.""
-                  imageMso=""Copy""
+                  imageMso=""SourceCodeInsert""
                   size=""large""
                   onAction=""OnCopyKet"" />
           <button id=""btnCopySvg""
@@ -87,15 +87,15 @@ public class SmilesRibbon : ExcelRibbon
                 label=""Molecule Info""
                 screentip=""Copy Molecule Info &amp; Substance Properties""
                 supertip=""Directly copy substance name, formula, MW, InChI, or open the detailed molecule properties window.""
-                imageMso=""GroupTaskProperties""
+                imageMso=""FileProperties""
                 size=""large"">
             <button id=""btnRibbonExcelCopyName""
                     label=""Copy Substance Name""
-                    imageMso=""PropertySheet""
+                    imageMso=""FontName""
                     onAction=""OnCopySubstanceName"" />
             <button id=""btnRibbonExcelCopyFormula""
                     label=""Copy Chemical Formula""
-                    imageMso=""EquationInsertNew""
+                    imageMso=""Subscript""
                     onAction=""OnCopyFormula"" />
             <button id=""btnRibbonExcelCopyMW""
                     label=""Copy Molecular Weight (MW)""
@@ -107,11 +107,11 @@ public class SmilesRibbon : ExcelRibbon
                     onAction=""OnCopySmiles"" />
             <button id=""btnRibbonExcelSubCopyInchi""
                     label=""Copy InChI""
-                    imageMso=""Copy""
+                    imageMso=""SignatureLineInsert""
                     onAction=""OnCopyInchi"" />
             <button id=""btnRibbonExcelSubCopyInchiKey""
                     label=""Copy InChIKey""
-                    imageMso=""SignatureLineInsert""
+                    imageMso=""Key""
                     onAction=""OnCopyInchiKey"" />
             <button id=""btnRibbonExcelSubCopySvg""
                     label=""Copy Vector SVG""
@@ -119,7 +119,7 @@ public class SmilesRibbon : ExcelRibbon
                     onAction=""OnCopySvg"" />
             <button id=""btnRibbonExcelCopyAllSummary""
                     label=""Copy All Summary (Text)""
-                    imageMso=""FileDocumentInspect""
+                    imageMso=""DocumentSummary""
                     onAction=""OnCopyAllSummary"" />
             <button id=""btnRibbonExcelCopyTsvRow""
                     label=""Copy as Excel Row (TSV Columns)""
@@ -131,12 +131,12 @@ public class SmilesRibbon : ExcelRibbon
                     onAction=""OnCopyMultiLine"" />
             <button id=""btnRibbonExcelCopyMarkdown""
                     label=""Copy as Markdown Table""
-                    imageMso=""TableOfContentsGallery""
+                    imageMso=""TableCustom""
                     onAction=""OnCopyMarkdown"" />
             <menuSeparator id=""sepRibbonExcelSubDialog"" />
             <button id=""btnRibbonExcelShowDialog""
                     label=""Detailed Molecule Info Window...""
-                    imageMso=""GroupTaskProperties""
+                    imageMso=""FileProperties""
                     onAction=""OnCopyMoleculeInfo"" />
           </menu>
           <menu id=""menuRibbonExcelBatchStyle""
@@ -159,7 +159,7 @@ public class SmilesRibbon : ExcelRibbon
                     onAction=""OnBatchStyleWhiteBg"" />
             <button id=""btnBatchStyleDark""
                     label=""Dark Mode (White Ink)""
-                    imageMso=""ThemeColorsGallery""
+                    imageMso=""HighContrast""
                     onAction=""OnBatchStyleDark"" />
           </menu>
           <menu id=""menuRibbonExcelSdf""
@@ -183,7 +183,7 @@ public class SmilesRibbon : ExcelRibbon
                   label=""Diagnostics""
                   screentip=""SMILES2IMG Diagnostics &amp; Log""
                   supertip=""Displays parser logs and add-in diagnostic information.""
-                  imageMso=""MacroSecurity""
+                  imageMso=""WatchWindow""
                   size=""large""
                   onAction=""OnShowDiagnostics"" />
         </group>

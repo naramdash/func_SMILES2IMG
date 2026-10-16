@@ -139,7 +139,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   label=""Insert / Edit Structure""
                   screentip=""EPAM Ketcher Molecule Editor""
                   supertip=""Open Ketcher web editor to draw chemical structures and insert into the current slide.""
-                  imageMso=""EquationInsertNew""
+                  imageMso=""DrawingCanvasInsert""
                   size=""large""
                   onAction=""OnInsertMolecule"" />
           <button id=""btnInsertMolstar""
@@ -169,14 +169,14 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   label=""Copy InChI""
                   screentip=""Copy IUPAC InChI""
                   supertip=""Extract or convert the selected molecular structure into an IUPAC InChI string and copy to clipboard.""
-                  imageMso=""Copy""
+                  imageMso=""SignatureLineInsert""
                   size=""large""
                   onAction=""OnCopyInchi"" />
           <button id=""btnCopyKet""
                   label=""Copy KET""
                   screentip=""Copy Canvas Data (KET)""
                   supertip=""Extracts or converts the selected molecule image into native Ketcher JSON (KET) and copies it to the clipboard.""
-                  imageMso=""Copy""
+                  imageMso=""SourceCodeInsert""
                   size=""large""
                   onAction=""OnCopyKet"" />
           <button id=""btnPptCopySvg""
@@ -190,15 +190,15 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 label=""Molecule Info""
                 screentip=""Copy Molecule Info &amp; Substance Properties""
                 supertip=""Directly copy substance name, formula, MW, InChI, or open the detailed molecule properties window.""
-                imageMso=""GroupTaskProperties""
+                imageMso=""FileProperties""
                 size=""large"">
             <button id=""btnRibbonPptCopyName""
                     label=""Copy Substance Name""
-                    imageMso=""PropertySheet""
+                    imageMso=""FontName""
                     onAction=""OnCopySubstanceName"" />
             <button id=""btnRibbonPptCopyFormula""
                     label=""Copy Chemical Formula""
-                    imageMso=""EquationInsertNew""
+                    imageMso=""Subscript""
                     onAction=""OnCopyFormula"" />
             <button id=""btnRibbonPptCopyMW""
                     label=""Copy Molecular Weight (MW)""
@@ -210,15 +210,15 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnCopySmiles"" />
             <button id=""btnRibbonPptSubCopyInchi""
                     label=""Copy InChI""
-                    imageMso=""Copy""
+                    imageMso=""SignatureLineInsert""
                     onAction=""OnCopyInchi"" />
             <button id=""btnRibbonPptSubCopyInchiKey""
                     label=""Copy InChIKey""
-                    imageMso=""SignatureLineInsert""
+                    imageMso=""Key""
                     onAction=""OnCopyInchiKey"" />
             <button id=""btnRibbonPptCopyAllSummary""
                     label=""Copy All Summary (Text)""
-                    imageMso=""FileDocumentInspect""
+                    imageMso=""DocumentSummary""
                     onAction=""OnCopyAllSummary"" />
             <button id=""btnRibbonPptCopyMultiLine""
                     label=""Copy as Multi-Line List""
@@ -230,12 +230,12 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnCopyTsvRow"" />
             <button id=""btnRibbonPptCopyMarkdown""
                     label=""Copy as Markdown Table""
-                    imageMso=""TableOfContentsGallery""
+                    imageMso=""TableCustom""
                     onAction=""OnCopyMarkdown"" />
             <menuSeparator id=""sepRibbonPptSubDialog"" />
             <button id=""btnRibbonPptShowDialog""
                     label=""Detailed Molecule Info Window...""
-                    imageMso=""GroupTaskProperties""
+                    imageMso=""FileProperties""
                     onAction=""OnCopyMoleculeInfo"" />
           </menu>
           <menu id=""menuRibbonPptBatchStyle""
@@ -258,7 +258,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                     onAction=""OnBatchStyleWhiteBg"" />
             <button id=""btnPptBatchDark""
                     label=""Dark Mode (White Ink)""
-                    imageMso=""ThemeColorsGallery""
+                    imageMso=""HighContrast""
                     onAction=""OnBatchStyleDark"" />
           </menu>
         </group>

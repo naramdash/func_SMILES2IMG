@@ -289,15 +289,7 @@ public sealed class AboutDialog : Form
                 var cleanLatest = latestTag!.Trim().TrimStart('v', 'V');
                 var cleanCurrent = currentVerStr.Trim().TrimStart('v', 'V');
 
-                bool isNewer = false;
-                if (Version.TryParse(cleanLatest, out var vLatest) && Version.TryParse(cleanCurrent, out var vCurrent))
-                {
-                    isNewer = vLatest > vCurrent;
-                }
-                else
-                {
-                    isNewer = !string.Equals(cleanLatest, cleanCurrent, StringComparison.OrdinalIgnoreCase);
-                }
+                bool isNewer = IsNewerVersion(cleanLatest, cleanCurrent);
 
                 if (isNewer)
                 {
@@ -759,4 +751,92 @@ public sealed class AboutDialog : Form
             OpenBrowser("https://github.com/naramdash/func_SMILES2IMG");
         }
     }
+
+    public static bool IsNewerVersion(string? latestVersion, string? currentVersion)
+    {
+        if (string.IsNullOrWhiteSpace(latestVersion) || string.IsNullOrWhiteSpace(currentVersion))
+            return false;
+
+        SplitVersion(latestVersion!, out var latestBase, out var latestPre);
+        SplitVersion(currentVersion!, out var currentBase, out var currentPre);
+
+        // 업데이트 후보(서버 버전)가 preview/prerelease인 경우 무시 (정식 Stable 릴리즈만 업데이트 제안)
+        if (!string.IsNullOrEmpty(latestPre))
+            return false;
+
+        // 1. Compare numeric base versions (Major.Minor.Patch)
+        int cmpBase = CompareNumericParts(latestBase, currentBase);
+        if (cmpBase > 0) return true; // 서버의 정식 버전이 더 높으면 업데이트 대상
+        if (cmpBase < 0) return false;
+
+        // 2. Base versions are identical (e.g. latest: 1.7.0 정식 vs current: 1.7.0-preview.5)
+        // 현재 로컬이 preview 상태이고 서버에 동일 버전의 정식 릴리즈가 출시된 경우 업데이트 권유
+        return !string.IsNullOrEmpty(currentPre);
+    }
+
+    internal static void SplitVersion(string verStr, out string baseVer, out string preRelease)
+    {
+        var clean = verStr.Trim().TrimStart('v', 'V');
+        var plusIdx = clean.IndexOf('+');
+        if (plusIdx >= 0) clean = clean.Substring(0, plusIdx);
+
+        var hyphenIdx = clean.IndexOf('-');
+        if (hyphenIdx >= 0)
+        {
+            baseVer = clean.Substring(0, hyphenIdx).Trim();
+            preRelease = clean.Substring(hyphenIdx + 1).Trim();
+        }
+        else
+        {
+            baseVer = clean.Trim();
+            preRelease = string.Empty;
+        }
+    }
+
+    internal static int CompareNumericParts(string a, string b)
+    {
+        var partsA = a.Split('.');
+        var partsB = b.Split('.');
+        int max = Math.Max(partsA.Length, partsB.Length);
+        for (int i = 0; i < max; i++)
+        {
+            int numA = i < partsA.Length && int.TryParse(partsA[i], out var na) ? na : 0;
+            int numB = i < partsB.Length && int.TryParse(partsB[i], out var nb) ? nb : 0;
+            if (numA != numB) return numA.CompareTo(numB);
+        }
+        return 0;
+    }
+
+    internal static int ComparePrerelease(string preA, string preB)
+    {
+        var partsA = preA.Split('.');
+        var partsB = preB.Split('.');
+        int len = Math.Max(partsA.Length, partsB.Length);
+        for (int i = 0; i < len; i++)
+        {
+            if (i >= partsA.Length) return -1;
+            if (i >= partsB.Length) return 1;
+
+            var a = partsA[i];
+            var b = partsB[i];
+            bool aIsNum = int.TryParse(a, out int aNum);
+            bool bIsNum = int.TryParse(b, out int bNum);
+
+            if (aIsNum && bIsNum)
+            {
+                if (aNum != bNum) return aNum.CompareTo(bNum);
+            }
+            else if (aIsNum != bIsNum)
+            {
+                return aIsNum ? -1 : 1;
+            }
+            else
+            {
+                int cmp = string.Compare(a, b, StringComparison.OrdinalIgnoreCase);
+                if (cmp != 0) return cmp;
+            }
+        }
+        return 0;
+    }
 }
+

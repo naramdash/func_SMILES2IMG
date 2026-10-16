@@ -730,6 +730,17 @@ internal static class Program
             Check(sdfRecords[1].Formula == "C9H8O4", $"SDF record 1 formula is C9H8O4, got: {sdfRecords[1].Formula}");
             Console.WriteLine("PASS v1.7.0 SDF Import / Export round-trip");
 
+            // AboutDialog.IsNewerVersion tests
+            Check(!Smiles2Img.Editor.AboutDialog.IsNewerVersion("v1.6.0", "v1.7.0-preview.5"), "1.6.0 is not newer than 1.7.0-preview.5");
+            Check(!Smiles2Img.Editor.AboutDialog.IsNewerVersion("1.6.0", "1.7.0-preview.5"), "1.6.0 is not newer than 1.7.0-preview.5 without 'v'");
+            Check(!Smiles2Img.Editor.AboutDialog.IsNewerVersion("1.7.0-preview.6", "1.7.0-preview.5"), "preview updates are ignored");
+            Check(!Smiles2Img.Editor.AboutDialog.IsNewerVersion("1.8.0-preview.1", "1.7.0-preview.5"), "higher preview updates are ignored");
+            Check(Smiles2Img.Editor.AboutDialog.IsNewerVersion("v1.7.0", "v1.7.0-preview.5"), "1.7.0 stable is newer than 1.7.0-preview.5");
+            Check(Smiles2Img.Editor.AboutDialog.IsNewerVersion("2.0.0", "1.7.0-preview.5"), "2.0.0 stable is newer than 1.7.0-preview.5");
+            Check(!Smiles2Img.Editor.AboutDialog.IsNewerVersion("1.6.9", "1.7.0"), "1.6.9 is not newer than 1.7.0");
+            Check(!Smiles2Img.Editor.AboutDialog.IsNewerVersion(null, "1.7.0"), "null is not newer");
+            Console.WriteLine("PASS AboutDialog.IsNewerVersion SemVer comparisons (preview versions ignored)");
+
             return 0;
         }
         catch (Exception error) { Console.Error.WriteLine(error); return 1; }

@@ -335,16 +335,29 @@ public sealed class MoleculeInfoDialog : Form
             SelectionForeColor = Color.FromArgb(55, 65, 81)
         };
 
+        var colIcon = new DataGridViewImageColumn
+        {
+            Name = "Icon",
+            HeaderText = "",
+            Width = (int)Math.Max(38, 36 * dpiScale),
+            ImageLayout = DataGridViewImageCellLayout.Normal,
+            ReadOnly = true,
+            SortMode = DataGridViewColumnSortMode.NotSortable
+        };
+        colIcon.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+        colIcon.DefaultCellStyle.BackColor = Color.FromArgb(250, 251, 252);
+        colIcon.DefaultCellStyle.SelectionBackColor = Color.FromArgb(239, 246, 255);
+
         var colProp = new DataGridViewTextBoxColumn
         {
             Name = "Property",
             HeaderText = "Property / Field",
-            Width = (int)Math.Max(210, 185 * dpiScale),
+            Width = (int)Math.Max(200, 175 * dpiScale),
             ReadOnly = true,
             SortMode = DataGridViewColumnSortMode.NotSortable
         };
         colProp.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        colProp.DefaultCellStyle.Padding = new Padding(14, 0, 8, 0);
+        colProp.DefaultCellStyle.Padding = new Padding(8, 0, 8, 0);
         colProp.DefaultCellStyle.Font = new Font("Segoe UI", 9.25f, FontStyle.Bold);
         colProp.DefaultCellStyle.ForeColor = Color.FromArgb(55, 65, 81);
         colProp.DefaultCellStyle.BackColor = Color.FromArgb(250, 251, 252);
@@ -382,6 +395,7 @@ public sealed class MoleculeInfoDialog : Form
         colAction.DefaultCellStyle.SelectionBackColor = Color.FromArgb(239, 246, 255);
         colAction.DefaultCellStyle.SelectionForeColor = Color.FromArgb(31, 41, 55);
 
+        dgv.Columns.Add(colIcon);
         dgv.Columns.Add(colProp);
         dgv.Columns.Add(colVal);
         dgv.Columns.Add(colAction);
@@ -390,23 +404,24 @@ public sealed class MoleculeInfoDialog : Form
 
         void AddPropertyRow(string propertyName, string displayValue, string copyPayload, bool isCode = false)
         {
-            int rowIdx = dgv.Rows.Add(propertyName, string.IsNullOrWhiteSpace(displayValue) ? "—" : displayValue, "Copy");
+            var icon = UiIcons.GetPropertyIcon(propertyName, dpiScale);
+            int rowIdx = dgv.Rows.Add(icon, propertyName, string.IsNullOrWhiteSpace(displayValue) ? "—" : displayValue, "Copy");
             var row = dgv.Rows[rowIdx];
             row.Tag = (PropertyName: propertyName, Payload: copyPayload);
 
             if (isCode)
             {
-                row.Cells[1].Style.Font = new Font("Consolas", 9.5f, FontStyle.Regular);
+                row.Cells[colVal.Index].Style.Font = new Font("Consolas", 9.5f, FontStyle.Regular);
             }
 
             if (!string.IsNullOrWhiteSpace(displayValue) && displayValue != "—")
             {
-                row.Cells[1].ToolTipText = $"{propertyName}: {displayValue}\n(Double-click or click 'Copy' to copy to clipboard)";
+                row.Cells[colVal.Index].ToolTipText = $"{propertyName}: {displayValue}\n(Double-click or click 'Copy' to copy to clipboard)";
             }
 
             if (string.IsNullOrWhiteSpace(copyPayload))
             {
-                row.Cells[2].Value = "";
+                row.Cells[colAction.Index].Value = "";
             }
         }
 
@@ -443,8 +458,8 @@ public sealed class MoleculeInfoDialog : Form
             if (row.Tag is (string propName, string payload) && !string.IsNullOrEmpty(payload))
             {
                 try { SafeClipboard.SetText(payload); } catch { }
-                row.Cells[2].Value = "✓ Copied";
-                dgv.InvalidateCell(2, rowIndex);
+                row.Cells[colAction.Index].Value = "✓ Copied";
+                dgv.InvalidateCell(colAction.Index, rowIndex);
                 _lblStatus.Text = $"✓ Copied {propName} to clipboard.";
                 _lblStatus.ForeColor = Color.FromArgb(22, 101, 52);
                 MoleculeNotification.NotifyCopied($"Molecule Info ({propName})", payload);
@@ -458,8 +473,8 @@ public sealed class MoleculeInfoDialog : Form
                         timer.Dispose();
                         if (!dgv.IsDisposed && rowIndex < dgv.Rows.Count)
                         {
-                            row.Cells[2].Value = "Copy";
-                            dgv.InvalidateCell(2, rowIndex);
+                            row.Cells[colAction.Index].Value = "Copy";
+                            dgv.InvalidateCell(colAction.Index, rowIndex);
                         }
                     }
                     catch { }
@@ -470,7 +485,7 @@ public sealed class MoleculeInfoDialog : Form
 
         dgv.CellContentClick += (s, e) =>
         {
-            if (e.RowIndex >= 0 && e.ColumnIndex == 2)
+            if (e.RowIndex >= 0 && e.ColumnIndex == colAction.Index)
             {
                 CopyRow(e.RowIndex);
             }
