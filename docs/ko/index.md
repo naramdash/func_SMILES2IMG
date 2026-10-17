@@ -13,11 +13,11 @@ hero:
       text: 📗 Excel 가이드
       link: /ko/guide/excel
     - theme: alt
-      text: 📐 엑셀 함수 치트시트
-      link: /ko/reference/formula
+      text: 🔬 물성 · SAR 스크리닝
+      link: /ko/guide/excel-cheminformatics
     - theme: alt
-      text: GitHub
-      link: https://github.com/naramdash/func_SMILES2IMG
+      text: 📐 인터랙티브 수식 빌더
+      link: /ko/reference/formula
 
 features:
   - icon: ⚡
@@ -49,32 +49,22 @@ features:
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
-::: tip 💡 설치 후 바로 해보세요!
-설치가 끝나면 오피스를 다시 켜고 상단의 **`[SMILES]`** 탭을 눌러보거나, 엑셀 빈 셀에 `=NAME2IMG("Aspirin")`을 입력해 보세요. 자세한 따라하기는 **[설치 및 1분 첫걸음](/ko/guide/getting-started)**에서 확인할 수 있습니다.
-:::
+---
+
+## 🖥️ 오피스 프로그램별 핵심 화면 (탭을 클릭해 보세요!)
+
+<OfficeAppTabs />
 
 ---
 
-## 🎯 지금 어떤 작업을 하고 싶으신가요?
+## 🎯 지금 필요한 기능을 바로 찾아보세요
 
-원하는 작업을 클릭하면 해당 사용법으로 바로 이동합니다:
-
-| 내가 하려는 작업 | 가장 빠른 방법 | 바로가기 |
+| 내가 하려는 작업 | 가장 빠른 방법 | 상세 가이드 |
 | :--- | :--- | :---: |
-| **시약 이름이나 SMILES로 엑셀 표 만들기** | 셀에 `=NAME2IMG("Caffeine")` 또는 `=SMILES2IMG(A2)` 입력 후 아래로 드래그 | [Excel 가이드 ➔](/ko/guide/excel) |
-| **직접 마우스로 분자·반응식 그려 넣기** | Excel · Word · PPT 어디서든 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> 누르기 | [2D 스케처 가이드 ➔](/ko/guide/ketcher) |
-| **분자량, 화학식, LogP, Lipinski 계산하기** | `=SMILES2MW(A2)`, `=SMILES2FORMULA(A2)`, `=SMILES2LIPINSKI(A2)` 입력 | [함수 치트시트 ➔](/ko/reference/formula) |
-| **워드 논문이나 PPT 발표 자료에 구조식 넣기** | 상단 **`[SMILES]`** 탭에서 구조식 삽입, 다크 모드 투명 배경 및 흑백 일괄 변환 | [Word ➔](/ko/guide/word) · [PPT ➔](/ko/guide/powerpoint) |
-| **3D 단백질 구조를 슬라이드에 넣고 돌려보기** | 상단 **`[SMILES] ➔ [3D Structure (Mol*)]`** 클릭 후 PDB 코드(예: `1CRN`) 입력 | [3D 뷰어 가이드 ➔](/ko/guide/molstar) |
-
----
-
-## 🖼️ 오피스 프로그램별 미리보기
-
-<p align="center">
-  <img src="/excel-showcase.png" alt="Microsoft Excel Showcase" width="100%" style="border-radius: 8px; margin-bottom: 16px;" />
-</p>
-
-| [📗 Microsoft Excel 가이드](/ko/guide/excel) | [📘 Microsoft Word 가이드](/ko/guide/word) | [📙 Microsoft PowerPoint 가이드](/ko/guide/powerpoint) |
-| :---: | :---: | :---: |
-| 셀 안 구조식 자동 생성, 분자량·약물성 수식 계산, 부분구조 하이라이트, `.sdf` 파일 입출력 | 문장 흐름에 맞춘 본문/표 삽입, 논문 투고용 흑백(ACS) 일괄 변환, 분자 물성 표 원클릭 붙여넣기 | 슬라이드 정중앙 원클릭 배치, 다크 테마용 투명 배경, 발표 중 360° 회전하는 3D 단백질 모델 |
+| **처음 설치하고 첫 분자 그림 띄워보기** | PowerShell 1줄 설치 후 `=NAME2IMG("Aspirin")` 또는 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd> | [설치 및 1분 첫걸음 ➔](/ko/guide/getting-started) |
+| **시약 이름이나 SMILES로 엑셀 구조식 표 만들기** | `=SMILES2IMG(A2)`, `=NAME2IMG("50-78-2")` 입력 후 아래로 드래그 | [Excel 기초 가이드 ➔](/ko/guide/excel) |
+| **분자량, 정밀질량(HRMS), Lipinski, SAR 유사도 분석** | `=SMILES2MW`, `=SMILES2LIPINSKI`, `=SMILES.MATCH`, `.sdf` 입출력 | [Excel 심화 (SAR·SDF) ➔](/ko/guide/excel-cheminformatics) |
+| **워드 논문이나 PPT 슬라이드에 구조식 넣기** | 문단 인라인 삽입(Word), 다크 모드 투명 배경 & 3D 회전 발표(PPT) | [Word ➔](/ko/guide/word) · [PowerPoint ➔](/ko/guide/powerpoint) |
+| **논문 투고용 흑백 통일 · Illustrator SVG · 물성 표 복사** | 리본 `[Batch Style]`, `[Copy SVG]`, `[Molecule Info]` 다중 서식 내보내기 | [출판 스타일 · SVG · 물성 ➔](/ko/guide/publishing) |
+| **마우스로 직접 2D 반응식 그리거나 3D 단백질 넣기** | Ketcher 2D 스케처(`=KET2IMG`) 및 Mol* 3D 단백질 뷰어(`.glb`) | [2D 스케처 ➔](/ko/guide/ketcher) · [3D 단백질 ➔](/ko/guide/molstar) |
+| **원하는 엑셀 수식과 스타일 옵션을 클릭으로 조합하기** | 인터랙티브 수식 빌더 위젯으로 옵션 체크 후 원클릭 복사 | [인터랙티브 수식 빌더 ➔](/ko/reference/formula) |

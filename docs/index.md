@@ -13,11 +13,11 @@ hero:
       text: 📗 Excel Guide
       link: /guide/excel
     - theme: alt
-      text: 📐 Formula Cheat Sheet
-      link: /reference/formula
+      text: 🔬 SAR & Lipinski Guide
+      link: /guide/excel-cheminformatics
     - theme: alt
-      text: GitHub
-      link: https://github.com/naramdash/func_SMILES2IMG
+      text: 📐 Interactive Formula Builder
+      link: /reference/formula
 
 features:
   - icon: ⚡
@@ -49,32 +49,22 @@ Open **PowerShell** and paste this single command (no Administrator rights neede
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
-::: tip 💡 Try It Immediately After Installing!
-Restart Excel, Word, or PowerPoint and look for the **`[SMILES]`** tab on the top ribbon—or type `=NAME2IMG("Aspirin")` into any Excel cell! Follow the **[1-Minute Quickstart](/guide/getting-started)** for a step-by-step tour.
-:::
+---
+
+## 🖥️ Explore by Office Application (Click a Tab!)
+
+<OfficeAppTabs />
 
 ---
 
-## 🎯 What Would You Like to Do?
+## 🎯 Jump Straight to What You Need
 
-Jump straight to the workflow you need:
-
-| Goal | Fastest Way | Guide |
+| What You Want to Do | Fastest Way | Detailed Guide |
 | :--- | :--- | :---: |
-| **Build a chemical table in Excel from names or SMILES** | Type `=NAME2IMG("Caffeine")` or `=SMILES2IMG(A2)` and drag down | [Excel Guide ➔](/guide/excel) |
-| **Draw a molecule or reaction scheme by hand** | Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> in Excel, Word, or PowerPoint | [2D Sketcher ➔](/guide/ketcher) |
-| **Calculate MW, Formula, LogP, or Lipinski Ro5** | Use `=SMILES2MW(A2)`, `=SMILES2FORMULA(A2)`, `=SMILES2LIPINSKI(A2)` | [Formula Cheat Sheet ➔](/reference/formula) |
-| **Write a paper in Word or make slides in PowerPoint** | Insert inline structures, apply 1-click ACS B&W or Dark Mode themes | [Word ➔](/guide/word) · [PowerPoint ➔](/guide/powerpoint) |
-| **Insert a rotatable 3D protein structure** | Click **`[SMILES] ➔ [3D Structure (Mol*)]`** and enter a PDB ID (e.g., `1CRN`) | [3D Viewer ➔](/guide/molstar) |
-
----
-
-## 🖼️ Office Application Showcase
-
-<p align="center">
-  <img src="/excel-showcase.png" alt="Microsoft Excel Showcase" width="100%" style="border-radius: 8px; margin-bottom: 16px;" />
-</p>
-
-| [📗 Microsoft Excel](/guide/excel) | [📘 Microsoft Word](/guide/word) | [📙 Microsoft PowerPoint](/guide/powerpoint) |
-| :---: | :---: | :---: |
-| In-cell structure formulas, MW/Lipinski/SAR screening, substructure highlighting, `.sdf` file import & export | Inline structures that flow with sentences and tables, 1-click ACS B&W manuscript styling, instant property table paste | 1-click slide placement, transparent backgrounds for dark themes, 360°-rotatable 3D protein models |
+| **Install & render your very first molecule** | Run the 1-line PowerShell installer, then try `=NAME2IMG("Aspirin")` or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd> | [1-Min Quickstart ➔](/guide/getting-started) |
+| **Build a structure table in Excel from names or SMILES** | Type `=SMILES2IMG(A2)` or `=NAME2IMG("50-78-2")` and drag down | [Excel Basics ➔](/guide/excel) |
+| **Calculate MW, Exact Mass, Lipinski Ro5, or screen SAR** | Use `=SMILES2MW`, `=SMILES2LIPINSKI`, `=SMILES.MATCH`, and `.sdf` import/export | [Excel SAR & SDF ➔](/guide/excel-cheminformatics) |
+| **Insert structures into Word papers or PowerPoint slides** | Inline text wrapping (Word), transparent dark mode & live 3D rotation (PPT) | [Word ➔](/guide/word) · [PowerPoint ➔](/guide/powerpoint) |
+| **Convert to ACS B&W, copy Illustrator SVG, or export tables** | Use `[Batch Style]`, `[Copy SVG]`, and `[Molecule Info]` multi-format exports | [Publishing & SVG ➔](/guide/publishing) |
+| **Sketch 2D reaction schemes or load 3D proteins** | Built-in Ketcher 2D Sketcher (`=KET2IMG`) and Mol* 3D Viewer (`.glb`) | [2D Sketcher ➔](/guide/ketcher) · [3D Viewer ➔](/guide/molstar) |
+| **Build & copy custom Excel formulas interactively** | Click checkboxes in the live Formula Builder widget to preview & copy | [Formula Cheat Sheet ➔](/reference/formula) |

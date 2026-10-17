@@ -30,15 +30,22 @@ export default defineConfig({
           {
             text: 'Getting Started',
             items: [
-              { text: 'Install & 1-Minute Quickstart', link: '/guide/getting-started' }
+              { text: '🚀 Install & 1-Min Quickstart', link: '/guide/getting-started' }
             ]
           },
           {
-            text: 'Office Application Guides',
+            text: 'Microsoft Excel Guides',
             items: [
-              { text: '📗 Microsoft Excel', link: '/guide/excel' },
-              { text: '📘 Microsoft Word', link: '/guide/word' },
-              { text: '📙 Microsoft PowerPoint', link: '/guide/powerpoint' }
+              { text: '📗 Excel Basics: Tables & Styling', link: '/guide/excel' },
+              { text: '🔬 Excel SAR, Lipinski & SDF Files', link: '/guide/excel-cheminformatics' }
+            ]
+          },
+          {
+            text: 'Word, PowerPoint & Publishing',
+            items: [
+              { text: '📘 Word: Manuscripts & Tables', link: '/guide/word' },
+              { text: '📙 PowerPoint: Slides & Dark Mode', link: '/guide/powerpoint' },
+              { text: '🎨 Batch Style, Vector SVG & Export', link: '/guide/publishing' }
             ]
           },
           {
@@ -51,7 +58,7 @@ export default defineConfig({
           {
             text: 'Reference & Help',
             items: [
-              { text: '📐 Excel Formula Cheat Sheet', link: '/reference/formula' },
+              { text: '📐 Formula Builder & Cheat Sheet', link: '/reference/formula' },
               { text: '❓ Troubleshooting & FAQ', link: '/guide/faq' }
             ]
           }
@@ -80,22 +87,29 @@ export default defineConfig({
         nav: [
           { text: '빠른 시작', link: '/ko/guide/getting-started', activeMatch: '^/ko/guide/' },
           { text: 'Excel 가이드', link: '/ko/guide/excel' },
-          { text: '수식 치트시트', link: '/ko/reference/formula', activeMatch: '^/ko/reference/' },
+          { text: '수식 빌더 & 치트시트', link: '/ko/reference/formula', activeMatch: '^/ko/reference/' },
           { text: 'v1.7.0', link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.7.0' }
         ],
         sidebar: [
           {
             text: '시작하기',
             items: [
-              { text: '설치 및 1분 첫걸음', link: '/ko/guide/getting-started' }
+              { text: '🚀 설치 및 1분 첫걸음', link: '/ko/guide/getting-started' }
             ]
           },
           {
-            text: '오피스 앱별 사용법',
+            text: 'Microsoft Excel 가이드',
             items: [
-              { text: '📗 Microsoft Excel 가이드', link: '/ko/guide/excel' },
-              { text: '📘 Microsoft Word 가이드', link: '/ko/guide/word' },
-              { text: '📙 Microsoft PowerPoint 가이드', link: '/ko/guide/powerpoint' }
+              { text: '📗 Excel 기초: 구조식 표 & 스타일', link: '/ko/guide/excel' },
+              { text: '🔬 Excel 심화: 물성 · SAR · SDF', link: '/ko/guide/excel-cheminformatics' }
+            ]
+          },
+          {
+            text: 'Word · PowerPoint & 출판 도구',
+            items: [
+              { text: '📘 Word: 학술 논문 & 보고서 작성', link: '/ko/guide/word' },
+              { text: '📙 PowerPoint: 학회 발표 슬라이드', link: '/ko/guide/powerpoint' },
+              { text: '🎨 출판 스타일 · SVG 벡터 · 물성 복사', link: '/ko/guide/publishing' }
             ]
           },
           {
@@ -108,7 +122,7 @@ export default defineConfig({
           {
             text: '수식 사전 & 문제 해결',
             items: [
-              { text: '📐 엑셀 함수 치트시트', link: '/ko/reference/formula' },
+              { text: '📐 인터랙티브 수식 빌더 & 치트시트', link: '/ko/reference/formula' },
               { text: '❓ 자주 묻는 질문 (FAQ)', link: '/ko/guide/faq' }
             ]
           }

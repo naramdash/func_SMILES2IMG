@@ -1,6 +1,9 @@
-# Microsoft Excel Guide
+# Excel Basics: Structure Tables & Styling
 
-Learn how to render hundreds of chemical structures directly inside Excel cells, automatically calculate molecular weight and drug-likeness (Lipinski Ro5), highlight substructures, and import/export `.sdf` files.
+Learn how to render hundreds of chemical structures directly inside Excel cells, customize styling (ACS B&W, substructure highlights, dark mode), and edit molecules in place by double-clicking.
+
+> 🔬 **Looking for Molecular Weight, Exact Mass, Lipinski Ro5, SAR Substructure Screening, or `.sdf` File Import/Export?**  
+> 👉 Jump straight to **[Excel Cheminformatics: Properties, SAR Screening & SDF Files ➔](/guide/excel-cheminformatics)**!
 
 <p align="center">
   <img src="/excel-showcase.png" alt="SMILES for Excel Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
@@ -21,7 +24,7 @@ The fastest way to build a chemical table in Excel is to put SMILES strings (or 
 
 ### Example Worksheet Setup
 
-| Column | Content | Formula in Row 2 | Example Output (A2 = `"Aspirin"` or SMILES) |
+| Column | Content | Formula in Row 2 | Example Output (`A2` = Aspirin) |
 | :---: | :--- | :--- | :--- |
 | **Col A** | Input (SMILES or Name) | `CC(=O)Oc1ccccc1C(=O)O` | Input text |
 | **Col B** | **2D Structure Image** | `=SMILES2IMG(A2)` | *(Auto-scaled in-cell structure)* |
@@ -30,7 +33,7 @@ The fastest way to build a chemical table in Excel is to put SMILES strings (or 
 | **Col E** | **Lipinski Rule of 5** | `=SMILES2LIPINSKI(A2)` | `PASS` |
 
 * **Only have a chemical name or CAS number?**  
-  Use `=NAME2IMG("Aspirin")` or `=NAME2IMG("50-78-2")` to render the image directly, or `=NAME2SMILES("Ibuprofen")` to get its canonical SMILES string.
+  Use `=NAME2IMG("Aspirin")` or `=NAME2IMG("50-78-2")` to render the image directly, or `=NAME2SMILES("Ibuprofen")` to get its canonical SMILES string (powered by a 60+ reagent offline dictionary + PubChem lookup).
 * **Want larger structure images?**  
   Simply increase the Excel **row height (e.g., 80–100 pt)** and **column width**—the molecule scales up automatically while keeping its aspect ratio.
 
@@ -43,7 +46,19 @@ The fastest way to build a chemical table in Excel is to put SMILES strings (or 
 
 ---
 
-## 2. Draw by Hand & Reaction Schemes (`Ctrl + Shift + K`)
+## 2. Interactive Styling Options (B&W · Highlighting · Dark Mode)
+
+Click any option below to preview how it looks and copy the exact Excel formula in one click!
+
+<FormulaBuilder />
+
+<p align="center">
+  <img src="/excel-matrix-showcase.png" alt="Excel Matrix Styling Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
+
+---
+
+## 3. Draw by Hand & Reaction Schemes (`Ctrl + Shift + K`)
 
 When you want to sketch a structure from scratch or draw a multi-step organic reaction scheme, use the built-in **Ketcher 2D Editor**.
 
@@ -52,101 +67,47 @@ When you want to sketch a structure from scratch or draw a multi-step organic re
 </p>
 
 1. Select a cell and press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> (or click **`[SMILES] ➔ [Insert Structure]`** on the ribbon).
-2. Draw rings, functional groups, stereo bonds (wedges/hashes), or **reaction arrows and catalyst text ($H_2SO_4$, 55 °C)**.
+2. Draw rings, functional groups, stereo bonds (wedges/hashes), or **reaction arrows and catalyst text ($\text{H}_2\text{SO}_4$, 55 °C)**.
 3. Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to insert into the cell immediately:
    * Single molecules are inserted as `=SMILES2IMG(...)`.
    * Multi-step reactions with arrows or text are saved losslessly as `=KET2IMG(...)`.
-4. **Need to make changes later?** Simply **double-click** the cell to reopen the exact molecule or reaction scheme in Ketcher.
+4. **Need to make changes later?** Simply **double-click** the cell to reopen the exact molecule or reaction scheme in under 0.05 seconds.
 
 ---
 
-## 3. Substructure Highlighting & SAR Screening
-
-Combine zero-latency chemical formulas with Excel's **AutoFilter** and **Conditional Formatting** to screen compound libraries directly in your spreadsheet.
-
-### ① Highlight a Core Scaffold or Functional Group (`hl:`)
-Pass `"hl:<substructure>"` in the 3rd argument to highlight matching atoms and bonds:
-```text
-=SMILES2IMG(A2, "", "hl:c1ccccc1")
-```
-
-### ② 3-Step Virtual Screening Recipe
-1. **Filter by Substructure (`TRUE` / `FALSE`):**
-   ```text
-   =SMILES.MATCH(A2, "c1ccccc1")
-   ```
-2. **Rank by 2D Similarity against a Lead Compound in `$B$1` (`0.0 ~ 1.0`):**
-   ```text
-   =SMILES.SIMILARITY(A2, $B$1)
-   ```
-3. **Evaluate Drug-Likeness (Lipinski Ro5) & Physicochemical Properties:**
-   * Pass/Fail check (`"PASS"` / `"FAIL"`): `=SMILES2LIPINSKI(A2)`
-   * LogP & Polar Surface Area (TPSA): `=SMILES2LOGP(A2)`, `=SMILES2TPSA(A2)`
-   * Monoisotopic Exact Mass (for HRMS/MS): `=SMILES2EXACTMASS(A2)`
-
-> 📐 See all 25+ worksheet functions in the **[Excel Formula Cheat Sheet](/reference/formula)**.
-
----
-
-## 4. Popular Styling Options (B&W · Dark Mode · Atom Numbers)
-
-Combine any option keywords in the 3rd argument of `=SMILES2IMG(cell, [background], [options])` using spaces or commas:
-
-| Desired Style | Example Formula | What It Does |
-| :--- | :--- | :--- |
-| **ACS / Patent Black & White** | `=SMILES2IMG(A2, "", "bw")` | High-contrast monochrome line art for journal manuscripts and patents |
-| **Substructure Highlight** | `=SMILES2IMG(A2, "", "hl:C(=O)O")` | Highlights specific functional groups or scaffolds in color |
-| **Atom Numbers & Stereo Labels** | `=SMILES2IMG(A2, "", "num stereo")` | Shows atom indices (`num`, great for NMR) and *R/S*, *E/Z* labels (`stereo`) |
-| **Dark Mode (White Ink)** | `=SMILES2IMG(A2, "#1e1e1e", "white")` | Crisp white bonds rendered over a dark cell background |
-| **Explicit Hydrogens / Rotate / Flip** | `=SMILES2IMG(A2, "", "h rot90 flip")` | Unfolds hydrogens (`h`), rotates 90° (`rot90`), or flips horizontally (`flip`) |
-
-<p align="center">
-  <img src="/excel-matrix-showcase.png" alt="Excel Matrix Styling Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
-
----
-
-## 5. Top `[SMILES]` Ribbon Tab & `.sdf` File Exchange
-
-Use the **`[SMILES]`** tab on the Excel ribbon for one-click table imports, whole-sheet restyling, and vector export:
+## 4. Top `[SMILES]` Ribbon & Right-Click Menu Summary
 
 <p align="center">
   <img src="/excel-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Excel" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-### 📂 Import & Export `.sdf` Chemical Files (`[SDF File]`)
-* **📥 Import `.sdf` File...:** Select any multi-molecule `.sdf` file to automatically generate a formatted Excel table containing **rendered structure images (`=SMILES2IMG`), SMILES, Formula, Molecular Weight, and all SD property tags (`<IC50>`, `<Activity>`, etc.)**.
-* **📤 Export `.sdf` File...:** Exports your worksheet compound table back to a standard V2000 `.sdf` file.
-
-### 🎨 Restyle the Entire Sheet in 1 Click (`[Batch Style]`)
-Unify every chemical structure in your selection or active sheet to match your target document:
-* **Standard Color:** IUPAC element colors with a transparent background (default for spreadsheets)
-* **Publication B&W:** High-contrast ACS / patent monochrome line art
-* **White Background:** Element colors on a solid white background (stays clear over colored or banded rows)
-* **Dark Mode:** Crisp white bonds on a dark/transparent background
-
-### 🖼️ Copy Vector Graphics for Illustrator (`[Copy SVG]`)
-* Copies the selected molecule as a lossless **scalable vector graphic (`SVG`)** to the clipboard, ready to paste directly into Adobe Illustrator, Inkscape, or ChemDraw.
-
----
-
-## 6. Right-Click Context Menu (`Chemical Structure`)
-
-Right-click any cell to access quick chemical actions under the **`Chemical Structure`** menu:
+* **✏️ Insert Structure (`Ctrl+Shift+K`):** Open the 2D molecule & reaction sketcher
+* **🧬 3D Structure (Mol\*):** Open the 3D protein viewer (if the active cell contains a 4-character PDB ID like `1CRN`, it loads that protein automatically!)
+* **⚡ Quick Insert:** Convert a cell containing SMILES text into a rendered structure formula in 0.1s
+* **🖼️ Copy SVG:** Copy the selected molecule as a lossless SVG vector for Illustrator or ChemDraw
+* **🎨 Batch Style:** Convert all structures in the sheet to Color, Publication B&W, White Background, or Dark Mode
+* **📂 SDF File:** Import multi-molecule `.sdf` files into formatted Excel tables or export back to `.sdf`
 
 <p align="center">
   <img src="/excel-context-menu-guide.png" alt="Chemical Structure Context Menu in Excel" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-* **✏️ Edit Structure in Ketcher:** Reopen the molecule in the 2D sketcher for in-place editing
-* **🧬 3D Structure (Mol\*)...:** Open the 3D protein viewer (if the active cell contains a 4-character PDB ID like `1CRN`, it loads that protein automatically!)
-* **📋 Copy SMILES / InChI / KET / SVG:** Copy chemical notations or vector graphics in one click
-* **🔬 Copy Molecule Info (Submenu & Summary Window):**
-  * Copy Substance Name, Formula, Molecular Weight, or InChIKey individually,
-  * Copy an entire **Excel Row (TSV)**, **Markdown Table**, or **Bulleted List** to paste across adjacent cells or documents,
-  * Or open the **Detailed Molecule Info Window** to inspect all properties (including LogP, TPSA, and Lipinski Ro5) and export as JSON.
-
 ::: details 🔍 Why does my formula show #VALUE!? (Using Diagnostics)
 A `#VALUE!` result usually means the input cell contains a typo in its SMILES string (such as an unclosed ring number or invalid atomic valence).  
 Click **`[SMILES] ➔ [Settings & Diagnostics]`** on the ribbon to see the exact chemical syntax error message in real time.
 :::
+
+---
+
+## 🚀 Continue Exploring
+
+<div class="s2i-card-grid">
+  <a href="../guide/excel-cheminformatics" class="s2i-card">
+    <div class="s2i-card-title">🔬 Excel Cheminformatics: SAR & SDF</div>
+    <p class="s2i-card-desc">MW, Exact Mass (HRMS), Lipinski Ro5, 12-group SMARTS dictionary, similarity ranking & .sdf files</p>
+  </a>
+  <a href="../guide/publishing" class="s2i-card">
+    <div class="s2i-card-title">🎨 Publishing, SVG & Property Tables</div>
+    <p class="s2i-card-desc">1-click ACS B&W sheet conversion, lossless Illustrator SVG copy, and 5 property export formats</p>
+  </a>
+</div>
