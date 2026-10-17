@@ -36,6 +36,27 @@ Excel, Word, PowerPoint 상단 리본의 **`[SMILES]`** ➔ **`[Batch Style]`** 
 
 ---
 
+## 4. 🔍 12대 필수 작용기(SMARTS) 검색 & 하이라이트 수식 빠른 복사
+
+원하는 작용기의 **포함 여부 필터(`=SMILES.MATCH`)** 수식이나 **하이라이트 이미지(`=SMILES2IMG`)** 수식을 그대로 복사해 시트에 붙여넣으세요:
+
+| 찾을 작용기 / 고리 골격 | 포함 여부 판정 (`TRUE` / `FALSE`) | 해당 작용기 컬러 하이라이트 구조식 |
+| :--- | :--- | :--- |
+| **벤젠 고리 (방향족)** | `=SMILES.MATCH(A2, "c1ccccc1")` | `=SMILES2IMG(A2, "", "hl:c1ccccc1")` |
+| **피리딘 고리 (헤테로방향족)** | `=SMILES.MATCH(A2, "c1ccncc1")` | `=SMILES2IMG(A2, "", "hl:c1ccncc1")` |
+| **카복실산 (`-COOH`)** | `=SMILES.MATCH(A2, "C(=O)[OH]")` | `=SMILES2IMG(A2, "", "hl:C(=O)[OH]")` |
+| **에스터 (`-COO-`)** | `=SMILES.MATCH(A2, "C(=O)O[#6]")` | `=SMILES2IMG(A2, "", "hl:C(=O)O[#6]")` |
+| **아마이드 (`-CONH-`)** | `=SMILES.MATCH(A2, "C(=O)N")` | `=SMILES2IMG(A2, "", "hl:C(=O)N")` |
+| **설폰아마이드 (`-SO₂NH-`)** | `=SMILES.MATCH(A2, "S(=O)(=O)N")` | `=SMILES2IMG(A2, "", "hl:S(=O)(=O)N")` |
+| **케톤 (`-C(=O)-`)** | `=SMILES.MATCH(A2, "[#6]C(=O)[#6]")` | `=SMILES2IMG(A2, "", "hl:[#6]C(=O)[#6]")` |
+| **알데하이드 (`-CHO`)** | `=SMILES.MATCH(A2, "[CX3H1](=O)")` | `=SMILES2IMG(A2, "", "hl:[CX3H1](=O)")` |
+| **페놀 (방향족 `-OH`)** | `=SMILES.MATCH(A2, "c1ccccc1[OH]")` | `=SMILES2IMG(A2, "", "hl:c1ccccc1[OH]")` |
+| **나이트로기 (`-NO₂`)** | `=SMILES.MATCH(A2, "[N+](=O)[O-]")` | `=SMILES2IMG(A2, "", "hl:[N+](=O)[O-]")` |
+| **할로겐 원소 (`F, Cl, Br, I`)** | `=SMILES.MATCH(A2, "[F,Cl,Br,I]")` | `=SMILES2IMG(A2, "", "hl:[F,Cl,Br,I]")` |
+| **트라이플루오로메틸 (`-CF₃`)** | `=SMILES.MATCH(A2, "C(F)(F)F")` | `=SMILES2IMG(A2, "", "hl:C(F)(F)F")` |
+
+---
+
 ## 🔗 관련 가이드 바로가기
 
 <div class="feature-grid-2">

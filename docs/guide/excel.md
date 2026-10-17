@@ -37,6 +37,20 @@ The fastest way to build a chemical table in Excel is to put SMILES strings (or 
 * **Want larger structure images?**  
   Simply increase the Excel **row height (e.g., 80–100 pt)** and **column width**—the molecule scales up automatically while keeping its aspect ratio.
 
+::: details ⚖️ Build an Automated Reaction Stoichiometry & Weighing Table (ELN Template)
+Because `=SMILES2MW(B2)` returns a **true numeric value (`double`)**, you can multiply it directly in Excel formulas to calculate **moles (`mmol`) and exact reagent mass (`mg`)** for organic synthesis lab notebooks:
+
+| Col | Header | Row 2 (Limiting Reagent: Salicylic Acid) | Row 3 (Reagent: Acetic Anhydride) | Notes |
+| :---: | :--- | :--- | :--- | :--- |
+| **Col A** | **Reagent Name** | `Salicylic Acid` | `Acetic Anhydride` | Name or CAS number |
+| **Col B** | **SMILES** | `=NAME2SMILES(A2)` | `=NAME2SMILES(A3)` | Auto-resolves SMILES |
+| **Col C** | **Structure** | `=SMILES2IMG(B2)` | `=SMILES2IMG(B3)` | Auto-rendered 2D structure |
+| **Col D** | **MW (g/mol)** | `=SMILES2MW(B2)` ➔ `138.12` | `=SMILES2MW(B3)` ➔ `102.09` | Numeric value |
+| **Col E** | **Equiv (Eq)** | `1.0` | `1.5` | Target molar equivalents |
+| **Col F** | **Moles (mmol)** | `5.0` *(Base scale)* | `=$F$2 * E3` ➔ `7.5` | Base mmol × Equiv |
+| **Col G** | **Mass to Weigh (mg)** | `=D2 * F2` ➔ **`690.6 mg`** | `=D3 * F3` ➔ **`765.7 mg`** | **MW (Col D) × mmol (Col F)** |
+:::
+
 ::: details 📚 Built-In 0ms Offline Dictionary (Lab Solvents, Drugs, Biomolecules & CAS Numbers)
 The following common laboratory abbreviations, pharmaceuticals, biomolecules, and their CAS Registry Numbers are built directly into the add-in and resolve **instantly in 0ms without internet access**. Any other compound name or CAS number is automatically queried from PubChem once and cached permanently on your PC for offline use.
 

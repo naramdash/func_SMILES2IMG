@@ -101,16 +101,37 @@
 
 ---
 
+## 7. 📊 반환 데이터 타입 및 엑셀 오류 코드 규격
+
+### 함수별 반환 데이터 타입 (수식 사칙연산 호환성)
+| 함수 그룹 | 엑셀 반환 타입 | 사칙연산·비교연산 호환 예시 |
+| :--- | :--- | :--- |
+| `=SMILES2MW`, `=SMILES2EXACTMASS`, `=SMILES2LOGP`, `=SMILES2TPSA`, `=SMILES.SIMILARITY` | **실수 (`Number / Double`)** | `=SMILES2MW(A2) * 5.0` (당량·무게 계산), `=SMILES2TPSA(A2) <= 90` |
+| `=SMILES2HBD`, `=SMILES2HBA`, `=SMILES2ROTBONDS` | **정수 (`Number / Integer`)** | `=SMILES2HBD(A2) + SMILES2HBA(A2)` |
+| `=SMILES.MATCH` | **논리값 (`Boolean: TRUE / FALSE`)** | `=IF(SMILES.MATCH(A2, "c1ccccc1"), "방향족", "비방향족")` |
+| `=SMILES2LIPINSKI`, `=SMILES2FORMULA`, `=SMILES2NAME`, `=NAME2SMILES`, `=SMILES2INCHI` | **문자열 (`Text / String`)** | `=IF(SMILES2LIPINSKI(A2)="PASS", "통과", "제외")` |
+| `=SMILES2IMG`, `=NAME2IMG`, `=KET2IMG`, `=INCHI2IMG` | **인셀 이미지 참조 (`.FLOAT`는 도형)** | 셀 크기에 맞춰 자동 스케일링 및 정렬·필터 연동 |
+
+### 엑셀 상태 및 오류 코드 의미 (`#N/A`, `#VALUE!`, `#NAME?`)
+| 표시 값 | 의미 및 발생 원인 | 해결 방법 |
+| :---: | :--- | :--- |
+| **`#N/A`** *(0.1초간 표시)* | **정상 비동기 렌더링 중:** 새로운 분자 그림을 처음 그릴 때나 PubChem에서 미등록 시약명을 조회할 때 약 0.1초 동안 표시된 뒤 **자동으로 그림이나 결과값으로 바뀝니다.** | 아무 조작 없이 잠시만 기다리시면 자동 완료됩니다. |
+| **`#VALUE!`** | **화학 문법 오류 또는 빈 셀 참조:** 참조한 셀이 비어 있거나, SMILES 괄호·고리 번호가 닫히지 않는 등 화학식 파싱에 실패했을 때 나타납니다. | 리본 **`[SMILES]`** ➔ **`[Diagnostics]`** 창을 열면 어느 셀의 어떤 문법이 틀렸는지 정확한 원인을 알려줍니다. |
+| **`#NAME?`** | **추가 기능 미로드 또는 버전 불일치:** 추가 기능이 아직 설치되지 않았거나, 구버전 엑셀(2016~2021)에서 `.FLOAT`를 빼먹고 `=SMILES2IMG`를 호출한 경우 나타납니다. | [10초 원클릭 설치](/ko/guide/getting-started)를 실행하거나, Excel 2016~2021에서는 `=SMILES2IMG.FLOAT(A2)`를 사용하세요. |
+
+---
+
 ## 🚀 다음 단계로 이어서 보기
 
 <div class="s2i-card-grid">
+  <a href="../tools/formula-builder" class="s2i-card">
+    <div class="s2i-card-title">🛠️ 엑셀 함수 표현 생성기</div>
+    <p class="s2i-card-desc">마우스 클릭으로 옵션을 조합해 실시간 미리보기를 확인하고 완성된 수식 복사하기</p>
+  </a>
   <a href="../guide/excel-cheminformatics" class="s2i-card">
     <div class="s2i-card-title">🔬 Excel 심화: 물성 · SAR · SDF</div>
-    <p class="s2i-card-desc">12대 필수 작용기 SMARTS 패턴 사전과 HRMS m/z 부가 이온 계산 수식 보기</p>
-  </a>
-  <a href="../guide/faq" class="s2i-card">
-    <div class="s2i-card-title">❓ 자주 묻는 질문 (FAQ)</div>
-    <p class="s2i-card-desc">설치·실행, 엑셀 수식 오류 해결, 동료 PC 파일 공유 시 호환성 안내</p>
+    <p class="s2i-card-desc">12대 필수 작용기 SMARTS 패턴 사전과 엑셀 IF·조건부 서식 실전 결합 레시피</p>
   </a>
 </div>
+
 

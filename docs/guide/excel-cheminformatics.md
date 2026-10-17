@@ -124,9 +124,26 @@ Open and save multi-compound **`.sdf` (Structure-Data File)** and **`.mol`** lib
 | **Col G** | **LogP** | `=SMILES2LOGP(C2)` (Crippen octanol/water LogP) |
 | **Col H** | **Lipinski** | `=SMILES2LIPINSKI(C2)` (`"PASS"` / `"FAIL"` Rule of 5 check) |
 
-### 📤 Export a Worksheet Back to `.sdf` (`Export Sheet to SDF (.sdf)...`)
-1. Click **`[SMILES] ➔ [SDF File] ➔ [Export Sheet to SDF (.sdf)...]`** and choose a destination file name.
+### 📤 Export a Worksheet Back to `.sdf` (`Export Worksheet to SDF...`)
+1. Click **`[SMILES]`** ➔ **`[SDF File]`** ➔ **`[Export Worksheet to SDF...]`** and choose a destination file name.
 2. Without requiring manual column mapping, the add-in automatically scans the active worksheet for compound names and SMILES/structure formulas and writes a standard V2000 `.sdf` file—ready for molecular docking or sharing with collaborators.
+
+---
+
+## 6. Combining with Native Excel Functions (`IF`, `AND`) & Conditional Formatting
+
+Because all chemical formulas return native Excel numbers (`double`), booleans (`TRUE`/`FALSE`), and text, you can combine them directly with Excel's built-in logic and **Conditional Formatting**:
+
+### ① Multi-Criteria Lead Selection (`=IF` + `AND`)
+| Screening Goal | Ready-to-Copy Excel Formula (`A2` = SMILES) |
+| :--- | :--- |
+| **Flag hits passing Lipinski Ro5 AND containing a pyridine ring** | `=IF(AND(SMILES2LIPINSKI(A2)="PASS", SMILES.MATCH(A2, "c1ccncc1")), "✅ Priority Hit", "Exclude")` |
+| **Flag CNS / BBB penetrant candidates (`TPSA ≤ 90` & `MW ≤ 450`)** | `=IF(AND(SMILES2TPSA(A2)<=90, SMILES2MW(A2)<=450), "🧠 CNS Candidate", "Standard")` |
+| **Conditionally highlight halogens only when present** | `=IF(SMILES.MATCH(A2, "[F,Cl,Br,I]"), SMILES2IMG(A2, "", "hl:[F,Cl,Br,I]"), SMILES2IMG(A2))` |
+
+### ② 10-Second Conditional Formatting (`PASS`/`FAIL` Badges & Similarity Data Bars)
+1. **Color-Code `PASS` / `FAIL`:** Select your `=SMILES2LIPINSKI(A2)` column ➔ **Home ➔ Conditional Formatting ➔ Highlight Cells Rules ➔ Equal To...** ➔ type `PASS` and choose **Green Fill with Dark Green Text**.
+2. **Similarity Gauge Bars (`0.0–1.0`):** Select your `=SMILES.SIMILARITY(A2, $B$1)` column ➔ **Home ➔ Conditional Formatting ➔ Data Bars** to render visual progress bars inside every cell.
 
 ---
 
@@ -134,12 +151,13 @@ Open and save multi-compound **`.sdf` (Structure-Data File)** and **`.mol`** lib
 
 <div class="s2i-card-grid">
   <a href="../reference/formula" class="s2i-card">
-    <div class="s2i-card-title">📐 Interactive Formula Builder & Cheat Sheet</div>
-    <p class="s2i-card-desc">Click to combine styling/highlight options and browse all 25+ Excel chemical functions</p>
+    <div class="s2i-card-title">📐 Excel Formula Cheat Sheet</div>
+    <p class="s2i-card-desc">Browse all 25+ chemical functions, return data types, and error code specifications</p>
   </a>
-  <a href="../guide/publishing" class="s2i-card">
-    <div class="s2i-card-title">🎨 Publishing, SVG & Property Tables</div>
-    <p class="s2i-card-desc">Convert all sheet structures to ACS B&W in one click or copy lossless SVG vectors</p>
+  <a href="../tools/formula-builder" class="s2i-card">
+    <div class="s2i-card-title">🛠️ Formula Generator & Style Simulator</div>
+    <p class="s2i-card-desc">Click to combine styling/highlight options interactively and copy the formula</p>
   </a>
 </div>
+
 

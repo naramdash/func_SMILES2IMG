@@ -36,6 +36,27 @@ Pair your structure column with these zero-latency local calculation formulas (a
 
 ---
 
+## 4. 🔍 Quick-Copy Dictionary: 12 Common Functional Group SMARTS (`MATCH` & Highlight)
+
+Copy any formula below to filter rows containing a specific functional group (`=SMILES.MATCH`) or highlight that group directly inside the rendered structure (`=SMILES2IMG`):
+
+| Functional Group / Ring | Boolean Filter (`TRUE` / `FALSE`) | Highlighted Structure Image Formula |
+| :--- | :--- | :--- |
+| **Benzene Ring (Aromatic)** | `=SMILES.MATCH(A2, "c1ccccc1")` | `=SMILES2IMG(A2, "", "hl:c1ccccc1")` |
+| **Pyridine Ring** | `=SMILES.MATCH(A2, "c1ccncc1")` | `=SMILES2IMG(A2, "", "hl:c1ccncc1")` |
+| **Carboxylic Acid (`-COOH`)** | `=SMILES.MATCH(A2, "C(=O)[OH]")` | `=SMILES2IMG(A2, "", "hl:C(=O)[OH]")` |
+| **Ester (`-COO-`)** | `=SMILES.MATCH(A2, "C(=O)O[#6]")` | `=SMILES2IMG(A2, "", "hl:C(=O)O[#6]")` |
+| **Amide (`-CONH-`)** | `=SMILES.MATCH(A2, "C(=O)N")` | `=SMILES2IMG(A2, "", "hl:C(=O)N")` |
+| **Sulfonamide (`-SO₂NH-`)** | `=SMILES.MATCH(A2, "S(=O)(=O)N")` | `=SMILES2IMG(A2, "", "hl:S(=O)(=O)N")` |
+| **Ketone (`-C(=O)-`)** | `=SMILES.MATCH(A2, "[#6]C(=O)[#6]")` | `=SMILES2IMG(A2, "", "hl:[#6]C(=O)[#6]")` |
+| **Aldehyde (`-CHO`)** | `=SMILES.MATCH(A2, "[CX3H1](=O)")` | `=SMILES2IMG(A2, "", "hl:[CX3H1](=O)")` |
+| **Phenol (Aromatic `-OH`)** | `=SMILES.MATCH(A2, "c1ccccc1[OH]")` | `=SMILES2IMG(A2, "", "hl:c1ccccc1[OH]")` |
+| **Nitro Group (`-NO₂`)** | `=SMILES.MATCH(A2, "[N+](=O)[O-]")` | `=SMILES2IMG(A2, "", "hl:[N+](=O)[O-]")` |
+| **Any Halogen (`F, Cl, Br, I`)** | `=SMILES.MATCH(A2, "[F,Cl,Br,I]")` | `=SMILES2IMG(A2, "", "hl:[F,Cl,Br,I]")` |
+| **Trifluoromethyl (`-CF₃`)** | `=SMILES.MATCH(A2, "C(F)(F)F")` | `=SMILES2IMG(A2, "", "hl:C(F)(F)F")` |
+
+---
+
 ## 🔗 Related Guides
 
 <div class="feature-grid-2">

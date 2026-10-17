@@ -77,6 +77,15 @@
 ### Q. 새 버전 업데이트는 어떻게 하나요?
 오피스 상단 **`[SMILES]`** ➔ **`[About SMILES]`** 창에서 **`[Check for Updates]`** 버튼을 누르거나, 처음 설치할 때 사용한 PowerShell 한 줄 명령어를 다시 실행하면 최신 버전으로 자동 업그레이드됩니다.
 
+### Q. 기존 상용·오픈소스 도구(ChemDraw for Excel, JChem for Office, Chem4Word)와 무엇이 다른가요?
+| 비교 항목 | **func_SMILES2IMG (본 프로젝트)** | **ChemDraw / JChem for Office** | **Chem4Word** |
+| :--- | :--- | :--- | :--- |
+| **라이선스 및 비용** | **100% 무료 · 오픈소스 (MIT)** | 유료 상용 구독 라이선스 필요 | 무료 오픈소스 |
+| **지원 오피스 앱** | **Excel + Word + PowerPoint 통합** | Excel + Word + PowerPoint | Word 전용 |
+| **엑셀 구조식 방식** | **네이티브 인셀 이미지(`=SMILES2IMG`)** 및 `.FLOAT` 도형 (별도 시트 변환 불필요) | 전용 시트 변환(Convert Worksheet) 또는 전용 객체 필요 | 미지원 |
+| **3D 단백질 뷰어** | **Mol\* 내장 (360° 회전 `.glb` 모델 & 2D 캡처)** | 별도 3D 프로그램 필요 | 미지원 |
+| **설치 권한** | **관리자 권한 불필요** (10초 유저 영역 설치) | 관리자(Admin) 설치 및 라이선스 인증 필요 | 설치 마법사 실행 |
+
 ---
 
 ## 🔗 관련 가이드 바로가기
@@ -87,8 +96,9 @@
     <p>10초 원클릭 설치 명령어와 오프라인 기업망 수동 설치 방법을 확인하세요.</p>
   </div>
   <div class="feature-card">
-    <h4>📐 <a href="/ko/reference/formula">엑셀 함수 치트시트</a></h4>
-    <p>모든 엑셀 화학 수식 문법과 배경색·선 색상 옵션을 한눈에 찾아보세요.</p>
+    <h4>🛠️ <a href="/ko/tools/formula-builder">엑셀 함수 표현 생성기</a></h4>
+    <p>마우스 클릭만으로 옵션을 조합해 실시간 미리보기를 확인하고 수식을 복사하세요.</p>
   </div>
 </div>
+
 

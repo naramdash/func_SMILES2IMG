@@ -77,6 +77,15 @@ The chemical rendering engine (EPAM Indigo), 2D sketcher (Ketcher), and 3D prote
 ### Q. How do I check for updates or upgrade?
 Click **`[SMILES]`** ➔ **`[About SMILES]`** on the ribbon and click **`[Check for Updates]`**, or re-run the one-line PowerShell install command at any time to upgrade to the latest release.
 
+### Q. How does `func_SMILES2IMG` compare to ChemDraw for Excel, JChem for Office, or Chem4Word?
+| Feature | **func_SMILES2IMG (This Suite)** | **ChemDraw / JChem for Office** | **Chem4Word** |
+| :--- | :--- | :--- | :--- |
+| **License & Cost** | **100% Free & Open-Source (MIT)** | Paid commercial subscription | Free & open-source |
+| **Supported Office Apps** | **Excel + Word + PowerPoint** | Excel + Word + PowerPoint | Word only |
+| **Excel Structure Cells** | **Native in-cell formulas (`=SMILES2IMG`)** & `.FLOAT` shapes (no special sheet conversion needed) | Requires special worksheet conversion or proprietary objects | N/A |
+| **3D Macromolecules** | **Built-in Mol\* (rotatable `.glb` 3D models & 2D PNG)** | Requires separate 3D software | Not supported |
+| **Installation Rights** | **No Admin rights needed** (10-second per-user setup) | Requires Admin installer & license activation | Requires setup wizard |
+
 ---
 
 ## 🔗 Related Guides
@@ -87,8 +96,9 @@ Click **`[SMILES]`** ➔ **`[About SMILES]`** on the ribbon and click **`[Check 
     <p>One-line PowerShell installer and offline manual setup instructions for corporate networks.</p>
   </div>
   <div class="feature-card">
-    <h4>📐 <a href="/reference/formula">Excel Formula Cheat Sheet</a></h4>
-    <p>Complete reference for all 25+ Excel chemical functions, background colors, and custom ink options.</p>
+    <h4>🛠️ <a href="/tools/formula-builder">Formula Generator & Style Simulator</a></h4>
+    <p>Click options to preview rendered structures in real time and copy the ready-to-use Excel formula.</p>
   </div>
 </div>
+
 

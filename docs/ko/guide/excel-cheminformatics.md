@@ -126,9 +126,26 @@ SMARTS 문법을 외울 필요 없이 아래 표에서 원하는 작용기 코�
 | **G열** | **LogP** | `=SMILES2LOGP(C2)` (지용성 분배계수) |
 | **H열** | **Lipinski** | `=SMILES2LIPINSKI(C2)` (`"PASS"` / `"FAIL"` 약물성 판정) |
 
-### 📤 엑셀 시트를 `.sdf` 파일로 내보내기 (`Export Sheet to SDF (.sdf)...`)
-1. 상단 **`[SMILES]` ➔ `[SDF File]` ➔ `[Export Sheet to SDF (.sdf)...]`** 메뉴를 클릭하고 저장할 파일 이름을 지정합니다.
+### 📤 엑셀 시트를 `.sdf` 파일로 내보내기 (`Export Worksheet to SDF...`)
+1. 상단 **`[SMILES]`** ➔ **`[SDF File]`** ➔ **`[Export Worksheet to SDF...]`** 메뉴를 클릭하고 저장할 파일 이름을 지정합니다.
 2. 복잡한 열 지정 없이도 현재 시트의 각 행에서 화합물 이름과 SMILES(또는 구조식 수식)를 자동으로 찾아 표준 V2000 `.sdf` 파일로 묶어 내보내므로, 분자 도킹(Docking) 프로그램이나 타 연구실에 즉시 전달할 수 있습니다.
+
+---
+
+## 6. 엑셀 기본 함수(`IF`, `FILTER`) 및 조건부 서식 결합 레시피
+
+모든 화학 수식은 엑셀의 표준 숫자(`Number`), 논리값(`TRUE`/`FALSE`), 텍스트를 반환하므로 엑셀 기본 함수 및 **조건부 서식**과 완벽하게 호환됩니다.
+
+### ① 다중 조건 히트(Hit) 화합물 자동 판정 (`=IF` + `AND`)
+| 판정 목적 | 바로 복사해 쓸 엑셀 수식 (`A2` = SMILES) |
+| :--- | :--- |
+| **Lipinski 통과 + 특정 코어(`c1ccncc1`) 보유 시 `"후보 선정"`** | `=IF(AND(SMILES2LIPINSKI(A2)="PASS", SMILES.MATCH(A2, "c1ccncc1")), "✅ 후보 선정", "제외")` |
+| **뇌혈관장벽(BBB) 투과 유망 물질 판정 (`TPSA ≤ 90` & `MW ≤ 450`)** | `=IF(AND(SMILES2TPSA(A2)<=90, SMILES2MW(A2)<=450), "🧠 CNS 유망", "일반")` |
+| **할로겐 원소 보유 여부에 따라 구조식 하이라이트 자동 전환** | `=IF(SMILES.MATCH(A2, "[F,Cl,Br,I]"), SMILES2IMG(A2, "", "hl:[F,Cl,Br,I]"), SMILES2IMG(A2))` |
+
+### ② 조건부 서식으로 `PASS` / `FAIL` 및 유사도 막대 그래프 입히기 (10초 설정)
+1. **`PASS` / `FAIL` 색상 강조:** `=SMILES2LIPINSKI(A2)`가 입력된 열 전체를 선택 ➔ 엑셀 상단 **[홈] ➔ [조건부 서식] ➔ [셀 강조 규칙] ➔ [같음...]** ➔ `PASS` 입력 후 **'녹색 채우기'** 선택!
+2. **유사도 점수(`0.0~1.0`) 막대 그래프:** `=SMILES.SIMILARITY(A2, $B$1)`가 입력된 열 전체를 선택 ➔ **[홈] ➔ [조건부 서식] ➔ [데이터 막대]** 클릭! 셀 안에 유사도 비율이 직관적인 게이지 막대로 표시됩니다.
 
 ---
 
@@ -136,12 +153,13 @@ SMARTS 문법을 외울 필요 없이 아래 표에서 원하는 작용기 코�
 
 <div class="s2i-card-grid">
   <a href="../reference/formula" class="s2i-card">
-    <div class="s2i-card-title">📐 인터랙티브 수식 빌더 & 치트시트</div>
-    <p class="s2i-card-desc">클릭으로 스타일·하이라이트 옵션을 조합하고 25종 이상의 전체 함수 규격 확인하기</p>
+    <div class="s2i-card-title">📐 전체 엑셀 함수 치트시트</div>
+    <p class="s2i-card-desc">25종 이상의 전체 함수 규격, 반환 데이터 타입 및 오류 코드 사전 확인하기</p>
   </a>
-  <a href="../guide/publishing" class="s2i-card">
-    <div class="s2i-card-title">🎨 출판 스타일 · SVG · 물성 복사</div>
-    <p class="s2i-card-desc">시트 전체 구조식을 논문용 흑백(ACS)으로 일괄 변환하거나 Illustrator용 SVG로 복사하기</p>
+  <a href="../tools/formula-builder" class="s2i-card">
+    <div class="s2i-card-title">🛠️ 엑셀 함수 표현 생성기</div>
+    <p class="s2i-card-desc">마우스 클릭만으로 스타일·하이라이트 옵션을 조합하고 완성된 수식 복사하기</p>
   </a>
 </div>
+
 

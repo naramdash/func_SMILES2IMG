@@ -101,16 +101,37 @@ Filter compound libraries by scaffold or rank analogs against a lead molecule. F
 
 ---
 
+## 7. 📊 Return Data Types & Excel Error Code Reference
+
+### Return Data Types (Formula Math & Logic Compatibility)
+| Function Group | Excel Return Type | Formula & Math Usage Example |
+| :--- | :--- | :--- |
+| `=SMILES2MW`, `=SMILES2EXACTMASS`, `=SMILES2LOGP`, `=SMILES2TPSA`, `=SMILES.SIMILARITY` | **Numeric (`Double`)** | `=SMILES2MW(A2) * 5.0` (stoichiometry mass), `=SMILES2TPSA(A2) <= 90` |
+| `=SMILES2HBD`, `=SMILES2HBA`, `=SMILES2ROTBONDS` | **Numeric (`Integer`)** | `=SMILES2HBD(A2) + SMILES2HBA(A2)` |
+| `=SMILES.MATCH` | **Boolean (`TRUE / FALSE`)** | `=IF(SMILES.MATCH(A2, "c1ccccc1"), "Aromatic", "Aliphatic")` |
+| `=SMILES2LIPINSKI`, `=SMILES2FORMULA`, `=SMILES2NAME`, `=NAME2SMILES`, `=SMILES2INCHI` | **Text (`String`)** | `=IF(SMILES2LIPINSKI(A2)="PASS", "Candidate", "Exclude")` |
+| `=SMILES2IMG`, `=NAME2IMG`, `=KET2IMG`, `=INCHI2IMG` | **In-Cell Picture (`.FLOAT` = Shape)** | Scales automatically with cell height/width and sorts with table rows |
+
+### Understanding Excel Status & Error Codes (`#N/A`, `#VALUE!`, `#NAME?`)
+| Displayed Code | Meaning & Cause | How to Resolve |
+| :---: | :--- | :--- |
+| **`#N/A`** *(briefly ~0.1s)* | **Normal Async Rendering in Progress:** Shown momentarily (~0.1s) while generating a new structure image or resolving an uncached name from PubChem, then **automatically updates to the final image or value**. | Wait a fraction of a second—no action needed. |
+| **`#VALUE!`** | **Invalid Chemical Syntax or Empty Reference:** The referenced cell is empty, or the SMILES/InChI string contains a chemical syntax error (e.g., unclosed ring number or parenthesis). | Click **`[SMILES]`** ➔ **`[Diagnostics]`** on the ribbon to view the exact parser error message. |
+| **`#NAME?`** | **Add-In Not Loaded or Excel Version Mismatch:** Either the add-in is not active, or `=SMILES2IMG` was typed on Excel 2016–2021 instead of `=SMILES2IMG.FLOAT`. | Run the [10-Second Quick Install](/guide/getting-started), or append `.FLOAT` on Excel 2016–2021. |
+
+---
+
 ## 🚀 Continue Exploring
 
 <div class="s2i-card-grid">
+  <a href="../tools/formula-builder" class="s2i-card">
+    <div class="s2i-card-title">🛠️ Formula Generator & Style Simulator</div>
+    <p class="s2i-card-desc">Click options to preview rendered structures in real time and copy the formula</p>
+  </a>
   <a href="../guide/excel-cheminformatics" class="s2i-card">
     <div class="s2i-card-title">🔬 Excel Cheminformatics: SAR & SDF</div>
-    <p class="s2i-card-desc">Copy-and-paste dictionary of 12 common SMARTS functional groups & HRMS adduct formulas</p>
-  </a>
-  <a href="../guide/faq" class="s2i-card">
-    <div class="s2i-card-title">❓ FAQ & Troubleshooting</div>
-    <p class="s2i-card-desc">Answers on installation, Excel formula errors, and sharing files with colleagues</p>
+    <p class="s2i-card-desc">12 common SMARTS functional groups, HRMS adduct formulas, and Excel IF/Filter recipes</p>
   </a>
 </div>
+
 
