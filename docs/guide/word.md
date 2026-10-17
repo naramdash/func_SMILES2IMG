@@ -1,121 +1,87 @@
-# SMILES for Microsoft Word
+# Microsoft Word Guide
 
-**SMILES for Microsoft Word** brings seamless chemical structure editing and inline high-resolution molecule rendering directly into Word documents, research manuscripts, journal articles, and thesis templates.
-
----
-
-## 🌟 Visual Feature Walkthrough
-
-All chemical workflows in Microsoft Word are designed to behave naturally like text characters—wrapping inline within sentences, aligning inside table cells, and editing in-place without disturbing document layout:
+Learn how to insert and edit high-resolution 2D chemical structures, reaction schemes, and 3D proteins inside Word manuscripts, journal articles, thesis chapters, and tables.
 
 <p align="center">
   <img src="/word-showcase.png" alt="SMILES for Word Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-::: tip Key Advantages in Word
-* **Inline Picture Flow:** Structures are inserted as native `InlineShapes` that behave like characters. They wrap naturally with sentences, align within table cells, and move with paragraphs.
-* **Layout Preservation:** When double-clicking to edit a structure, the newly generated image replaces the old shape in-place without distorting table column widths or paragraph margins.
-* **Lossless File Portability:** All structure metadata (`KET` or `SMILES`) is stored inside the `.docx` XML structure (`AlternativeText` and `Title`). Sharing the file with colleagues keeps all chemical metadata intact.
+::: tip ✨ 3 Key Advantages for Word Manuscripts
+1. **Natural Inline Flow:** Structures are inserted as inline pictures that flow naturally within sentences and align cleanly inside table cells.
+2. **Double-Click Editing Without Breaking Tables:** **Double-clicking** a structure inside a table updates it in place without messing up your column widths or row heights.
+3. **Editable Across Computers:** The underlying chemical structure is saved inside the `.docx` file itself, so co-authors on other PCs can double-click to edit at any time.
 :::
 
 ---
 
-## 📑 Dedicated Office Ribbon: `[SMILES]` Tab
+## 1. Insert Structures & Reactions into Text or Tables (3 Ways)
 
-The `[SMILES]` tab on Word's ribbon provides one-click access to structure drawing, instant text replacement, and diagnostics:
+### Way ① Draw by Hand (`Ctrl + Shift + K`)
+1. Place your cursor in any paragraph or table cell in Word.
+2. Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> (or click **`[SMILES] ➔ [Insert Structure]`** on the ribbon).
+3. Draw your molecule or multi-step reaction scheme (arrows, reagents, catalysts, temperatures) in the **Ketcher 2D Editor**.
+4. Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to insert the structure right at your cursor!
 
-<p align="center">
-  <img src="/word-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
+### Way ② Convert Typed SMILES Text in 0.1s (`Quick Insert`)
+* Highlight any SMILES text typed in your document (e.g., `c1ccccc1`) and click **`[SMILES] ➔ [Quick Insert]`** to replace the text with a rendered structure picture on the spot.
 
-1. **✏️ Insert Structure (`Ctrl+Shift+K`):** Launches the offline Ketcher 2D editor. Draw your molecule or multi-step reaction, then press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (or click **Apply**) to insert it as an inline picture at the current cursor position.
-2. **🧬 3D Structure (Mol*):** Opens the embedded Mol* 3D viewer. Download PDB structures (e.g. `1CRN`, `4HHB`) or open local files, then insert as an **interactive 3D model (.glb)** or high-resolution 2D image directly into your Word manuscript. See the [Mol* 3D Viewer Guide](/guide/molstar) for full details.
-3. **⚡ Quick Insert:**
-   - If text containing a SMILES string is highlighted in your document, converts it directly into an inline chemical structure in 0.1 seconds.
-   - If no text is selected, parses the clipboard and inserts the structure at the cursor position.
-4. **📋 Paste Structure:** Reads clipboard content as SMILES or KET and embeds it as an inline shape.
-5. **🖼️ Copy SVG *(New in v1.7.0)*:** Renders the selected structure as a crisp scalable vector graphic (`SVG`) and copies it to the Windows Clipboard as both `image/svg+xml` and raw XML text for lossless pasting into Adobe Illustrator, Inkscape, or ChemDraw.
-6. **🎨 Batch Style *(New in v1.7.0)*:** Converts all chemical structures in the selection or active Word document to a unified style preset (**Standard Color**, **Publication B&W**, **White Background**, or **Dark Mode**) in one click.
-7. **🔬 Molecule Info Dropdown:** Directly copies chemical properties, exports summary rows for Word tables, or launches the full **Molecule Info Dialog**.
-8. **🔍 Settings & Diagnostics:** Displays COM add-in status, chemical engine version, and troubleshooting logs.
+### Way ③ Paste from Clipboard
+* Copy a SMILES string from a paper, website, or ChemDraw, then click **`[SMILES] ➔ [Paste Structure]`** (or right-click ➔ **`Chemical Structure ➔ Paste Structure`**).
 
 ---
 
-### 🎨 Manuscript-Wide Batch Style Normalization
+## 2. Convert Your Entire Manuscript to Journal B&W in 1 Click (`Batch Style`)
 
-Ensure your journal submission or grant proposal adheres to publisher style guides without manually re-exporting dozens of figures:
+Before submitting to a journal, you don't need to redraw or re-export dozens of figures. Click **`[SMILES] ➔ [Batch Style]`** on the ribbon to unify every structure in your document (or selection) in one click:
 
-| Preset Name | Ribbon Icon (`imageMso`) | Document Output & Ideal Manuscript Use Case |
+| Style Preset | Visual Result | Best For |
 | :--- | :--- | :--- |
-| **Standard Color** | `ColorMenu` | Full IUPAC element colors with **transparent background** (ideal for color thesis chapters and digital PDFs). |
-| **Publication B&W** | `BlackAndWhiteGrayscale` | High-contrast **ACS / Wiley / Elsevier monochrome line art** (clean black bonds and labels for print journals). |
-| **White Background** | `BlackAndWhiteLightGrayscale` | Full color with **solid white rectangular background** (ensures visibility across colored Word tables or callout boxes). |
-| **Dark Mode** | `BlackAndWhiteBlack` | High-contrast **white ink on transparent background** (designed for dark presentation templates and digital readers). |
+| **Standard Color** | IUPAC element colors + **transparent background** | Color thesis chapters, digital PDFs, and internal reports |
+| **Publication B&W** | High-contrast **monochrome line art (ACS style)** | Print journal submissions (ACS, Wiley, Elsevier, RSC) & patents |
+| **White Background** | Element colors + **solid white background** | Shaded Word table rows or colored callout boxes |
+| **Dark Mode** | **White bonds** + transparent background | Dark-themed covers and digital documents |
 
 ---
 
-## 🖱️ Redesigned Context Menu: `Chemical Structure`
+## 3. Fill Word Tables with Properties & Copy Vector SVG
 
-Right-click any chemical structure picture or paragraph in your Word document:
+**Right-click** any chemical structure picture in Word and select **`Chemical Structure`** (or use the top ribbon) to speed up writing your Experimental section:
 
 <p align="center">
   <img src="/word-context-menu-guide.png" alt="Chemical Structure Context Menu in Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-### Case A: Right-Clicking an Existing Chemical Picture or 3D Model
-* **✏️ Edit Structure in Ketcher:** Opens the offline editor with the exact molecule or reaction graph loaded.
-* **🧬 Edit 3D Structure (Mol*):** Reopens the Mol* 3D viewer with the exact macromolecule, representations, and camera view.
-* **📋 Copy SMILES:** Copies clean SMILES notation to the clipboard.
-* **📋 Copy InChI:** Copies standard IUPAC InChI string instantly.
-* **📋 Copy Canvas Data (KET):** Copies Ketcher native JSON representation.
-* **🖼️ Copy Vector Graphic (SVG):** Renders the structure as a scalable vector graphic (`SVG`) and copies it to the clipboard for Adobe Illustrator or Inkscape.
-* **🔬 Copy Molecule Info (Submenu & Dialog):**
-  * **Substance Name:** Copies substance common name (PubChem / IUPAC).
-  * **Chemical Formula:** Copies standard Hill-notation formula (e.g. `C9H8O4`).
-  * **Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g. `180.16 g/mol`).
-  * **Copy SMILES / InChI / InChIKey:** Individual one-click copy options.
-  * **Copy All Summary (Text):** Copies compact single-line summary to clipboard.
-  * **Copy as Multi-Line List:** Copies formatted multi-line property list.
-  * **Copy as Excel Row (TSV Columns):** Copies tab-separated values that paste directly as structured cells into Word tables!
-  * **Copy as Markdown Table:** Formatted Markdown table for documentation and lab notebooks.
-  * **Detailed Molecule Info Window...:** Opens the full chemical properties dialog with **DataGridView table**, custom GDI+ vector chemical icons, **LogP / TPSA**, **Lipinski Rule of 5**, and split-button multi-format exporter (including JSON).
-  > ⚡ **Non-Blocking Toast:** Each copy action displays a floating pill badge (`✓ Copied {Item}: {Value}`) near your mouse for 1.4s without stealing Word's focus.
+### 📋 Paste Properties Directly into Word Tables & Paragraphs
+* **1-Click Property Copy:** Copy Substance Name, Formula (`C9H8O4`), Molecular Weight (`180.16 g/mol`), Exact Mass, or InChIKey individually.
+* **Auto-Fill Word Table Rows (TSV):** Click **`Copy Molecule Info ➔ Copy as Excel Row (TSV Columns)`** and paste directly into a Word table—each property automatically populates its own table cell!
+* **Detailed Molecule Info Window:** View all calculated properties (including LogP, TPSA, and Lipinski Rule of 5) in one window and export as a Markdown table or JSON.
 
-### Case B: Right-Clicking Document Text, Table, or Blank Paragraph
-* **✏️ Insert Structure in Ketcher:** Launches Ketcher to draw and insert a new structure at the cursor.
-* **🧬 3D Structure (Mol*)...:** Launches Mol* to insert a 3D macromolecular model or image.
-* **📋 Paste Structure:** Reads clipboard chemical text and embeds it as an inline image.
+### 🖼️ Copy Lossless Vector Graphics for Illustrator (`Copy SVG`)
+* Click **`Copy Vector Graphic (SVG)`** to copy a true scalable vector graphic (`SVG`) to the clipboard, ready to paste directly into Adobe Illustrator, Inkscape, or ChemDraw without losing resolution.
 
 ---
 
-## 🧪 Ketcher 2D Molecule & Reaction Editor
+## 4. Embed 3D Proteins in Manuscripts (`Mol*`)
 
-Double-click any chemical structure picture inside Word or press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> to launch Ketcher (with `<0.05s` warm WebView2 instance pooling for instant reopening):
+1. Click **`[SMILES] ➔ [3D Structure (Mol*)]`** on the ribbon.
+2. Enter a 4-letter PDB ID (e.g., `1CRN`, `4HHB`) to download, or open a local structure file (`.pdb`, `.cif`, `.sdf`).
+3. Choose your visual style (Cartoon ribbon, Ball & Stick, Molecular Surface) and camera angle, then insert as:
+   * **[3D Model (.glb)]:** An interactive 3D object you can rotate 360° with your mouse right inside Word.
+   * **[2D Picture (.png)]:** A high-resolution figure for print publication and PDF export.
+4. **Double-click** any inserted 3D model or picture at any time to reopen Mol\* at the exact same camera angle.
+
+---
+
+## 5. Top `[SMILES]` Ribbon Overview
 
 <p align="center">
-  <img src="/ketcher-guide.png" alt="Embedded Ketcher 2D Editor Window" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/word-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-* **Real-Time Property Calculation:** The top status bar calculates Formula, MW, and Exact Mass in real time as you draw.
-* **Transparent Background Toggle:** Switch between white and transparent alpha backgrounds.
-* **Table Cell Auto-Fit:** The rendered picture is sized appropriately for document flow and table cells.
-* **Keyboard Hotkeys:** <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to apply updates to Word in-place, or <kbd>Esc</kbd> to cancel.
-
----
-
-## 🔬 Multi-Step Reactions & Schemes in Manuscripts
-
-For reaction schemes, organic syntheses, and schemes with arrows and catalyst annotations:
-
-* **Full Scheme Preservation:** Reaction arrows, catalyst conditions, and plus signs are stored losslessly inside the document's shape metadata (`AlternativeText`).
-* **Double-Click Re-editing:** Double-clicking the reaction scheme in your Word document reopens Ketcher with the full reaction graph intact—enabling painless updates before journal submission.
-
----
-
-## 🔍 Built-In Diagnostics Console
-
-Click **[SMILES] ➔ [Settings & Diagnostics]** to inspect engine health:
-
-* Confirms EPAM Indigo C++ native library initialization and COM add-in registration.
-* Validates WebView2 runtime and offline Ketcher bundle assets.
-* Displays real-time rendering logs and timing benchmarks.
+* **✏️ Insert Structure (`Ctrl+Shift+K`):** Open the 2D molecule & reaction sketcher
+* **🧬 3D Structure (Mol*):** Open the 3D protein & macromolecular viewer
+* **⚡ Quick Insert:** Convert highlighted SMILES text (or clipboard) into a picture in 0.1s
+* **📋 Paste Structure:** Insert copied SMILES/KET data as an inline picture
+* **🖼️ Copy SVG:** Copy the selected structure as a lossless SVG vector
+* **🎨 Batch Style:** Convert all structures in the document to Color, Publication B&W, White Background, or Dark Mode
+* **🔬 Molecule Info:** Inspect and copy MW, Formula, LogP, Lipinski Ro5, and table rows

@@ -1,192 +1,104 @@
-# SMILES for Microsoft Excel
+# Microsoft Excel Guide
 
-**SMILES for Microsoft Excel** renders high-resolution 2D chemical structure graphics directly inside worksheet cells with instant in-cell formula recalculation, comprehensive ribbon commands, and seamless double-click editing.
-
----
-
-## 🌟 Visual Feature Walkthrough
-
-All core chemical operations in Excel are integrated natively into the Ribbon tab, right-click context menus, and worksheet formula engine:
+Learn how to render hundreds of chemical structures directly inside Excel cells, automatically calculate molecular weight and drug-likeness (Lipinski Ro5), highlight substructures, and import/export `.sdf` files.
 
 <p align="center">
   <img src="/excel-showcase.png" alt="SMILES for Excel Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-::: tip Quick Start Checklist
-1. **Draw in an Empty Cell:** Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>, draw your molecule or reaction in Ketcher, and press <kbd>Ctrl</kbd> + <kbd>Enter</kbd>.
-2. **Formula Batch Insertion:** Type `=SMILES2IMG(A2)` or `=KET2IMG(A2)` and drag down across hundreds of rows.
-3. **Quick Insert from Clipboard:** Copy any SMILES/KET text and click **[SMILES] ➔ [Insert from Clipboard]**.
-4. **Edit Anytime:** Double-click the cell to re-edit in Ketcher, or right-click to copy molecular properties (Formula, MW, Exact Mass).
+::: tip ✨ Excel in 4 Simple Steps
+1. **Render by Formula:** Type `=SMILES2IMG(A2)` or `=NAME2IMG("Aspirin")` and drag down across rows.
+2. **Draw by Hand:** Select any cell, press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>, sketch your molecule or reaction, and press <kbd>Ctrl</kbd> + <kbd>Enter</kbd>.
+3. **Double-Click to Edit:** **Double-click** any molecule cell to reopen the sketcher and update it in place.
+4. **Right-Click to Copy Info:** **Right-click ➔ `Chemical Structure`** to copy MW, Formula, or lossless SVG vectors in one click.
 :::
 
 ---
 
-## 📑 Dedicated Office Ribbon: `[SMILES]` Tab
+## 1. Build a Compound & Property Table with Formulas
 
-The custom `[SMILES]` Ribbon tab provides one-click access to all chemical structure operations without needing to remember formula syntax or keyboard shortcuts:
+The fastest way to build a chemical table in Excel is to put SMILES strings (or chemical names / CAS numbers) in Column A and enter formulas in the adjacent columns.
 
-<p align="center">
-  <img src="/excel-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Excel" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
+### Example Worksheet Setup
 
-* **✏️ Insert Structure (`Ctrl+Shift+K`):** Launches the offline Ketcher 2D editor. Draw structures, reactions, or functional groups, then press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to insert directly into the active cell.
-* **🧬 3D Structure (Mol\*):** Opens the embedded Mol\* 3D Macromolecular Viewer. Download biological macromolecules by PDB ID or open local structure files, and insert interactive 3D models (`.glb`) or 2D images (`.png`) onto your worksheet.
-* **⚡ Quick Insert:** Converts highlighted SMILES strings into rendered structures in 0.1s. If an empty cell is selected, it automatically reads the clipboard.
-* **📋 Insert from Clipboard:** Parses clipboard text as SMILES or Ketcher KET and creates an in-cell chemical structure immediately.
-* **🖼️ Copy SVG *(New in v1.7.0)*:** Renders the selected molecule as a scalable vector graphic (`SVG`) and copies it to the Windows Clipboard as both `image/svg+xml` and raw XML text for lossless pasting into Adobe Illustrator, Inkscape, or ChemDraw.
-* **🎨 Batch Style *(New in v1.7.0)*:** Converts all chemical structures in the selection or active worksheet to a unified style preset (**Standard Color**, **Publication B&W**, **White Background**, or **Dark Mode**) in one click.
-* **📂 SDF File (`Import .sdf` / `Export .sdf`) *(New in v1.7.0)*:** Imports multi-molecule `.sdf` chemical databases directly into an Excel table with auto-generated `=SMILES2IMG(...)`, Formula, MW, and property columns, or exports worksheet molecules back to `.sdf`.
-* **🔍 Settings & Diagnostics:** Opens the real-time engine health monitor, verifying Indigo engine loading, WebView2 bundle integrity, and formula recalculation logs.
+| Column | Content | Formula in Row 2 | Example Output (A2 = `"Aspirin"` or SMILES) |
+| :---: | :--- | :--- | :--- |
+| **Col A** | Input (SMILES or Name) | `CC(=O)Oc1ccccc1C(=O)O` | Input text |
+| **Col B** | **2D Structure Image** | `=SMILES2IMG(A2)` | *(Auto-scaled in-cell structure)* |
+| **Col C** | **Chemical Formula** | `=SMILES2FORMULA(A2)` | `C9H8O4` |
+| **Col D** | **Molecular Weight (g/mol)** | `=SMILES2MW(A2)` | `180.16` |
+| **Col E** | **Lipinski Rule of 5** | `=SMILES2LIPINSKI(A2)` | `PASS` |
 
----
+* **Only have a chemical name or CAS number?**  
+  Use `=NAME2IMG("Aspirin")` or `=NAME2IMG("50-78-2")` to render the image directly, or `=NAME2SMILES("Ibuprofen")` to get its canonical SMILES string.
+* **Want larger structure images?**  
+  Simply increase the Excel **row height (e.g., 80–100 pt)** and **column width**—the molecule scales up automatically while keeping its aspect ratio.
 
-### 🎨 Batch Style Normalization Presets
-
-Quickly normalize presentation or manuscript structures across your entire sheet:
-
-| Preset Name | Ribbon Icon (`imageMso`) | Visual Output & Ideal Use Case |
-| :--- | :--- | :--- |
-| **Standard Color** | `ColorMenu` | IUPAC CPK element colors with **transparent background** (ideal for general spreadsheet viewing). |
-| **Publication B&W** | `BlackAndWhiteGrayscale` | High-contrast **ACS / Patent monochrome line art** (clean black bonds and atom labels for print manuscripts). |
-| **White Background** | `BlackAndWhiteLightGrayscale` | CPK element colors on a **solid opaque white background** (ensures visibility across colored or banded rows). |
-| **Dark Mode** | `BlackAndWhiteBlack` | Crisp **white ink bonds on dark/transparent background** (optimized for dark theme Excel and OLED presentations). |
+::: info 💡 Which Image Formula Fits My Excel Version?
+* **Microsoft 365 / Excel 2024+:** Use `=SMILES2IMG(A2)`, `=NAME2IMG(A2)`, `=KET2IMG(A2)`, `=INCHI2IMG(A2)`  
+  *(Embeds a true native in-cell picture that sorts and filters seamlessly with your data)*
+* **Excel 2016 / 2019 / 2021:** Append **`.FLOAT`** to the formula name!  
+  Example: `=SMILES2IMG.FLOAT(A2)`, `=NAME2IMG.FLOAT(A2)` *(Places a cell-locked picture shape that moves and resizes automatically with the cell)*
+:::
 
 ---
 
-### 📂 Chemical Database SDF Import & Export
+## 2. Draw by Hand & Reaction Schemes (`Ctrl + Shift + K`)
 
-The **`[SDF File]`** menu enables native handling of multi-molecule Structure-Data Files without external conversion tools:
-
-* **📥 Import `.sdf` File...:** Select any multi-compound `.sdf` file. The add-in automatically parses all molecular records and generates a structured Excel Table with:
-  1. High-resolution rendered chemical structures (`=SMILES2IMG(...)`).
-  2. Canonical SMILES strings.
-  3. Live molecular property formulas (`=SMILES2FORMULA`, `=SMILES2MW`).
-  4. Individual columns for every SD property field (e.g., `<Compound_ID>`, `<IC50>`, `<Target>`, `<Activity>`).
-* **📤 Export `.sdf` File...:** Select rows in your worksheet containing SMILES strings and property headers, then click **Export `.sdf` File...** to write a clean, standard V2000 `.sdf` library file.
-
----
-
-## 🖱️ Redesigned Context Menu: `Chemical Structure`
-
-Right-click anywhere in your worksheet to access contextual chemical actions cleanly separated from standard Excel paste options:
-
-<p align="center">
-  <img src="/excel-context-menu-guide.png" alt="Chemical Structure Context Menu in Excel" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
-
-### Case A: Right-Clicking a Molecule Cell
-When right-clicking a cell containing a chemical structure or formula:
-* **✏️ Edit Structure in Ketcher:** Opens the Ketcher editor with the current molecule or reaction graph loaded for in-place modification.
-* **🧬 3D Structure (Mol\*)...:** Launches the Mol\* 3D viewer. If the active cell contains a PDB ID (e.g., `1CRN`), Mol\* preloads the macromolecule automatically!
-* **📋 Copy SMILES:** Copies clean SMILES notation to clipboard.
-* **📋 Copy InChI:** Generates and copies standard IUPAC InChI string instantly.
-* **📋 Copy Canvas Data (KET):** Copies Ketcher native JSON representation.
-* **🖼️ Copy Vector Graphic (SVG):** Renders the structure as a crisp scalable vector graphic (`SVG`) and copies it to the clipboard for Adobe Illustrator or Inkscape.
-* **🔬 Copy Molecule Info (Submenu & Dialog):**
-  * **Substance Name:** Copies common name (e.g., `Aspirin`, `Ethanol`).
-  * **Chemical Formula:** Copies standard Hill-notation formula (e.g., `C9H8O4`).
-  * **Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g., `180.16 g/mol`).
-  * **Copy SMILES / InChI / InChIKey:** Individual one-click copy options.
-  * **Copy All Summary (Text):** Copies compact one-line formatted summary.
-  * **Copy as Multi-Line List:** Copies a multi-line bulleted list of all molecular properties.
-  * **Copy as Excel Row (TSV Columns):** Copies a tab-separated horizontal row (plus HTML table stream) that pastes cleanly across adjacent Excel columns or Word/PowerPoint tables.
-  * **Copy as Markdown Table:** Copies a formatted Markdown table for GitHub, Notion, or lab notebooks.
-  * **Detailed Molecule Info Window...:** Opens the full chemical properties window featuring:
-    - **DataGridView Table:** High-DPI GDI+ vector chemical icons for each row (name, formula, MW, exact mass, LogP, TPSA, Lipinski Ro5).
-    - **Split-Button Multi-Format Exporter:** One-click copy to TSV, Markdown Table, Multi-Line, Text, or **JSON**.
-    - **Interactive SVG Preview:** Zoomable 2D structure visualizer.
-  > ⚡ **Zero Modal Distraction:** Clicking any copy command displays a non-blocking floating toast badge (`✓ Copied {Item}: {Value}`) near your mouse cursor for 1.4 seconds without stealing focus or interrupting your work!
-
-### Case B: Right-Clicking an Empty Cell or Structure Shape
-* **✏️ Insert Structure in Ketcher:** Launches Ketcher to draw a new chemical structure and place it directly into the selected cell.
-* **🧬 3D Structure (Mol\*)...:** Launches Mol\* to insert an interactive 3D model or 2D snapshot aligned to the active cell.
-* **✏️ Edit 3D Structure (Mol\*)...:** (When right-clicking a Mol\* 3D model or picture) Re-opens Mol\* in the exact camera angle and representation style.
-* **📋 Paste Structure:** Automatically detects chemical notation in the clipboard and inserts it as a rendered molecule.
-
----
-
-## 🧪 Ketcher 2D Molecule & Reaction Editor
-
-Double-clicking any chemical cell or pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> opens the embedded, 100% offline Ketcher 2D chemical structure editor (with `<0.05s` warm WebView2 instance pooling for instant reopening):
+When you want to sketch a structure from scratch or draw a multi-step organic reaction scheme, use the built-in **Ketcher 2D Editor**.
 
 <p align="center">
   <img src="/ketcher-guide.png" alt="Embedded Ketcher 2D Editor Window" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-### Key Ketcher Features
-* **Live Molecular Property Banner:** As you draw bonds and functional groups, the top status bar calculates **Formula**, **Molecular Weight (MW)**, and **Exact Mass** in real time.
-* **Background Transparency Toggle:** Switch between **[Background: White]** and **[Background: Transparent]** with a single click. Transparent mode generates alpha-channel PNGs that look stunning on dark spreadsheet themes and presentations.
-* **Full Organic & Inorganic Toolkit:** Periodic table atom picker, standard rings (benzene, cyclopentane, cyclohexane), stereo bonds (wedges/hashes), reaction arrows, and catalyst text.
-* **Keyboard Hotkeys:** Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to apply changes immediately to Excel, or <kbd>Esc</kbd> to discard.
+1. Select a cell and press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> (or click **`[SMILES] ➔ [Insert Structure]`** on the ribbon).
+2. Draw rings, functional groups, stereo bonds (wedges/hashes), or **reaction arrows and catalyst text ($H_2SO_4$, 55 °C)**.
+3. Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to insert into the cell immediately:
+   * Single molecules are inserted as `=SMILES2IMG(...)`.
+   * Multi-step reactions with arrows or text are saved losslessly as `=KET2IMG(...)`.
+4. **Need to make changes later?** Simply **double-click** the cell to reopen the exact molecule or reaction scheme in Ketcher.
 
 ---
 
-## 🔬 Lossless Reaction Canvases: `=KET2IMG`
+## 3. Substructure Highlighting & SAR Screening
 
-For multi-step organic reaction pathways involving reagents, catalysts, temperatures, yields, and plus signs (`+`), use the dedicated `=KET2IMG` formula:
+Combine zero-latency chemical formulas with Excel's **AutoFilter** and **Conditional Formatting** to screen compound libraries directly in your spreadsheet.
 
+### ① Highlight a Core Scaffold or Functional Group (`hl:`)
+Pass `"hl:<substructure>"` in the 3rd argument to highlight matching atoms and bonds:
 ```text
-=KET2IMG(A2)
+=SMILES2IMG(A2, "", "hl:c1ccccc1")
 ```
 
-* **Lossless Coordinate Preservation:** Unlike SMILES which only stores molecular connectivity, Ketcher's native `KET` format stores 2D layout coordinates, reaction arrows, catalysts, and text notes with zero degradation.
-* **Double-Click Re-editing:** Double-clicking the reaction cell re-opens Ketcher with the entire reaction scheme, allowing you to edit reaction conditions and yields in place.
+### ② 3-Step Virtual Screening Recipe
+1. **Filter by Substructure (`TRUE` / `FALSE`):**
+   ```text
+   =SMILES.MATCH(A2, "c1ccccc1")
+   ```
+2. **Rank by 2D Similarity against a Lead Compound in `$B$1` (`0.0 ~ 1.0`):**
+   ```text
+   =SMILES.SIMILARITY(A2, $B$1)
+   ```
+3. **Evaluate Drug-Likeness (Lipinski Ro5) & Physicochemical Properties:**
+   * Pass/Fail check (`"PASS"` / `"FAIL"`): `=SMILES2LIPINSKI(A2)`
+   * LogP & Polar Surface Area (TPSA): `=SMILES2LOGP(A2)`, `=SMILES2TPSA(A2)`
+   * Monoisotopic Exact Mass (for HRMS/MS): `=SMILES2EXACTMASS(A2)`
+
+> 📐 See all 25+ worksheet functions in the **[Excel Formula Cheat Sheet](/reference/formula)**.
 
 ---
 
-## 📝 Functions: Native In-Cell vs. Floating Images
+## 4. Popular Styling Options (B&W · Dark Mode · Atom Numbers)
 
-Depending on your Microsoft Excel version, two distinct formula modes are available:
+Combine any option keywords in the 3rd argument of `=SMILES2IMG(cell, [background], [options])` using spaces or commas:
 
-### 1. `=SMILES2IMG`, `=INCHI2IMG`, `=KET2IMG`, & `=NAME2IMG`
-* **Target:** **Microsoft 365** and **Excel 2024+**
-* Embeds real **native in-cell pictures** directly into worksheet cell contents from SMILES, Ketcher KET, IUPAC InChI, or chemical names/CAS numbers (`=NAME2IMG("Aspirin")`, `=NAME2IMG("50-78-2")`).
-* Moves, sorts, filters, and auto-scales with row height and column width.
-* Can be referenced by standard Excel lookup functions, formulas, and conditional formatting rules.
-
-### 2. `=SMILES2IMG.FLOAT`, `=INCHI2IMG.FLOAT`, `=KET2IMG.FLOAT`, & `=NAME2IMG.FLOAT`
-* **Target:** **Excel 2016 / 2019 / 2021** (or when floating shapes are explicitly desired)
-* Inserts floating picture shapes locked to cell coordinates (`xlMoveAndSize`).
-* Recalculates automatically, replaces existing shapes without orphan clutter, and moves/resizes with cell boundaries.
-
-### 3. Molecular Property, Drug-Likeness & SAR Functions
-Calculate chemical characteristics and screen compound libraries directly in your worksheet:
-* `=SMILES2NAME(cell)` / `=KET2NAME(cell)` / `=INCHI2NAME(cell)` — Resolves chemical substance name via PubChem/IUPAC.
-* `=NAME2SMILES(name_or_cas)` — Resolves chemical common name or CAS Registry Number (`"50-78-2"`) to canonical SMILES.
-* `=SMILES2MW(cell)` / `=KET2MW(cell)` / `=INCHI2MW(cell)` — Computes standard molecular weight in g/mol (0ms pure local).
-* `=SMILES2EXACTMASS(cell)` / `=KET2EXACTMASS(cell)` / `=INCHI2EXACTMASS(cell)` — Computes monoisotopic exact mass in Da for HRMS/MS (0ms pure local).
-* `=SMILES2FORMULA(cell)` / `=KET2FORMULA(cell)` / `=INCHI2FORMULA(cell)` — Generates Hill-notation formula (e.g. `C9H8O4`, 0ms pure local).
-* `=SMILES2INCHI(cell)` / `=KET2INCHI(cell)` & `=INCHI2SMILES(cell)` — Bidirectional conversion between SMILES/KET and IUPAC InChI (0ms pure local).
-* `=SMILES2INCHIKEY(cell)` / `=KET2INCHIKEY(cell)` / `=INCHI2INCHIKEY(cell)` — Computes 27-character unique InChIKey hash (0ms pure local).
-* `=SMILES2LOGP(cell)` & `=SMILES2TPSA(cell)` — Computes Wildman-Crippen LogP and Topological Polar Surface Area (Å², 0ms pure local).
-* `=SMILES2HBD(cell)`, `=SMILES2HBA(cell)`, `=SMILES2ROTBONDS(cell)` — Counts H-bond donors, H-bond acceptors, and rotatable single bonds (0ms pure local).
-* `=SMILES2LIPINSKI(cell)` — Evaluates Lipinski's Rule of 5 (`"PASS"` or `"FAIL"`, 0ms pure local).
-* `=SMILES.MATCH(target, query)` & `=SMILES.SIMILARITY(mol1, mol2, [metric])` — Substructure matching (`TRUE`/`FALSE`) and Tanimoto/Tversky 2D fingerprint similarity (`0.0` to `1.0`, 0ms pure local).
-
-::: tip 💡 Real-World Virtual Screening Recipe
-Combine these zero-latency formulas with standard Excel AutoFilter and Conditional Formatting:
-1. **Scaffold Filtering:** `=SMILES.MATCH(A2, "c1ccccc1")` to flag molecules containing specific rings or pharmacophores (`TRUE`/`FALSE`).
-2. **Hit Similarity Ranking:** `=SMILES.SIMILARITY(A2, $B$1)` where `$B$1` holds your lead compound; sort descending to prioritize top analogs.
-3. **Oral Bioavailability Gate:** `=SMILES2LIPINSKI(A2)` to highlight Ro5-compliant compounds before synthesis or ordering.
-:::
-
----
-
-## 🎨 Chemical Styling & Rendering Options
-
-Options can be combined freely using spaces, commas, semicolons, or pipe symbols:
-
-| Option Keyword | Description | Example |
+| Desired Style | Example Formula | What It Does |
 | :--- | :--- | :--- |
-| `bw` / `monochrome` | High-contrast black-and-white line art (ACS / USPTO patent standard) | `=SMILES2IMG(A2, "", "bw")` |
-| `colored` | Standard IUPAC element color-coded atoms | `=SMILES2IMG(A2, "", "colored")` |
-| `hl:<smarts>` | Highlights atoms and bonds matching a SMILES/SMARTS substructure query | `=SMILES2IMG(A2, "trans", "hl:c1ccccc1")` |
-| `num` / `numbers` | Displays atom index numbers (ideal for NMR/MS peak assignments) | `=SMILES2IMG(A2, "", "num")` |
-| `stereo` | Forces CIP stereochemistry labels (*R/S*, *E/Z*) | `=SMILES2IMG(A2, "", "stereo")` |
-| `h` / `all-c` | Unfolds explicit hydrogens (`h`) or displays all carbon symbols (`all-c`) | `=SMILES2IMG(A2, "", "h all-c")` |
-| `white` / `ink=#HEX` | White or custom hex ink color for dark backgrounds | `=SMILES2IMG(A2, "#1e1e1e", "white")` |
-| `flip` / `flipv` | Flips structure horizontally or vertically | `=SMILES2IMG(A2, "", "flip")` |
-| `rot90` / `rot180` | Rotates molecule in 90-degree increments | `=SMILES2IMG(A2, "", "rot90")` |
+| **ACS / Patent Black & White** | `=SMILES2IMG(A2, "", "bw")` | High-contrast monochrome line art for journal manuscripts and patents |
+| **Substructure Highlight** | `=SMILES2IMG(A2, "", "hl:C(=O)O")` | Highlights specific functional groups or scaffolds in color |
+| **Atom Numbers & Stereo Labels** | `=SMILES2IMG(A2, "", "num stereo")` | Shows atom indices (`num`, great for NMR) and *R/S*, *E/Z* labels (`stereo`) |
+| **Dark Mode (White Ink)** | `=SMILES2IMG(A2, "#1e1e1e", "white")` | Crisp white bonds rendered over a dark cell background |
+| **Explicit Hydrogens / Rotate / Flip** | `=SMILES2IMG(A2, "", "h rot90 flip")` | Unfolds hydrogens (`h`), rotates 90° (`rot90`), or flips horizontally (`flip`) |
 
 <p align="center">
   <img src="/excel-matrix-showcase.png" alt="Excel Matrix Styling Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
@@ -194,11 +106,47 @@ Options can be combined freely using spaces, commas, semicolons, or pipe symbols
 
 ---
 
-## 🔍 Built-In Diagnostics & Chemical Engine Log
+## 5. Top `[SMILES]` Ribbon Tab & `.sdf` File Exchange
 
-If a chemical formula returns an error or you wish to verify add-in engine health, click **[SMILES] ➔ [Settings & Diagnostics]**:
+Use the **`[SMILES]`** tab on the Excel ribbon for one-click table imports, whole-sheet restyling, and vector export:
 
-* **EPAM Indigo Engine Status:** Confirms native C++ chemistry engine initialization and version.
-* **WebView2 & Ketcher Cache Validation:** Verifies SHA256 hashes of embedded offline Ketcher editor assets (69 cached local files).
-* **Instant Error Explanation:** When a formula encounters an invalid chemical string (e.g., unclosed rings or impossible valencies), the log displays the exact Indigo parser error message alongside the `#VALUE!` cell indicator.
-* **Performance Timing:** Displays rasterization benchmark timings (typically 1.5–3.0 ms per molecule).
+<p align="center">
+  <img src="/excel-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Excel" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
+
+### 📂 Import & Export `.sdf` Chemical Files (`[SDF File]`)
+* **📥 Import `.sdf` File...:** Select any multi-molecule `.sdf` file to automatically generate a formatted Excel table containing **rendered structure images (`=SMILES2IMG`), SMILES, Formula, Molecular Weight, and all SD property tags (`<IC50>`, `<Activity>`, etc.)**.
+* **📤 Export `.sdf` File...:** Exports your worksheet compound table back to a standard V2000 `.sdf` file.
+
+### 🎨 Restyle the Entire Sheet in 1 Click (`[Batch Style]`)
+Unify every chemical structure in your selection or active sheet to match your target document:
+* **Standard Color:** IUPAC element colors with a transparent background (default for spreadsheets)
+* **Publication B&W:** High-contrast ACS / patent monochrome line art
+* **White Background:** Element colors on a solid white background (stays clear over colored or banded rows)
+* **Dark Mode:** Crisp white bonds on a dark/transparent background
+
+### 🖼️ Copy Vector Graphics for Illustrator (`[Copy SVG]`)
+* Copies the selected molecule as a lossless **scalable vector graphic (`SVG`)** to the clipboard, ready to paste directly into Adobe Illustrator, Inkscape, or ChemDraw.
+
+---
+
+## 6. Right-Click Context Menu (`Chemical Structure`)
+
+Right-click any cell to access quick chemical actions under the **`Chemical Structure`** menu:
+
+<p align="center">
+  <img src="/excel-context-menu-guide.png" alt="Chemical Structure Context Menu in Excel" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
+
+* **✏️ Edit Structure in Ketcher:** Reopen the molecule in the 2D sketcher for in-place editing
+* **🧬 3D Structure (Mol\*)...:** Open the 3D protein viewer (if the active cell contains a 4-character PDB ID like `1CRN`, it loads that protein automatically!)
+* **📋 Copy SMILES / InChI / KET / SVG:** Copy chemical notations or vector graphics in one click
+* **🔬 Copy Molecule Info (Submenu & Summary Window):**
+  * Copy Substance Name, Formula, Molecular Weight, or InChIKey individually,
+  * Copy an entire **Excel Row (TSV)**, **Markdown Table**, or **Bulleted List** to paste across adjacent cells or documents,
+  * Or open the **Detailed Molecule Info Window** to inspect all properties (including LogP, TPSA, and Lipinski Ro5) and export as JSON.
+
+::: details 🔍 Why does my formula show #VALUE!? (Using Diagnostics)
+A `#VALUE!` result usually means the input cell contains a typo in its SMILES string (such as an unclosed ring number or invalid atomic valence).  
+Click **`[SMILES] ➔ [Settings & Diagnostics]`** on the ribbon to see the exact chemical syntax error message in real time.
+:::

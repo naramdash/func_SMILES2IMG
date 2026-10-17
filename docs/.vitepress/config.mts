@@ -16,43 +16,43 @@ export default defineConfig({
       title: 'func_SMILES2IMG',
       description: 'Free & Open-Source Chemical Structure Add-in Suite for Microsoft Excel, Word, and PowerPoint',
       themeConfig: {
+        outline: {
+          level: [2, 3],
+          label: 'On this page'
+        },
         nav: [
-          { text: 'Guide', link: '/guide/getting-started', activeMatch: '^/guide/' },
-          { text: 'Reference', link: '/reference/formula', activeMatch: '^/reference/' },
+          { text: 'Quickstart', link: '/guide/getting-started', activeMatch: '^/guide/' },
+          { text: 'Excel Guide', link: '/guide/excel' },
+          { text: 'Formula Cheat Sheet', link: '/reference/formula', activeMatch: '^/reference/' },
           { text: 'v1.7.0', link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.7.0' }
         ],
         sidebar: [
           {
             text: 'Getting Started',
             items: [
-              { text: 'Overview & Installation', link: '/guide/getting-started' }
+              { text: 'Install & 1-Minute Quickstart', link: '/guide/getting-started' }
             ]
           },
           {
-            text: 'Editors & 3D Viewers',
+            text: 'Office Application Guides',
             items: [
-              { text: 'Ketcher 2D Editor', link: '/guide/ketcher' },
-              { text: 'Mol* 3D Viewer', link: '/guide/molstar' }
+              { text: '📗 Microsoft Excel', link: '/guide/excel' },
+              { text: '📘 Microsoft Word', link: '/guide/word' },
+              { text: '📙 Microsoft PowerPoint', link: '/guide/powerpoint' }
             ]
           },
           {
-            text: 'Office Applications',
+            text: '2D Sketcher & 3D Viewer',
             items: [
-              { text: 'Microsoft Excel', link: '/guide/excel' },
-              { text: 'Microsoft Word', link: '/guide/word' },
-              { text: 'Microsoft PowerPoint', link: '/guide/powerpoint' }
+              { text: '✏️ Ketcher 2D Sketcher', link: '/guide/ketcher' },
+              { text: '🧬 Mol* 3D Protein Viewer', link: '/guide/molstar' }
             ]
           },
           {
-            text: 'Reference',
+            text: 'Reference & Help',
             items: [
-              { text: 'Excel Formulas & Options', link: '/reference/formula' }
-            ]
-          },
-          {
-            text: 'Help & Support',
-            items: [
-              { text: 'Troubleshooting & FAQ', link: '/guide/faq' }
+              { text: '📐 Excel Formula Cheat Sheet', link: '/reference/formula' },
+              { text: '❓ Troubleshooting & FAQ', link: '/guide/faq' }
             ]
           }
         ],
@@ -71,45 +71,45 @@ export default defineConfig({
       lang: 'ko',
       link: '/ko/',
       title: 'func_SMILES2IMG',
-      description: 'Microsoft Excel, Word, PowerPoint용 무료 오픈소스 화학 구조식 렌더러 & 에디터 추가 기능',
+      description: 'Microsoft Excel, Word, PowerPoint용 무료 오픈소스 화학 구조식 & 3D 단백질 추가 기능',
       themeConfig: {
+        outline: {
+          level: [2, 3],
+          label: '이 페이지 목차'
+        },
         nav: [
-          { text: '가이드', link: '/ko/guide/getting-started', activeMatch: '^/ko/guide/' },
-          { text: '수식 레퍼런스', link: '/ko/reference/formula', activeMatch: '^/ko/reference/' },
+          { text: '빠른 시작', link: '/ko/guide/getting-started', activeMatch: '^/ko/guide/' },
+          { text: 'Excel 가이드', link: '/ko/guide/excel' },
+          { text: '수식 치트시트', link: '/ko/reference/formula', activeMatch: '^/ko/reference/' },
           { text: 'v1.7.0', link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.7.0' }
         ],
         sidebar: [
           {
             text: '시작하기',
             items: [
-              { text: '개요 및 빠른 설치', link: '/ko/guide/getting-started' }
+              { text: '설치 및 1분 첫걸음', link: '/ko/guide/getting-started' }
             ]
           },
           {
-            text: '편집기 & 3D 뷰어',
+            text: '오피스 앱별 사용법',
             items: [
-              { text: 'Ketcher 2D 에디터', link: '/ko/guide/ketcher' },
-              { text: 'Mol* 3D 고분자 뷰어', link: '/ko/guide/molstar' }
+              { text: '📗 Microsoft Excel 가이드', link: '/ko/guide/excel' },
+              { text: '📘 Microsoft Word 가이드', link: '/ko/guide/word' },
+              { text: '📙 Microsoft PowerPoint 가이드', link: '/ko/guide/powerpoint' }
             ]
           },
           {
-            text: '오피스 프로그램별 가이드',
+            text: '2D 스케처 & 3D 뷰어',
             items: [
-              { text: 'Microsoft Excel 가이드', link: '/ko/guide/excel' },
-              { text: 'Microsoft Word 가이드', link: '/ko/guide/word' },
-              { text: 'Microsoft PowerPoint 가이드', link: '/ko/guide/powerpoint' }
+              { text: '✏️ Ketcher 2D 구조/반응식 편집기', link: '/ko/guide/ketcher' },
+              { text: '🧬 Mol* 3D 단백질 뷰어', link: '/ko/guide/molstar' }
             ]
           },
           {
-            text: '상세 레퍼런스',
+            text: '수식 사전 & 문제 해결',
             items: [
-              { text: '엑셀 함수 & 옵션 규격', link: '/ko/reference/formula' }
-            ]
-          },
-          {
-            text: '고객 지원',
-            items: [
-              { text: '문제 해결 및 FAQ', link: '/ko/guide/faq' }
+              { text: '📐 엑셀 함수 치트시트', link: '/ko/reference/formula' },
+              { text: '❓ 자주 묻는 질문 (FAQ)', link: '/ko/guide/faq' }
             ]
           }
         ],

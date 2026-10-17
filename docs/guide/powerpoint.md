@@ -1,118 +1,83 @@
-# SMILES for Microsoft PowerPoint
+# Microsoft PowerPoint Guide
 
-**SMILES for Microsoft PowerPoint** brings effortless chemical presentations to life with one-click slide insertion, dark theme transparent backgrounds, and seamless in-place editing.
-
----
-
-## 🌟 Visual Feature Walkthrough
-
-Crafting scientific slides, seminar presentations, and conference decks with chemical accuracy has never been easier:
+Learn how to place high-resolution 2D chemical structures and reaction schemes onto presentation slides, switch entire decks to Dark Mode in one click, and present 360°-rotatable 3D protein models.
 
 <p align="center">
   <img src="/powerpoint-showcase.png" alt="SMILES for PowerPoint Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-::: tip Key Advantages in PowerPoint
-* **Dark Theme Optimization:** Switch between crisp white backgrounds and alpha-transparent PNGs at any time so chemical structures blend seamlessly into modern dark slide decks without white rectangular halos.
-* **Exact Geometric Preservation:** When double-clicking to edit, the new structure retains the exact slide coordinates (`Left`, `Top`), dimensions, and center anchor point.
-* **Lossless Slide Portability:** Chemical metadata is stored directly in PowerPoint shape tags (`Shape.Tags['KET']` and `Shape.Tags['SMILES']`), allowing seamless cross-machine editing.
+::: tip ✨ 3 Key Advantages for PowerPoint Presentations
+1. **Dark Mode & Transparent Backgrounds:** No more ugly white rectangular boxes on dark slides—export with alpha-transparent backgrounds or crisp white bonds in one click.
+2. **Double-Click Editing Preserves Slide Layout:** **Double-clicking** a molecule on your slide updates it in place while keeping its exact slide position and size.
+3. **Live 360° 3D Proteins on Slides:** Instead of static screenshots, insert real 3D protein models (`.glb`) that you can rotate and zoom with your mouse right during your talk!
 :::
 
 ---
 
-## 📑 Dedicated Office Ribbon: `[SMILES]` Tab
+## 1. Place Structures & Reaction Schemes on Slides (3 Ways)
 
-The custom `[SMILES]` tab on PowerPoint's ribbon provides one-click slide insertion and clipboard parsing:
+### Way ① Draw by Hand (`Ctrl + Shift + K`)
+1. On any PowerPoint slide, press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> (or click **`[SMILES] ➔ [Insert Structure]`** on the ribbon).
+2. Sketch your molecule or multi-step synthesis pathway (arrows, reagents, catalysts) in the **Ketcher 2D Editor**.
+   * *Tip: For dark or colored slides, toggle **`[Background: Transparent]`** in the top bar of Ketcher.*
+3. Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to place the rendered structure right at the center of your slide!
 
-<p align="center">
-  <img src="/powerpoint-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
+### Way ② Convert a Text Box in 0.1s (`Quick Insert`)
+* Select any text box containing a SMILES string and click **`[SMILES] ➔ [Quick Insert]`** to turn it into a crisp molecule shape immediately.
 
-1. **✏️ Insert Structure (`Ctrl+Shift+K`):** Launches Ketcher 2D editor. Draw molecules or multi-step reactions, then click **Apply** (<kbd>Ctrl</kbd> + <kbd>Enter</kbd>) to place them at the center of the active slide.
-2. **🧬 3D Structure (Mol*):** Opens the embedded Mol* 3D viewer. Download PDB structures (e.g. `1CRN`, `4HHB`) or open local files, then insert as an **interactive 3D model (.glb)** or high-resolution 2D image. See the [Mol* 3D Viewer Guide](/guide/molstar) for full details.
-3. **⚡ Quick Insert:**
-   - If a text box or shape containing SMILES text is selected on the slide, converts the text frame into a high-resolution molecule shape in 0.1s.
-   - If no shape is selected, automatically reads chemical text from the clipboard and places it onto the slide.
-4. **📋 Paste Structure:** Reads clipboard SMILES/KET and embeds it as a vector-crisp slide image.
-5. **🖼️ Copy SVG *(New in v1.7.0)*:** Renders the selected molecule shape as a scalable vector graphic (`SVG`) and copies it to the Windows Clipboard as both `image/svg+xml` and raw XML text for lossless pasting into vector design tools.
-6. **🎨 Batch Style *(New in v1.7.0)*:** Converts all chemical structures in the selection or across the active presentation to a unified style preset (**Standard Color**, **Publication B&W**, **White Background**, or **Dark Mode**) in one click.
-7. **🔬 Molecule Info Dropdown:** Copies molecular properties directly for slide bullet points, or launches the full **Molecule Info Dialog**.
-8. **🔍 Settings & Diagnostics:** Opens engine diagnostic logs and troubleshooting metrics.
+### Way ③ Paste from Clipboard
+* Copy any SMILES string and right-click a blank area of your slide ➔ **`Chemical Structure ➔ Paste Structure`**.
 
 ---
 
-### 🎨 Presentation-Wide Batch Style Normalization
+## 2. Match Dark Mode or Print Handouts in 1 Click (`Batch Style`)
 
-Quickly align every chemical structure in your slide deck to match your presentation theme:
+Switching your slide deck from a light theme to a dark theme? Click **`[SMILES] ➔ [Batch Style]`** on the ribbon to restyle every chemical structure across your presentation (or selection) at once:
 
-| Preset Name | Ribbon Icon (`imageMso`) | Slide Visuals & Ideal Presentation Use Case |
+| Style Preset | Slide Visual Result | Best For |
 | :--- | :--- | :--- |
-| **Standard Color** | `ColorMenu` | IUPAC CPK element colors with **transparent background** (great for light-colored or gradient slide themes). |
-| **Publication B&W** | `BlackAndWhiteGrayscale` | High-contrast **ACS monochrome line art** (clean black bonds for academic seminar printouts). |
-| **White Background** | `BlackAndWhiteLightGrayscale` | CPK element colors on a **solid white rectangular background** (ensures visibility when placed over complex photos or textures). |
-| **Dark Mode** | `BlackAndWhiteBlack` | High-contrast **white ink on transparent background** (specifically designed for dark slide themes and OLED projection). |
+| **Standard Color** | IUPAC element colors + **transparent background** | Light-colored or gradient presentation themes |
+| **Dark Mode** | **Crisp white bonds** + transparent background | **Dark presentation themes** and auditorium OLED screens |
+| **Publication B&W** | High-contrast **monochrome line art (ACS style)** | Printed seminar handouts and lecture notes |
+| **White Background** | Element colors + **solid white background** | Placing structures over busy photos or textured backgrounds |
 
 ---
 
-## 🖱️ Redesigned Context Menu: `Chemical Structure`
+## 3. Present 360°-Rotatable 3D Proteins (`Mol*`)
 
-Right-click any chemical shape or blank presentation slide area:
+Explain binding pockets and protein conformations interactively instead of pasting multiple static angles:
+
+1. Click **`[SMILES] ➔ [3D Structure (Mol*)]`** on the ribbon.
+2. Enter a 4-letter PDB ID (e.g., `1CRN`, `4HHB`, `7BWY`) to download, or open a local structure file.
+3. Customize the representation (Cartoon, Molecular Surface, Ball & Stick) and click **`[Insert 3D Model (.glb)]`**.
+4. Right on your slide, drag the central 3D handle with your mouse to **rotate and zoom the protein 360°** in front of your audience!  
+   *(You can also choose **`[Insert 2D Picture (.png)]`** with a transparent background whenever you prefer a flat high-res image.)*
+
+---
+
+## 4. Paste Bullet-Point Summaries & Copy Vector SVG for Posters
+
+**Right-click** any molecule shape on your slide and select **`Chemical Structure`**:
 
 <p align="center">
   <img src="/powerpoint-context-menu-guide.png" alt="Chemical Structure Context Menu in PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-### Case A: Right-Clicking an Existing Chemical Shape or 3D Model
-* **✏️ Edit Structure in Ketcher:** Reopens Ketcher with the current molecule or reaction loaded.
-* **🧬 Edit 3D Structure (Mol*):** Reopens the Mol* 3D viewer in the exact camera orientation and representation style.
-* **📋 Copy SMILES:** Copies clean SMILES notation to the clipboard.
-* **📋 Copy InChI:** Copies standard IUPAC InChI string instantly.
-* **📋 Copy Canvas Data (KET):** Copies Ketcher native JSON representation.
-* **🖼️ Copy Vector Graphic (SVG):** Renders the structure as a scalable vector graphic (`SVG`) and copies it to the clipboard for Adobe Illustrator or Inkscape.
-* **🔬 Copy Molecule Info (Submenu & Dialog):**
-  * **Substance Name:** Copies substance name (PubChem / IUPAC).
-  * **Chemical Formula:** Copies standard Hill-notation formula (e.g. `C9H8O4`).
-  * **Molecular Weight (MW):** Copies IUPAC molecular weight in g/mol (e.g. `180.16 g/mol`).
-  * **Copy SMILES / InChI / InChIKey:** Individual one-click copy options.
-  * **Copy All Summary (Text):** Copies compact single-line summary to clipboard.
-  * **Copy as Multi-Line List:** Copies formatted multi-line property list (ready to paste directly into PowerPoint text boxes as bullet points!).
-  * **Copy as Excel Row (TSV Columns) / Markdown Table:** Copies structured table rows for presentation tables or notes.
-  * **Detailed Molecule Info Window...:** Opens the full chemical properties dialog with **DataGridView table**, custom GDI+ vector chemical icons, **LogP / TPSA**, **Lipinski Rule of 5**, and split-button multi-format exporter (including JSON).
-  > ⚡ **Non-Blocking Toast:** Each copy action displays a floating pill badge (`✓ Copied {Item}: {Value}`) near your mouse for 1.4s without stealing PowerPoint's focus.
-
-### Case B: Right-Clicking Blank Slide Canvas
-* **✏️ Insert Structure in Ketcher:** Launches Ketcher to draw a new molecule onto the slide.
-* **🧬 3D Structure (Mol*)...:** Launches Mol* to insert a 3D macromolecular model or image.
-* **📋 Paste Structure:** Reads chemical notation from clipboard and creates a slide shape.
+* **Instant Slide Bullet Points:** Click **`Copy Molecule Info ➔ Copy as Multi-Line List`** and paste into any PowerPoint text box to get a ready-made bulleted list of Name, Formula, and Molecular Weight!
+* **Lossless Vectors for Conference Posters (`Copy SVG`):** Click **`Copy Vector Graphic (SVG)`** to copy a scalable vector graphic that stays razor-sharp even on large-format conference posters or in Adobe Illustrator.
 
 ---
 
-## 🧪 Ketcher 2D Molecule & Reaction Editor
-
-Double-click any molecule shape on your slide or press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> to launch Ketcher (with `<0.05s` warm WebView2 instance pooling for instant reopening):
+## 5. Top `[SMILES]` Ribbon Overview
 
 <p align="center">
-  <img src="/ketcher-guide.png" alt="Embedded Ketcher 2D Editor Window" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/powerpoint-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-* **🌓 Dark Theme & Transparent Backgrounds:** Toggle between **Background: White** and **Background: Transparent** in the top status bar. Transparent mode exports clean alpha-channel PNGs, ensuring no awkward white rectangular borders appear around your chemical bonds on dark backgrounds.
-* **Live Molecular Property Banner:** Live updates for Formula, MW, and Exact Mass.
-* **Hotkeys:** <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to update the slide instantly, <kbd>Esc</kbd> to cancel.
-
----
-
-## 🔬 Multi-Step Reactions & Synthesis Schemes
-
-Present complex chemical mechanisms, catalytic cycles, and organic synthesis pathways directly on your slides:
-
-* **Reaction Schemes Preserved:** Full reaction schemes with arrows, catalysts, and reagents are stored losslessly inside `Shape.Tags['KET']`.
-* **In-Place Re-editing:** Double-clicking the slide shape reopens the reaction canvas in Ketcher, preserving all arrows and conditions for quick layout adjustments before presentations.
-
----
-
-## 🔍 Built-In Diagnostics Console
-
-Click **[SMILES] ➔ [Settings & Diagnostics]** to view system health and engine logs:
-
-* Confirms PowerPoint COM Add-in registration and Indigo engine readiness.
-* Verifies offline Ketcher assets and rasterization performance metrics.
+* **✏️ Insert Structure (`Ctrl+Shift+K`):** Open the 2D molecule & reaction sketcher
+* **🧬 3D Structure (Mol*):** Open the interactive 3D protein viewer
+* **⚡ Quick Insert:** Convert a selected SMILES text box (or clipboard) into a slide shape in 0.1s
+* **📋 Paste Structure:** Place copied SMILES/KET data onto the active slide
+* **🖼️ Copy SVG:** Copy lossless SVG vectors for conference posters and Illustrator
+* **🎨 Batch Style:** Convert all structures across your slide deck to Dark Mode, Color, B&W, or White Background
+* **🔬 Molecule Info:** Copy bullet-point property lists or open the full property summary window

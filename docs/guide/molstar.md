@@ -1,63 +1,41 @@
-# Mol* 3D Macromolecular Viewer (Excel, Word & PowerPoint)
+# Mol* 3D Protein Viewer Guide
 
-**SMILES for Microsoft Office Suite** includes a fully embedded, 100% offline **Mol\* 3D Macromolecular Viewer** (v5.13.1) powered by Microsoft Edge WebView2.
+Learn how to load proteins, nucleic acids, and ligand complexes directly inside Excel, Word, and PowerPoint—and insert them as 360°-rotatable 3D models or publication-ready 2D figures.
 
----
-
-## 🌟 Overview & Capabilities
-
-Mol\* (pronounced *"mol-star"*) is the modern open-source standard for visualizing biological macromolecules, protein structures, nucleic acids, and small-molecule complexes.
-
-* **100% Local & Offline:** The entire viewer bundle is packaged directly inside the add-in. Structures render with hardware-accelerated WebGL entirely on your local GPU without cloud servers.
-* **Instant Re-Open (`<0.05s` Warm Pooling):** Maintains a warm WebView2 viewer instance across the Office session so re-opening or double-clicking 3D structures happens in under `0.05 seconds`.
-* **Dual Output Modes:**
-  * **Interactive 3D Model (`.glb`):** Insert genuine, rotatable, zoomable 3D models directly into PowerPoint slides, Word documents, and Excel worksheets!
-  * **Publication 2D Image (`.png`):** Export crisp, high-resolution 2D figures with optional transparent background for print publications, presentations, and spreadsheets.
-* **Double-Click In-Place Re-editing:** Double-click any inserted 3D model or 2D picture in Excel, PowerPoint, or Word to immediately re-open Mol\* in the exact camera angle, zoom level, and representation style!
-* **Lossless Session Persistence:** Complete viewer session recipes (`.molj`) are stored losslessly inside the document's `CustomXMLParts`. When sharing workbooks, presentations, or documents with colleagues on other computers, double-clicking restores the exact 3D workspace.
+::: tip 💡 Key Highlights of the Built-in Mol* Viewer
+* **Direct PDB ID Lookup:** Type any 4-character PDB code (e.g., `1CRN`, `4HHB`, `7BWY`) to fetch the structure immediately, or open local `.pdb`, `.cif`, and `.sdf` files.
+* **Interactive 360° 3D Models (`.glb`):** Embed genuine 3D protein models that you can rotate and zoom with your mouse right on your PowerPoint slide, Word page, or Excel sheet.
+* **Double-Click Re-Editing Across PCs:** **Double-click** any inserted 3D model or 2D picture to reopen Mol\* at the exact camera angle and representation style—even when sharing the file with colleagues on another computer!
+:::
 
 ---
 
-## 🚀 Getting Started with Mol*
+## 1. Insert a 3D Protein in 3 Steps
 
-### 1. Launching Mol*
-* **Ribbon Tab:** Go to the **`[SMILES]`** tab in Excel, PowerPoint, or Word and click **`[3D Structure (Mol*)]`**.
-* **Context Menu:** Right-click any slide, document area, or Excel cell ➔ **`3D Structure (Mol*)...`**.
-* **Smart PDB Preloading (Excel):** If your active Excel cell contains a 4-character PDB ID (e.g. `1CRN`, `4HHB`) or structure file path, Mol\* automatically preloads that structure!
+### Step 1. Open the Mol* Viewer
+* Click **`[3D Structure (Mol*)]`** on the **`[SMILES]`** ribbon tab (or right-click ➔ **`Chemical Structure ➔ 3D Structure (Mol*)...`**).
+* 💡 **Excel Shortcut:** If your selected Excel cell already contains a 4-letter PDB code like `1CRN` or `4HHB`, opening Mol\* loads that structure automatically!
 
-### 2. Loading Structures
-Inside the Mol\* viewer window:
-* **Direct PDB ID Download:** Enter any 4-character RCSB PDB ID (e.g. `1CRN` Crambin, `4HHB` Hemoglobin, `7BWY` SARS-CoV-2 Spike) and click **Download PDB**.
-* **Local Structure Files:** Click **Open File** to load structures in `.pdb`, `.cif`, `.bcif`, `.sdf`, `.mol`, or `.mol2` format.
-* **Saved Sessions:** Open previously saved `.molj` / `.molx` Mol\* session recipes.
+### Step 2. Load & Style Your Structure
+1. Enter a **4-character PDB ID** in the top bar and click **Download PDB**, or click **Open File** to load a local `.pdb`, `.cif`, `.bcif`, `.sdf`, `.mol`, or `.mol2` file.
+2. Customize the visual style:
+   * **Cartoon / Ribbon:** Highlight $\alpha$-helices, $\beta$-sheets, and loops.
+   * **Ball & Stick / Surface:** Inspect binding pockets, active-site residues, and cofactors.
+   * **Color Schemes:** Color by polymer chain, secondary structure, residue type, or B-factor.
 
-### 3. Customizing Visual Representations
-Use the built-in representation presets:
-* **Cartoon / Ribbon:** Emphasizes secondary structures ($\alpha$-helices, $\beta$-sheets, loops).
-* **Ball & Stick / Molecular Surface:** Details binding pockets, active site residues, and cofactor ligands.
-* **Color Schemes:** Color by Polymer Chain, Secondary Structure, Residue Type, or B-factor / Uncertainty.
+### Step 3. Insert into Your Document (3D Model vs. 2D Picture)
+Choose how you want to embed the structure from the top toolbar:
 
----
-
-## 📦 Inserting into Documents: 3D Model vs. 2D Picture
-
-In the top action bar of the Mol\* window, choose your desired target format:
-
-### Mode A: [Insert 3D Model (.glb)] (Interactive 3D)
-1. Mol\* exports the current camera view and representations as a binary GLTF (`.glb`) asset.
-2. The model is embedded directly onto your active slide, document, or Excel worksheet (aligned to the active cell with `xlMoveAndSize`).
-3. **Interactive Control in PowerPoint & Excel:**
-   - Click and drag the 3D control handle in the center of the model to freely rotate, pitch, and zoom the macromolecule in 360 degrees directly inside your slide or spreadsheet!
-
-### Mode B: [Insert 2D Picture (.png)] (Publication Quality)
-1. Renders the current viewport as a high-resolution PNG image.
-2. Choose **Transparent Background** or **Solid Background** to blend seamlessly onto dark slide templates, white document pages, or spreadsheet cells.
+| Insert Mode | Best For |
+| :--- | :--- |
+| **🧊 [Insert 3D Model (.glb)]** | Embeds an **interactive 3D object** you can drag with your mouse to rotate 360° during PowerPoint slide shows or inside Excel and Word. |
+| **🖼️ [Insert 2D Picture (.png)]** | Exports a **high-resolution 2D figure** for print journals and PDFs (enable **Transparent Background** for dark slide themes). |
 
 ---
 
-## 🔄 Seamless Re-editing Workflow
+## 2. Double-Click to Adjust Camera or Style Later
 
-1. Click any previously inserted Mol\* 3D model or 2D picture in Excel, Word, or PowerPoint.
-2. **Double-click** the object (or right-click ➔ **`Edit 3D Structure (Mol*)...`**).
-3. The Mol\* editor instantly opens, restoring the exact macromolecule, custom colors, representations, and camera view.
-4. Adjust the perspective or representation and click **Apply** to update the object in-place without altering position or dimensions.
+1. Select any previously inserted Mol\* 3D model or 2D picture in Excel, Word, or PowerPoint.
+2. **Double-click** it (or right-click ➔ **`Edit 3D Structure (Mol*)...`**).
+3. Mol\* reopens with your exact protein, custom colors, representations, and camera angle intact.
+4. Tweak the view and click **Apply** to update the figure in place without changing its size or position!

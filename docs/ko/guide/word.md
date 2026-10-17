@@ -1,120 +1,87 @@
-# SMILES for Microsoft Word 가이드
+# Microsoft Word 가이드
 
-**SMILES for Microsoft Word**는 워드 문서, 논문, 연구 보고서 본문 및 표 안에 고해상도 2D 화학 구조식을 인라인 그림으로 삽입하고, 더블 클릭으로 표 서식 붕괴 없이 제자리 수정을 지원하는 화학 학술 연구용 추가 기능입니다.
-
----
-
-## 🌟 한눈에 보는 핵심 기능
-
-워드에서의 모든 화학 구조식 작업은 문장의 텍스트 흐름에 자연스럽게 녹아들며, 표 셀 안에서도 완벽한 정렬과 제자리 수정을 지원합니다:
+학술 논문, 학위 논문, 연구 보고서 본문과 표(Table) 안에 고해상도 2D 화학 구조식·반응식 및 3D 단백질을 삽입하고 편집하는 방법을 안내합니다.
 
 <p align="center">
   <img src="/word-showcase.png" alt="SMILES for Word Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-::: tip Word 문서 작업 시 핵심 장점
-* **자연스러운 인라인 그림(InlineShape):** 텍스트 흐름에 맞춰 삽입되어 글자처럼 줄바꿈되고, 표 셀 안에 깔끔하게 정렬됩니다.
-* **표 레이아웃 무결성 보존:** 더블 클릭으로 구조식을 수정해도 표의 열 너비나 행 높이가 깨지지 않고 정확히 그 자리에서 치환됩니다.
-* **무손실 영구 보존:** 구조식 원본(`KET` 또는 `SMILES`)이 `.docx` 파일 내부 속성(`AlternativeText`)에 저장되므로, 다른 컴퓨터로 문서를 전송해도 화학 정보가 영구 보존됩니다.
+::: tip ✨ 워드 논문 작성 시 3가지 핵심 장점
+1. **글자처럼 자연스러운 줄바꿈:** 구조식이 문단 흐름에 맞춘 인라인 그림으로 들어가 문장 중간이나 표 셀 안에서도 깔끔하게 정렬됩니다.
+2. **표(Table) 서식 깨짐 없는 제자리 수정:** 표 안에 넣은 분자 그림을 **더블클릭**해 수정해도 표의 열 너비나 레이아웃이 흔들리지 않고 그 자리에서 바로 바뀝니다.
+3. **다른 PC로 보내도 재편집 가능:** 화학 구조 원본 데이터가 워드 파일(`.docx`) 안에 함께 저장되므로 동료에게 파일을 보내도 더블클릭으로 이어서 수정할 수 있습니다.
 :::
 
 ---
 
-## 📑 전용 오피스 리본 메뉴: `[SMILES]` 탭
+## 1. 본문 및 표 안에 구조식·반응식 넣기 (3가지 방법)
 
-상단 리본 메뉴의 `[SMILES]` 탭에서 화학 구조식 삽입, 0.1초 텍스트 치환, 진단 창을 원클릭으로 조작할 수 있습니다:
+### 방법 ① 직접 그려서 넣기 (`Ctrl + Shift + K`)
+1. 워드 본문이나 표 셀 안에서 구조식을 넣을 위치에 커서를 둡니다.
+2. <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누릅니다 (또는 상단 **`[SMILES] ➔ [구조식 삽입]`** 클릭).
+3. **Ketcher 2D 화학 편집기**에서 분자나 다단계 합성 반응식(화살표, 시약, 온도 조건 등)을 그립니다.
+4. <kbd>Ctrl</kbd> + <kbd>Enter</kbd>를 누르면 커서 위치에 고화질 구조식이 즉시 들어갑니다!
 
-<p align="center">
-  <img src="/word-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
+### 방법 ② 본문에 적힌 SMILES 텍스트를 0.1초 만에 그림으로 바꾸기 (`Quick Insert`)
+* 워드 문서에 적힌 SMILES 문자열(예: `c1ccccc1`)을 마우스로 드래그해 선택한 뒤, 상단 **`[SMILES] ➔ [퀵 인서트 (Quick Insert)]`**를 클릭하면 텍스트가 즉시 구조식 그림으로 치환됩니다.
 
-1. **✏️ 구조식 삽입 (`Ctrl+Shift+K`):** 100% 로컬 오프라인 구동되는 Ketcher 2D 화학 에디터를 열고 분자식이나 반응식을 그린 뒤 <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (또는 적용 버튼)를 누르면 커서 위치에 즉시 삽입됩니다.
-2. **🧬 3D 구조식 (Mol*):** 내장된 Mol* 3D 뷰어를 실행합니다. RCSB PDB ID(예: `1CRN`, `4HHB`)를 직접 다운로드하거나 로컬 구조 파일을 열어, 논문 본문에 마우스로 직접 회전/확대할 수 있는 **인터랙티브 3D 모델 (.glb)** 또는 고해상도 2D 인라인 그림으로 삽입합니다. 자세한 사용법은 [Mol* 3D 뷰어 가이드](/ko/guide/molstar)를 참고하세요.
-3. **⚡ 퀵 인서트 (Quick Insert):**
-   - 본문에서 SMILES 텍스트를 드래그한 상태로 누르면 해당 텍스트가 0.1초 만에 분자 그림으로 즉시 치환됩니다.
-   - 드래그한 텍스트가 없으면 클립보드의 SMILES를 읽어 커서 위치에 바로 그림으로 넣습니다.
-4. **📋 구조식 붙여넣기:** 외부 논문이나 웹페이지에서 복사한 SMILES 또는 KET를 읽어 커서 위치에 인라인 그림으로 삽입합니다.
-5. **🖼️ Copy SVG *(v1.7.0 신규)*:** 선택된 분자를 무손실 벡터 그래픽(`SVG`)으로 렌더링하여 클립보드에 복사합니다 (`image/svg+xml` 스트림 및 raw XML 텍스트 동시 복사로 Adobe Illustrator, Inkscape, ChemDraw 등에 즉시 붙여넣기 지원).
-6. **🎨 Batch Style *(v1.7.0 신규)*:** 현재 워드 문서 내의 모든 화학 구조식(또는 선택 영역)을 클릭 한 번으로 통일된 스타일 프리셋(**표준 컬러**, **논문/특허용 흑백**, **흰색 배경**, **다크 모드**)으로 일괄 변환합니다.
-7. **🔬 Molecule Info 드롭다운:** 화학 물성 정보 복사, 워드 표에 바로 붙여넣는 행(TSV) 복사, 또는 전체 **Molecule Info 상세 창**을 실행합니다.
-8. **🔍 설정 및 진단 (Settings & Diagnostics):** Indigo 엔진 및 COM 추가 기능 연동 상태와 로그를 확인합니다.
+### 방법 ③ 클립보드에서 바로 붙여넣기
+* 논문, 웹페이지, ChemDraw 등에서 SMILES를 복사한 상태에서 **`[SMILES] ➔ [구조식 붙여넣기]`** (또는 우클릭 ➔ **`Chemical Structure ➔ Paste Structure`**)를 누르면 바로 그림으로 들어갑니다.
 
 ---
 
-### 🎨 학술 논문 및 보고서 일괄 스타일 변환 (Batch Style)
+## 2. 투고 학술지 규정에 맞춰 문서 전체 스타일 통일하기 (`Batch Style`)
 
-학술지 투고 규정이나 보고서 양식에 맞춰 수십 개의 화학 그림을 하나하나 다시 내보낼 필요 없이 원클릭으로 통일할 수 있습니다:
+논문을 투고할 때 수십 개의 분자 그림을 하나하나 다시 그릴 필요 없이, 상단 **`[SMILES] ➔ [Batch Style]`** 버튼 하나로 문서 전체(또는 선택한 영역)의 구조식 스타일을 통일할 수 있습니다.
 
-| 스타일 프리셋 | 리본 아이콘 (`imageMso`) | 시각적 결과 및 권장 논문 용도 |
+| 스타일 프리셋 | 변환 결과 | 추천 활용처 |
 | :--- | :--- | :--- |
-| **Standard Color** | `ColorMenu` | IUPAC CPK 원소 색상 + **투명 배경** (컬러 학위 논문 및 전자 PDF 파일용). |
-| **Publication B&W** | `BlackAndWhiteGrayscale` | 고대비 **ACS / Wiley / Elsevier 논문용 흑백 선화** (인쇄 학술지 투고 표준). |
-| **White Background** | `BlackAndWhiteLightGrayscale` | CPK 원소 색상 + **불투명 흰색 사각형 배경** (음영이 들어간 워드 표나 본문 박스에서도 선명하게 표시). |
-| **Dark Mode** | `BlackAndWhiteBlack` | 고대비 **흰색 결합선 잉크 + 투명 배경** (다크 테마 서식 및 전자 문서용). |
+| **Standard Color** | 원소별 표준 컬러 + **투명 배경** | 컬러 학위 논문, 전자 문서(PDF), 연구 보고서 |
+| **Publication B&W** | 고대비 **흑백 선화 (ACS 스타일)** | ACS, Wiley, Elsevier 등 인쇄 학술지 및 특허 명세서 투고 |
+| **White Background** | 원소별 컬러 + **흰색 사각형 배경** | 배경 음영이 칠해진 워드 표(Table)나 강조 박스 내부 |
+| **Dark Mode** | **흰색 결합선** + 투명 배경 | 어두운 배경의 표지 및 다크 테마 문서 |
 
 ---
 
-## 🖱️ 개편된 우클릭 컨텍스트 메뉴: `Chemical Structure`
+## 3. 워드 표(Table)에 분자 물성 채우기 & Illustrator 벡터 복사
 
-워드 본문 또는 표 안에서 마우스 우클릭을 하면 깔끔하게 분리된 `Chemical Structure` 서브메뉴가 나타납니다:
+워드 문서에 삽입된 화학 구조식을 **우클릭 ➔ `Chemical Structure`** (또는 상단 리본 메뉴)로 선택하면 논문 작성 시간을 대폭 줄여주는 도구들을 쓸 수 있습니다.
 
 <p align="center">
   <img src="/word-context-menu-guide.png" alt="Chemical Structure Context Menu in Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-### A. 삽입된 화학 그림 또는 3D 모델을 우클릭한 경우
-* **✏️ Edit Structure in Ketcher:** 내장 Ketcher 에디터를 열어 해당 분자를 제자리에서 바로 재편집합니다.
-* **🧬 Edit 3D Structure (Mol*):** 내장 Mol* 뷰어를 열어 작업하던 각도와 스타일 그대로 3D 구조를 재편집합니다.
-* **📋 Copy SMILES:** 표준 SMILES 문자열을 클립보드로 복사합니다.
-* **📋 Copy InChI:** 표준 IUPAC InChI 문자열을 즉시 변환하여 복사합니다.
-* **📋 Copy Canvas Data (KET):** 반응식이 포함된 KET JSON 데이터를 복사합니다.
-* **🖼️ Copy Vector Graphic (SVG):** 분자를 무손실 벡터 그래픽(`SVG`)으로 렌더링하여 클립보드에 복사합니다.
-* **🔬 Copy Molecule Info (분자 정보 서브메뉴 & 상세창):**
-  * **물질명 (Substance Name):** PubChem/IUPAC 기반 일반 물질명 복사 (`Aspirin`, `Ethanol` 등).
-  * **화학식 (Chemical Formula):** Hill 표기법 화학식 복사 (`C9H8O4` 등).
-  * **분자량 (Molecular Weight):** 정밀 분자량 복사 (`180.16 g/mol` 등).
-  * **SMILES / InChI / InChIKey:** 각 표준 식별자 원클릭 즉시 복사.
-  * **전체 요약 복사 (Copy All Summary):** 모든 정보를 한 줄 텍스트로 일괄 복사.
-  * **여러 줄 리스트로 복사 (Copy as Multi-Line List):** 항목별로 줄바꿈된 리스트 서식으로 복사.
-  * **워드 표 행으로 복사 (Copy as Excel Row - TSV Columns):** 탭 구분값(TSV)으로 복사되어 워드 표(Table)에 붙여넣으면 각 셀로 자동 분할 삽입됩니다!
-  * **마크다운 표로 복사 (Copy as Markdown Table):** GitHub, 노션, 연구노트용 마크다운 표 서식 복사.
-  * **상세 정보 창 열기...:** 물성 행별 **GDI+ 벡터 케미컬 아이콘**, DataGridView 그리드 표, **LogP / TPSA**, **Lipinski Rule of 5**, 다중 서식 내보내기 Split Button(JSON 포함)이 탑재된 전문 분자 물성 다이얼로그 실행.
-  > ⚡ **모달 창 방해 없는 플로팅 토스트:** 복사 항목을 누르면 팝업 확인 창이 뜨는 대신 마우스 커서 바로 옆에 가벼운 플로팅 배지(`✓ Copied {항목}: {값}`)가 1.4초간 나타났다 사라지며, 문서 작성 중 작업 포커스를 뺏지 않습니다!
+### 📋 실험 섹션(Experimental) 및 워드 표에 물성 바로 붙여넣기
+* **개별 물성 원클릭 복사:** 물질명(Substance Name), 화학식(`C9H8O4`), 분자량(`180.16 g/mol`), 정밀 질량, InChIKey를 클릭 한 번으로 복사해 논문 본문에 붙여넣습니다.
+* **워드 표 행(TSV)으로 한 번에 붙여넣기:** **`Copy Molecule Info ➔ Copy as Excel Row (TSV Columns)`**를 클릭한 뒤 워드 표(Table)에 붙여넣으면 각 셀 칸에 맞춰 물성 값들이 자동으로 나뉘어 들어갑니다!
+* **상세 정보 창 (`Detailed Molecule Info Window`):** 분자량, 정밀 질량, LogP, TPSA, Lipinski 약물성 통과 여부를 한눈에 확인하고 마크다운 표나 JSON으로도 복사할 수 있습니다.
 
-### B. 본문 텍스트, 표, 빈 문단을 우클릭한 경우
-* **✏️ Insert Structure in Ketcher:** Ketcher 에디터를 열어 새 구조식을 그린 후 커서 위치에 삽입합니다.
-* **🧬 3D Structure (Mol*)...:** Mol* 뷰어를 열어 3D 고분자 모델이나 이미지를 커서 위치에 삽입합니다.
-* **📋 Paste Structure:** 클립보드의 화학식 텍스트를 인라인 이미지로 즉시 삽입합니다.
+### 🖼️ Adobe Illustrator / ChemDraw용 무손실 벡터 복사 (`Copy SVG`)
+* **`Copy Vector Graphic (SVG)`**를 클릭하면 화질 저하가 전혀 없는 표준 벡터 그래픽(`SVG`)으로 복사되어 Illustrator, Inkscape 등에 바로 붙여넣고 편집할 수 있습니다.
 
 ---
 
-## 🧪 내장 Ketcher 2D 화학 에디터
+## 4. 논문에 3D 단백질 구조 넣기 (`Mol*`)
 
-워드 본문의 화학 그림을 더블 클릭하거나 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누르면 오프라인 Ketcher 에디터가 실행됩니다 (WebView2 웜 인스턴스 풀링으로 첫 실행 이후 `<0.05초` 만에 즉시 열림):
+1. 상단 **`[SMILES] ➔ [3D 구조식 (Mol*)]`**을 클릭합니다.
+2. 4자리 PDB 코드(예: `1CRN`, `4HHB`)를 입력해 다운로드하거나 내 PC의 구조 파일(`.pdb`, `.cif`, `.sdf`)을 엽니다.
+3. 원하는 스타일(Cartoon 리본, 표면 등)과 각도를 맞춘 뒤:
+   * **[3D Model (.glb)]:** 워드 문서 안에서 마우스로 360° 직접 돌려볼 수 있는 인터랙티브 3D 모델로 삽입합니다.
+   * **[2D Picture (.png)]:** 논문 인쇄 및 PDF 제출용 고해상도 그림으로 삽입합니다.
+4. 삽입된 3D 모델이나 그림 역시 **더블클릭**하면 작업하던 각도 그대로 다시 열려 언제든 수정할 수 있습니다.
+
+---
+
+## 5. 상단 `[SMILES]` 리본 메뉴 한눈에 보기
 
 <p align="center">
-  <img src="/ketcher-guide.png" alt="Embedded Ketcher 2D Editor Window" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/word-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-* **실시간 물성 정보 표시:** 원자와 결합을 그리는 즉시 상단 상태 표시줄에 화학식, 분자량, 정밀 질량이 실시간으로 계산됩니다.
-* **투명 배경 지원:** 다크 모드 및 컬러 서식 논문 작성을 위해 투명 배경 토글 버튼을 제공합니다.
-* **표 셀 자동 맞춤:** 삽입되는 그림은 워드 문서 본문 폭 및 표 셀 크기에 알맞게 자동 스케일링됩니다.
-* **단축키:** <kbd>Ctrl</kbd> + <kbd>Enter</kbd>로 워드 문서에 즉시 반영, <kbd>Esc</kbd>로 취소.
-
----
-
-## 🔬 학술 논문용 화학 반응식 & 합성 경로
-
-화살표, 촉매 조건 텍스트, 플러스 기호(`+`)가 포함된 다단계 유기 합성 경로도 워드 문서에 깔끔하게 삽입할 수 있습니다:
-
-* **전체 반응 경로 무손실 보존:** 반응 화살표, 시약($H_2SO_4$), 반응 온도(55 °C) 등이 워드 문서의 도형 속성(`AlternativeText`)에 무손실 저장됩니다.
-* **더블 클릭 제자리 수정:** 논문 투고 전 반응 조건이나 수율을 수정해야 할 때, 더블 클릭만으로 전체 반응 스킴이 Ketcher에 열려 손쉽게 수정할 수 있습니다.
-
----
-
-## 🔍 내장 진단 콘솔 (Diagnostics)
-
-리본 메뉴의 **[SMILES] ➔ [설정 및 진단]**을 클릭하여 추가 기능 구동 상태를 점검할 수 있습니다:
-
-* Word COM Add-in 등록 상태 및 C++ Indigo 화학 엔진 초기화 상태를 확인합니다.
-* 로컬 캐시 파일 무결성을 점검하고 실시간 렌더링 소요 시간 벤치마크를 모니터링합니다.
+* **✏️ 구조식 삽입 (`Ctrl+Shift+K`):** 2D 분자 및 합성 반응식 스케처 실행
+* **🧬 3D 구조식 (Mol*):** 3D 단백질/고분자 뷰어 실행
+* **⚡ 퀵 인서트:** 드래그한 SMILES 텍스트(또는 클립보드)를 즉시 구조식 그림으로 변환
+* **📋 구조식 붙여넣기:** 복사해 둔 SMILES/KET 데이터를 커서 위치에 그림으로 삽입
+* **🖼️ Copy SVG:** 선택한 구조식을 무손실 SVG 벡터로 복사
+* **🎨 Batch Style:** 문서 내 모든 구조식을 컬러 / 논문용 흑백 / 흰색 배경 / 다크 모드로 일괄 변환
+* **🔬 Molecule Info:** 분자량·화학식·약물성 확인 및 다양한 표 서식으로 복사

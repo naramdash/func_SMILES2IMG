@@ -1,62 +1,45 @@
-# Ketcher 2D Molecular & Reaction Editor
+# Ketcher 2D Sketcher Guide
 
-**SMILES for Microsoft Office Suite** includes an embedded, fully offline **EPAM Ketcher v3.18.0** editor powered by Microsoft Edge WebView2.
-
----
-
-## 🌟 Overview & Capabilities
+Learn how to sketch molecules and multi-step organic reaction schemes directly inside Excel, Word, and PowerPoint using the built-in **Ketcher 2D Editor**.
 
 <p align="center">
   <img src="/ketcher-guide.png" alt="Ketcher Editor Interface" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-* **100% Offline & Private:** Operates entirely locally within your machine. No web connections, external telemetry, or cloud servers are accessed. Research proprietary chemical structures remain strictly confidential.
-* **Instant Re-Open (`<0.05s` Warm Pooling):** Pre-initializes a singleton WebView2 editor instance in the background and hides on close instead of destroying the browser process, so subsequent launches and double-click edits open instantaneously.
-* **Full Chemical Drawing Arsenal:** Single, double, triple, and aromatic bonds; stereochemical wedges/hashes; heteroatoms; charges; valence tools; and functional group templates.
-* **Organic Reaction Mapping:** Multi-step reaction schemes with curved/straight reaction arrows, plus signs, and reaction condition text.
-* **Real-Time Property Calculation:** Automatically computes the molecular formula (Hill notation), molecular weight (MW in g/mol), and exact monoisotopic mass as you draw.
+::: tip 💡 Why You'll Love It
+* **100% Offline & Private:** Runs entirely on your local PC without internet access—keeping unpublished structures completely confidential.
+* **Instant Reopen (<0.05s):** Opens instantaneously whenever you double-click a structure to make quick edits.
+* **Live MW & Formula Calculation:** Automatically displays **Formula, Molecular Weight (MW), and Exact Mass** in the top bar while you draw.
+:::
 
 ---
 
-## 🔬 Multi-Component Reaction Schemes: `=KET2IMG`
-
-Draw complete chemical reaction schemes with multiple reactants, reagents, catalysts, reaction arrows, and final products:
-
-* **Lossless Storage:** Ketcher's native `KET` format stores 2D layout coordinates, reaction arrows, catalyst labels (e.g. $H_2SO_4$, 55 °C), and text notes with zero degradation.
-* **Double-Click In-Place Re-editing:** Double-clicking the reaction cell or image re-opens Ketcher in `<0.05s` with all reaction arrows, plus signs, and conditions fully editable.
-
----
-
-## ⌨️ Essential Keyboard Shortcuts
-
-| Shortcut | Action | Description |
-| :--- | :--- | :--- |
-| <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> | **Open Editor (Excel)** | Opens Ketcher for the currently selected cell |
-| <kbd>Ctrl</kbd> + <kbd>Enter</kbd> | **Apply to Document** | Renders drawing into active cell/document and closes editor |
-| <kbd>Esc</kbd> | **Cancel** | Closes Ketcher without modifying the document |
-| **Double-Click** | **Edit In-Place** | Double-click any cell or chemical image to edit in Ketcher |
-
----
-
-## 🎨 Workflow & Background Transparency
+## 1. Draw & Edit in 3 Steps
 
 <p align="center">
   <img src="/workflow-ketcher.png" alt="Ketcher Workflow" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-### 1. Launching Ketcher
-* **Excel:** Select a cell and press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>, or right-click ➔ **Chemical Structure ➔ Edit Structure in Ketcher**.
-* **Word / PowerPoint:** Click **[Insert Structure]** on the `[SMILES]` ribbon tab, or double-click an existing structure.
+### Step 1. Open the Sketcher
+* **Draw a New Structure:** Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>, or click **`[SMILES] ➔ [Insert Structure]`** on the top ribbon.
+* **Edit an Existing Structure:** Simply **double-click** any chemical cell in Excel or structure picture in Word / PowerPoint.
 
-### 2. Drawing Molecules & Reactions
-* Use the left toolbar to select bond types and templates (benzene, cyclopentane, rings, amino acids).
-* Use the right toolbar to choose periodic table elements (C, H, N, O, P, S, halogens).
-* Add reaction arrows and plus signs using the reaction tools.
+### Step 2. Sketch Molecules or Reaction Schemes
+* **Bonds & Ring Templates (Left Toolbar):** Place single, double, triple, or stereo bonds (wedges/hashes) and common ring templates (benzene, cyclohexane, cyclopentane).
+* **Elements (Right Toolbar):** Pick common atoms (`C`, `N`, `O`, `S`, `P`, halogens) or open the full periodic table.
+* **Multi-Step Reactions:** Use the reaction arrow (`➔`), plus sign (`+`), and text (`T`) tools to add catalysts ($H_2SO_4$), temperatures (55 °C), and reaction yields.
 
-### 3. Background Transparency Toggle
-In the Ketcher top toolbar:
-* **Background: White:** Best for standard white documents, printed papers, and classic Excel spreadsheets.
-* **Background: Transparent:** Exports pure alpha-channel PNGs with transparent backgrounds, ideal for dark PowerPoint slides or colored table cells.
+### Step 3. Choose Background & Apply (`Ctrl + Enter`)
+* In the top bar, toggle between **`[Background: White]`** (for standard pages and sheets) and **`[Background: Transparent]`** (for dark slides and colored cells).
+* Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (or click **Apply**) to insert the rendered structure straight into your document!
 
-### 4. Applying to Document
-Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (or click **Apply**). The molecule or reaction canvas is immediately rasterized using EPAM Indigo and placed precisely into your document.
+---
+
+## 2. Essential Shortcuts
+
+| Shortcut / Action | Function | Description |
+| :--- | :--- | :--- |
+| <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> | **Open Sketcher** | Open Ketcher for the selected cell or cursor position |
+| **Double-Click** | **Edit In-Place** | Reopen any existing molecule or reaction scheme to edit |
+| <kbd>Ctrl</kbd> + <kbd>Enter</kbd> | **Apply to Document** | Insert the drawing into Excel/Word/PowerPoint and close |
+| <kbd>Esc</kbd> | **Cancel** | Close the editor without saving changes |
