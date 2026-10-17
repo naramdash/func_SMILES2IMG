@@ -79,9 +79,25 @@ Before submitting to a journal, you don't need to redraw or re-export dozens of 
 </p>
 
 * **✏️ Insert Structure (`Ctrl+Shift+K`):** Open the 2D molecule & reaction sketcher
-* **🧬 3D Structure (Mol*):** Open the 3D protein & macromolecular viewer
+* **🧬 3D Structure (Mol\*):** Open the 3D protein & macromolecular viewer
 * **⚡ Quick Insert:** Convert highlighted SMILES text (or clipboard) into a picture in 0.1s
 * **📋 Paste Structure:** Insert copied SMILES/KET data as an inline picture
 * **🖼️ Copy SVG:** Copy the selected structure as a lossless SVG vector
 * **🎨 Batch Style:** Convert all structures in the document to Color, Publication B&W, White Background, or Dark Mode
 * **🔬 Molecule Info:** Inspect and copy MW, Formula, LogP, Lipinski Ro5, and table rows
+
+---
+
+## 🚀 Continue Exploring
+
+<div class="s2i-card-grid">
+  <a href="../guide/publishing" class="s2i-card">
+    <div class="s2i-card-title">🎨 Publishing, SVG & Property Tables</div>
+    <p class="s2i-card-desc">Compare ACS B&W batch presets interactively and explore 5 property export formats</p>
+  </a>
+  <a href="../guide/powerpoint" class="s2i-card">
+    <div class="s2i-card-title">📽️ PowerPoint Presentations</div>
+    <p class="s2i-card-desc">Create dark-mode slide structures and embed 360° rotatable 3D protein models</p>
+  </a>
+</div>
+

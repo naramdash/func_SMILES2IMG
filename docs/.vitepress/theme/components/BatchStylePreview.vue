@@ -119,24 +119,27 @@ const heteroFill = computed(() => {
         </div>
 
         <div class="bsp-mol-card" :class="{ 'has-white-box': activePreset === 'whitebg' }">
-          <svg viewBox="0 0 240 165" class="bsp-svg">
+          <svg viewBox="0 0 265 200" class="bsp-svg">
             <g :stroke="bondStroke" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
-              <polygon points="65,65 100,45 135,65 135,105 100,125 65,105" />
-              <line x1="72" y1="69" x2="100" y2="53" />
-              <line x1="128" y1="69" x2="128" y2="101" />
-              <line x1="100" y1="117" x2="72" y2="101" />
-              <line x1="135" y1="65" x2="170" y2="45" />
-              <line x1="167" y1="45" x2="167" y2="18" />
-              <line x1="173" y1="45" x2="173" y2="18" />
-              <line x1="170" y1="45" x2="196" y2="60" />
-              <line x1="135" y1="105" x2="162" y2="120" />
-              <line x1="178" y1="120" x2="205" y2="105" />
-              <line x1="205" y1="105" x2="230" y2="120" />
+              <polygon points="100,74 131,92 131,128 100,146 69,128 69,92" />
+              <line x1="100" y1="81" x2="125" y2="96" />
+              <line x1="125" y1="124" x2="100" y2="139" />
+              <line x1="75" y1="124" x2="75" y2="96" />
+              <line x1="131" y1="92" x2="162" y2="74" />
+              <line x1="159" y1="75" x2="159" y2="43" />
+              <line x1="165" y1="75" x2="165" y2="43" />
+              <line x1="162" y1="74" x2="186" y2="88" />
+              <line x1="131" y1="128" x2="153" y2="141" />
+              <line x1="171" y1="141" x2="193" y2="128" />
+              <line x1="190" y1="127" x2="190" y2="159" />
+              <line x1="196" y1="127" x2="196" y2="159" />
+              <line x1="193" y1="128" x2="224" y2="110" />
             </g>
-            <g font-family="sans-serif" font-size="14" font-weight="700" :fill="heteroFill" text-anchor="middle">
-              <text x="170" y="14">O</text>
-              <text x="209" y="70">OH</text>
-              <text x="170" y="130">O</text>
+            <g font-family="sans-serif" font-size="13.5" font-weight="700" :fill="heteroFill" text-anchor="middle">
+              <text x="162" y="37">O</text>
+              <text x="200" y="97">OH</text>
+              <text x="162" y="151">O</text>
+              <text x="193" y="174">O</text>
             </g>
           </svg>
         </div>

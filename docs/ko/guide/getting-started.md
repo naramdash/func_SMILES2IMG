@@ -36,13 +36,13 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 
 ### ② 마우스로 직접 구조식·반응식 그리기 (`Ctrl + Shift + K`)
 Excel, Word, PowerPoint 어디서든:
-1. 상단 리본 메뉴에서 **`[SMILES]`** 탭을 클릭하고 **`[구조식 삽입 (Insert Structure)]`**을 누르거나, 키보드에서 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누릅니다.
+1. 상단 리본 메뉴에서 **`[SMILES]`** 탭을 클릭하고 **`[구조식 삽입 (Insert Structure)]`** 버튼을 누르거나, 키보드에서 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누릅니다.
 2. 내장된 **Ketcher 2D 화학 편집기**가 열리면 원하는 분자나 반응식을 그립니다.
 3. <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (또는 우측 하단 **Apply** 버튼)를 누르면 문서나 셀에 고화질 구조식이 즉시 들어갑니다!
 
 ### ③ 더블클릭으로 수정 & 우클릭으로 분자량 복사하기
 * **제자리 수정:** 문서나 셀에 들어간 분자 그림을 **마우스로 더블클릭**하면 언제든 편집기가 다시 열려 바로 고칠 수 있습니다.
-* **물성 복사:** 분자 그림이나 셀을 **우클릭 ➔ `Chemical Structure` ➔ `Copy Molecule Info`**를 누르면 분자량(`180.16 g/mol`), 화학식(`C9H8O4`), InChIKey, 또는 표 전체를 클립보드로 즉시 복사할 수 있습니다.
+* **물성 복사:** 분자 그림이나 셀을 **우클릭 ➔ `Chemical Structure` ➔ `Copy Molecule Info`** 메뉴로 선택하면 분자량(`180.16 g/mol`), 화학식(`C9H8O4`), InChIKey, 또는 표 전체를 클립보드로 즉시 복사할 수 있습니다.
 
 ---
 
@@ -60,15 +60,15 @@ Excel, Word, PowerPoint 어디서든:
 ## 🛠️ 설치 후 실행이 안 될 때 (10초 해결법)
 
 ### Windows 11에서 경고가 뜨거나 엑셀 수식이 `#NAME?`으로 나오는 경우
-Windows 11의 **스마트 앱 컨트롤(Smart App Control)**이 켜져 있으면 오픈소스 추가 기능 파일을 차단할 수 있습니다.
+Windows 11의 **스마트 앱 컨트롤**(Smart App Control)이 켜져 있으면 오픈소스 추가 기능 파일을 차단할 수 있습니다.
 
 ::: tip 안심하고 진행하세요
-스마트 앱 컨트롤을 끄더라도 **Microsoft Defender 백신(실시간 바이러스 감시 및 클라우드 보호)은 100% 그대로 정상 작동**합니다.
+스마트 앱 컨트롤을 끄더라도 **Microsoft Defender 백신**(실시간 바이러스 감시 및 클라우드 보호)은 100% 그대로 정상 작동합니다.
 :::
 
 1. Windows **설정** (<kbd>Win</kbd> + <kbd>I</kbd>) ➔ **개인 정보 및 보안** ➔ **Windows 보안**으로 이동합니다.
 2. **앱 및 브라우저 컨트롤** ➔ **스마트 앱 컨트롤 설정**을 클릭합니다.
-3. 설정을 **'꺼짐(Off)'**으로 변경한 뒤 Excel / Word / PowerPoint를 다시 시작하면 즉시 정상 작동합니다.
+3. 설정을 **'꺼짐(Off)'** 상태로 변경한 뒤 Excel / Word / PowerPoint를 다시 시작하면 즉시 정상 작동합니다.
 
 ---
 
@@ -88,7 +88,7 @@ Windows 11의 **스마트 앱 컨트롤(Smart App Control)**이 켜져 있으면
 
 ::: details 🏢 사내 보안 정책으로 온라인 PowerShell 실행이 막혀 있는 경우 (오프라인 수동 설치)
 1. [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases)에서 최신 `Smiles2Img-Office-x64.zip` (32비트 오피스는 `x86.zip`)과 `install.ps1`을 다운로드합니다.
-2. 다운로드한 `.zip` 파일을 우클릭 ➔ **속성** ➔ 하단 **[차단 해제(Unblock)]**에 체크하고 **[확인]**을 누릅니다.
+2. 다운로드한 `.zip` 파일을 우클릭 ➔ **속성** ➔ 하단 **[차단 해제]**(Unblock)에 체크하고 **[확인]** 버튼을 누릅니다.
 3. 압축을 `%APPDATA%\Microsoft\AddIns\Smiles2Img` 폴더에 풉니다.
 4. 해당 폴더에서 PowerShell을 열고 아래 명령어로 로컬 설치를 실행합니다:
    ```powershell

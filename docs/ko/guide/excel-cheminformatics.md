@@ -21,11 +21,11 @@ A2 셀에 SMILES(예: 아스피린 `CC(=O)Oc1ccccc1C(=O)O`)가 들어있을 때 
 | **정밀 질량 (Exact Mass)** | `=SMILES2EXACTMASS(A2)` | `180.0423` | **HRMS / LC-MS 질량분석 스펙트럼 피크 확인용** 단일동위원소 질량 (Da) |
 | **표준 InChI / InChIKey** | `=SMILES2INCHIKEY(A2)` | `"BSYNRYMUTXBXSQ-..."` | 서로 다른 데이터베이스 간 중복 화합물 제거(중복 값 찾기)에 최적 |
 
-::: info 🧪 LC-MS / HRMS 연구자를 위한 $m/z$ 부가 이온(Adduct) 계산 팁
-질량분석기에서 관찰되는 피크는 평균 분자량(`MW`)이 아니라 가장 풍부한 동위원소($^{12}\text{C}, ^1\text{H}, ^{16}\text{O}$)만으로 계산된 **`=SMILES2EXACTMASS(A2)`**를 기준으로 해야 정확합니다:
-* **$[\text{M}+\text{H}]^+$ (양성자 부가):** `=SMILES2EXACTMASS(A2) + 1.0073`
-* **$[\text{M}+\text{Na}]^+$ (소듐 부가):** `=SMILES2EXACTMASS(A2) + 22.9892`
-* **$[\text{M}-\text{H}]^-$ (음성자 탈리):** `=SMILES2EXACTMASS(A2) - 1.0073`
+::: info 🧪 LC-MS / HRMS 연구자를 위한 m/z 부가 이온(Adduct) 계산 팁
+질량분석기에서 관찰되는 피크는 평균 분자량(`MW`)이 아니라 가장 풍부한 동위원소(¹²C, ¹H, ¹⁶O)만으로 계산된 **`=SMILES2EXACTMASS(A2)`** 값을 기준으로 해야 정확합니다:
+* **`[M+H]⁺` (양성자 부가):** `=SMILES2EXACTMASS(A2) + 1.0073`
+* **`[M+Na]⁺` (소듐 부가):** `=SMILES2EXACTMASS(A2) + 22.9892`
+* **`[M−H]⁻` (양성자 탈리):** `=SMILES2EXACTMASS(A2) - 1.0073`
 :::
 
 > 🔄 **입력 데이터가 InChI 또는 반응식(KET)인 경우:** 함수 이름 앞의 `SMILES2` 대신 `INCHI2` 또는 `KET2`를 쓰면 똑같이 작동합니다 (예: `=INCHI2MW(A2)`, `=KET2EXACTMASS(A2)`).
@@ -40,20 +40,20 @@ A2 셀에 SMILES(예: 아스피린 `CC(=O)Oc1ccccc1C(=O)O`)가 들어있을 때 
 ```text
 =SMILES2LIPINSKI(A2)
 ```
-아래 4가지 기준을 평가하여 통과 시 **`"PASS"`**, 미달 시 **`"FAIL"`**을 반환합니다:
+아래 4가지 기준을 평가하여 통과 시 **`"PASS"`**, 미달 시 **`"FAIL"`** 문자열을 반환합니다:
 
 | 물리화학 지표 | 개별 계산 수식 | Lipinski 기준 | 아스피린 예시 | 신약 개발에서의 의미 |
 | :--- | :--- | :---: | :---: | :--- |
-| **분자량 (MW)** | `=SMILES2MW(A2)` | **$\le 500$** g/mol | `180.16` | 세포막 투과 및 장내 흡수 한계 크기 |
-| **지용성 (LogP)** | `=SMILES2LOGP(A2)` | **$\le 5.0$** | `1.31` | 옥탄올/물 분배계수 (수용성과 지용성의 균형) |
-| **수소 결합 공여체 (HBD)** | `=SMILES2HBD(A2)` | **$\le 5$** 개 | `1` | $-\text{OH}$, $-\text{NH}$ 그룹의 수소 개수 |
-| **수소 결합 수용체 (HBA)** | `=SMILES2HBA(A2)` | **$\le 10$** 개 | `4` | 질소($\text{N}$), 산소($\text{O}$) 원자의 개수 |
+| **분자량 (MW)** | `=SMILES2MW(A2)` | **≤ 500** g/mol | `180.16` | 세포막 투과 및 장내 흡수 한계 크기 |
+| **지용성 (LogP)** | `=SMILES2LOGP(A2)` | **≤ 5.0** | `1.31` | 옥탄올/물 분배계수 (수용성과 지용성의 균형) |
+| **수소 결합 공여체 (HBD)** | `=SMILES2HBD(A2)` | **≤ 5** 개 | `1` | `-OH`, `-NH` 그룹의 수소 개수 |
+| **수소 결합 수용체 (HBA)** | `=SMILES2HBA(A2)` | **≤ 10** 개 | `4` | 질소(`N`), 산소(`O`) 원자의 개수 |
 
 ### 추가 ADME 핵심 지표: 극성 표면적(`TPSA`) & 회전 결합 수(`ROTBONDS`)
 | 지표 | 수식 | 결과 예시 | 실무 해석 가이드 |
 | :--- | :--- | :---: | :--- |
-| **위상 극성 표면적 (TPSA)** | `=SMILES2TPSA(A2)` | `63.60` (Å²) | • **$\le 140\text{ \AA}^2$:** 장내 경구 흡수 양호<br>• **$\le 90\text{ \AA}^2$:** 중추신경계(CNS) 약물의 뇌혈관장벽(BBB) 투과 유리 |
-| **회전 가능한 결합 수** | `=SMILES2ROTBONDS(A2)` | `3` 개 | • **$\le 10$ 개 (Veber 규칙):** 분자 유연성이 적절하여 경구 생체이용률 유리 |
+| **위상 극성 표면적 (TPSA)** | `=SMILES2TPSA(A2)` | `63.60` (Å²) | • **≤ 140 Å²:** 장내 경구 흡수 양호<br>• **≤ 90 Å²:** 중추신경계(CNS) 약물의 뇌혈관장벽(BBB) 투과 유리 |
+| **회전 가능한 결합 수** | `=SMILES2ROTBONDS(A2)` | `3` 개 | • **≤ 10 개 (Veber 규칙):** 분자 유연성이 적절하여 경구 생체이용률 유리 |
 
 ---
 
@@ -64,7 +64,7 @@ A2 셀에 SMILES(예: 아스피린 `CC(=O)Oc1ccccc1C(=O)O`)가 들어있을 때 
 ```text
 =SMILES.MATCH(A2, "찾을_구조_패턴")
 ```
-* 포함되어 있으면 **`TRUE`**, 없으면 **`FALSE`**를 반환하므로 엑셀 **자동 필터**로 원하는 계열의 화합물만 1초 만에 추려낼 수 있습니다.
+* 포함되어 있으면 **`TRUE`**, 없으면 **`FALSE`** 논리값을 반환하므로 엑셀 **자동 필터**로 원하는 계열의 화합물만 1초 만에 추려낼 수 있습니다.
 * 동일한 패턴을 `=SMILES2IMG(A2, "", "hl:패턴")`에 넣으면 해당 작용기만 컬러로 하이라이트해 그림으로 보여줍니다!
 
 ### 📋 복사해서 바로 쓰는 12대 필수 작용기·골격 패턴 사전
@@ -74,16 +74,16 @@ SMARTS 문법을 외울 필요 없이 아래 표에서 원하는 작용기 코�
 | :--- | :--- | :--- | :--- |
 | **벤젠 고리 (방향족)** | `c1ccccc1` | `=SMILES.MATCH(A2, "c1ccccc1")` | `=SMILES2IMG(A2, "", "hl:c1ccccc1")` |
 | **피리딘 고리 (헤테로방향족)** | `c1ccncc1` | `=SMILES.MATCH(A2, "c1ccncc1")` | `=SMILES2IMG(A2, "", "hl:c1ccncc1")` |
-| **카복실산 ($-\text{COOH}$)** | `C(=O)[OH]` | `=SMILES.MATCH(A2, "C(=O)[OH]")` | `=SMILES2IMG(A2, "", "hl:C(=O)[OH]")` |
-| **에스터 ($-\text{COO}-$)** | `C(=O)O[#6]` | `=SMILES.MATCH(A2, "C(=O)O[#6]")` | `=SMILES2IMG(A2, "", "hl:C(=O)O[#6]")` |
-| **아마이드 ($-\text{CONH}-$)** | `C(=O)N` | `=SMILES.MATCH(A2, "C(=O)N")` | `=SMILES2IMG(A2, "", "hl:C(=O)N")` |
-| **설폰아마이드 ($-\text{SO}_2\text{NH}-$)** | `S(=O)(=O)N` | `=SMILES.MATCH(A2, "S(=O)(=O)N")` | `=SMILES2IMG(A2, "", "hl:S(=O)(=O)N")` |
-| **케톤 ($-\text{C(=O)}-$)** | `[#6]C(=O)[#6]` | `=SMILES.MATCH(A2, "[#6]C(=O)[#6]")` | `=SMILES2IMG(A2, "", "hl:[#6]C(=O)[#6]")` |
-| **알데하이드 ($-\text{CHO}$)** | `[CX3H1](=O)` | `=SMILES.MATCH(A2, "[CX3H1](=O)")` | `=SMILES2IMG(A2, "", "hl:[CX3H1](=O)")` |
-| **페놀 (방향족 $-\text{OH}$)** | `c1ccccc1[OH]` | `=SMILES.MATCH(A2, "c1ccccc1[OH]")` | `=SMILES2IMG(A2, "", "hl:c1ccccc1[OH]")` |
-| **나이트로기 ($-\text{NO}_2$)** | `[N+](=O)[O-]` | `=SMILES.MATCH(A2, "[N+](=O)[O-]")` | `=SMILES2IMG(A2, "", "hl:[N+](=O)[O-]")` |
-| **할로겐 원소 ($\text{F, Cl, Br, I}$)** | `[F,Cl,Br,I]` | `=SMILES.MATCH(A2, "[F,Cl,Br,I]")` | `=SMILES2IMG(A2, "", "hl:[F,Cl,Br,I]")` |
-| **트라이플루오로메틸 ($-\text{CF}_3$)** | `C(F)(F)F` | `=SMILES.MATCH(A2, "C(F)(F)F")` | `=SMILES2IMG(A2, "", "hl:C(F)(F)F")` |
+| **카복실산 (`-COOH`)** | `C(=O)[OH]` | `=SMILES.MATCH(A2, "C(=O)[OH]")` | `=SMILES2IMG(A2, "", "hl:C(=O)[OH]")` |
+| **에스터 (`-COO-`)** | `C(=O)O[#6]` | `=SMILES.MATCH(A2, "C(=O)O[#6]")` | `=SMILES2IMG(A2, "", "hl:C(=O)O[#6]")` |
+| **아마이드 (`-CONH-`)** | `C(=O)N` | `=SMILES.MATCH(A2, "C(=O)N")` | `=SMILES2IMG(A2, "", "hl:C(=O)N")` |
+| **설폰아마이드 (`-SO₂NH-`)** | `S(=O)(=O)N` | `=SMILES.MATCH(A2, "S(=O)(=O)N")` | `=SMILES2IMG(A2, "", "hl:S(=O)(=O)N")` |
+| **케톤 (`-C(=O)-`)** | `[#6]C(=O)[#6]` | `=SMILES.MATCH(A2, "[#6]C(=O)[#6]")` | `=SMILES2IMG(A2, "", "hl:[#6]C(=O)[#6]")` |
+| **알데하이드 (`-CHO`)** | `[CX3H1](=O)` | `=SMILES.MATCH(A2, "[CX3H1](=O)")` | `=SMILES2IMG(A2, "", "hl:[CX3H1](=O)")` |
+| **페놀 (방향족 `-OH`)** | `c1ccccc1[OH]` | `=SMILES.MATCH(A2, "c1ccccc1[OH]")` | `=SMILES2IMG(A2, "", "hl:c1ccccc1[OH]")` |
+| **나이트로기 (`-NO₂`)** | `[N+](=O)[O-]` | `=SMILES.MATCH(A2, "[N+](=O)[O-]")` | `=SMILES2IMG(A2, "", "hl:[N+](=O)[O-]")` |
+| **할로겐 원소 (`F, Cl, Br, I`)** | `[F,Cl,Br,I]` | `=SMILES.MATCH(A2, "[F,Cl,Br,I]")` | `=SMILES2IMG(A2, "", "hl:[F,Cl,Br,I]")` |
+| **트라이플루오로메틸 (`-CF₃`)** | `C(F)(F)F` | `=SMILES.MATCH(A2, "C(F)(F)F")` | `=SMILES2IMG(A2, "", "hl:C(F)(F)F")` |
 
 ---
 
@@ -112,13 +112,13 @@ SMARTS 문법을 외울 필요 없이 아래 표에서 원하는 작용기 코�
 외부 화학 데이터베이스(PubChem, ChEMBL, 사내 화합물 라이브러리 등)에서 받은 **`.sdf` (Structure-Data File)** 파일을 변환 프로그램 없이 엑셀에서 바로 열고 저장할 수 있습니다.
 
 ### 📥 `.sdf` 파일을 엑셀 표로 불러오기 (`Import .sdf`)
-1. 엑셀 상단 **`[SMILES]`** 리본 탭에서 **`[SDF File] ➔ [Import .sdf File...]`**을 클릭합니다.
-2. 내 PC에서 `.sdf` 파일을 선택하면 새 워크시트에 다음과 같은 **엑셀 표(Table)**가 자동으로 생성됩니다:
+1. 엑셀 상단 **`[SMILES]`** 리본 탭에서 **`[SDF File] ➔ [Import .sdf File...]`** 메뉴를 클릭합니다.
+2. 내 PC에서 `.sdf` 파일을 선택하면 새 워크시트에 다음과 같은 **엑셀 표**가 자동으로 생성됩니다:
    * **Structure 열:** 셀 크기에 맞춰 자동 렌더링되는 `=SMILES2IMG(...)` 수식
    * **SMILES / Formula / MW 열:** 표준 SMILES와 실시간 화학식·분자량 수식
    * **데이터 태그 열:** `.sdf` 파일 안에 기록되어 있던 모든 속성 필드(예: `<Compound_ID>`, `<IC50_nM>`, `<Target>`, `<Purity>`)가 각각의 엑셀 열(Column)로 깔끔하게 펼쳐집니다!
 
 ### 📤 엑셀 표를 `.sdf` 파일로 내보내기 (`Export .sdf`)
 1. 엑셀 시트에서 내보낼 영역(또는 SMILES가 포함된 표)을 선택합니다 (필터로 걸러낸 후보 물질들만 내보낼 수도 있습니다).
-2. 상단 **`[SMILES] ➔ [SDF File] ➔ [Export .sdf File...]`**을 클릭하고 저장할 파일 이름을 지정합니다.
+2. 상단 **`[SMILES] ➔ [SDF File] ➔ [Export .sdf File...]`** 메뉴를 클릭하고 저장할 파일 이름을 지정합니다.
 3. 각 행의 분자 2D 좌표(V2000 Molblock)와 옆 열들의 속성값들이 표준 `.sdf` 포맷으로 묶여 저장되므로, 도킹(Docking) 프로그램이나 타 연구실에 즉시 전달할 수 있습니다.

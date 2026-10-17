@@ -19,7 +19,7 @@ Learn how to load proteins, nucleic acids, and ligand complexes directly inside 
 ### Step 2. Load & Style Your Structure
 1. Enter a **4-character PDB ID** in the top bar and click **Download PDB**, or click **Open File** to load a local `.pdb`, `.cif`, `.bcif`, `.sdf`, `.mol`, or `.mol2` file.
 2. Customize the visual style:
-   * **Cartoon / Ribbon:** Highlight $\alpha$-helices, $\beta$-sheets, and loops.
+   * **Cartoon / Ribbon:** Highlight α-helices, β-sheets, and loops.
    * **Ball & Stick / Surface:** Inspect binding pockets, active-site residues, and cofactors.
    * **Color Schemes:** Color by polymer chain, secondary structure, residue type, or B-factor.
 
@@ -33,9 +33,38 @@ Choose how you want to embed the structure from the top toolbar:
 
 ---
 
-## 2. Double-Click to Adjust Camera or Style Later
+## 2. Sample PDB Codes to Try Right Now
+
+Not sure which code to test first? Try any of these 4 classic structures:
+
+| PDB ID | Biomolecule | What to Look For |
+| :---: | :--- | :--- |
+| **`1CRN`** | **Crambin** | Compact plant protein — fast test for α-helices and β-sheets |
+| **`4HHB`** | **Human Hemoglobin** | Tetrameric (α₂β₂) protein complex with 4 bound heme groups |
+| **`6LU7`** | **SARS-CoV-2 Main Protease (Mpro)** | Drug discovery example showing a covalent inhibitor bound inside the active site |
+| **`1BNA`** | **B-DNA Double Helix** | Classic 12-base-pair DNA duplex showing base pairing and major/minor grooves |
+
+---
+
+## 3. Double-Click to Adjust Camera or Style Later
 
 1. Select any previously inserted Mol\* 3D model or 2D picture in Excel, Word, or PowerPoint.
 2. **Double-click** it (or right-click ➔ **`Edit 3D Structure (Mol*)...`**).
 3. Mol\* reopens with your exact protein, custom colors, representations, and camera angle intact.
 4. Tweak the view and click **Apply** to update the figure in place without changing its size or position!
+
+---
+
+## 🚀 Continue Exploring
+
+<div class="s2i-card-grid">
+  <a href="../guide/powerpoint" class="s2i-card">
+    <div class="s2i-card-title">📽️ PowerPoint Presentations</div>
+    <p class="s2i-card-desc">Rotate 3D protein models live during slide shows and style dark-mode structures</p>
+  </a>
+  <a href="../guide/ketcher" class="s2i-card">
+    <div class="s2i-card-title">✏️ Ketcher 2D Sketcher</div>
+    <p class="s2i-card-desc">Press Ctrl+Shift+K to draw small-molecule ligands and multi-step reaction schemes</p>
+  </a>
+</div>
+

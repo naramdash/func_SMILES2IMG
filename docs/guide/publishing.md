@@ -83,3 +83,19 @@ Aspirin | Formula: C9H8O4 | MW: 180.16 g/mol | Exact Mass: 180.0423 Da | SMILES:
 
 #### ⑤ Python & Data Pipelines (`Export as JSON`)
 Inside the **Detailed Molecule Info Window**, choose **JSON** from the export button to copy a structured JSON object containing all calculated descriptors.
+
+---
+
+## 🚀 Continue Exploring
+
+<div class="s2i-card-grid">
+  <a href="../reference/formula" class="s2i-card">
+    <div class="s2i-card-title">📐 Formula & Option Reference</div>
+    <p class="s2i-card-desc">Interactive Excel formula builder and complete cheat sheet of 25+ chemical functions</p>
+  </a>
+  <a href="../guide/faq" class="s2i-card">
+    <div class="s2i-card-title">❓ FAQ & Troubleshooting</div>
+    <p class="s2i-card-desc">Quick answers for installation, Excel formulas, styling, SVG copy, and 100% offline security</p>
+  </a>
+</div>
+

@@ -75,9 +75,25 @@ Explain binding pockets and protein conformations interactively instead of pasti
 </p>
 
 * **✏️ Insert Structure (`Ctrl+Shift+K`):** Open the 2D molecule & reaction sketcher
-* **🧬 3D Structure (Mol*):** Open the interactive 3D protein viewer
+* **🧬 3D Structure (Mol\*):** Open the interactive 3D protein viewer
 * **⚡ Quick Insert:** Convert a selected SMILES text box (or clipboard) into a slide shape in 0.1s
 * **📋 Paste Structure:** Place copied SMILES/KET data onto the active slide
 * **🖼️ Copy SVG:** Copy lossless SVG vectors for conference posters and Illustrator
 * **🎨 Batch Style:** Convert all structures across your slide deck to Dark Mode, Color, B&W, or White Background
 * **🔬 Molecule Info:** Copy bullet-point property lists or open the full property summary window
+
+---
+
+## 🚀 Continue Exploring
+
+<div class="s2i-card-grid">
+  <a href="../guide/molstar" class="s2i-card">
+    <div class="s2i-card-title">🧬 Mol* 3D Protein & Crystal Viewer</div>
+    <p class="s2i-card-desc">Try 4 sample PDB codes (1CRN, 4HHB, 6LU7, 1BNA) and capture 3D binding pockets</p>
+  </a>
+  <a href="../guide/publishing" class="s2i-card">
+    <div class="s2i-card-title">🎨 Publishing, SVG & Property Tables</div>
+    <p class="s2i-card-desc">Copy lossless SVG vectors for conference posters and test Dark Mode batch styling</p>
+  </a>
+</div>
+

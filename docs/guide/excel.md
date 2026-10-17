@@ -67,7 +67,7 @@ When you want to sketch a structure from scratch or draw a multi-step organic re
 </p>
 
 1. Select a cell and press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> (or click **`[SMILES] ➔ [Insert Structure]`** on the ribbon).
-2. Draw rings, functional groups, stereo bonds (wedges/hashes), or **reaction arrows and catalyst text ($\text{H}_2\text{SO}_4$, 55 °C)**.
+2. Draw rings, functional groups, stereo bonds (wedges/hashes), or **reaction arrows and catalyst text (H₂SO₄, 55 °C)**.
 3. Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to insert into the cell immediately:
    * Single molecules are inserted as `=SMILES2IMG(...)`.
    * Multi-step reactions with arrows or text are saved losslessly as `=KET2IMG(...)`.

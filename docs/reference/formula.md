@@ -45,11 +45,11 @@ Evaluate oral bioavailability and physicochemical descriptors directly in your s
 | What You Want | Formula | Example Output | Lipinski Cutoff & Description |
 | :--- | :--- | :--- | :--- |
 | **Lipinski Rule of 5** | `=SMILES2LIPINSKI(A2)` | `"PASS"` / `"FAIL"` | Evaluates all 4 rules (MW ≤ 500, LogP ≤ 5, HBD ≤ 5, HBA ≤ 10) |
-| **LogP (Lipophilicity)** | `=SMILES2LOGP(A2)` | `1.31` | Wildman-Crippen octanol-water partition coefficient ($\le 5.0$) |
-| **Polar Surface Area (TPSA)** | `=SMILES2TPSA(A2)` | `63.60` | Topological Polar Surface Area in Å² ($\le 140$ oral, $\le 90$ CNS/BBB) |
-| **H-Bond Donors (HBD)** | `=SMILES2HBD(A2)` | `1` | Count of $-\text{OH}$ and $-\text{NH}$ hydrogen bond donors ($\le 5$) |
-| **H-Bond Acceptors (HBA)** | `=SMILES2HBA(A2)` | `4` | Count of nitrogen ($\text{N}$) and oxygen ($\text{O}$) acceptors ($\le 10$) |
-| **Rotatable Bonds** | `=SMILES2ROTBONDS(A2)` | `3` | Count of rotatable single bonds ($\le 10$ recommended) |
+| **LogP (Lipophilicity)** | `=SMILES2LOGP(A2)` | `1.31` | Wildman-Crippen octanol-water partition coefficient (≤ 5.0) |
+| **Polar Surface Area (TPSA)** | `=SMILES2TPSA(A2)` | `63.60` | Topological Polar Surface Area in Å² (≤ 140 oral, ≤ 90 CNS/BBB) |
+| **H-Bond Donors (HBD)** | `=SMILES2HBD(A2)` | `1` | Count of `-OH` and `-NH` hydrogen bond donors (≤ 5) |
+| **H-Bond Acceptors (HBA)** | `=SMILES2HBA(A2)` | `4` | Count of nitrogen (`N`) and oxygen (`O`) acceptors (≤ 10) |
+| **Rotatable Bonds** | `=SMILES2ROTBONDS(A2)` | `3` | Count of rotatable single bonds (≤ 10 recommended) |
 
 ---
 
@@ -93,7 +93,7 @@ Filter compound libraries by scaffold or rank analogs against a lead molecule. F
 | **Substructure Highlight** | `hl:<smarts>` | `highlight:<smarts>`, `hl=<smarts>` | Highlights matching SMILES/SMARTS substructure in color |
 | **Atom Numbers** | `num` | `numbers`, `idx`, `atom-num` | Displays 1-based atom index numbers for NMR/MS |
 | **Stereochemistry** | `stereo` | `chiral`, `abs`, `stereochemistry` | Displays CIP stereochemistry labels (*R/S*, *E/Z*) |
-| **Explicit Hydrogens** | `h` | `hydrogens`, `unfoldh`, `all-h` | Unfolds and displays all explicit hydrogen atoms ($\text{H}$) |
+| **Explicit Hydrogens** | `h` | `hydrogens`, `unfoldh`, `all-h` | Unfolds and displays all explicit hydrogen atoms (`H`) |
 | **Carbon Symbols** | `all-c` | `carbons`, `carbon`, `c` | Explicitly displays `C` symbols on all carbon vertices |
 | **Mirror Flip** | `flip` / `flipy` | `flipx` (horizontal), `flipy` (vertical) | Mirrors molecular coordinates horizontally (`flip`) or vertically (`flipy`) |
 | **Rotation** | `rot90` / `rot180` / `rot270` | *(Also accepted in 4th argument)* | Rotates structure clockwise by 90°, 180°, or 270° |

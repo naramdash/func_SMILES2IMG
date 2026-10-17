@@ -19,7 +19,7 @@ Excel, Word, PowerPoint 안에서 단백질 3차 구조, 핵산, 리간드 복�
 ### Step 2. 구조 불러오기 & 스타일 꾸미기
 1. 상단 입력창에 **4자리 PDB ID**를 입력하고 **Download PDB**를 누르거나, **Open File**로 내 PC의 구조 파일(`.pdb`, `.cif`, `.bcif`, `.sdf`, `.mol`, `.mol2`)을 엽니다.
 2. 원하는 표현 방식을 선택합니다:
-   * **Cartoon / Ribbon:** $\alpha$-나선과 $\beta$-시트 등 단백질 2차 구조를 한눈에 표현
+   * **Cartoon / Ribbon:** α-나선과 β-시트 등 단백질 2차 구조를 한눈에 표현
    * **Ball & Stick / Surface:** 리간드 결합 부위(Binding pocket)와 활성 잔기 분석
    * **배색 변경:** 사슬(Chain)별, 2차 구조별, 아미노산 잔기 특성별 색상 지정
 
@@ -33,9 +33,38 @@ Excel, Word, PowerPoint 안에서 단백질 3차 구조, 핵산, 리간드 복�
 
 ---
 
-## 2. 더블클릭으로 각도 및 스타일 다시 수정하기
+## 2. 바로 입력해 볼 수 있는 추천 PDB 코드 4선
+
+처음 테스트할 때 아래 4자리 코드를 입력해 보세요:
+
+| PDB 코드 | 생체분자 이름 | 관찰 포인트 & 추천 용도 |
+| :---: | :--- | :--- |
+| **`1CRN`** | **크람빈 (Crambin)** | 작고 깔끔한 소형 단백질 — α-나선과 β-시트 기본 렌더링 테스트용 |
+| **`4HHB`** | **인간 헤모글로빈 (Hemoglobin)** | 4개의 사슬(α₂β₂)과 헴(Heme) 보결분자단 복합체 시각화 |
+| **`6LU7`** | **SARS-CoV-2 메인 프로테아제 (Mpro)** | 단백질 결합 포켓 내부에 저분자 저해제(N3 리간드)가 결합한 신약 개발 예시 |
+| **`1BNA`** | **B-DNA 이중 나선 (Dodecamer)** | 염기쌍 수소 결합과 DNA 이중 나선 골격 구조 시각화 |
+
+---
+
+## 3. 더블클릭으로 각도 및 스타일 다시 수정하기
 
 1. Excel, Word, PowerPoint에 삽입된 3D 단백질 모델이나 2D 그림을 선택합니다.
 2. 마우스로 **더블클릭**합니다 (또는 우클릭 ➔ **`Edit 3D Structure (Mol*)...`**).
 3. 이전에 작업하던 단백질 구조와 카메라 앵글, 색상 설정이 그대로 복원되어 열립니다.
 4. 각도를 살짝 바꾸거나 스타일을 수정한 뒤 **Apply**를 누르면 문서 내 기존 위치와 크기를 유지한 채 제자리에서 바로 업데이트됩니다!
+
+---
+
+## 🚀 다음 단계로 이어서 보기
+
+<div class="s2i-card-grid">
+  <a href="../guide/powerpoint" class="s2i-card">
+    <div class="s2i-card-title">📽️ PowerPoint 발표 슬라이드</div>
+    <p class="s2i-card-desc">슬라이드 쇼 도중 3D 단백질 모델을 마우스로 회전하고 다크 모드 구조식 넣기</p>
+  </a>
+  <a href="../guide/ketcher" class="s2i-card">
+    <div class="s2i-card-title">✏️ Ketcher 2D 구조 · 반응식 스케처</div>
+    <p class="s2i-card-desc">단축키 Ctrl+Shift+K로 저분자 리간드와 유기 합성 반응식 직접 그리기</p>
+  </a>
+</div>
+

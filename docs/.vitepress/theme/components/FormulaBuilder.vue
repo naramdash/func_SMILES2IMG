@@ -133,6 +133,18 @@ const svgTransform = computed(() => {
   return parts.join(' ')
 })
 
+const carbonCoords = [
+  [105, 79],
+  [136, 97],
+  [136, 133],
+  [105, 151],
+  [74, 133],
+  [74, 97],
+  [167, 79],
+  [198, 133],
+  [229, 115]
+]
+
 async function copyFormula() {
   try {
     await navigator.clipboard.writeText(generatedFormula.value)
@@ -154,7 +166,7 @@ async function copyFormula() {
       </div>
       <div class="fb-presets">
         <span class="fb-preset-label">{{ isKo ? '빠른 프리셋:' : 'Quick Presets:' }}</span>
-        <button type="button" class="fb-chip" @click="resetAll">{{ isKo ? '초기화' : 'Default' }}</button>
+        <button type="button" class="fb-chip" @click="resetAll">{{ isKo ? '기본값' : 'Default' }}</button>
         <button type="button" class="fb-chip" @click="selectAcsPreset">{{ isKo ? '📄 ACS 논문 흑백' : '📄 ACS B&W' }}</button>
         <button type="button" class="fb-chip" @click="selectHighlightPreset">{{ isKo ? '🔍 벤젠 하이라이트' : '🔍 Highlight Ring' }}</button>
         <button type="button" class="fb-chip" @click="selectNmrPreset">{{ isKo ? '🔢 NMR 원자번호' : '🔢 NMR Numbers' }}</button>
@@ -242,101 +254,117 @@ async function copyFormula() {
 
       <!-- Right Live Preview -->
       <div class="fb-preview-col">
-        <div class="fb-preview-label">{{ isKo ? '실시간 셀 렌더링 미리보기' : 'Live Cell Rendering Preview' }}</div>
+        <div class="fb-preview-label">{{ isKo ? '실시간 셀 렌더링 미리보기 (아스피린)' : 'Live Cell Rendering Preview (Aspirin)' }}</div>
         <div class="fb-canvas" :style="previewBgStyle">
-          <svg viewBox="0 0 260 210" class="fb-svg" :style="{ transform: svgTransform }">
+          <!-- True 120-degree IUPAC coordinate geometry for Aspirin -->
+          <svg viewBox="0 0 275 215" class="fb-svg" :style="{ transform: svgTransform }">
             <!-- Highlight: Benzene ring -->
             <g v-if="highlightMode === 'hl:c1ccccc1'" stroke="#f59e0b" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="rgba(251, 191, 36, 0.22)">
-              <polygon points="80,85 115,65 150,85 150,125 115,145 80,125" />
+              <polygon points="105,79 136,97 136,133 105,151 74,133 74,97" />
             </g>
-            <!-- Highlight: Carboxyl group -->
-            <g v-if="highlightMode === 'hl:C(=O)O'" stroke="#ec4899" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none">
-              <line x1="150" y1="85" x2="185" y2="65" />
-              <line x1="185" y1="65" x2="185" y2="30" />
-              <line x1="185" y1="65" x2="218" y2="85" />
-              <circle cx="185" cy="25" r="10" fill="rgba(236, 72, 153, 0.25)" stroke="none" />
-              <circle cx="224" cy="88" r="12" fill="rgba(236, 72, 153, 0.25)" stroke="none" />
+            <!-- Highlight: Carboxyl group (-C(=O)OH) -->
+            <g v-if="highlightMode === 'hl:C(=O)O'" stroke="#ec4899" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <line x1="136" y1="97" x2="167" y2="79" />
+              <line x1="167" y1="79" x2="167" y2="46" />
+              <line x1="167" y1="79" x2="195" y2="95" />
+              <circle cx="167" cy="36" r="11" fill="rgba(236, 72, 153, 0.25)" stroke="none" />
+              <circle cx="206" cy="100" r="13" fill="rgba(236, 72, 153, 0.25)" stroke="none" />
             </g>
 
-            <!-- Benzene Ring Bonds -->
-            <g :stroke="bondColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
-              <polygon points="80,85 115,65 150,85 150,125 115,145 80,125" />
-              <!-- Aromatic inner double bonds -->
-              <line x1="87" y1="89" x2="115" y2="73" />
-              <line x1="143" y1="89" x2="143" y2="121" />
-              <line x1="115" y1="137" x2="87" y2="121" />
+            <!-- Core Molecular Bonds (120-degree geometry, zero label overlap) -->
+            <g :stroke="bondColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <!-- Benzene hexagon -->
+              <polygon points="105,79 136,97 136,133 105,151 74,133 74,97" />
+              <!-- Inner aromatic double bonds -->
+              <line x1="105" y1="86" x2="130" y2="101" />
+              <line x1="130" y1="129" x2="105" y2="144" />
+              <line x1="80" y1="129" x2="80" y2="101" />
 
-              <!-- Carboxyl attachment at C2 (150,85) -> C7 (185,65) -->
-              <line x1="150" y1="85" x2="185" y2="65" />
-              <!-- C7=O double bond -->
-              <line x1="182" y1="65" x2="182" y2="36" />
-              <line x1="188" y1="65" x2="188" y2="36" />
-              <!-- C7-OH single bond -->
-              <line x1="185" y1="65" x2="212" y2="81" />
+              <!-- Carboxyl group at C2 (136,97) -> C7 (167,79) -->
+              <line x1="136" y1="97" x2="167" y2="79" />
+              <!-- C7=O8 double bond pointing UP -->
+              <line x1="164" y1="80" x2="164" y2="48" />
+              <line x1="170" y1="80" x2="170" y2="48" />
+              <!-- C7-OH9 single bond pointing DOWN-RIGHT -->
+              <line x1="167" y1="79" x2="191" y2="93" />
 
-              <!-- Ester attachment at C3 (150,125) -> O (185,145) -> C(=O)CH3 -->
-              <line x1="150" y1="125" x2="177" y2="140" />
-              <line x1="193" y1="140" x2="220" y2="125" />
-              <line x1="217" y1="125" x2="217" y2="96" />
-              <line x1="223" y1="125" x2="223" y2="96" />
-              <line x1="220" y1="125" x2="248" y2="142" />
+              <!-- Ester group at C3 (136,133) -> O10 (167,151) -> C11 (198,133) -->
+              <line x1="136" y1="133" x2="158" y2="146" />
+              <line x1="176" y1="146" x2="198" y2="133" />
+              <!-- C11=O12 double bond pointing DOWN (zero clash with OH9!) -->
+              <line x1="195" y1="132" x2="195" y2="164" />
+              <line x1="201" y1="132" x2="201" y2="164" />
+              <!-- C11-C13 methyl bond pointing UP-RIGHT -->
+              <line x1="198" y1="133" x2="229" y2="115" />
             </g>
 
             <!-- Explicit Hydrogens when optH is enabled -->
             <g v-if="optH" :stroke="bondColor" stroke-width="1.8" :fill="bondColor" font-size="11" font-family="sans-serif" text-anchor="middle">
-              <line x1="115" y1="65" x2="115" y2="43" />
-              <text x="115" y="39" stroke="none">H</text>
-              <line x1="80" y1="85" x2="58" y2="72" />
-              <text x="50" y="71" stroke="none">H</text>
-              <line x1="80" y1="125" x2="58" y2="138" />
-              <text x="50" y="144" stroke="none">H</text>
-              <line x1="115" y1="145" x2="115" y2="168" />
-              <text x="115" y="180" stroke="none">H</text>
+              <line x1="105" y1="79" x2="105" y2="56" />
+              <text x="105" y="51" stroke="none">H</text>
+              <line x1="74" y1="97" x2="53" y2="85" />
+              <text x="45" y="84" stroke="none">H</text>
+              <line x1="74" y1="133" x2="53" y2="145" />
+              <text x="45" y="151" stroke="none">H</text>
+              <line x1="105" y1="151" x2="105" y2="174" />
+              <text x="105" y="186" stroke="none">H</text>
             </g>
 
             <!-- Explicit Carbons when optAllC is enabled -->
             <g v-if="optAllC" font-size="11" font-weight="700" font-family="sans-serif" text-anchor="middle" :fill="bondColor">
-              <circle v-for="[cx, cy] in [[80,85],[115,65],[150,85],[150,125],[115,145],[80,125],[185,65],[220,125],[248,142]]" :key="`${cx}-${cy}`" :cx="cx" :cy="cy" r="7" :fill="bgMode === '#1e1e1e' ? '#1e1e1e' : '#ffffff'" />
-              <text x="80" y="89">C</text>
-              <text x="115" y="69">C</text>
-              <text x="150" y="89">C</text>
-              <text x="150" y="129">C</text>
-              <text x="115" y="149">C</text>
-              <text x="80" y="129">C</text>
-              <text x="185" y="69">C</text>
-              <text x="220" y="129">C</text>
-              <text x="248" y="146">{{ optH ? 'CH₃' : 'C' }}</text>
+              <circle v-for="[cx, cy] in carbonCoords" :key="`${cx}-${cy}`" :cx="cx" :cy="cy" r="7" :fill="bgMode === '#1e1e1e' ? '#1e1e1e' : (bgMode === '#fff9db' ? '#fff9db' : '#ffffff')" />
+              <text x="105" y="83">C</text>
+              <text x="136" y="101">C</text>
+              <text x="136" y="137">C</text>
+              <text x="105" y="155">C</text>
+              <text x="74" y="137">C</text>
+              <text x="74" y="101">C</text>
+              <text x="167" y="83">C</text>
+              <text x="198" y="137">C</text>
+              <text x="234" y="119">{{ optH ? 'CH₃' : 'C' }}</text>
             </g>
 
-            <!-- Heteroatoms (O, OH) -->
-            <g font-family="sans-serif" font-size="14" font-weight="700" :fill="oxygenColor" text-anchor="middle">
-              <text x="185" y="31">O</text>
-              <text x="225" y="91">OH</text>
-              <text x="185" y="150">O</text>
-              <text x="220" y="91">O</text>
+            <!-- Heteroatoms (O, OH) cleanly separated -->
+            <g font-family="sans-serif" font-size="13.5" font-weight="700" :fill="oxygenColor" text-anchor="middle">
+              <!-- O8 (Carboxyl =O at top) -->
+              <text x="167" y="42">O</text>
+              <!-- OH9 (Carboxyl -OH at upper-right) -->
+              <text x="205" y="102">OH</text>
+              <!-- O10 (Ester bridging -O-) -->
+              <text x="167" y="156">O</text>
+              <!-- O12 (Ester =O at bottom) -->
+              <text x="198" y="179">O</text>
             </g>
 
             <!-- Stereo annotation when optStereo is enabled -->
             <g v-if="optStereo" font-family="sans-serif" font-size="11" font-style="italic" font-weight="700" fill="#0d9488">
-              <text x="142" y="76">(R/S)</text>
+              <text x="136" y="74">(R/S)</text>
+              <text x="198" y="118">(E/Z)</text>
             </g>
 
             <!-- Atom Numbers when optNum is enabled -->
-            <g v-if="optNum" font-family="sans-serif" font-size="10" font-weight="700" fill="#2563eb">
-              <text x="68" y="82">1</text>
-              <text x="112" y="57">2</text>
-              <text x="154" y="78">3</text>
-              <text x="155" y="122">4</text>
-              <text x="112" y="159">5</text>
-              <text x="68" y="135">6</text>
-              <text x="191" y="62">7</text>
-              <text x="195" y="26">8</text>
-              <text x="238" y="82">9</text>
-              <text x="182" y="162">10</text>
-              <text x="228" y="132">11</text>
-              <text x="250" y="156">12</text>
+            <g v-if="optNum" font-family="sans-serif" font-size="9.5" font-weight="700" fill="#2563eb">
+              <text x="113" y="73">1</text>
+              <text x="142" y="92">2</text>
+              <text x="142" y="130">3</text>
+              <text x="113" y="162">4</text>
+              <text x="61" y="139">5</text>
+              <text x="61" y="94">6</text>
+              <text x="174" y="75">7</text>
+              <text x="178" y="37">8</text>
+              <text x="221" y="96">9</text>
+              <text x="164" y="168">10</text>
+              <text x="206" y="136">11</text>
+              <text x="209" y="180">12</text>
+              <text x="237" y="112">13</text>
             </g>
           </svg>
+        </div>
+        <div class="fb-mol-meta">
+          <span><strong>C₉H₈O₄</strong></span>
+          <span>MW: <strong>180.16</strong></span>
+          <span>Exact: <strong>180.0423</strong></span>
+          <span class="fb-pass">Lipinski: PASS</span>
         </div>
         <div class="fb-caption">
           {{ isKo ? '💡 투명 배경(체크무늬)은 엑셀 셀에 들어갈 때 셀 배경색과 자연스럽게 합쳐집니다.' : '💡 Checkerboard indicates transparent background that blends with Excel cells.' }}
@@ -494,14 +522,33 @@ async function copyFormula() {
 }
 .fb-svg {
   width: 100%;
-  max-width: 250px;
+  max-width: 260px;
   height: auto;
   transition: transform 0.25s ease;
+}
+.fb-mol-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: var(--vp-c-text-2);
+}
+.fb-mol-meta span {
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.fb-mol-meta .fb-pass {
+  color: #0d9488;
+  font-weight: 700;
 }
 .fb-caption {
   font-size: 0.76rem;
   color: var(--vp-c-text-2);
-  margin-top: 8px;
+  margin-top: 6px;
   text-align: center;
   line-height: 1.4;
 }

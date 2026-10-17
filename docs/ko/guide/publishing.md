@@ -6,7 +6,7 @@
 
 ## 1. 🎨 문서 전체 스타일 원클릭 통일 (`Batch Style`)
 
-논문을 투고하거나 발표 슬라이드 테마를 바꿀 때, 문서 안에 들어있는 수십 개의 분자 구조식을 하나하나 다시 그릴 필요가 없습니다. 상단 리본 메뉴의 **`[SMILES] ➔ [Batch Style]`**을 클릭하면 선택한 영역(또는 문서/시트/슬라이드 전체)의 모든 구조식이 1초 만에 통일됩니다!
+논문을 투고하거나 발표 슬라이드 테마를 바꿀 때, 문서 안에 들어있는 수십 개의 분자 구조식을 하나하나 다시 그릴 필요가 없습니다. 상단 리본 메뉴의 **`[SMILES]` ➔ `[Batch Style]`** 버튼을 클릭하면 선택한 영역(또는 문서/시트/슬라이드 전체)의 모든 구조식이 1초 만에 통일됩니다!
 
 <BatchStylePreview />
 
@@ -20,7 +20,7 @@
 ## 2. 🖼️ Illustrator · 포스터용 무손실 벡터 복사 (`Copy SVG`)
 
 일반 화면 캡처(PNG/JPG 비트맵)는 학회 포스터처럼 크게 확대하거나 인쇄할 때 가장자리가 계단처럼 깨집니다.  
-**`[SMILES] ➔ [Copy SVG]`** (또는 우클릭 ➔ **`Chemical Structure ➔ Copy Vector Graphic (SVG)`**)를 사용하면 **화질 저하가 전혀 없는 수학적 벡터 그래픽(`SVG`)**으로 클립보드에 복사됩니다.
+**`[SMILES]` ➔ `[Copy SVG]`** (또는 우클릭 ➔ **`Chemical Structure` ➔ `Copy Vector Graphic (SVG)`**) 메뉴를 사용하면 **화질 저하가 전혀 없는 수학적 벡터 그래픽(`SVG`)** 포맷으로 클립보드에 복사됩니다.
 
 | 붙여넣을 프로그램 | 활용 방법 및 장점 |
 | :--- | :--- |
@@ -32,7 +32,7 @@
 
 ## 3. 🔬 분자 정보 상세창 (`Molecule Info`) & 5가지 서식 내보내기
 
-구조식 셀이나 그림을 **우클릭 ➔ `Chemical Structure ➔ Copy Molecule Info`** (또는 상단 리본의 **`[Molecule Info]`**)를 누르면 외부 검색 없이 분자의 모든 물리화학적 특성을 확인하고 원하는 서식으로 즉시 복사할 수 있습니다.
+구조식 셀이나 그림을 **우클릭 ➔ `Chemical Structure` ➔ `Copy Molecule Info`** (또는 상단 리본의 **`[Molecule Info]`** 버튼)로 선택하면 외부 검색 없이 분자의 모든 물리화학적 특성을 확인하고 원하는 서식으로 즉시 복사할 수 있습니다.
 
 ### 한눈에 확인 가능한 10가지 핵심 물성
 1. **Substance Name (물질명):** IUPAC / PubChem 일반명 (`Aspirin`)
@@ -45,7 +45,7 @@
 
 ### 📋 붙여넣을 곳에 맞춰 골라 쓰는 5가지 일괄 복사 서식
 
-우클릭 메뉴나 상세창 하단의 **[내보내기 (Export)]** 버튼에서 아래 5가지 서식 중 하나를 선택해 복사할 수 있습니다:
+우클릭 메뉴나 상세창 하단의 **[내보내기]** (Export) 버튼에서 아래 5가지 서식 중 하나를 선택해 복사할 수 있습니다:
 
 #### ① 엑셀 가로 행 / 워드 표 칸 자동 분할 (`Copy as Excel Row — TSV Columns`)
 탭 구분(TSV) 및 HTML 표 형식으로 복사됩니다. **엑셀 셀이나 워드/파워포인트 표(Table)에 <kbd>Ctrl</kbd> + <kbd>V</kbd>로 붙여넣으면 각 항목이 옆 칸(열)으로 자동 분할**되어 표가 한 번에 채워집니다!
@@ -85,3 +85,19 @@ Aspirin | Formula: C9H8O4 | MW: 180.16 g/mol | Exact Mass: 180.0423 Da | SMILES:
 
 #### ⑤ 파이썬(Python) · 데이터 분석 연동용 (`Export as JSON`)
 상세 정보 창(`Detailed Molecule Info Window...`)에서 JSON 내보내기를 선택하면 모든 물리화학 지표가 구조화된 JSON 포맷으로 복사됩니다.
+
+---
+
+## 🚀 다음 단계로 이어서 보기
+
+<div class="s2i-card-grid">
+  <a href="../reference/formula" class="s2i-card">
+    <div class="s2i-card-title">📐 전체 함수 & 옵션 치트시트</div>
+    <p class="s2i-card-desc">인터랙티브 수식 생성기와 25종 이상의 엑셀 화학 함수 및 렌더링 옵션 레퍼런스</p>
+  </a>
+  <a href="../guide/faq" class="s2i-card">
+    <div class="s2i-card-title">❓ 자주 묻는 질문 (FAQ)</div>
+    <p class="s2i-card-desc">설치·실행, 엑셀 수식, 스타일·벡터 연동, 오프라인 보안 관련 핵심 Q&A</p>
+  </a>
+</div>
+

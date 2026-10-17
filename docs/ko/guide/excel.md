@@ -66,8 +66,8 @@ SMILES 코드를 모르거나 다단계 유기 합성 반응식을 넣고 싶을
   <img src="/ketcher-guide.png" alt="Embedded Ketcher 2D Editor Window" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-1. 구조식을 넣을 셀을 클릭하고 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누릅니다 (또는 상단 **`[SMILES] ➔ [구조식 삽입]`** 클릭).
-2. 벤젠 고리, 작용기, 입체 결합(쐐기/점선), 또는 **반응 화살표와 촉매 텍스트($\text{H}_2\text{SO}_4$, 55 °C)**를 자유롭게 그립니다.
+1. 구조식을 넣을 셀을 클릭하고 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누릅니다 (또는 상단 **`[SMILES]` ➔ `[구조식 삽입]`** 클릭).
+2. 벤젠 고리, 작용기, 입체 결합(쐐기/점선), 또는 **반응 화살표와 촉매 텍스트**(H₂SO₄, 55 °C)를 자유롭게 그립니다.
 3. <kbd>Ctrl</kbd> + <kbd>Enter</kbd>를 누르면 셀에 즉시 삽입됩니다!
    * 단일 분자는 `=SMILES2IMG(...)` 수식으로 들어가고,
    * 반응 화살표나 텍스트가 포함된 반응식은 위치와 글자가 100% 보존되는 `=KET2IMG(...)` 수식으로 자동 저장됩니다.
@@ -94,7 +94,7 @@ SMILES 코드를 모르거나 다단계 유기 합성 반응식을 넣고 싶을
 
 ::: details 🔍 수식이 #VALUE! 오류를 반환할 때 (진단 창 활용법)
 참조한 셀의 SMILES 문법이 잘못되었을 때(예: 괄호나 고리 번호가 안 닫힌 경우) `#VALUE!`가 표시됩니다.  
-상단 리본의 **`[SMILES] ➔ [설정 및 진단 (Settings & Diagnostics)]`**을 클릭하면 어떤 셀의 SMILES에서 무슨 문법 오류가 났는지 정확한 원인을 실시간 로그로 확인할 수 있습니다.
+상단 리본의 **`[SMILES]` ➔ `[설정 및 진단 (Settings & Diagnostics)]`** 메뉴를 클릭하면 어떤 셀의 SMILES에서 무슨 문법 오류가 났는지 정확한 원인을 실시간 로그로 확인할 수 있습니다.
 :::
 
 ---

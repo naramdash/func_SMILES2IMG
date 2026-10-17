@@ -21,11 +21,11 @@ When cell `A2` contains a SMILES string (e.g., Aspirin `CC(=O)Oc1ccccc1C(=O)O`),
 | **Monoisotopic Exact Mass** | `=SMILES2EXACTMASS(A2)` | `180.0423` | **For HRMS / LC-MS peak matching** (monoisotopic mass in Da, 4 decimals) |
 | **Standard InChIKey** | `=SMILES2INCHIKEY(A2)` | `"BSYNRYMUTXBXSQ-..."` | 27-character hash—ideal for deduplicating compounds across sheets (`VLOOKUP`/`XLOOKUP`) |
 
-::: info 🧪 LC-MS / HRMS Tip: Calculating Adduct $m/z$ Values
+::: info 🧪 LC-MS / HRMS Tip: Calculating Adduct m/z Values
 High-resolution mass spectrometry measures monoisotopic mass (`=SMILES2EXACTMASS(A2)`) rather than average molecular weight (`MW`). Combine it with standard adduct masses directly in Excel:
-* **$[\text{M}+\text{H}]^+$ (Protonated):** `=SMILES2EXACTMASS(A2) + 1.0073`
-* **$[\text{M}+\text{Na}]^+$ (Sodiated):** `=SMILES2EXACTMASS(A2) + 22.9892`
-* **$[\text{M}-\text{H}]^-$ (Deprotonated):** `=SMILES2EXACTMASS(A2) - 1.0073`
+* **`[M+H]⁺` (Protonated):** `=SMILES2EXACTMASS(A2) + 1.0073`
+* **`[M+Na]⁺` (Sodiated):** `=SMILES2EXACTMASS(A2) + 22.9892`
+* **`[M−H]⁻` (Deprotonated):** `=SMILES2EXACTMASS(A2) - 1.0073`
 :::
 
 > 🔄 **Working with InChI or KET Reactions?** Simply replace the `SMILES2` prefix with `INCHI2` or `KET2` (e.g., `=INCHI2MW(A2)`, `=KET2EXACTMASS(A2)`).
@@ -44,16 +44,16 @@ Evaluates the 4 classic Lipinski criteria and returns **`"PASS"`** or **`"FAIL"`
 
 | Descriptor | Individual Formula | Lipinski Cutoff | Aspirin Example | Medicinal Chemistry Role |
 | :--- | :--- | :---: | :---: | :--- |
-| **Molecular Weight (MW)** | `=SMILES2MW(A2)` | **$\le 500$** g/mol | `180.16` | Size limit for passive membrane permeability |
-| **Lipophilicity (LogP)** | `=SMILES2LOGP(A2)` | **$\le 5.0$** | `1.31` | Wildman-Crippen octanol/water partition balance |
-| **H-Bond Donors (HBD)** | `=SMILES2HBD(A2)` | **$\le 5$** | `1` | Total count of $-\text{OH}$ and $-\text{NH}$ hydrogens |
-| **H-Bond Acceptors (HBA)** | `=SMILES2HBA(A2)` | **$\le 10$** | `4` | Total count of nitrogen ($\text{N}$) and oxygen ($\text{O}$) atoms |
+| **Molecular Weight (MW)** | `=SMILES2MW(A2)` | **≤ 500** g/mol | `180.16` | Size limit for passive membrane permeability |
+| **Lipophilicity (LogP)** | `=SMILES2LOGP(A2)` | **≤ 5.0** | `1.31` | Wildman-Crippen octanol/water partition balance |
+| **H-Bond Donors (HBD)** | `=SMILES2HBD(A2)` | **≤ 5** | `1` | Total count of `-OH` and `-NH` hydrogens |
+| **H-Bond Acceptors (HBA)** | `=SMILES2HBA(A2)` | **≤ 10** | `4` | Total count of nitrogen (`N`) and oxygen (`O`) atoms |
 
 ### Additional ADME Descriptors: Polar Surface Area (`TPSA`) & Rotatable Bonds (`ROTBONDS`)
 | Descriptor | Formula | Example | Medicinal Chemistry Rule of Thumb |
 | :--- | :--- | :---: | :--- |
-| **Topological Polar Surface Area** | `=SMILES2TPSA(A2)` | `63.60` (Å²) | • **$\le 140\text{ \AA}^2$:** Good oral intestinal absorption<br>• **$\le 90\text{ \AA}^2$:** Favorable for CNS Blood-Brain Barrier (BBB) penetration |
-| **Rotatable Bonds** | `=SMILES2ROTBONDS(A2)` | `3` | • **$\le 10$ bonds (Veber's Rule):** Favorable conformational flexibility for oral bioavailability |
+| **Topological Polar Surface Area** | `=SMILES2TPSA(A2)` | `63.60` (Å²) | • **≤ 140 Å²:** Good oral intestinal absorption<br>• **≤ 90 Å²:** Favorable for CNS Blood-Brain Barrier (BBB) penetration |
+| **Rotatable Bonds** | `=SMILES2ROTBONDS(A2)` | `3` | • **≤ 10 bonds (Veber's Rule):** Favorable conformational flexibility for oral bioavailability |
 
 ---
 
@@ -74,16 +74,16 @@ No need to memorize SMARTS syntax—copy any pattern below straight into your fo
 | :--- | :--- | :--- | :--- |
 | **Benzene Ring (Aromatic)** | `c1ccccc1` | `=SMILES.MATCH(A2, "c1ccccc1")` | `=SMILES2IMG(A2, "", "hl:c1ccccc1")` |
 | **Pyridine Ring** | `c1ccncc1` | `=SMILES.MATCH(A2, "c1ccncc1")` | `=SMILES2IMG(A2, "", "hl:c1ccncc1")` |
-| **Carboxylic Acid ($-\text{COOH}$)** | `C(=O)[OH]` | `=SMILES.MATCH(A2, "C(=O)[OH]")` | `=SMILES2IMG(A2, "", "hl:C(=O)[OH]")` |
-| **Ester ($-\text{COO}-$)** | `C(=O)O[#6]` | `=SMILES.MATCH(A2, "C(=O)O[#6]")` | `=SMILES2IMG(A2, "", "hl:C(=O)O[#6]")` |
-| **Amide ($-\text{CONH}-$)** | `C(=O)N` | `=SMILES.MATCH(A2, "C(=O)N")` | `=SMILES2IMG(A2, "", "hl:C(=O)N")` |
-| **Sulfonamide ($-\text{SO}_2\text{NH}-$)** | `S(=O)(=O)N` | `=SMILES.MATCH(A2, "S(=O)(=O)N")` | `=SMILES2IMG(A2, "", "hl:S(=O)(=O)N")` |
-| **Ketone ($-\text{C(=O)}-$)** | `[#6]C(=O)[#6]` | `=SMILES.MATCH(A2, "[#6]C(=O)[#6]")` | `=SMILES2IMG(A2, "", "hl:[#6]C(=O)[#6]")` |
-| **Aldehyde ($-\text{CHO}$)** | `[CX3H1](=O)` | `=SMILES.MATCH(A2, "[CX3H1](=O)")` | `=SMILES2IMG(A2, "", "hl:[CX3H1](=O)")` |
-| **Phenol (Aromatic $-\text{OH}$)** | `c1ccccc1[OH]` | `=SMILES.MATCH(A2, "c1ccccc1[OH]")` | `=SMILES2IMG(A2, "", "hl:c1ccccc1[OH]")` |
-| **Nitro Group ($-\text{NO}_2$)** | `[N+](=O)[O-]` | `=SMILES.MATCH(A2, "[N+](=O)[O-]")` | `=SMILES2IMG(A2, "", "hl:[N+](=O)[O-]")` |
-| **Any Halogen ($\text{F, Cl, Br, I}$)** | `[F,Cl,Br,I]` | `=SMILES.MATCH(A2, "[F,Cl,Br,I]")` | `=SMILES2IMG(A2, "", "hl:[F,Cl,Br,I]")` |
-| **Trifluoromethyl ($-\text{CF}_3$)** | `C(F)(F)F` | `=SMILES.MATCH(A2, "C(F)(F)F")` | `=SMILES2IMG(A2, "", "hl:C(F)(F)F")` |
+| **Carboxylic Acid (`-COOH`)** | `C(=O)[OH]` | `=SMILES.MATCH(A2, "C(=O)[OH]")` | `=SMILES2IMG(A2, "", "hl:C(=O)[OH]")` |
+| **Ester (`-COO-`)** | `C(=O)O[#6]` | `=SMILES.MATCH(A2, "C(=O)O[#6]")` | `=SMILES2IMG(A2, "", "hl:C(=O)O[#6]")` |
+| **Amide (`-CONH-`)** | `C(=O)N` | `=SMILES.MATCH(A2, "C(=O)N")` | `=SMILES2IMG(A2, "", "hl:C(=O)N")` |
+| **Sulfonamide (`-SO₂NH-`)** | `S(=O)(=O)N` | `=SMILES.MATCH(A2, "S(=O)(=O)N")` | `=SMILES2IMG(A2, "", "hl:S(=O)(=O)N")` |
+| **Ketone (`-C(=O)-`)** | `[#6]C(=O)[#6]` | `=SMILES.MATCH(A2, "[#6]C(=O)[#6]")` | `=SMILES2IMG(A2, "", "hl:[#6]C(=O)[#6]")` |
+| **Aldehyde (`-CHO`)** | `[CX3H1](=O)` | `=SMILES.MATCH(A2, "[CX3H1](=O)")` | `=SMILES2IMG(A2, "", "hl:[CX3H1](=O)")` |
+| **Phenol (Aromatic `-OH`)** | `c1ccccc1[OH]` | `=SMILES.MATCH(A2, "c1ccccc1[OH]")` | `=SMILES2IMG(A2, "", "hl:c1ccccc1[OH]")` |
+| **Nitro Group (`-NO₂`)** | `[N+](=O)[O-]` | `=SMILES.MATCH(A2, "[N+](=O)[O-]")` | `=SMILES2IMG(A2, "", "hl:[N+](=O)[O-]")` |
+| **Any Halogen (`F, Cl, Br, I`)** | `[F,Cl,Br,I]` | `=SMILES.MATCH(A2, "[F,Cl,Br,I]")` | `=SMILES2IMG(A2, "", "hl:[F,Cl,Br,I]")` |
+| **Trifluoromethyl (`-CF₃`)** | `C(F)(F)F` | `=SMILES.MATCH(A2, "C(F)(F)F")` | `=SMILES2IMG(A2, "", "hl:C(F)(F)F")` |
 
 ---
 
