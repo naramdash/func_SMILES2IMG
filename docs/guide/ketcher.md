@@ -21,7 +21,7 @@ Learn how to sketch molecules and multi-step organic reaction schemes directly i
 </p>
 
 ### Step 1. Open the Sketcher
-* **Draw a New Structure:** Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>, or click **`[SMILES] ➔ [Insert Structure]`** on the top ribbon.
+* **Draw a New Structure:** Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>, or click **`[SMILES]`** ➔ **`[Insert / Edit (SMILES)]`** in Excel (or **`[Insert / Edit Structure]`** in Word & PowerPoint) on the top ribbon.
 * **Edit an Existing Structure:** Simply **double-click** any chemical cell in Excel or structure picture in Word / PowerPoint.
 
 ### Step 2. Sketch Molecules or Reaction Schemes

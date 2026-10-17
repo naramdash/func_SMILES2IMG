@@ -105,18 +105,41 @@ Compare every compound in your sheet (`A2`, `A3`...) against a reference lead co
 
 ---
 
-## 5. Import & Export `.sdf` Chemical Database Files
+## 5. Import & Export `.sdf` / `.mol` Chemical Database Files
 
-Open and save multi-compound **`.sdf` (Structure-Data File)** libraries directly in Excel without external conversion scripts.
+Open and save multi-compound **`.sdf` (Structure-Data File)** and **`.mol`** libraries directly in Excel without external conversion scripts.
 
-### 📥 Import an `.sdf` File into a Formatted Excel Table
-1. Click **`[SMILES] ➔ [SDF File] ➔ [Import .sdf File...]`** on the Excel ribbon.
-2. Select any `.sdf` file on your PC. A new worksheet table is created automatically with:
-   * **Structure Column:** Live `=SMILES2IMG(...)` formulas that scale with cell size
-   * **SMILES, Formula & MW Columns:** Canonical SMILES plus live `=SMILES2FORMULA` and `=SMILES2MW` formulas
-   * **All SD Property Tags:** Every `<TAG>` in the file (e.g., `<Compound_ID>`, `<IC50_nM>`, `<Target>`, `<Purity>`) is extracted into its own dedicated Excel column!
+### 📥 Import an `.sdf` File into an 8-Column Medicinal Chemistry Table (`Import SDF File (.sdf)...`)
+1. Click **`[SMILES] ➔ [SDF File] ➔ [Import SDF File (.sdf)...]`** on the Excel ribbon.
+2. Select any `.sdf` or `.mol` file on your PC. A formatted **8-column medicinal chemistry table** (with auto-adjusted row heights and column widths) is generated automatically:
 
-### 📤 Export an Excel Table Back to `.sdf`
-1. Select the table rows (or SMILES column + adjacent property columns) you want to export.
-2. Click **`[SMILES] ➔ [SDF File] ➔ [Export .sdf File...]`** and choose a destination file name.
-3. The add-in generates clean 2D coordinates (V2000 Molblocks) and bundles all adjacent column headers as SD `<TAG>` fields—ready for molecular docking or sharing with collaborators.
+| Column | Header | Auto-Generated Content (Row 2 Example) |
+| :---: | :--- | :--- |
+| **Col A** | **Name** | Compound title or `<NAME>` / `<TITLE>` SD property tag |
+| **Col B** | **Structure** | `=SMILES2IMG(C2)` *(or `=SMILES2IMG.FLOAT(C2)` automatically on Excel 2016–2021)* |
+| **Col C** | **SMILES** | Canonical SMILES string |
+| **Col D** | **Formula** | `=SMILES2FORMULA(C2)` (Standard Hill formula) |
+| **Col E** | **MW (g/mol)** | `=SMILES2MW(C2)` (Average molecular weight) |
+| **Col F** | **Exact Mass** | `=SMILES2EXACTMASS(C2)` (HRMS monoisotopic mass) |
+| **Col G** | **LogP** | `=SMILES2LOGP(C2)` (Crippen octanol/water LogP) |
+| **Col H** | **Lipinski** | `=SMILES2LIPINSKI(C2)` (`"PASS"` / `"FAIL"` Rule of 5 check) |
+
+### 📤 Export a Worksheet Back to `.sdf` (`Export Sheet to SDF (.sdf)...`)
+1. Click **`[SMILES] ➔ [SDF File] ➔ [Export Sheet to SDF (.sdf)...]`** and choose a destination file name.
+2. Without requiring manual column mapping, the add-in automatically scans the active worksheet for compound names and SMILES/structure formulas and writes a standard V2000 `.sdf` file—ready for molecular docking or sharing with collaborators.
+
+---
+
+## 🚀 Continue Exploring
+
+<div class="s2i-card-grid">
+  <a href="../reference/formula" class="s2i-card">
+    <div class="s2i-card-title">📐 Interactive Formula Builder & Cheat Sheet</div>
+    <p class="s2i-card-desc">Click to combine styling/highlight options and browse all 25+ Excel chemical functions</p>
+  </a>
+  <a href="../guide/publishing" class="s2i-card">
+    <div class="s2i-card-title">🎨 Publishing, SVG & Property Tables</div>
+    <p class="s2i-card-desc">Convert all sheet structures to ACS B&W in one click or copy lossless SVG vectors</p>
+  </a>
+</div>
+

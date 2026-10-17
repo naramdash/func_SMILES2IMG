@@ -16,17 +16,15 @@
 
 ## 1. 슬라이드에 구조식·반응식 배치하기 (3가지 방법)
 
-### 방법 ① 직접 그려서 슬라이드 중앙에 넣기 (`Ctrl + Shift + K`)
-1. 파워포인트 슬라이드 화면에서 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누릅니다 (또는 상단 **`[SMILES]` ➔ `[구조식 삽입]`** 클릭).
+### 방법 ① 직접 그려서 슬라이드 중앙에 넣기 (`Insert / Edit Structure`)
+1. 파워포인트 슬라이드 화면에서 상단 **`[SMILES]` ➔ `[Insert / Edit Structure]`** 버튼을 클릭합니다 (또는 빈 슬라이드 우클릭 ➔ **`Chemical Structure` ➔ `Insert / Edit Structure (Ketcher)...`**).
 2. **Ketcher 2D 화학 편집기**에서 분자 구조나 다단계 합성 경로(화살표, 시약, 촉매 조건)를 그립니다.
    * *팁: 어두운 배경 슬라이드라면 편집기 상단에서 **`[배경: 투명 (Background: Transparent)]`** 옵션을 선택하세요.*
 3. <kbd>Ctrl</kbd> + <kbd>Enter</kbd>를 누르면 현재 슬라이드 중앙에 선명한 도형으로 즉시 배치됩니다!
 
-### 방법 ② 텍스트 상자 안의 SMILES를 즉시 그림으로 바꾸기 (`Quick Insert`)
-* 슬라이드 텍스트 상자에 적힌 SMILES 문자열을 선택하고 상단 **`[SMILES]` ➔ `[퀵 인서트 (Quick Insert)]`** 버튼을 누르면 0.1초 만에 분자 도형으로 바뀝니다.
-
-### 방법 ③ 클립보드에서 바로 붙여넣기
-* 복사해 둔 SMILES가 있다면 빈 슬라이드에서 **우클릭 ➔ `Chemical Structure` ➔ `Paste Structure`** 메뉴를 눌러 바로 넣을 수 있습니다.
+### 방법 ② 텍스트 상자 안의 SMILES나 클립보드 데이터를 즉시 도형으로 넣기 (`Paste Structure`)
+* **텍스트 상자 변환:** 슬라이드 텍스트 상자에 적힌 SMILES 문자열을 선택하고 상단 **`[SMILES]` ➔ `[Paste Structure]`** 버튼을 누르면 0.1초 만에 분자 도형으로 바뀝니다.
+* **클립보드에서 바로 붙여넣기:** 복사해 둔 SMILES가 있다면 **`[SMILES]` ➔ `[Paste Structure]`** (또는 빈 슬라이드에서 **우클릭 ➔ `Chemical Structure` ➔ `Paste Structure from Clipboard`**) 메뉴를 눌러 바로 넣을 수 있습니다.
 
 ---
 
@@ -47,7 +45,7 @@
 
 단백질-리간드 결합 부위나 3차 구조를 설명할 때 여러 각도의 캡처 사진을 여러 장 넣을 필요가 없습니다.
 
-1. 상단 **`[SMILES]` ➔ `[3D 구조식 (Mol*)]`** 버튼을 클릭합니다.
+1. 상단 **`[SMILES]` ➔ `[3D Structure (Mol*)]`** 버튼을 클릭합니다.
 2. 4자리 PDB 코드(예: `1CRN`, `4HHB`, `6LU7`)를 입력해 불러오거나 로컬 구조 파일을 엽니다.
 3. 원하는 스타일(Cartoon, Surface, Ball & Stick)로 꾸민 뒤 상단에서 **`[3D Model (.glb)]`** 버튼을 눌러 삽입합니다.
 4. 슬라이드 편집 화면이나 **슬라이드 쇼 발표 중에** 단백질 중앙의 3D 회전 핸들을 마우스로 드래그하면 청중 앞에서 360° 자유롭게 돌려가며 설명할 수 있습니다!
@@ -64,7 +62,7 @@
 </p>
 
 * **발표 슬라이드 불릿 목록으로 붙여넣기:** **`Copy Molecule Info` ➔ `Copy as Multi-Line List`** 항목을 클릭한 뒤 슬라이드 텍스트 상자에 붙여넣으면 물질명·화학식·분자량이 깔끔한 글머리 기호 목록으로 바로 들어갑니다!
-* **크기를 아무리 키워도 안 깨지는 벡터 복사 (`Copy SVG`):** 포스터 발표(학회 포스터)나 Illustrator 편집을 위해 **`Copy Vector Graphic (SVG)`** 항목을 누르면 무손실 벡터 그래픽으로 복사됩니다.
+* **크기를 아무리 키워도 안 깨지는 벡터 복사 (`Copy SVG`):** 포스터 발표(학회 포스터)나 Illustrator 편집을 위해 상단 **`[Copy SVG]`** (또는 우클릭 **`Copy Vector SVG`**) 항목을 누르면 무손실 벡터 그래픽으로 복사됩니다.
 
 ---
 
@@ -74,13 +72,12 @@
   <img src="/powerpoint-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-* **✏️ 구조식 삽입 (`Ctrl+Shift+K`):** 2D 분자 및 합성 반응식 스케처 실행
-* **🧬 3D 구조식 (Mol\*):** 인터랙티브 3D 단백질/고분자 뷰어 실행
-* **⚡ 퀵 인서트:** 선택한 텍스트 상자의 SMILES(또는 클립보드)를 즉시 슬라이드 도형으로 변환
-* **📋 구조식 붙여넣기:** 복사한 SMILES/KET 데이터를 슬라이드에 배치
-* **🖼️ Copy SVG:** 학회 포스터 및 Illustrator용 무손실 SVG 벡터 복사
-* **🎨 Batch Style:** 프레젠테이션 전체 구조식을 다크 모드 / 컬러 / 흑백 / 흰색 배경으로 원클릭 변환
-* **🔬 Molecule Info:** 슬라이드 불릿 목록용 물성 복사 및 상세 물성 창 열기
+* **✏️ `Insert / Edit Structure`:** 2D 분자 및 합성 반응식 스케처 실행 (선택된 분자 도형이 있으면 즉시 수정 모드로 열림)
+* **🧬 `3D Structure (Mol*)`:** 인터랙티브 3D 단백질/고분자 뷰어 실행
+* **📋 `Paste Structure`:** 선택한 텍스트 상자의 SMILES나 클립보드 데이터를 0.1초 만에 슬라이드 도형으로 배치
+* **🖼️ `Copy SMILES` / `Copy InChI` / `Copy KET` / `Copy SVG`:** 화학 식별자 또는 학회 포스터·Illustrator용 무손실 SVG 벡터 복사
+* **🔬 `Molecule Info`:** 슬라이드 불릿 목록용 물성 복사 및 상세 물성 창 열기
+* **🎨 `Batch Style`:** 프레젠테이션 전체 구조식을 다크 모드 / 컬러 / 흑백 / 흰색 배경으로 원클릭 변환
 
 ---
 

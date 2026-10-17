@@ -16,17 +16,15 @@ Learn how to insert and edit high-resolution 2D chemical structures, reaction sc
 
 ## 1. Insert Structures & Reactions into Text or Tables (3 Ways)
 
-### Way ① Draw by Hand (`Ctrl + Shift + K`)
+### Way ① Draw by Hand (`Insert / Edit Structure`)
 1. Place your cursor in any paragraph or table cell in Word.
-2. Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> (or click **`[SMILES] ➔ [Insert Structure]`** on the ribbon).
+2. Click **`[SMILES] ➔ [Insert / Edit Structure]`** on the ribbon (or right-click ➔ **`Chemical Structure ➔ Insert / Edit Structure (Ketcher)...`**).
 3. Draw your molecule or multi-step reaction scheme (arrows, reagents, catalysts, temperatures) in the **Ketcher 2D Editor**.
 4. Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to insert the structure right at your cursor!
 
-### Way ② Convert Typed SMILES Text in 0.1s (`Quick Insert`)
-* Highlight any SMILES text typed in your document (e.g., `c1ccccc1`) and click **`[SMILES] ➔ [Quick Insert]`** to replace the text with a rendered structure picture on the spot.
-
-### Way ③ Paste from Clipboard
-* Copy a SMILES string from a paper, website, or ChemDraw, then click **`[SMILES] ➔ [Paste Structure]`** (or right-click ➔ **`Chemical Structure ➔ Paste Structure`**).
+### Way ② Convert Highlighted SMILES or Paste from Clipboard in 0.1s (`Paste Structure`)
+* **Convert Highlighted Text:** Highlight any SMILES text typed in your document (e.g., `c1ccccc1`) and click **`[SMILES] ➔ [Paste Structure]`** to replace the text with a rendered structure picture on the spot.
+* **Paste from Clipboard:** Copy a SMILES string from a paper, website, or ChemDraw, then click **`[SMILES] ➔ [Paste Structure]`** (or right-click ➔ **`Chemical Structure ➔ Paste Structure from Clipboard`**).
 
 ---
 
@@ -57,14 +55,14 @@ Before submitting to a journal, you don't need to redraw or re-export dozens of 
 * **Detailed Molecule Info Window:** View all calculated properties (including LogP, TPSA, and Lipinski Rule of 5) in one window and export as a Markdown table or JSON.
 
 ### 🖼️ Copy Lossless Vector Graphics for Illustrator (`Copy SVG`)
-* Click **`Copy Vector Graphic (SVG)`** to copy a true scalable vector graphic (`SVG`) to the clipboard, ready to paste directly into Adobe Illustrator, Inkscape, or ChemDraw without losing resolution.
+* Click **`[Copy SVG]`** on the ribbon (or right-click ➔ **`Copy Vector SVG`**) to copy a true scalable vector graphic (`SVG`) to the clipboard, ready to paste directly into Adobe Illustrator, Inkscape, or ChemDraw without losing resolution.
 
 ---
 
 ## 4. Embed 3D Proteins in Manuscripts (`Mol*`)
 
 1. Click **`[SMILES] ➔ [3D Structure (Mol*)]`** on the ribbon.
-2. Enter a 4-letter PDB ID (e.g., `1CRN`, `4HHB`) to download, or open a local structure file (`.pdb`, `.cif`, `.sdf`).
+2. Enter a 4-letter PDB ID (e.g., `1CRN`, `4HHB`, `6LU7`) to download, or open a local structure file (`.pdb`, `.cif`, `.sdf`).
 3. Choose your visual style (Cartoon ribbon, Ball & Stick, Molecular Surface) and camera angle, then insert as:
    * **[3D Model (.glb)]:** An interactive 3D object you can rotate 360° with your mouse right inside Word.
    * **[2D Picture (.png)]:** A high-resolution figure for print publication and PDF export.
@@ -78,13 +76,12 @@ Before submitting to a journal, you don't need to redraw or re-export dozens of 
   <img src="/word-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-* **✏️ Insert Structure (`Ctrl+Shift+K`):** Open the 2D molecule & reaction sketcher
-* **🧬 3D Structure (Mol\*):** Open the 3D protein & macromolecular viewer
-* **⚡ Quick Insert:** Convert highlighted SMILES text (or clipboard) into a picture in 0.1s
-* **📋 Paste Structure:** Insert copied SMILES/KET data as an inline picture
-* **🖼️ Copy SVG:** Copy the selected structure as a lossless SVG vector
-* **🎨 Batch Style:** Convert all structures in the document to Color, Publication B&W, White Background, or Dark Mode
-* **🔬 Molecule Info:** Inspect and copy MW, Formula, LogP, Lipinski Ro5, and table rows
+* **✏️ `Insert / Edit Structure`:** Open the 2D molecule & reaction sketcher (or edit the selected molecule)
+* **🧬 `3D Structure (Mol*)`:** Open the 3D protein & macromolecular viewer
+* **📋 `Paste Structure`:** Convert highlighted SMILES text or clipboard data into an inline picture in 0.1s
+* **🖼️ `Copy SMILES` / `Copy InChI` / `Copy KET` / `Copy SVG`:** Copy chemical identifiers or lossless SVG vectors
+* **🔬 `Molecule Info`:** Inspect and copy MW, Formula, LogP, Lipinski Ro5, and table rows
+* **🎨 `Batch Style`:** Convert all structures in the document to Color, Publication B&W, White Background, or Dark Mode
 
 ---
 

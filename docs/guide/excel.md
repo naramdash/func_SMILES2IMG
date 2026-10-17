@@ -32,14 +32,24 @@ The fastest way to build a chemical table in Excel is to put SMILES strings (or 
 | **Col D** | **Molecular Weight (g/mol)** | `=SMILES2MW(A2)` | `180.16` |
 | **Col E** | **Lipinski Rule of 5** | `=SMILES2LIPINSKI(A2)` | `PASS` |
 
-* **Only have a chemical name or CAS number?**  
-  Use `=NAME2IMG("Aspirin")` or `=NAME2IMG("50-78-2")` to render the image directly, or `=NAME2SMILES("Ibuprofen")` to get its canonical SMILES string (powered by a 60+ reagent offline dictionary + PubChem lookup).
+* **Only have a chemical name, lab abbreviation (`THF`, `DMSO`, `DCM`), or CAS number?**  
+  Use `=NAME2IMG("Aspirin")`, `=NAME2IMG("THF")`, or `=NAME2IMG("50-78-2")` to render the image directly, or `=NAME2SMILES("Ibuprofen")` to get its canonical SMILES string.
 * **Want larger structure images?**  
   Simply increase the Excel **row height (e.g., 80–100 pt)** and **column width**—the molecule scales up automatically while keeping its aspect ratio.
 
+::: details 📚 Built-In 0ms Offline Dictionary (Lab Solvents, Drugs, Biomolecules & CAS Numbers)
+The following common laboratory abbreviations, pharmaceuticals, biomolecules, and their CAS Registry Numbers are built directly into the add-in and resolve **instantly in 0ms without internet access**. Any other compound name or CAS number is automatically queried from PubChem once and cached permanently on your PC for offline use.
+
+| Category | Built-In Names, Abbreviations & CAS Numbers (0ms Offline) |
+| :--- | :--- |
+| **Lab Solvents & Abbreviations** | `THF` (`Tetrahydrofuran`, `109-99-9`), `DMSO` (`Dimethyl Sulfoxide`, `67-68-5`), `DMF` (`Dimethylformamide`, `68-12-2`), `DCM` (`Dichloromethane`, `75-09-2`), `Acetonitrile` (`75-05-8`), `Ethyl Acetate` (`141-78-6`), `Acetone` (`67-64-1`), `Ethanol` (`64-17-5`), `Methanol` (`67-56-1`), `Isopropanol` (`67-63-0`), `Diethyl Ether` (`60-29-7`), `Chloroform` (`67-66-3`), `Hexane` (`110-54-3`), `Cyclohexane`, `Benzene`, `Toluene`, `Phenol`, `Aniline`, `Pyridine`, `Acetic Acid`, `Formic Acid`, `Benzoic Acid`, `Water` |
+| **Pharmaceuticals & Natural Products** | `Aspirin` (`Acetylsalicylic acid`, `50-78-2`), `Caffeine` (`58-08-2`), `Acetaminophen` (`Paracetamol`, `Tylenol`, `103-90-2`), `Ibuprofen` (`15687-27-1`), `Naproxen` (`22204-53-1`), `Penicillin G` (`61-33-6`), `Amoxicillin` (`26787-78-0`), `Artemisinin` (`63968-64-9`), `Paclitaxel` (`Taxol`, `33069-62-4`), `Salicylic Acid` (`69-72-7`), `Cholesterol` (`57-88-5`) |
+| **Biomolecules, Vitamins & Amino Acids** | `Glucose` (`D-Glucose`, `50-99-7`), `Vitamin C` (`Ascorbic Acid`, `50-81-7`), `Citric Acid` (`77-92-9`), `Lactic Acid` (`50-21-5`), `Glycine` (`56-40-6`), `Alanine` (`56-41-7`), `Dopamine` (`51-61-6`), `Serotonin` (`50-67-9`), `Epinephrine` (`Adrenaline`, `51-43-4`) |
+:::
+
 ::: info 💡 Which Image Formula Fits My Excel Version?
 * **Microsoft 365 / Excel 2024+:** Use `=SMILES2IMG(A2)`, `=NAME2IMG(A2)`, `=KET2IMG(A2)`, `=INCHI2IMG(A2)`  
-  *(Embeds a true native in-cell picture that sorts and filters seamlessly with your data)*
+  *(Embeds a true native in-cell picture that sorts and filters seamlessly with your data. Bonus: `=SMILES2IMG(A2)` automatically detects SMILES, InChI, or KET data in `A2`!)*
 * **Excel 2016 / 2019 / 2021:** Append **`.FLOAT`** to the formula name!  
   Example: `=SMILES2IMG.FLOAT(A2)`, `=NAME2IMG.FLOAT(A2)` *(Places a cell-locked picture shape that moves and resizes automatically with the cell)*
 :::
@@ -66,7 +76,7 @@ When you want to sketch a structure from scratch or draw a multi-step organic re
   <img src="/ketcher-guide.png" alt="Embedded Ketcher 2D Editor Window" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-1. Select a cell and press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> (or click **`[SMILES] ➔ [Insert Structure]`** on the ribbon).
+1. Select a cell and press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> (or click **`[SMILES] ➔ [Insert / Edit (SMILES)]`** on the ribbon).
 2. Draw rings, functional groups, stereo bonds (wedges/hashes), or **reaction arrows and catalyst text (H₂SO₄, 55 °C)**.
 3. Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to insert into the cell immediately:
    * Single molecules are inserted as `=SMILES2IMG(...)`.
@@ -81,12 +91,13 @@ When you want to sketch a structure from scratch or draw a multi-step organic re
   <img src="/excel-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Excel" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-* **✏️ Insert Structure (`Ctrl+Shift+K`):** Open the 2D molecule & reaction sketcher
-* **🧬 3D Structure (Mol\*):** Open the 3D protein viewer (if the active cell contains a 4-character PDB ID like `1CRN`, it loads that protein automatically!)
-* **⚡ Quick Insert:** Convert a cell containing SMILES text into a rendered structure formula in 0.1s
-* **🖼️ Copy SVG:** Copy the selected molecule as a lossless SVG vector for Illustrator or ChemDraw
-* **🎨 Batch Style:** Convert all structures in the sheet to Color, Publication B&W, White Background, or Dark Mode
-* **📂 SDF File:** Import multi-molecule `.sdf` files into formatted Excel tables or export back to `.sdf`
+* **✏️ `Insert / Edit (SMILES)` (`Ctrl+Shift+K`):** Open the 2D molecule sketcher (or choose the adjacent `InChI` / `KET` buttons to specify the formula format)
+* **🧬 `3D Structure (Mol*)`:** Open the 3D protein viewer (if the active cell contains a 4-character PDB ID like `1CRN`, it loads that protein automatically!)
+* **📋 `Paste Structure`:** Convert clipboard SMILES (or a selected cell containing SMILES text) into a rendered structure formula in 0.1s—and automatically expand row height & column width
+* **🖼️ `Copy SMILES` / `Copy InChI` / `Copy KET` / `Copy SVG`:** Copy chemical identifiers or a lossless SVG vector for Illustrator / ChemDraw
+* **🔬 `Molecule Info`:** Inspect and copy Substance Name, Formula, MW, LogP, Lipinski Ro5, or formatted TSV/Markdown tables
+* **🎨 `Batch Style`:** Convert all structures in the sheet to Color, Publication B&W, White Background, or Dark Mode
+* **📂 `SDF File`:** Import `.sdf` / `.mol` files into an 8-column Excel table or export the active sheet back to `.sdf`
 
 <p align="center">
   <img src="/excel-context-menu-guide.png" alt="Chemical Structure Context Menu in Excel" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
@@ -94,7 +105,7 @@ When you want to sketch a structure from scratch or draw a multi-step organic re
 
 ::: details 🔍 Why does my formula show #VALUE!? (Using Diagnostics)
 A `#VALUE!` result usually means the input cell contains a typo in its SMILES string (such as an unclosed ring number or invalid atomic valence).  
-Click **`[SMILES] ➔ [Settings & Diagnostics]`** on the ribbon to see the exact chemical syntax error message in real time.
+Click **`[SMILES] ➔ [Diagnostics]`** on the ribbon to see the exact chemical syntax error message in real time.
 :::
 
 ---

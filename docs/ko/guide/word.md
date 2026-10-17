@@ -16,17 +16,15 @@
 
 ## 1. 본문 및 표 안에 구조식·반응식 넣기 (3가지 방법)
 
-### 방법 ① 직접 그려서 넣기 (`Ctrl + Shift + K`)
+### 방법 ① 직접 그려서 넣기 (`Insert / Edit Structure`)
 1. 워드 본문이나 표 셀 안에서 구조식을 넣을 위치에 커서를 둡니다.
-2. <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누릅니다 (또는 상단 **`[SMILES]` ➔ `[구조식 삽입]`** 클릭).
+2. 상단 **`[SMILES]` ➔ `[Insert / Edit Structure]`** 버튼을 클릭합니다 (또는 우클릭 ➔ **`Chemical Structure` ➔ `Insert / Edit Structure (Ketcher)...`**).
 3. **Ketcher 2D 화학 편집기**에서 분자나 다단계 합성 반응식(화살표, 시약, 온도 조건 등)을 그립니다.
 4. <kbd>Ctrl</kbd> + <kbd>Enter</kbd>를 누르면 커서 위치에 고화질 구조식이 즉시 들어갑니다!
 
-### 방법 ② 본문에 적힌 SMILES 텍스트를 0.1초 만에 그림으로 바꾸기 (`Quick Insert`)
-* 워드 문서에 적힌 SMILES 문자열(예: `c1ccccc1`)을 마우스로 드래그해 선택한 뒤, 상단 **`[SMILES]` ➔ `[퀵 인서트 (Quick Insert)]`** 버튼을 클릭하면 텍스트가 즉시 구조식 그림으로 치환됩니다.
-
-### 방법 ③ 클립보드에서 바로 붙여넣기
-* 논문, 웹페이지, ChemDraw 등에서 SMILES를 복사한 상태에서 **`[SMILES]` ➔ `[구조식 붙여넣기]`** (또는 우클릭 ➔ **`Chemical Structure` ➔ `Paste Structure`**) 메뉴를 누르면 바로 그림으로 들어갑니다.
+### 방법 ② 본문에 적힌 SMILES나 클립보드 데이터를 0.1초 만에 그림으로 넣기 (`Paste Structure`)
+* **본문 텍스트 변환:** 워드 문서에 적힌 SMILES 문자열(예: `c1ccccc1`)을 마우스로 드래그해 선택한 뒤, 상단 **`[SMILES]` ➔ `[Paste Structure]`** 버튼을 클릭하면 텍스트가 즉시 구조식 그림으로 치환됩니다.
+* **클립보드에서 바로 붙여넣기:** 논문, 웹페이지, ChemDraw 등에서 SMILES를 복사한 상태에서 **`[SMILES]` ➔ `[Paste Structure]`** (또는 우클릭 ➔ **`Chemical Structure` ➔ `Paste Structure from Clipboard`**) 메뉴를 누르면 편집기를 열지 않고도 바로 그림으로 들어갑니다.
 
 ---
 
@@ -54,17 +52,17 @@
 ### 📋 실험 섹션(Experimental) 및 워드 표에 물성 바로 붙여넣기
 * **개별 물성 원클릭 복사:** 물질명(Substance Name), 화학식(`C9H8O4`), 분자량(`180.16 g/mol`), 정밀 질량, InChIKey를 클릭 한 번으로 복사해 논문 본문에 붙여넣습니다.
 * **워드 표 행(TSV)으로 한 번에 붙여넣기:** **`Copy Molecule Info` ➔ `Copy as Excel Row (TSV Columns)`** 메뉴를 클릭한 뒤 워드 표(Table)에 붙여넣으면 각 셀 칸에 맞춰 물성 값들이 자동으로 나뉘어 들어갑니다!
-* **상세 정보 창 (`Detailed Molecule Info Window`):** 분자량, 정밀 질량, LogP, TPSA, Lipinski 약물성 통과 여부를 한눈에 확인하고 마크다운 표나 JSON으로도 복사할 수 있습니다.
+* **상세 정보 창 (`Detailed Molecule Info Window...`):** 분자량, 정밀 질량, LogP, TPSA, Lipinski 약물성 통과 여부를 한눈에 확인하고 마크다운 표나 JSON으로도 복사할 수 있습니다.
 
 ### 🖼️ Adobe Illustrator / ChemDraw용 무손실 벡터 복사 (`Copy SVG`)
-* **`Copy Vector Graphic (SVG)`** 메뉴를 클릭하면 화질 저하가 전혀 없는 표준 벡터 그래픽(`SVG`)으로 복사되어 Illustrator, Inkscape 등에 바로 붙여넣고 편집할 수 있습니다.
+* 상단 **`[Copy SVG]`** (또는 우클릭 **`Copy Vector SVG`**) 메뉴를 클릭하면 화질 저하가 전혀 없는 표준 벡터 그래픽(`SVG`)으로 복사되어 Illustrator, Inkscape 등에 바로 붙여넣고 편집할 수 있습니다.
 
 ---
 
 ## 4. 논문에 3D 단백질 구조 넣기 (`Mol*`)
 
-1. 상단 **`[SMILES]` ➔ `[3D 구조식 (Mol*)]`** 버튼을 클릭합니다.
-2. 4자리 PDB 코드(예: `1CRN`, `4HHB`)를 입력해 다운로드하거나 내 PC의 구조 파일(`.pdb`, `.cif`, `.sdf`)을 엽니다.
+1. 상단 **`[SMILES]` ➔ `[3D Structure (Mol*)]`** 버튼을 클릭합니다.
+2. 4자리 PDB 코드(예: `1CRN`, `4HHB`, `6LU7`)를 입력해 다운로드하거나 내 PC의 구조 파일(`.pdb`, `.cif`, `.sdf`)을 엽니다.
 3. 원하는 스타일(Cartoon 리본, 표면 등)과 각도를 맞춘 뒤:
    * **[3D Model (.glb)]:** 워드 문서 안에서 마우스로 360° 직접 돌려볼 수 있는 인터랙티브 3D 모델로 삽입합니다.
    * **[2D Picture (.png)]:** 논문 인쇄 및 PDF 제출용 고해상도 그림으로 삽입합니다.
@@ -78,13 +76,12 @@
   <img src="/word-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-* **✏️ 구조식 삽입 (`Ctrl+Shift+K`):** 2D 분자 및 합성 반응식 스케처 실행
-* **🧬 3D 구조식 (Mol\*):** 3D 단백질/고분자 뷰어 실행
-* **⚡ 퀵 인서트:** 드래그한 SMILES 텍스트(또는 클립보드)를 즉시 구조식 그림으로 변환
-* **📋 구조식 붙여넣기:** 복사해 둔 SMILES/KET 데이터를 커서 위치에 그림으로 삽입
-* **🖼️ Copy SVG:** 선택한 구조식을 무손실 SVG 벡터로 복사
-* **🎨 Batch Style:** 문서 내 모든 구조식을 컬러 / 논문용 흑백 / 흰색 배경 / 다크 모드로 일괄 변환
-* **🔬 Molecule Info:** 분자량·화학식·약물성 확인 및 다양한 표 서식으로 복사
+* **✏️ `Insert / Edit Structure`:** 2D 분자 및 합성 반응식 스케처 실행 (선택된 분자가 있으면 즉시 수정 모드로 열림)
+* **🧬 `3D Structure (Mol*)`:** 3D 단백질/고분자 뷰어 실행
+* **📋 `Paste Structure`:** 드래그한 SMILES 텍스트나 클립보드 데이터를 0.1초 만에 구조식 그림으로 삽입
+* **🖼️ `Copy SMILES` / `Copy InChI` / `Copy KET` / `Copy SVG`:** 선택한 구조식에서 화학 식별자 또는 무손실 SVG 벡터 복사
+* **🔬 `Molecule Info`:** 분자량·화학식·약물성 확인 및 다양한 표 서식으로 복사
+* **🎨 `Batch Style`:** 문서 내 모든 구조식을 컬러 / 논문용 흑백(ACS) / 흰색 배경 / 다크 모드로 일괄 변환
 
 ---
 

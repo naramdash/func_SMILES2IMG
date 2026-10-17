@@ -1,6 +1,6 @@
 # 설치 및 1분 첫걸음
 
-**func_SMILES2IMG (SMILES for Office)**는 Microsoft Excel, Word, PowerPoint에서 화학 구조식과 반응식을 직접 그리고, 수식으로 분자량·약물성을 계산하며, 3D 단백질을 시각화할 수 있는 무료 추가 기능입니다.
+**func_SMILES2IMG** (SMILES for Office)는 Microsoft Excel, Word, PowerPoint에서 화학 구조식과 반응식을 직접 그리고, 수식으로 분자량·약물성을 계산하며, 3D 단백질을 시각화할 수 있는 무료 추가 기능입니다.
 
 ---
 
@@ -36,13 +36,13 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 
 ### ② 마우스로 직접 구조식·반응식 그리기 (`Ctrl + Shift + K`)
 Excel, Word, PowerPoint 어디서든:
-1. 상단 리본 메뉴에서 **`[SMILES]`** 탭을 클릭하고 **`[구조식 삽입 (Insert Structure)]`** 버튼을 누르거나, 키보드에서 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누릅니다.
+1. 상단 리본 메뉴에서 **`[SMILES]`** 탭을 클릭하고 **`[Insert / Edit (SMILES)]`** (Word·PowerPoint에서는 **`[Insert / Edit Structure]`**) 버튼을 누르거나, 키보드에서 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누릅니다.
 2. 내장된 **Ketcher 2D 화학 편집기**가 열리면 원하는 분자나 반응식을 그립니다.
 3. <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (또는 우측 하단 **Apply** 버튼)를 누르면 문서나 셀에 고화질 구조식이 즉시 들어갑니다!
 
 ### ③ 더블클릭으로 수정 & 우클릭으로 분자량 복사하기
 * **제자리 수정:** 문서나 셀에 들어간 분자 그림을 **마우스로 더블클릭**하면 언제든 편집기가 다시 열려 바로 고칠 수 있습니다.
-* **물성 복사:** 분자 그림이나 셀을 **우클릭 ➔ `Chemical Structure` ➔ `Copy Molecule Info`** 메뉴로 선택하면 분자량(`180.16 g/mol`), 화학식(`C9H8O4`), InChIKey, 또는 표 전체를 클립보드로 즉시 복사할 수 있습니다.
+* **물성 복사:** 분자 그림이나 셀을 **우클릭** ➔ **`Chemical Structure`** ➔ **`Copy Molecule Info`** 메뉴로 선택하면 분자량(`180.16 g/mol`), 화학식(`C9H8O4`), InChIKey, 또는 표 전체를 클립보드로 즉시 복사할 수 있습니다.
 
 ---
 

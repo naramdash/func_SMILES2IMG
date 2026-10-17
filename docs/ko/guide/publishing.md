@@ -45,46 +45,75 @@
 
 ### 📋 붙여넣을 곳에 맞춰 골라 쓰는 5가지 일괄 복사 서식
 
-우클릭 메뉴나 상세창 하단의 **[내보내기]** (Export) 버튼에서 아래 5가지 서식 중 하나를 선택해 복사할 수 있습니다:
+우클릭 메뉴나 상세창 하단의 **[Export]** 버튼에서 아래 5가지 서식 중 하나를 선택해 복사할 수 있습니다:
 
-#### ① 엑셀 가로 행 / 워드 표 칸 자동 분할 (`Copy as Excel Row — TSV Columns`)
-탭 구분(TSV) 및 HTML 표 형식으로 복사됩니다. **엑셀 셀이나 워드/파워포인트 표(Table)에 <kbd>Ctrl</kbd> + <kbd>V</kbd>로 붙여넣으면 각 항목이 옆 칸(열)으로 자동 분할**되어 표가 한 번에 채워집니다!
+#### ① 표의 첫 행을 만들 때 — 12열 헤더 + 데이터 표 복사 (`Copy All Summary (Text)`)
+12가지 물성 **헤더 행**(1행)과 **데이터 행**(2행)이 탭 구분(TSV) 및 서식 있는 HTML 표로 동시에 복사됩니다. 빈 엑셀 영역이나 워드 본문에 <kbd>Ctrl</kbd> + <kbd>V</kbd>로 붙여넣으면 헤더가 달린 깔끔한 12열 표가 즉시 만들어집니다:
 ```text
-Aspirin	C9H8O4	180.16 g/mol	180.0423 Da	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
+Name	Formula	MW (g/mol)	Exact Mass	LogP	TPSA (Å²)	HBD	HBA	RotB	Lipinski	SMILES	InChIKey
+Aspirin	C9H8O4	180.16	180.0423	1.31	63.6	1	4	3	Pass	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 ```
 
-#### ② 파워포인트 슬라이드 글머리 기호용 (`Copy as Multi-Line List`)
-슬라이드 텍스트 상자에 붙여넣으면 즉시 깔끔한 불릿(Bullet) 요약 목록이 됩니다:
+#### ② 기존 표 아래 행에 계속 이어 붙일 때 — 데이터 행만 복사 (`Copy as Excel Row (TSV Columns)`)
+헤더 없이 **12열 데이터 값만** 복사됩니다. 이미 만들어 둔 엑셀 시트나 워드 표(Table)의 다음 빈 행에 <kbd>Ctrl</kbd> + <kbd>V</kbd>로 붙여넣으면 각 칸(열)으로 자동 분할되어 들어갑니다:
 ```text
-• Name: Aspirin
-• Formula: C9H8O4
-• Molecular Weight: 180.16 g/mol
-• Exact Mass: 180.0423 Da
-• LogP / TPSA: 1.31 / 63.60 Å²
-• Lipinski Ro5: PASS (HBD: 1, HBA: 4, RotBonds: 3)
-• SMILES: CC(=O)Oc1ccccc1C(=O)O
-• InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
+Aspirin	C9H8O4	180.16	180.0423	1.31	63.6	1	4	3	Pass	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 ```
 
-#### ③ 노션(Notion) · GitHub · 전자연구노트(ELN)용 (`Copy as Markdown Table`)
+#### ③ 파워포인트 슬라이드 & 실험 섹션 요약용 (`Copy as Multi-Line List`)
+슬라이드 텍스트 상자나 보고서에 붙여넣기 좋은 줄바꿈 요약 목록으로 복사됩니다:
+```text
+Substance Name: Aspirin
+IUPAC Name: 2-acetyloxybenzoic acid
+Formula: C9H8O4
+Molecular Weight: 180.16 g/mol
+Exact Mass: 180.0423
+LogP: 1.31
+TPSA: 63.6 Å²
+H-Bond Donors: 1
+H-Bond Acceptors: 4
+Rotatable Bonds: 3
+Lipinski Rule of 5: Passed
+SMILES: CC(=O)Oc1ccccc1C(=O)O
+InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
+```
+
+#### ④ 노션(Notion) · GitHub · 전자연구노트(ELN)용 (`Copy as Markdown Table`)
 ```markdown
 | Property | Value |
 | :--- | :--- |
 | **Substance Name** | Aspirin |
-| **Chemical Formula** | C9H8O4 |
+| **IUPAC Name** | 2-acetyloxybenzoic acid |
+| **Formula** | C9H8O4 |
 | **Molecular Weight** | 180.16 g/mol |
-| **Exact Mass** | 180.0423 Da |
-| **LogP / TPSA** | 1.31 / 63.60 Å² |
-| **Lipinski Ro5** | PASS (HBD: 1, HBA: 4, RotBonds: 3) |
-```
-
-#### ④ 논문 본문 · 이메일 각주용 한 줄 요약 (`Copy All Summary`)
-```text
-Aspirin | Formula: C9H8O4 | MW: 180.16 g/mol | Exact Mass: 180.0423 Da | SMILES: CC(=O)Oc1ccccc1C(=O)O
+| **Exact Mass** | 180.0423 |
+| **LogP** | 1.31 |
+| **TPSA** | 63.6 Å² |
+| **HBD / HBA / RotB** | 1 / 4 / 3 |
+| **Lipinski Rule of 5** | Passed |
+| **SMILES** | `CC(=O)Oc1ccccc1C(=O)O` |
+| **InChIKey** | `BSYNRYMUTXBXSQ-UHFFFAOYSA-N` |
 ```
 
 #### ⑤ 파이썬(Python) · 데이터 분석 연동용 (`Export as JSON`)
-상세 정보 창(`Detailed Molecule Info Window...`)에서 JSON 내보내기를 선택하면 모든 물리화학 지표가 구조화된 JSON 포맷으로 복사됩니다.
+상세 정보 창(`Detailed Molecule Info Window...`)에서 JSON 내보내기를 선택하면 모든 물리화학 지표가 구조화된 JSON 포맷으로 복사됩니다:
+```json
+{
+  "name": "Aspirin",
+  "iupacName": "2-acetyloxybenzoic acid",
+  "formula": "C9H8O4",
+  "molecularWeight": 180.16,
+  "exactMass": 180.0423,
+  "logP": 1.31,
+  "tpsa": 63.6,
+  "hBondDonors": 1,
+  "hBondAcceptors": 4,
+  "rotatableBonds": 3,
+  "passesLipinski": true,
+  "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+  "inchiKey": "BSYNRYMUTXBXSQ-UHFFFAOYSA-N"
+}
+```
 
 ---
 

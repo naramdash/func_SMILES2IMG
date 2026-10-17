@@ -28,34 +28,43 @@ Files downloaded manually from a browser carry a Windows security block flag. Ri
 ### Q. Why does my formula return `#VALUE!`?
 1. Check that the referenced cell contains a valid SMILES string (unclosed ring numbers or parentheses will cause an error).
 2. If referencing merged cells, point to the top-left cell of the merged range.
-3. **See the Exact Cause:** Click **`[SMILES] ➔ [Settings & Diagnostics]`** on the ribbon to see the exact chemical syntax error message in the log.
+3. **See the Exact Cause:** Click **`[SMILES]`** ➔ **`[Diagnostics]`** on the ribbon to see the exact chemical syntax error message in the diagnostic log.
 
 ### Q. Why does the molecule image look small?
 Images scale automatically to fit inside the cell without distorting proportions. Simply increase the cell's **row height (e.g., 80–120 pt)** and **column width** to make the structure larger and clearer.
+
+### Q. Can colleagues or Mac users view my documents if they don't have the add-in installed?
+Yes! Here is how files behave across platforms:
+* **Word (`.docx`) & PowerPoint (`.pptx`):** 2D structures are saved as **standard embedded high-DPI PNG images** and 3D proteins as **standard `.glb` 3D models**. Anyone on Windows, **macOS**, iPad, or Office for the Web can open, view, print, and export your documents to PDF **without installing the add-in**. (When opened later on a PC with the add-in installed, double-click editing still works seamlessly via the embedded Alt Text metadata!)
+* **Excel (`.xlsx`):**
+  - `.FLOAT` picture shapes and cached cell outputs (MW, Formula, LogP, and Microsoft 365 in-cell images) remain visible on other PCs as long as the cells are not recalculated.
+  - **Best Practice for External Sharing:** If a colleague without the add-in triggers a full recalculation (<kbd>F9</kbd>), custom formula cells may show `#NAME?`. Before sending a final spreadsheet externally, either copy the formula columns (<kbd>Ctrl</kbd> + <kbd>C</kbd>) ➔ **Paste as Values**, or export the sheet to **PDF**.
 
 ---
 
 ## 3. 🎨 Styling, Vector SVG & `.sdf` Files
 
-### Q. How do I switch to ACS Black & White or Dark Mode?
-* **1-Click Whole-Document Restyle:** In Excel, Word, or PowerPoint, click **`[SMILES] ➔ [Batch Style]`** on the ribbon to convert all structures in your selection or document to **Publication B&W (ACS style)**, **Dark Mode (White Ink)**, **Standard Color**, or **White Background** in one click.
-* **Per-Formula Styling in Excel:**
+### Q. How do I switch to ACS Black & White, Dark Mode, or a custom bond color?
+* **1-Click Whole-Document Restyle:** In Excel, Word, or PowerPoint, click **`[SMILES]`** ➔ **`[Batch Style]`** on the ribbon to convert all structures in your selection or document to **Publication B&W (ACS style)**, **Dark Mode (White Ink)**, **Standard Color**, or **White Background** in one click.
+* **Per-Formula Styling in Excel (Including Custom Ink Color):**
   - Black & White line art: `=SMILES2IMG(A2, "", "bw")`
   - Dark Mode: `=SMILES2IMG(A2, "#1a1a1a", "white")`
+  - Custom bond/atom ink color: `=SMILES2IMG(A2, "", "ink=#1e40af")`
 
 ### Q. Can I copy lossless vector graphics (`.svg`) for Adobe Illustrator or ChemDraw?
-Yes! Select any molecule cell or picture and click **`[SMILES] ➔ [Copy SVG]`** on the ribbon (or right-click ➔ **`Chemical Structure ➔ Copy Vector Graphic (SVG)`**). Paste directly into Adobe Illustrator, Inkscape, or vector editors with zero loss of quality.
+Yes! Select any molecule cell or picture and click **`[SMILES]`** ➔ **`[Copy SVG]`** on the ribbon (or right-click ➔ **`Chemical Structure`** ➔ **`Copy Vector Graphic (SVG)`**). Paste directly into Adobe Illustrator, Inkscape, or vector editors with zero loss of quality.
 
 ### Q. Can I open or save `.sdf` chemical database files in Excel?
-Yes! Click **`[SMILES] ➔ [SDF File]`** on the Excel ribbon:
-* **Import `.sdf` File...:** Reads any multi-compound `.sdf` file and creates a formatted worksheet table with rendered structures (`=SMILES2IMG`), SMILES, Formula, Molecular Weight, and all SD property columns.
-* **Export `.sdf` File...:** Exports your selected compound rows back to a standard V2000 `.sdf` file.
+Yes! Click **`[SMILES]`** ➔ **`[SDF File]`** on the Excel ribbon:
+* **`Import SDF File (.sdf)...`:** Reads any multi-compound `.sdf` file and generates an 8-column medicinal chemistry worksheet (`Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `Lipinski`) powered by live Excel formulas.
+* **`Export Worksheet to SDF...`:** Exports your worksheet compounds back to a standard V2000 `.sdf` file.
 
 ### Q. How do I copy Molecular Weight, Formula, LogP, and Lipinski info into a table at once?
-**Right-click** any molecule ➔ **`Chemical Structure ➔ Copy Molecule Info`** and choose your format:
-* **Copy as Excel Row (TSV Columns):** Pastes cleanly across adjacent Excel columns or directly into Word/PowerPoint table cells.
-* **Copy as Multi-Line List:** Ready to paste as bullet points into PowerPoint slide text boxes.
-* **Copy as Markdown Table / JSON:** Great for Notion, GitHub, and electronic lab notebooks (also available inside the **Detailed Molecule Info Window**).
+**Right-click** any molecule ➔ **`Chemical Structure`** ➔ **`Copy Molecule Info`** and choose your format:
+* **`Copy All Summary (Text)`:** Copies a **2-row table (Headers + Data)**—ideal for starting a new table in Excel or Word.
+* **`Copy as Excel Row (TSV Columns)`:** Copies **only the 12 data columns (no header)**—ideal for appending rows into an existing table.
+* **`Copy as Multi-Line List`:** Ready to paste as bullet points into PowerPoint slide text boxes.
+* **`Copy as Markdown Table` / JSON:** Great for Notion, GitHub, and electronic lab notebooks (also available inside the **Detailed Molecule Info Window**).
 
 ---
 
@@ -63,7 +72,23 @@ Yes! Click **`[SMILES] ➔ [SDF File]`** on the Excel ribbon:
 
 ### Q. Are my chemical structures ever sent to the cloud or external servers?
 **Never. Everything runs 100% locally and offline on your PC.**  
-The chemical rendering engine (EPAM Indigo), 2D sketcher (Ketcher), and 3D protein viewer (Mol\*) are all bundled locally inside the add-in. Proprietary drug candidates and unpublished structures never leave your computer. *(The only optional web request is looking up a common name from PubChem when using `=SMILES2NAME` on an uncached molecule).*
+The chemical rendering engine (EPAM Indigo), 2D sketcher (Ketcher), and 3D protein viewer (Mol\*) are all bundled locally inside the add-in. Proprietary drug candidates and unpublished structures never leave your computer. *(The only optional web request is looking up an uncached common name from PubChem when using `=NAME2SMILES` or `=SMILES2NAME`, and results are cached locally on your PC).*
 
 ### Q. How do I check for updates or upgrade?
-Click **`[SMILES] ➔ [About SMILES]`** on the ribbon and click **`[Check for Updates]`**, or re-run the one-line PowerShell install command at any time to upgrade to the latest release.
+Click **`[SMILES]`** ➔ **`[About SMILES]`** on the ribbon and click **`[Check for Updates]`**, or re-run the one-line PowerShell install command at any time to upgrade to the latest release.
+
+---
+
+## 🔗 Related Guides
+
+<div class="feature-grid-2">
+  <div class="feature-card">
+    <h4>🚀 <a href="/guide/getting-started">Install & 1-Minute Quickstart</a></h4>
+    <p>One-line PowerShell installer and offline manual setup instructions for corporate networks.</p>
+  </div>
+  <div class="feature-card">
+    <h4>📐 <a href="/reference/formula">Excel Formula Cheat Sheet</a></h4>
+    <p>Complete reference for all 25+ Excel chemical functions, background colors, and custom ink options.</p>
+  </div>
+</div>
+

@@ -45,44 +45,73 @@ Clicking **`[SMILES] ➔ [Copy SVG]`** (or right-clicking ➔ **`Chemical Struct
 
 ### 📋 5 Copy Formats Tailored to Where You're Pasting
 
-#### ① Auto-Split Across Excel Columns or Word Tables (`Copy as Excel Row — TSV Columns`)
-Copies tab-separated values (plus an HTML table stream). **Pressing <kbd>Ctrl</kbd> + <kbd>V</kbd> inside an Excel row or Word/PowerPoint table automatically splits each property into its own adjacent cell!**
+#### ① Start a New Table — 12-Column Header + Data Row (`Copy All Summary (Text)`)
+Copies a **2-row table (12 headers on Row 1 + 12 values on Row 2)** as both TSV text and a formatted HTML table. Paste into an empty Excel range or Word page to create a complete 12-column table in one step:
 ```text
-Aspirin	C9H8O4	180.16 g/mol	180.0423 Da	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
+Name	Formula	MW (g/mol)	Exact Mass	LogP	TPSA (Å²)	HBD	HBA	RotB	Lipinski	SMILES	InChIKey
+Aspirin	C9H8O4	180.16	180.0423	1.31	63.6	1	4	3	Pass	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 ```
 
-#### ② PowerPoint Slide Bullet Points (`Copy as Multi-Line List`)
-Paste straight into any presentation text box for an instant bulleted summary:
+#### ② Append to an Existing Table — 12-Column Data Row Only (`Copy as Excel Row (TSV Columns)`)
+Copies **only the 12 tab-separated values without headers**. **Pressing <kbd>Ctrl</kbd> + <kbd>V</kbd> in the next empty row of an Excel sheet or Word/PowerPoint table automatically splits each property into its own adjacent cell!**
 ```text
-• Name: Aspirin
-• Formula: C9H8O4
-• Molecular Weight: 180.16 g/mol
-• Exact Mass: 180.0423 Da
-• LogP / TPSA: 1.31 / 63.60 Å²
-• Lipinski Ro5: PASS (HBD: 1, HBA: 4, RotBonds: 3)
-• SMILES: CC(=O)Oc1ccccc1C(=O)O
-• InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
+Aspirin	C9H8O4	180.16	180.0423	1.31	63.6	1	4	3	Pass	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 ```
 
-#### ③ Notion · GitHub · Electronic Lab Notebooks (`Copy as Markdown Table`)
+#### ③ PowerPoint Slides & Experimental Summaries (`Copy as Multi-Line List`)
+Paste straight into any presentation text box or report for a clean multi-line summary:
+```text
+Substance Name: Aspirin
+IUPAC Name: 2-acetyloxybenzoic acid
+Formula: C9H8O4
+Molecular Weight: 180.16 g/mol
+Exact Mass: 180.0423
+LogP: 1.31
+TPSA: 63.6 Å²
+H-Bond Donors: 1
+H-Bond Acceptors: 4
+Rotatable Bonds: 3
+Lipinski Rule of 5: Passed
+SMILES: CC(=O)Oc1ccccc1C(=O)O
+InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
+```
+
+#### ④ Notion · GitHub · Electronic Lab Notebooks (`Copy as Markdown Table`)
 ```markdown
 | Property | Value |
 | :--- | :--- |
 | **Substance Name** | Aspirin |
-| **Chemical Formula** | C9H8O4 |
+| **IUPAC Name** | 2-acetyloxybenzoic acid |
+| **Formula** | C9H8O4 |
 | **Molecular Weight** | 180.16 g/mol |
-| **Exact Mass** | 180.0423 Da |
-| **LogP / TPSA** | 1.31 / 63.60 Å² |
-| **Lipinski Ro5** | PASS (HBD: 1, HBA: 4, RotBonds: 3) |
-```
-
-#### ④ Manuscript Footnotes & Emails (`Copy All Summary`)
-```text
-Aspirin | Formula: C9H8O4 | MW: 180.16 g/mol | Exact Mass: 180.0423 Da | SMILES: CC(=O)Oc1ccccc1C(=O)O
+| **Exact Mass** | 180.0423 |
+| **LogP** | 1.31 |
+| **TPSA** | 63.6 Å² |
+| **HBD / HBA / RotB** | 1 / 4 / 3 |
+| **Lipinski Rule of 5** | Passed |
+| **SMILES** | `CC(=O)Oc1ccccc1C(=O)O` |
+| **InChIKey** | `BSYNRYMUTXBXSQ-UHFFFAOYSA-N` |
 ```
 
 #### ⑤ Python & Data Pipelines (`Export as JSON`)
-Inside the **Detailed Molecule Info Window**, choose **JSON** from the export button to copy a structured JSON object containing all calculated descriptors.
+Inside the **Detailed Molecule Info Window**, choose **JSON** from the export button to copy a structured JSON object containing all calculated descriptors:
+```json
+{
+  "name": "Aspirin",
+  "iupacName": "2-acetyloxybenzoic acid",
+  "formula": "C9H8O4",
+  "molecularWeight": 180.16,
+  "exactMass": 180.0423,
+  "logP": 1.31,
+  "tpsa": 63.6,
+  "hBondDonors": 1,
+  "hBondAcceptors": 4,
+  "rotatableBonds": 3,
+  "passesLipinski": true,
+  "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+  "inchiKey": "BSYNRYMUTXBXSQ-UHFFFAOYSA-N"
+}
+```
 
 ---
 

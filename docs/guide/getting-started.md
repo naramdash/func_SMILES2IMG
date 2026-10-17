@@ -36,7 +36,7 @@ Or from a SMILES string:
 
 ### ② Draw a Molecule or Reaction by Hand (`Ctrl + Shift + K`)
 In Excel, Word, or PowerPoint:
-1. Click the **`[SMILES]`** tab on the top ribbon and click **`[Insert Structure]`**—or simply press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>.
+1. Click the **`[SMILES]`** tab on the top ribbon and click **`[Insert / Edit (SMILES)]`** in Excel (or **`[Insert / Edit Structure]`** in Word & PowerPoint)—or simply press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>.
 2. Sketch your molecule or reaction scheme inside the built-in **Ketcher 2D Editor**.
 3. Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (or click **Apply**) to insert a crisp structure directly into your cell, document, or slide!
 

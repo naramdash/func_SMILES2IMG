@@ -87,13 +87,29 @@ Filter compound libraries by scaffold or rank analogs against a lead molecule. F
 ### 3rd Argument: Style, Label & Geometry Tokens (`[style]`)
 | Category | Primary Token | Accepted Aliases | Effect |
 | :--- | :--- | :--- | :--- |
-| **Color Mode** | `color` | `colored`, `cpk`, `true` | Standard IUPAC element colors (default) |
-| **Monochrome** | `bw` | `mono`, `monochrome`, `black`, `gray` | High-contrast ACS journal & patent black-and-white line art |
-| **Bond Ink Color** | `white` / `ink=#HEX` | `light`, `line=#HEX`, `base=#HEX` | Crisp white bonds for dark mode, or custom hex ink color |
-| **Substructure Highlight** | `hl:<smarts>` | `highlight:<smarts>`, `hl=<smarts>` | Highlights matching SMILES/SMARTS substructure in color |
-| **Atom Numbers** | `num` | `numbers`, `idx`, `atom-num` | Displays 1-based atom index numbers for NMR/MS |
-| **Stereochemistry** | `stereo` | `chiral`, `abs`, `stereochemistry` | Displays CIP stereochemistry labels (*R/S*, *E/Z*) |
-| **Explicit Hydrogens** | `h` | `hydrogens`, `unfoldh`, `all-h` | Unfolds and displays all explicit hydrogen atoms (`H`) |
-| **Carbon Symbols** | `all-c` | `carbons`, `carbon`, `c` | Explicitly displays `C` symbols on all carbon vertices |
+| **Color Mode** | `color` | `colour`, `cpk`, `true` | Standard IUPAC element colors (default) |
+| **Monochrome** | `bw` | `mono`, `monochrome`, `black`, `gray`, `grayscale` | High-contrast ACS journal & patent black-and-white line art |
+| **Bond Ink Color** | `white` / `ink=#HEX` | `light`, `line=#HEX`, `base=#HEX` | Crisp white bonds for dark mode, or **any custom brand/slide ink color** (`"ink=#1e40af"`, `"line=navy"`) |
+| **Substructure Highlight** | `hl:<smarts>` | `highlight:<smarts>`, `hl=<smarts>`, `highlight=<smarts>` | Highlights matching SMILES/SMARTS substructure in color |
+| **Atom Numbers** | `num` | `number`, `numbers`, `idx`, `index`, `atom-num`, `atom-ids` | Displays 1-based atom index numbers for NMR/MS |
+| **Stereochemistry** | `stereo` | `chiral`, `abs`, `ext`, `stereochemistry` | Displays CIP stereochemistry labels (*R/S*, *E/Z*) |
+| **Explicit Hydrogens** | `h` | `hydrogen`, `hydrogens`, `unfoldh`, `all-h` | Unfolds and displays all explicit hydrogen atoms (`H`) |
+| **Carbon Symbols** | `all-c` | `carbon`, `carbons`, `c` | Explicitly displays `C` symbols on all carbon vertices |
 | **Mirror Flip** | `flip` / `flipy` | `flipx` (horizontal), `flipy` (vertical) | Mirrors molecular coordinates horizontally (`flip`) or vertically (`flipy`) |
-| **Rotation** | `rot90` / `rot180` / `rot270` | *(Also accepted in 4th argument)* | Rotates structure clockwise by 90°, 180°, or 270° |
+| **Rotation** | `rot90` / `rot180` / `rot270` | *(Also accepted in 4th `[transform]` argument)* | Rotates structure clockwise by 90°, 180°, or 270° |
+
+---
+
+## 🚀 Continue Exploring
+
+<div class="s2i-card-grid">
+  <a href="../guide/excel-cheminformatics" class="s2i-card">
+    <div class="s2i-card-title">🔬 Excel Cheminformatics: SAR & SDF</div>
+    <p class="s2i-card-desc">Copy-and-paste dictionary of 12 common SMARTS functional groups & HRMS adduct formulas</p>
+  </a>
+  <a href="../guide/faq" class="s2i-card">
+    <div class="s2i-card-title">❓ FAQ & Troubleshooting</div>
+    <p class="s2i-card-desc">Answers on installation, Excel formula errors, and sharing files with colleagues</p>
+  </a>
+</div>
+

@@ -107,18 +107,41 @@ SMARTS 문법을 외울 필요 없이 아래 표에서 원하는 작용기 코�
 
 ---
 
-## 5. 대용량 `.sdf` 화학 데이터 파일 가져오기 & 내보내기
+## 5. 대용량 `.sdf` / `.mol` 화학 데이터 파일 가져오기 & 내보내기
 
-외부 화학 데이터베이스(PubChem, ChEMBL, 사내 화합물 라이브러리 등)에서 받은 **`.sdf` (Structure-Data File)** 파일을 변환 프로그램 없이 엑셀에서 바로 열고 저장할 수 있습니다.
+외부 화학 데이터베이스(PubChem, ChEMBL, 사내 화합물 라이브러리 등)에서 받은 **`.sdf` 또는 `.mol` 파일**을 변환 프로그램 없이 엑셀에서 바로 열고 저장할 수 있습니다.
 
-### 📥 `.sdf` 파일을 엑셀 표로 불러오기 (`Import .sdf`)
-1. 엑셀 상단 **`[SMILES]`** 리본 탭에서 **`[SDF File] ➔ [Import .sdf File...]`** 메뉴를 클릭합니다.
-2. 내 PC에서 `.sdf` 파일을 선택하면 새 워크시트에 다음과 같은 **엑셀 표**가 자동으로 생성됩니다:
-   * **Structure 열:** 셀 크기에 맞춰 자동 렌더링되는 `=SMILES2IMG(...)` 수식
-   * **SMILES / Formula / MW 열:** 표준 SMILES와 실시간 화학식·분자량 수식
-   * **데이터 태그 열:** `.sdf` 파일 안에 기록되어 있던 모든 속성 필드(예: `<Compound_ID>`, `<IC50_nM>`, `<Target>`, `<Purity>`)가 각각의 엑셀 열(Column)로 깔끔하게 펼쳐집니다!
+### 📥 `.sdf` 파일을 8열 약물화학 대시보드 표로 불러오기 (`Import SDF File (.sdf)...`)
+1. 엑셀 상단 **`[SMILES]`** 리본 탭에서 **`[SDF File]` ➔ `[Import SDF File (.sdf)...]`** 메뉴를 클릭합니다.
+2. 내 PC에서 `.sdf` 또는 `.mol` 파일을 선택하면 현재 시트에 아래와 같은 **8열 표준 약물화학 분석 표**가 행 높이·열 너비까지 맞춰져 자동으로 생성됩니다:
 
-### 📤 엑셀 표를 `.sdf` 파일로 내보내기 (`Export .sdf`)
-1. 엑셀 시트에서 내보낼 영역(또는 SMILES가 포함된 표)을 선택합니다 (필터로 걸러낸 후보 물질들만 내보낼 수도 있습니다).
-2. 상단 **`[SMILES] ➔ [SDF File] ➔ [Export .sdf File...]`** 메뉴를 클릭하고 저장할 파일 이름을 지정합니다.
-3. 각 행의 분자 2D 좌표(V2000 Molblock)와 옆 열들의 속성값들이 표준 `.sdf` 포맷으로 묶여 저장되므로, 도킹(Docking) 프로그램이나 타 연구실에 즉시 전달할 수 있습니다.
+| 열 (Column) | 헤더 이름 | 자동으로 채워지는 내용 (`2행` 기준) |
+| :---: | :--- | :--- |
+| **A열** | **Name** | `.sdf` 파일 내 화합물 이름 또는 `<NAME>` / `<TITLE>` 태그 |
+| **B열** | **Structure** | `=SMILES2IMG(C2)` *(구버전 엑셀에서는 자동으로 `=SMILES2IMG.FLOAT(C2)` 입력)* |
+| **C열** | **SMILES** | 정규화된 표준 Canonical SMILES 문자열 |
+| **D열** | **Formula** | `=SMILES2FORMULA(C2)` (표준 Hill 화학식) |
+| **E열** | **MW (g/mol)** | `=SMILES2MW(C2)` (평균 분자량) |
+| **F열** | **Exact Mass** | `=SMILES2EXACTMASS(C2)` (HRMS 정밀 질량) |
+| **G열** | **LogP** | `=SMILES2LOGP(C2)` (지용성 분배계수) |
+| **H열** | **Lipinski** | `=SMILES2LIPINSKI(C2)` (`"PASS"` / `"FAIL"` 약물성 판정) |
+
+### 📤 엑셀 시트를 `.sdf` 파일로 내보내기 (`Export Sheet to SDF (.sdf)...`)
+1. 상단 **`[SMILES]` ➔ `[SDF File]` ➔ `[Export Sheet to SDF (.sdf)...]`** 메뉴를 클릭하고 저장할 파일 이름을 지정합니다.
+2. 복잡한 열 지정 없이도 현재 시트의 각 행에서 화합물 이름과 SMILES(또는 구조식 수식)를 자동으로 찾아 표준 V2000 `.sdf` 파일로 묶어 내보내므로, 분자 도킹(Docking) 프로그램이나 타 연구실에 즉시 전달할 수 있습니다.
+
+---
+
+## 🚀 다음 단계로 이어서 보기
+
+<div class="s2i-card-grid">
+  <a href="../reference/formula" class="s2i-card">
+    <div class="s2i-card-title">📐 인터랙티브 수식 빌더 & 치트시트</div>
+    <p class="s2i-card-desc">클릭으로 스타일·하이라이트 옵션을 조합하고 25종 이상의 전체 함수 규격 확인하기</p>
+  </a>
+  <a href="../guide/publishing" class="s2i-card">
+    <div class="s2i-card-title">🎨 출판 스타일 · SVG · 물성 복사</div>
+    <p class="s2i-card-desc">시트 전체 구조식을 논문용 흑백(ACS)으로 일괄 변환하거나 Illustrator용 SVG로 복사하기</p>
+  </a>
+</div>
+

@@ -87,13 +87,29 @@
 ### 세 번째 인수: 스타일 · 라벨 · 변형 키워드 (`[style]`)
 | 분류 | 대표 키워드 | 함께 쓸 수 있는 별칭(Alias) | 상세 효과 |
 | :--- | :--- | :--- | :--- |
-| **색상 모드** | `color` | `colored`, `cpk`, `true` | IUPAC 표준 원소별 컬러 표시 (기본값) |
-| **흑백 모드** | `bw` | `mono`, `monochrome`, `black`, `gray` | 학술지(ACS) 및 특허 출원용 흑백 선화 |
-| **선 잉크 색상** | `white` / `ink=#HEX` | `light`, `line=#HEX`, `base=#HEX` | 다크 모드용 흰색 결합선 또는 사용자 지정 HEX 잉크 색상 |
-| **부분구조 강조** | `hl:<패턴>` | `highlight:<패턴>`, `hl=<패턴>` | 지정한 SMILES/SMARTS 부분구조를 컬러로 하이라이트 |
-| **원자 번호** | `num` | `numbers`, `idx`, `atom-num` | NMR/MS 피크 지정을 위한 원자 인덱스 번호(1, 2, 3...) 표시 |
-| **입체화학** | `stereo` | `chiral`, `abs`, `stereochemistry` | 카이랄 중심 입체화학 라벨(*R/S*, *E/Z*) 표시 |
-| **수소 펼침** | `h` | `hydrogens`, `unfoldh`, `all-h` | 생략된 수소 원자(`H`)를 모두 펼쳐서 표시 |
-| **탄소 기호** | `all-c` | `carbons`, `carbon`, `c` | 모든 탄소 골격 꼭짓점에 `C` 원소 기호 표시 |
-| **대칭 반전** | `flip` / `flipy` | `flipx` (좌우), `flipy` (상하) | 분자 구조를 좌우(`flip`) 또는 상하(`flipy`)로 대칭 반전 |
-| **회전** | `rot90` / `rot180` / `rot270` | *(4번째 인수에도 입력 가능)* | 분자 구조를 시계 방향으로 90°, 180°, 270° 회전 |
+| **색상 모드** | `color` | `colour`, `cpk`, `true` | IUPAC 표준 원소별 컬러 표시 (기본값) |
+| **흑백 모드** | `bw` | `mono`, `monochrome`, `black`, `gray`, `grayscale` | 학술지(ACS) 및 특허 출원용 흑백 선화 |
+| **선 잉크 색상** | `white` / `ink=#HEX` | `light`, `line=#HEX`, `base=#HEX` | 다크 모드용 흰색 결합선 또는 **원하는 브랜드/슬라이드 색상**(`"ink=#1e40af"`, `"line=navy"`) 지정 |
+| **부분구조 강조** | `hl:<패턴>` | `highlight:<패턴>`, `hl=<패턴>`, `highlight=<패턴>` | 지정한 SMILES/SMARTS 부분구조를 컬러로 하이라이트 |
+| **원자 번호** | `num` | `number`, `numbers`, `idx`, `index`, `atom-num`, `atom-ids` | NMR/MS 피크 지정을 위한 원자 인덱스 번호(1, 2, 3...) 표시 |
+| **입체화학** | `stereo` | `chiral`, `abs`, `ext`, `stereochemistry` | 카이랄 중심 입체화학 라벨(*R/S*, *E/Z*) 표시 |
+| **수소 펼침** | `h` | `hydrogen`, `hydrogens`, `unfoldh`, `all-h` | 생략된 수소 원자(`H`)를 모두 펼쳐서 표시 |
+| **탄소 기호** | `all-c` | `carbon`, `carbons`, `c` | 모든 탄소 골격 꼭짓점에 `C` 원소 기호 표시 |
+| **대칭 반전** | `flip` / `flipy` | `flipx` (좌우 반전), `flipy` (상하 반전) | 분자 구조를 좌우(`flip`) 또는 상하(`flipy`)로 대칭 반전 |
+| **회전** | `rot90` / `rot180` / `rot270` | *(4번째 `[transform]` 인수에도 입력 가능)* | 분자 구조를 시계 방향으로 90°, 180°, 270° 회전 |
+
+---
+
+## 🚀 다음 단계로 이어서 보기
+
+<div class="s2i-card-grid">
+  <a href="../guide/excel-cheminformatics" class="s2i-card">
+    <div class="s2i-card-title">🔬 Excel 심화: 물성 · SAR · SDF</div>
+    <p class="s2i-card-desc">12대 필수 작용기 SMARTS 패턴 사전과 HRMS m/z 부가 이온 계산 수식 보기</p>
+  </a>
+  <a href="../guide/faq" class="s2i-card">
+    <div class="s2i-card-title">❓ 자주 묻는 질문 (FAQ)</div>
+    <p class="s2i-card-desc">설치·실행, 엑셀 수식 오류 해결, 동료 PC 파일 공유 시 호환성 안내</p>
+  </a>
+</div>
+
