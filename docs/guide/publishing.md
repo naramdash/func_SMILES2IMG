@@ -6,9 +6,17 @@ Master the **3 essential publishing and export tools** shared across **Excel, Wo
 
 ## 1. 🎨 Restyle Your Entire Document in 1 Click (`Batch Style`)
 
-When submitting a paper to a print journal or switching a presentation to a dark theme, you never need to redraw dozens of molecules one by one. Click **`[SMILES] ➔ [Batch Style]`** on the top ribbon to convert all chemical structures in your selection (or entire sheet/document/slide deck) in one click!
+When submitting a paper to a print journal or switching a presentation to a dark theme, you never need to redraw dozens of molecules one by one. Click **`[SMILES]`** ➔ **`[Batch Style]`** on the top ribbon to convert all chemical structures in your selection (or entire sheet/document/slide deck) in one click!
 
-<BatchStylePreview />
+| `Batch Style` Preset | Background & Bond Style | Best For | Equivalent Excel Formula |
+| :--- | :--- | :--- | :--- |
+| **🎨 `Standard Color (Transparent)`** | Transparent BG + CPK heteroatom colors | Everyday reports & light slides | `=SMILES2IMG(A2)` |
+| **✒️ `Publication B&W (Monochrome)`** | Transparent BG + pure black line art | Journal submissions (ACS style) & print | `=SMILES2IMG(A2, "", "bw")` |
+| **⬜ `White Background (Opaque)`** | Opaque white rectangle + CPK colors | Shaded table rows or colored backgrounds | `=SMILES2IMG(A2, "white")` |
+| **⬛ `Dark Mode (White Ink)`** | Transparent/dark BG + crisp white ink | Dark-themed conference slide decks | `=SMILES2IMG(A2, "#1a1a1a", "white")` |
+
+> 🛠️ **Want to compare all 4 presets interactively?**  
+> 👉 Try the [**Interactive Formula Generator & Style Simulator ➔**](/tools/formula-builder)!
 
 ### How Scope Works in Each App
 * **📗 Excel:** Converts all chemical formulas in your highlighted cell range—or across the **entire active worksheet** if only a single cell is selected.

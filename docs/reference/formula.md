@@ -1,8 +1,9 @@
-# Interactive Excel Formula Builder & Cheat Sheet
+# Excel Chemical Formula Cheat Sheet
 
-Click the options below to **build and preview your Excel formula in real time**, or browse the **task-oriented cheat sheet tables** for all 25+ chemical functions.
+Quick-lookup reference tables for all **25+ Excel chemical functions and rendering options**, organized by task.
 
-<FormulaBuilder />
+> 🛠️ **Want to build and preview formulas interactively by clicking options?**  
+> 👉 Open the [**🛠️ Excel Formula Generator & Style Simulator ➔**](/tools/formula-builder) at the bottom of the sidebar!
 
 ---
 

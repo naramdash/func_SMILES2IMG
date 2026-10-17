@@ -56,11 +56,20 @@ The following common laboratory abbreviations, pharmaceuticals, biomolecules, an
 
 ---
 
-## 2. Interactive Styling Options (B&W · Highlighting · Dark Mode)
+## 2. Common Styling Recipes (B&W · Highlighting · Dark Mode)
 
-Click any option below to preview how it looks and copy the exact Excel formula in one click!
+Pass optional keywords in the 2nd (`[bg]`) and 3rd (`[style]`) arguments to customize how structures look:
 
-<FormulaBuilder />
+| Desired Style | Ready-to-Copy Formula (`A2`) | Description |
+| :--- | :--- | :--- |
+| **🎨 Standard Color (Transparent)** | `=SMILES2IMG(A2)` | Standard CPK heteroatom coloring (O = red, N = blue) |
+| **📄 ACS Publication B&W** | `=SMILES2IMG(A2, "", "bw")` | Pure black monochrome line art for journal manuscripts |
+| **🔍 Substructure Highlight** | `=SMILES2IMG(A2, "", "hl:c1ccccc1")` | Highlights matching substructure (e.g., benzene ring) in red |
+| **🌙 Dark Mode (White Ink)** | `=SMILES2IMG(A2, "#1a1a1a", "white")` | Crisp white bonds on a dark cell background |
+| **🔢 NMR Atom Numbering** | `=SMILES2IMG(A2, "", "num stereo")` | Displays atom index numbers (`1, 2, 3...`) and `R/S` stereocenters |
+
+> 🛠️ **Want to build formulas interactively by clicking options?**  
+> 👉 Open the [**Interactive Excel Formula Generator & Style Simulator ➔**](/tools/formula-builder) to preview combinations live and copy the formula in one click!
 
 <p align="center">
   <img src="/excel-matrix-showcase.png" alt="Excel Matrix Styling Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />

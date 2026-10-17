@@ -16,8 +16,8 @@ hero:
       text: 🔬 물성 · SAR 스크리닝
       link: /ko/guide/excel-cheminformatics
     - theme: alt
-      text: 📐 인터랙티브 수식 빌더
-      link: /ko/reference/formula
+      text: 🛠️ 엑셀 함수 표현 생성기
+      link: /ko/tools/formula-builder
 
 features:
   - icon: ⚡
@@ -67,4 +67,5 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 | **워드 논문이나 PPT 슬라이드에 구조식 넣기** | 문단 인라인 삽입(Word), 다크 모드 투명 배경 & 3D 회전 발표(PPT) | [Word ➔](/ko/guide/word) · [PowerPoint ➔](/ko/guide/powerpoint) |
 | **논문 투고용 흑백 통일 · Illustrator SVG · 물성 표 복사** | 리본 `[Batch Style]`, `[Copy SVG]`, `[Molecule Info]` 다중 서식 내보내기 | [출판 스타일 · SVG · 물성 ➔](/ko/guide/publishing) |
 | **마우스로 직접 2D 반응식 그리거나 3D 단백질 넣기** | Ketcher 2D 스케처(`=KET2IMG`) 및 Mol* 3D 단백질 뷰어(`.glb`) | [2D 스케처 ➔](/ko/guide/ketcher) · [3D 단백질 ➔](/ko/guide/molstar) |
-| **원하는 엑셀 수식과 스타일 옵션을 클릭으로 조합하기** | 인터랙티브 수식 빌더 위젯으로 옵션 체크 후 원클릭 복사 | [인터랙티브 수식 빌더 ➔](/ko/reference/formula) |
+| **25종 이상의 전체 엑셀 함수 목록과 인수 문법 찾기** | 목적별로 정리된 함수 사전 및 스타일 키워드 표 확인 | [전체 함수 치트시트 ➔](/ko/reference/formula) |
+| **마우스 클릭만으로 엑셀 수식과 스타일 조합해 복사하기** | 웹 수식 생성기 위젯에서 옵션 체크 후 실시간 미리보기 & 원클릭 복사 | [🛠️ 함수 표현 생성기 ➔](/ko/tools/formula-builder) |

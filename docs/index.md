@@ -16,8 +16,8 @@ hero:
       text: 🔬 SAR & Lipinski Guide
       link: /guide/excel-cheminformatics
     - theme: alt
-      text: 📐 Interactive Formula Builder
-      link: /reference/formula
+      text: 🛠️ Formula Generator
+      link: /tools/formula-builder
 
 features:
   - icon: ⚡
@@ -67,4 +67,5 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 | **Insert structures into Word papers or PowerPoint slides** | Inline text wrapping (Word), transparent dark mode & live 3D rotation (PPT) | [Word ➔](/guide/word) · [PowerPoint ➔](/guide/powerpoint) |
 | **Convert to ACS B&W, copy Illustrator SVG, or export tables** | Use `[Batch Style]`, `[Copy SVG]`, and `[Molecule Info]` multi-format exports | [Publishing & SVG ➔](/guide/publishing) |
 | **Sketch 2D reaction schemes or load 3D proteins** | Built-in Ketcher 2D Sketcher (`=KET2IMG`) and Mol* 3D Viewer (`.glb`) | [2D Sketcher ➔](/guide/ketcher) · [3D Viewer ➔](/guide/molstar) |
-| **Build & copy custom Excel formulas interactively** | Click checkboxes in the live Formula Builder widget to preview & copy | [Formula Cheat Sheet ➔](/reference/formula) |
+| **Look up all 25+ Excel functions and argument keywords** | Browse task-organized reference tables and style aliases | [Formula Cheat Sheet ➔](/reference/formula) |
+| **Build & preview custom Excel formulas interactively** | Click options in the web generator widget to preview & copy in 1 click | [🛠️ Formula Generator ➔](/tools/formula-builder) |

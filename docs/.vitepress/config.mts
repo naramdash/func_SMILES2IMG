@@ -24,6 +24,7 @@ export default defineConfig({
           { text: 'Quickstart', link: '/guide/getting-started', activeMatch: '^/guide/' },
           { text: 'Excel Guide', link: '/guide/excel' },
           { text: 'Formula Cheat Sheet', link: '/reference/formula', activeMatch: '^/reference/' },
+          { text: 'Formula Generator', link: '/tools/formula-builder', activeMatch: '^/tools/' },
           { text: 'v1.7.0', link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.7.0' }
         ],
         sidebar: [
@@ -58,8 +59,14 @@ export default defineConfig({
           {
             text: 'Reference & Help',
             items: [
-              { text: '📐 Formula Builder & Cheat Sheet', link: '/reference/formula' },
+              { text: '📐 Excel Formula Cheat Sheet', link: '/reference/formula' },
               { text: '❓ Troubleshooting & FAQ', link: '/guide/faq' }
+            ]
+          },
+          {
+            text: 'Interactive Web Tools',
+            items: [
+              { text: '🛠️ Formula Generator & Style Simulator', link: '/tools/formula-builder' }
             ]
           }
         ],
@@ -87,7 +94,8 @@ export default defineConfig({
         nav: [
           { text: '빠른 시작', link: '/ko/guide/getting-started', activeMatch: '^/ko/guide/' },
           { text: 'Excel 가이드', link: '/ko/guide/excel' },
-          { text: '수식 빌더 & 치트시트', link: '/ko/reference/formula', activeMatch: '^/ko/reference/' },
+          { text: '함수 치트시트', link: '/ko/reference/formula', activeMatch: '^/ko/reference/' },
+          { text: '수식 표현 생성기', link: '/ko/tools/formula-builder', activeMatch: '^/ko/tools/' },
           { text: 'v1.7.0', link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.7.0' }
         ],
         sidebar: [
@@ -122,8 +130,14 @@ export default defineConfig({
           {
             text: '수식 사전 & 문제 해결',
             items: [
-              { text: '📐 인터랙티브 수식 빌더 & 치트시트', link: '/ko/reference/formula' },
+              { text: '📐 전체 엑셀 함수 치트시트', link: '/ko/reference/formula' },
               { text: '❓ 자주 묻는 질문 (FAQ)', link: '/ko/guide/faq' }
+            ]
+          },
+          {
+            text: '관련 툴 (Interactive Tools)',
+            items: [
+              { text: '🛠️ 엑셀 함수 표현 생성기 & 스타일 프리뷰', link: '/ko/tools/formula-builder' }
             ]
           }
         ],

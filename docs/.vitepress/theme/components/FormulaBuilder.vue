@@ -8,7 +8,7 @@ const isKo = computed(() => lang.value.startsWith('ko'))
 const inputType = ref<'smiles' | 'name' | 'cas' | 'ket' | 'inchi'>('smiles')
 const isFloat = ref(false)
 const bgMode = ref<'' | 'white' | '#1e1e1e' | '#fff9db'>('')
-const colorMode = ref<'colored' | 'bw' | 'white'>('colored')
+const colorMode = ref<'colored' | 'bw' | 'white' | 'ink=#1e40af'>('colored')
 const highlightMode = ref<'' | 'hl:c1ccccc1' | 'hl:C(=O)O'>('')
 
 const optNum = ref(false)
@@ -82,6 +82,7 @@ const styleTokens = computed(() => {
   const tokens: string[] = []
   if (colorMode.value === 'bw') tokens.push('bw')
   if (colorMode.value === 'white') tokens.push('white')
+  if (colorMode.value === 'ink=#1e40af') tokens.push('ink=#1e40af')
   if (highlightMode.value) tokens.push(highlightMode.value)
   if (optNum.value) tokens.push('num')
   if (optStereo.value) tokens.push('stereo')
@@ -106,6 +107,7 @@ const generatedFormula = computed(() => {
 
 const bondColor = computed(() => {
   if (colorMode.value === 'white') return '#f8fafc'
+  if (colorMode.value === 'ink=#1e40af') return '#1e40af'
   return '#1e293b'
 })
 
@@ -222,6 +224,7 @@ async function copyFormula() {
             <button type="button" :class="{ active: colorMode === 'colored' }" @click="colorMode = 'colored'">{{ isKo ? '🎨 표준 원소 컬러' : '🎨 Standard Color' }}</button>
             <button type="button" :class="{ active: colorMode === 'bw' }" @click="colorMode = 'bw'">{{ isKo ? '✒️ 논문용 흑백 (bw)' : '✒️ Monochrome (bw)' }}</button>
             <button type="button" :class="{ active: colorMode === 'white' }" @click="colorMode = 'white'">{{ isKo ? '🌙 흰색 결합선 (white)' : '🌙 White Ink (white)' }}</button>
+            <button type="button" :class="{ active: colorMode === 'ink=#1e40af' }" @click="colorMode = 'ink=#1e40af'">{{ isKo ? '💙 네이비 선 (ink=#1e40af)' : '💙 Navy Ink (ink=#1e40af)' }}</button>
           </div>
         </div>
 
