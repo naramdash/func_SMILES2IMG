@@ -1,4 +1,4 @@
-$filePath = (Resolve-Path ".\SMILES2IMG_Comprehensive_Showcase.xlsx").Path
+﻿$filePath = (Resolve-Path ".\SMILES2IMG_Comprehensive_Showcase.xlsx").Path
 $excel = New-Object -ComObject Excel.Application
 $excel.Visible = $false
 try {

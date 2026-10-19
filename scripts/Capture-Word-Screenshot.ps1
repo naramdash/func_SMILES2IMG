@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$OutputPath = (Join-Path $PSScriptRoot '../assets/word-showcase.png')
 )
 
@@ -38,7 +38,7 @@ try {
 
     # Title
     $titlePara = $doc.Paragraphs.Add()
-    $titlePara.Range.Text = "Chemical Compound Research Report (SMILES for Word)"
+    $titlePara.Range.Text = "Chemical Compound Research Report (func_SMILES2IMG)"
     $titlePara.Range.Font.Name = "Segoe UI"
     $titlePara.Range.Font.Size = 18
     $titlePara.Range.Font.Bold = 1

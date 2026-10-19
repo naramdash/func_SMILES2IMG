@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$OutputPath = (Join-Path $PSScriptRoot '../assets/powerpoint-context-menu-guide.png')
 )
 
@@ -69,7 +69,7 @@ $brushTitle = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::From
 $brushSub = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(148, 163, 184))
 
 $g.DrawString('Lead Compound Candidates — Bioactive Screening Deck', $fontSlideTitle, $brushTitle, ($slideX + 24), ($slideY + 16))
-$g.DrawString('SMILES for PowerPoint • EPAM Indigo Vector Renderer & Ketcher 2D Editor', $fontSlideSub, $brushSub, ($slideX + 24), ($slideY + 39))
+$g.DrawString('func_SMILES2IMG • EPAM Indigo Vector Renderer & Ketcher 2D Editor', $fontSlideSub, $brushSub, ($slideX + 24), ($slideY + 39))
 
 # Crop molecules from powerpoint-showcase.png
 $showcasePath = Resolve-Path (Join-Path $PSScriptRoot '../assets/powerpoint-showcase.png')

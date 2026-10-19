@@ -1,20 +1,35 @@
-# Excel 기초: 구조식 표 만들기 & 스타일링
+# Excel 1부: 구조식 테이블 & 이름/CAS 변환
 
-엑셀 시트 안에서 수백 개의 화학 구조식을 실시간으로 그리고, 원하는 스타일(흑백, 하이라이트, 다크 모드)로 꾸미며, 셀 더블클릭으로 언제든 수정하는 방법을 안내합니다.
-
-> 🔬 **분자량·정밀질량 계산, 약물성(Lipinski), 부분구조 검색(SAR), `.sdf` 파일 연동**을 찾으시나요?  
-> 👉 [**Excel 심화: 물성 계산 · 신약 스크리닝 · SDF 연동 가이드 ➔**](/ko/guide/excel-cheminformatics)에서 바로 확인하세요!
+시약 이름, CAS 번호, 또는 SMILES 문자열만으로 엑셀 셀 안에 수백 개의 고화질 구조식 표를 자동 생성하고, 셀을 더블클릭해 그 자리에서 바로 수정하는 실무 가이드입니다.
 
 <p align="center">
-  <img src="/excel-showcase.png" alt="SMILES for Excel Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/excel-showcase.png" alt="func_SMILES2IMG Excel Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-::: tip ✨ 엑셀 핵심 사용법 4줄 요약
-1. **수식으로 구조식 넣기:** 셀에 `=SMILES2IMG(A2)` 또는 `=NAME2IMG("Aspirin")`을 입력하고 아래로 드래그 채우기.
-2. **직접 그리기:** 빈 셀에서 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 눌러 분자나 반응식을 그린 뒤 <kbd>Ctrl</kbd> + <kbd>Enter</kbd>.
-3. **더블클릭 제자리 수정:** 구조식이 들어있는 셀을 **더블클릭**하면 언제든 편집기가 다시 열려 바로 고칠 수 있음.
-4. **우클릭 물성 복사:** 셀을 **우클릭** ➔ **`Chemical Structure`** 메뉴에서 분자량, 화학식, SVG 벡터를 원클릭 복사.
-:::
+<div class="s2i-card-grid" style="margin-top: 12px;">
+  <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
+    <div class="s2i-card-title">📥 수식이 입력된 샘플 엑셀 파일 다운로드 (.xlsx)</div>
+    <p class="s2i-card-desc">직접 타이핑할 필요 없이, 구조식과 스타일 수식이 미리 적용된 시트를 바로 열어보세요</p>
+  </a>
+  <a href="../guide/excel-cheminformatics" class="s2i-card">
+    <div class="s2i-card-title">🔬 이어서 보기: Excel 2부 (물성·Lipinski·SAR·SDF) ➔</div>
+    <p class="s2i-card-desc">옆 열에 분자량(MW), 약물성(Ro5), 부분구조 검색을 붙이고 .sdf 파일을 입출력하세요</p>
+  </a>
+</div>
+
+## ⚡ 복사해서 바로 쓰는 대표 수식 3선
+
+빈 엑셀 셀에 아래 수식을 그대로 복사해 붙여넣어 보세요 (구버전 Excel 2016~2021은 함수명 뒤에 **`.FLOAT`**만 붙이면 됩니다):
+
+```text
+=NAME2IMG("Aspirin")
+```
+```text
+=SMILES2IMG(A2)
+```
+```text
+=SMILES2IMG(A2, "", "bw")
+```
 
 ---
 

@@ -1,11 +1,15 @@
-# Mol* 3D Protein Viewer Guide
+# Insert & Rotate 3D Proteins in 360° (Mol*)
 
-Learn how to load proteins, nucleic acids, and ligand complexes directly inside Excel, Word, and PowerPoint—and insert them as 360°-rotatable 3D models or publication-ready 2D figures.
+Type a 4-letter PDB code (e.g., `1CRN`, `4HHB`, `6LU7`) or open a local structure file to embed **interactive 360°-rotatable 3D protein models (`.glb`)** or high-resolution 2D figures directly inside PowerPoint, Word, and Excel.
 
-::: tip 💡 Key Highlights of the Built-in Mol* Viewer
-* **Direct PDB ID Lookup:** Type any 4-character PDB code (e.g., `1CRN`, `4HHB`, `7BWY`) to fetch the structure immediately, or open local `.pdb`, `.cif`, and `.sdf` files.
-* **Interactive 360° 3D Models (`.glb`):** Embed genuine 3D protein models that you can rotate and zoom with your mouse right on your PowerPoint slide, Word page, or Excel sheet.
-* **Double-Click Re-Editing Across PCs:** **Double-click** any inserted 3D model or 2D picture to reopen Mol\* at the exact camera angle and representation style—even when sharing the file with colleagues on another computer!
+<p align="center">
+  <img src="/powerpoint-showcase.png" alt="Interactive 3D Protein Models in Microsoft Office" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
+
+::: tip 💡 Key Highlights of the Built-in 3D Protein Viewer (Mol*)
+* **Direct 4-Letter PDB Lookup:** Type `1CRN`, `4HHB`, or `6LU7` to fetch the crystal structure immediately, or open local `.pdb`, `.cif`, and `.sdf` files.
+* **Live 360° Rotation on Slides (`.glb`):** Drag with your mouse right on your PowerPoint slide, Word page, or Excel sheet to rotate and zoom the protein in 3D.
+* **Double-Click Re-Editing Across PCs:** **Double-click** any inserted 3D model or 2D picture to reopen the viewer at the exact same camera angle and style!
 :::
 
 ---

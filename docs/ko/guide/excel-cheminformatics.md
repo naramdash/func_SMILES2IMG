@@ -1,10 +1,38 @@
-# Excel 심화: 물성 계산 · 신약 스크리닝(SAR) · SDF 연동
+# Excel 2부: 물성(MW·Lipinski), SAR 스크리닝 & SDF 연동
 
-엑셀에서 구조식 그림을 그리는 것을 넘어, **분자량·정밀질량·화학식 자동 계산**, **경구 약물성(Lipinski Rule of 5) 판정**, **부분구조 검색 및 2D 유사도 스크리닝**, 그리고 **`.sdf` 화학 데이터베이스 파일 입출력**까지 활용하는 실무 가이드입니다.
+구조식 옆 열에 **분자량(MW)·정밀질량·화학식·경구 약물성(Lipinski Rule of 5)**을 0ms 오프라인으로 자동 계산하고, **작용기(SMARTS) 부분구조 검색** 및 **`.sdf` 화학 DB 파일 입출력**까지 연결하는 실무 가이드입니다.
 
-::: tip ⚡ 100% 오프라인 · 대기 시간 0초
-물질명 웹 조회(`=SMILES2NAME`)를 제외한 모든 물리화학 계산과 부분구조·유사도 검색은 외부 서버 통신 없이 **내 PC 안에서 0ms 즉시 계산**됩니다. 수천 개의 화합물이 담긴 시트에서도 필터와 정렬이 실시간으로 작동합니다.
-:::
+<p align="center">
+  <img src="/hero-demo.gif" alt="엑셀 분자량·약물성(Lipinski) 자동 계산 데모" width="100%" style="max-width: 760px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
+
+<div class="s2i-card-grid" style="margin-top: 12px;">
+  <a href="/func_SMILES2IMG/sample_compounds.sdf" download="sample_compounds.sdf" class="s2i-card">
+    <div class="s2i-card-title">📥 실습용 화합물 DB 다운로드 (.sdf)</div>
+    <p class="s2i-card-desc">엑셀 리본 [SMILES] ➔ [SDF File] ➔ [Import SDF]로 열어 8열 약물성 시트가 자동 생성되는 것을 바로 체험하세요</p>
+  </a>
+  <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
+    <div class="s2i-card-title">📥 수식이 완성된 샘플 엑셀 시트 (.xlsx)</div>
+    <p class="s2i-card-desc">구조식·분자량·스타일 옵션이 미리 입력된 종합 쇼케이스 통합 문서를 열어보세요</p>
+  </a>
+</div>
+
+## ⚡ 복사해서 바로 쓰는 핵심 물성·SAR 수식 4선
+
+`A2` 셀에 SMILES가 들어있을 때 옆 열에 복사해 붙여넣고 아래로 드래그하세요 (100% 오프라인 · 0ms 즉시 계산):
+
+```text
+=SMILES2MW(A2)
+```
+```text
+=SMILES2LIPINSKI(A2)
+```
+```text
+=SMILES.MATCH(A2, "c1ccccc1")
+```
+```text
+=SMILES.SIMILARITY(A2, $B$1)
+```
 
 ---
 

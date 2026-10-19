@@ -1,30 +1,25 @@
-# Microsoft Word 가이드
+# Word: 학술 논문 본문 & 요약 표(Table) 작성 가이드
 
-학술 논문, 학위 논문, 연구 보고서 본문과 표(Table) 안에 고해상도 2D 화학 구조식·반응식 및 3D 단백질을 삽입하고 편집하는 방법을 안내합니다.
+학술 논문, 학위 논문, 연구 보고서 본문과 표(Table) 안에 고해상도 2D 화학 구조식·반응식 및 3D 단백질을 삽입하고, 클릭 한 번으로 논문 전체를 **학술지 흑백(ACS 스타일)**으로 통일하는 실무 가이드입니다.
 
 <p align="center">
-  <img src="/word-showcase.png" alt="SMILES for Word Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/word-showcase.png" alt="func_SMILES2IMG Word Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
-
-::: tip ✨ 워드 논문 작성 시 3가지 핵심 장점
-1. **글자처럼 자연스러운 줄바꿈:** 구조식이 문단 흐름에 맞춘 인라인 그림으로 들어가 문장 중간이나 표 셀 안에서도 깔끔하게 정렬됩니다.
-2. **표(Table) 서식 깨짐 없는 제자리 수정:** 표 안에 넣은 분자 그림을 **더블클릭**해 수정해도 표의 열 너비나 레이아웃이 흔들리지 않고 그 자리에서 바로 바뀝니다.
-3. **다른 PC로 보내도 재편집 가능:** 화학 구조 원본 데이터가 워드 파일(`.docx`) 안에 함께 저장되므로 동료에게 파일을 보내도 더블클릭으로 이어서 수정할 수 있습니다.
-:::
 
 ---
 
-## 1. 본문 및 표 안에 구조식·반응식 넣기 (3가지 방법)
+## 🎯 워드에서 시작하는 3단계 방법 (수식 입력 없음: ① ➔ ② ➔ ③)
 
-### 방법 ① 직접 그려서 넣기 (`Insert / Edit Structure`)
-1. 워드 본문이나 표 셀 안에서 구조식을 넣을 위치에 커서를 둡니다.
-2. 상단 **`[SMILES]` ➔ `[Insert / Edit Structure]`** 버튼을 클릭합니다 (또는 우클릭 ➔ **`Chemical Structure` ➔ `Insert / Edit Structure (Ketcher)...`**).
-3. **Ketcher 2D 화학 편집기**에서 분자나 다단계 합성 반응식(화살표, 시약, 온도 조건 등)을 그립니다.
-4. <kbd>Ctrl</kbd> + <kbd>Enter</kbd>를 누르면 커서 위치에 고화질 구조식이 즉시 들어갑니다!
+엑셀과 달리 워드에서는 셀 수식을 치지 않고 **상단 `[SMILES]` 리본 메뉴** 또는 단축키 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>로 바로 시작합니다:
 
-### 방법 ② 본문에 적힌 SMILES나 클립보드 데이터를 0.1초 만에 그림으로 넣기 (`Paste Structure`)
-* **본문 텍스트 변환:** 워드 문서에 적힌 SMILES 문자열(예: `c1ccccc1`)을 마우스로 드래그해 선택한 뒤, 상단 **`[SMILES]` ➔ `[Paste Structure]`** 버튼을 클릭하면 텍스트가 즉시 구조식 그림으로 치환됩니다.
-* **클립보드에서 바로 붙여넣기:** 논문, 웹페이지, ChemDraw 등에서 SMILES를 복사한 상태에서 **`[SMILES]` ➔ `[Paste Structure]`** (또는 우클릭 ➔ **`Chemical Structure` ➔ `Paste Structure from Clipboard`**) 메뉴를 누르면 편집기를 열지 않고도 바로 그림으로 들어갑니다.
+<p align="center">
+  <img src="/word-ribbon-guide.png" alt="Microsoft Word 상단 SMILES 리본 메뉴" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
+
+1. **① 상단 `[SMILES]` 탭 ➔ `[Insert / Edit Structure]` 클릭** (또는 키보드 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>).
+2. **② 2D 구조·반응식 그리기 (또는 클립보드 붙여넣기):** 내장된 Ketcher 편집기에서 분자나 다단계 반응식을 그린 뒤 <kbd>Ctrl</kbd> + <kbd>Enter</kbd>를 누르면 커서 위치에 인라인 그림으로 바로 들어갑니다.
+   * *복사해 둔 SMILES가 있다면?* **`[Paste Structure]`** 버튼을 누르면 0.1초 만에 구조식 그림으로 변환됩니다!
+3. **③ 언제든 더블클릭으로 제자리 수정:** 본문이나 **워드 표(Table) 안의 분자 그림을 더블클릭**하면 표의 열 너비나 레이아웃이 전혀 깨지지 않고 그 자리에서 바로 수정됩니다!
 
 ---
 

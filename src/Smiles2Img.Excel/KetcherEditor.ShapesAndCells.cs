@@ -41,7 +41,7 @@ public static partial class KetcherEditor
 
             MessageBox.Show(
                 "The selected object is not a SMILES or KET molecular structure image.",
-                "SMILES for Excel",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
             return;
@@ -85,7 +85,7 @@ public static partial class KetcherEditor
         {
             MessageBox.Show(
                 "An error occurred while editing structure:\n" + ex.Message,
-                "SMILES for Excel",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -115,7 +115,7 @@ public static partial class KetcherEditor
         {
             MessageBox.Show(
                 "An error occurred while inserting canvas structure:\n" + ex.Message,
-                "SMILES for Excel",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -554,7 +554,7 @@ public static partial class KetcherEditor
                     {
                         MessageBox.Show(
                             "The molecular structure exceeds Excel's 8,192-character formula limit.\nConsider simplifying the structure or referencing another cell.",
-                            "SMILES for Excel",
+                            "func_SMILES2IMG",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Warning);
                         return;
@@ -572,7 +572,7 @@ public static partial class KetcherEditor
                     {
                         MessageBox.Show(
                             "The molecular structure exceeds Excel's 8,192-character formula limit.\nConsider simplifying the structure or referencing another cell.",
-                            "SMILES for Excel",
+                            "func_SMILES2IMG",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Warning);
                         return;

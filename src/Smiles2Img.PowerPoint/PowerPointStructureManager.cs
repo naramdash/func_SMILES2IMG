@@ -31,7 +31,7 @@ public static class PowerPointStructureManager
             {
                 MessageBox.Show(
                     "No active slide found.\nPlease select a slide to insert the molecule structure first.",
-                    "SMILES for PowerPoint",
+                    "func_SMILES2IMG",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
@@ -54,7 +54,7 @@ public static class PowerPointStructureManager
         {
             MessageBox.Show(
                 "An error occurred while inserting molecule:\n" + ex.Message,
-                "SMILES for PowerPoint",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -179,7 +179,7 @@ public static class PowerPointStructureManager
                 {
                     MessageBox.Show(
                         "No molecular structure image selected.\nPlease select a molecular structure picture first.",
-                        "SMILES for PowerPoint",
+                        "func_SMILES2IMG",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
                     return;
@@ -199,7 +199,7 @@ public static class PowerPointStructureManager
             {
                 MessageBox.Show(
                     "The selected object is not a SMILES/KET molecule structure image.",
-                    "SMILES for PowerPoint",
+                    "func_SMILES2IMG",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
@@ -222,7 +222,7 @@ public static class PowerPointStructureManager
         {
             MessageBox.Show(
                 "An error occurred while editing molecule:\n" + ex.Message,
-                "SMILES for PowerPoint",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -732,7 +732,7 @@ public static class PowerPointStructureManager
             {
                 MessageBox.Show(
                     "No active slide found.\nPlease select a slide to insert the molecule structure first.",
-                    "SMILES for PowerPoint",
+                    "func_SMILES2IMG",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
@@ -769,7 +769,7 @@ public static class PowerPointStructureManager
 
             MessageBox.Show(
                 "No valid SMILES or KET structure data found in clipboard or selected text.\nPlease copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) first.",
-                "SMILES for PowerPoint",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
         }
@@ -777,7 +777,7 @@ public static class PowerPointStructureManager
         {
             MessageBox.Show(
                 "An error occurred while inserting structure from clipboard:\n" + ex.Message,
-                "SMILES for PowerPoint",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -994,7 +994,7 @@ public static class PowerPointStructureManager
             {
                 MessageBox.Show(
                     "Could not retrieve molecule properties from the selected structure.\nPlease select a molecular structure picture or text on the slide first.",
-                    "SMILES for PowerPoint",
+                    "func_SMILES2IMG",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
@@ -1010,7 +1010,7 @@ public static class PowerPointStructureManager
         {
             MessageBox.Show(
                 "An error occurred while calculating molecule info:\n" + ex.Message,
-                "SMILES for PowerPoint",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }

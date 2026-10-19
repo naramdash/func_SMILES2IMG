@@ -1,10 +1,38 @@
-# Excel Cheminformatics: Properties, SAR Screening & SDF Files
+# Excel Part 2: MW, Lipinski Ro5, SAR Screening & SDF Files
 
-Go beyond structure rendering: learn how to automatically calculate **Molecular Weight, Exact Mass, and Formulas**, screen compounds for **Lipinski Rule of 5 drug-likeness**, filter libraries by **SMARTS substructures & 2D similarity**, and import/export **`.sdf` database files** in Excel.
+Automatically calculate **Molecular Weight, Exact Mass, LogP, and Lipinski Rule of 5** right next to your structure column, filter compound libraries by **SMARTS substructures**, and import/export **`.sdf` database files** in 0ms offline.
 
-::: tip ⚡ 100% Offline · Zero Latency (0ms)
-Except for online common-name lookup (`=SMILES2NAME`), all physicochemical calculations, substructure searches, and similarity scores run **locally on your CPU in 0ms** without network calls. You can sort and filter thousands of compounds in real time.
-:::
+<p align="center">
+  <img src="/hero-demo.gif" alt="Excel SAR Screening & MW Auto-Calculation Demo" width="100%" style="max-width: 760px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
+
+<div class="s2i-card-grid" style="margin-top: 12px;">
+  <a href="/func_SMILES2IMG/sample_compounds.sdf" download="sample_compounds.sdf" class="s2i-card">
+    <div class="s2i-card-title">📥 Download Sample Chemical DB (.sdf)</div>
+    <p class="s2i-card-desc">Test [SMILES] ➔ [SDF File] ➔ [Import SDF] in Excel to generate an 8-column SAR table in 1 click</p>
+  </a>
+  <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
+    <div class="s2i-card-title">📥 Download Pre-Built Excel Showcase (.xlsx)</div>
+    <p class="s2i-card-desc">Explore live MW, Exact Mass, Lipinski, and substructure highlighting formulas</p>
+  </a>
+</div>
+
+## ⚡ Copy & Paste These 4 Cheminformatics Formulas
+
+Assuming cell `A2` contains a SMILES string (e.g., `CC(=O)Oc1ccccc1C(=O)O`), paste these into adjacent columns and drag down:
+
+```text
+=SMILES2MW(A2)
+```
+```text
+=SMILES2LIPINSKI(A2)
+```
+```text
+=SMILES.MATCH(A2, "c1ccccc1")
+```
+```text
+=SMILES.SIMILARITY(A2, $B$1)
+```
 
 ---
 

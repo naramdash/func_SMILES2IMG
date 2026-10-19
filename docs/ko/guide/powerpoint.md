@@ -1,43 +1,33 @@
-# Microsoft PowerPoint 가이드
+# PowerPoint: 다크 모드 발표 슬라이드 & 360° 3D 단백질
 
-학회 발표, 연구실 세미나, 강의 슬라이드에 고해상도 2D 화학 구조식과 합성 반응식을 배치하고, 다크 모드 슬라이드 변환 및 360° 회전 가능한 3D 단백질 모델을 활용하는 방법을 안내합니다.
+어두운 학회 발표 슬라이드 위에서도 하얀 사각형 여백 없이 투명 배경(흰색 선)으로 구조식을 배치하고, 발표 중 마우스로 360° 돌려보는 3D 단백질 모델을 삽입하는 실무 가이드입니다.
 
 <p align="center">
-  <img src="/powerpoint-showcase.png" alt="SMILES for PowerPoint Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/powerpoint-showcase.png" alt="func_SMILES2IMG PowerPoint Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-::: tip ✨ 파워포인트 발표 자료 제작 시 3가지 핵심 장점
-1. **다크 모드 & 투명 배경 완벽 지원:** 어두운 발표 템플릿 위에서도 보기 싫은 흰색 사각형 테두리 없이 깔끔한 투명 배경(또는 흰색 선)으로 들어갑니다.
-2. **더블클릭 수정 시 슬라이드 위치·크기 그대로 유지:** 발표 직전 분자 구조나 반응 조건을 **더블클릭**해 고쳐도, 맞춰 놓은 슬라이드 좌표와 크기가 전혀 틀어지지 않습니다.
-3. **발표 중 360° 돌려보는 3D 단백질:** 정적인 캡처 사진 대신 슬라이드 쇼 도중 마우스로 직접 회전·확대할 수 있는 실제 3D 단백질(`.glb`)을 넣을 수 있습니다.
-:::
+---
+
+## 🎯 파워포인트에서 시작하는 3단계 방법 (수식 입력 없음: ① ➔ ② ➔ ③)
+
+파워포인트에서는 셀 수식을 치는 대신 **상단 `[SMILES]` 리본 메뉴** 또는 단축키 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누르면 즉시 시작됩니다:
+
+<p align="center">
+  <img src="/powerpoint-ribbon-guide.png" alt="Microsoft PowerPoint 상단 SMILES 리본 메뉴" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
+
+1. **① 상단 `[SMILES]` 탭 ➔ `[Insert / Edit Structure]` 클릭** (또는 키보드 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>).
+2. **② 스케치 후 슬라이드 배치 (`Ctrl + Enter`):** Ketcher 편집기에서 분자나 합성 경로를 그리고(어두운 배경 슬라이드라면 상단 **`[배경: 투명]`** 선택!) <kbd>Ctrl</kbd> + <kbd>Enter</kbd>를 누르면 슬라이드 중앙에 즉시 배치됩니다.
+   * *복사한 SMILES가 있다면?* **`[Paste Structure]`** 버튼 한 번으로 0.1초 만에 도형으로 들어갑니다!
+3. **③ 더블클릭으로 위치·크기 유지한 채 수정:** 슬라이드 위의 분자 그림을 **더블클릭**하면 맞춰 둔 슬라이드 위치와 크기가 흔들리지 않고 제자리에서 바로 업데이트됩니다.
 
 ---
 
-## 1. 슬라이드에 구조식·반응식 배치하기 (3가지 방법)
+## 2. 다크 모드(흰색 선) vs 일반 배경 원클릭 비교 및 일괄 변환 (`Batch Style`)
 
-### 방법 ① 직접 그려서 슬라이드 중앙에 넣기 (`Insert / Edit Structure`)
-1. 파워포인트 슬라이드 화면에서 상단 **`[SMILES]` ➔ `[Insert / Edit Structure]`** 버튼을 클릭합니다 (또는 빈 슬라이드 우클릭 ➔ **`Chemical Structure` ➔ `Insert / Edit Structure (Ketcher)...`**).
-2. **Ketcher 2D 화학 편집기**에서 분자 구조나 다단계 합성 경로(화살표, 시약, 촉매 조건)를 그립니다.
-   * *팁: 어두운 배경 슬라이드라면 편집기 상단에서 **`[배경: 투명 (Background: Transparent)]`** 옵션을 선택하세요.*
-3. <kbd>Ctrl</kbd> + <kbd>Enter</kbd>를 누르면 현재 슬라이드 중앙에 선명한 도형으로 즉시 배치됩니다!
+어두운 발표 슬라이드에 하얀 네모 배경 캡처를 붙여넣지 마세요! 상단 **`[SMILES] ➔ [Batch Style]`**을 클릭하면 슬라이드 전체의 구조식을 **다크 모드(투명 배경 + 흰색 결합선)**, **표준 컬러**, **인쇄 유인물용 흑백(ACS)**으로 클릭 한 번에 통일합니다. 아래 버튼을 눌러 Before / After를 직접 비교해 보세요:
 
-### 방법 ② 텍스트 상자 안의 SMILES나 클립보드 데이터를 즉시 도형으로 넣기 (`Paste Structure`)
-* **텍스트 상자 변환:** 슬라이드 텍스트 상자에 적힌 SMILES 문자열을 선택하고 상단 **`[SMILES]` ➔ `[Paste Structure]`** 버튼을 누르면 0.1초 만에 분자 도형으로 바뀝니다.
-* **클립보드에서 바로 붙여넣기:** 복사해 둔 SMILES가 있다면 **`[SMILES]` ➔ `[Paste Structure]`** (또는 빈 슬라이드에서 **우클릭 ➔ `Chemical Structure` ➔ `Paste Structure from Clipboard`**) 메뉴를 눌러 바로 넣을 수 있습니다.
-
----
-
-## 2. 다크 모드 & 발표 템플릿에 맞춰 전체 슬라이드 통일하기 (`Batch Style`)
-
-발표장 환경(밝은 배경 vs 어두운 OLED 화면 vs 인쇄용 유인물)에 맞춰 슬라이드 전체의 화학 구조식을 클릭 한 번으로 바꿀 수 있습니다. 상단 **`[SMILES]` ➔ `[Batch Style]`** 버튼을 클릭하세요:
-
-| 스타일 프리셋 | 슬라이드 변환 결과 | 추천 활용처 |
-| :--- | :--- | :--- |
-| **Standard Color** | 원소별 표준 컬러 + **투명 배경** | 밝은 배경 또는 그라데이션 발표 슬라이드 |
-| **Dark Mode** | **선명한 흰색 결합선** + 투명 배경 | **어두운(Dark) 학회 발표 템플릿** 및 빔프로젝터 발표 |
-| **Publication B&W** | 고대비 **흑백 선화 (ACS 스타일)** | 세미나 인쇄 유인물 및 흑백 자료집 |
-| **White Background** | 원소별 컬러 + **불투명 흰색 배경** | 사진이나 복잡한 패턴이 깔린 슬라이드 배경 위 |
+<BatchStylePreview />
 
 ---
 

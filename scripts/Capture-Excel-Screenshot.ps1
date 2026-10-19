@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$WorkbookPath = (Join-Path $PSScriptRoot '../SMILES2IMG_Comprehensive_Showcase.xlsx'),
     [string]$TableImage = (Join-Path $PSScriptRoot '../assets/excel-showcase.png'),
     [string]$MatrixImage = (Join-Path $PSScriptRoot '../assets/excel-matrix-showcase.png')

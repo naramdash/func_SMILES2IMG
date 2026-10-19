@@ -1,20 +1,35 @@
-# Excel Basics: Structure Tables & Styling
+# Excel Part 1: Structure Tables & Name/CAS Lookup
 
-Learn how to render hundreds of chemical structures directly inside Excel cells, customize styling (ACS B&W, substructure highlights, dark mode), and edit molecules in place by double-clicking.
-
-> 🔬 **Looking for Molecular Weight, Exact Mass, Lipinski Ro5, SAR Substructure Screening, or `.sdf` File Import/Export?**  
-> 👉 Jump straight to **[Excel Cheminformatics: Properties, SAR Screening & SDF Files ➔](/guide/excel-cheminformatics)**!
+Turn chemical names, CAS numbers, or SMILES strings into crisp in-cell structure tables across hundreds of Excel rows—and double-click any cell to sketch or edit in place.
 
 <p align="center">
-  <img src="/excel-showcase.png" alt="SMILES for Excel Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/excel-showcase.png" alt="func_SMILES2IMG Excel Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-::: tip ✨ Excel in 4 Simple Steps
-1. **Render by Formula:** Type `=SMILES2IMG(A2)` or `=NAME2IMG("Aspirin")` and drag down across rows.
-2. **Draw by Hand:** Select any cell, press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>, sketch your molecule or reaction, and press <kbd>Ctrl</kbd> + <kbd>Enter</kbd>.
-3. **Double-Click to Edit:** **Double-click** any molecule cell to reopen the sketcher and update it in place.
-4. **Right-Click to Copy Info:** **Right-click ➔ `Chemical Structure`** to copy MW, Formula, or lossless SVG vectors in one click.
-:::
+<div class="s2i-card-grid" style="margin-top: 12px;">
+  <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
+    <div class="s2i-card-title">📥 Download Sample Excel Workbook (.xlsx)</div>
+    <p class="s2i-card-desc">Open a ready-made showcase sheet pre-filled with live structure & property formulas</p>
+  </a>
+  <a href="../guide/excel-cheminformatics" class="s2i-card">
+    <div class="s2i-card-title">🔬 Next: Excel Part 2 (MW, Lipinski, SAR & .sdf) ➔</div>
+    <p class="s2i-card-desc">Calculate Molecular Weight, Lipinski Ro5, substructure matches, and import .sdf files</p>
+  </a>
+</div>
+
+## ⚡ Copy & Paste These 3 Starter Formulas Right Now
+
+Paste any formula below into an empty Excel cell (on Excel 2016–2021, append **`.FLOAT`**, e.g. `=NAME2IMG.FLOAT("Aspirin")`):
+
+```text
+=NAME2IMG("Aspirin")
+```
+```text
+=SMILES2IMG(A2)
+```
+```text
+=SMILES2IMG(A2, "", "bw")
+```
 
 ---
 

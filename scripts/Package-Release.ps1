@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Packages dist output for GitHub Releases
 #>
@@ -8,7 +8,7 @@ foreach ($arch in @('x64', 'x86')) {
     $distArch = Join-Path $PSScriptRoot "..\dist\$arch"
     if (-not (Test-Path $distArch)) { continue }
 
-    $tempDir = Join-Path $env:TEMP "Smiles2Img-Office-$arch"
+    $tempDir = Join-Path $env:TEMP "func_SMILES2IMG-$arch"
     if (Test-Path $tempDir) { Remove-Item $tempDir -Recurse -Force }
     New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
 
@@ -26,7 +26,13 @@ foreach ($arch in @('x64', 'x86')) {
         Copy-Item -Path "$excelDir\*.dll" -Destination $tempDir -Force
     }
 
-    $zipPath = Join-Path $distArch "Smiles2Img-Office-$arch.zip"
+    $repoRoot = Split-Path -Parent $PSScriptRoot
+    foreach ($helper in @('install.ps1', 'uninstall.ps1', 'Install-func_SMILES2IMG.cmd', 'Uninstall-func_SMILES2IMG.cmd')) {
+        $helperPath = Join-Path $repoRoot $helper
+        if (Test-Path $helperPath) { Copy-Item $helperPath -Destination $tempDir -Force }
+    }
+
+    $zipPath = Join-Path $distArch "func_SMILES2IMG-$arch.zip"
     if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
 
     Compress-Archive -Path "$tempDir\*.*" -DestinationPath $zipPath -Force

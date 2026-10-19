@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Generates edited high-definition (1080p) guide videos with subtitles and editing
     for Excel, Word, and PowerPoint add-ins using System.Drawing and FFmpeg.
@@ -387,7 +387,7 @@ function Build-VideoFromScenes {
 $excelScenes = @(
     @{
         Badge = "개요 및 핵심 소개"
-        Title = "SMILES for Excel 핵심 기능 3분 마스터"
+        Title = "func_SMILES2IMG 핵심 기능 3분 마스터"
         Subtitle = "이미 설치된 Excel에서 네이티브 인셀 분자 구조식 & Ketcher 에디터 100% 활용하기"
         Image = (Join-Path $assetsDir "excel-showcase.png")
         Formula = "=SMILES2IMG(A2)"
@@ -397,7 +397,7 @@ $excelScenes = @(
             "행/열 크기 자동 연동::셀 너비나 행 높이를 조절하면 비율을 유지하며 완벽히 스케일링",
             "Excel 전 버전 완벽 호환::Excel 2024/M365는 인셀(=SMILES2IMG), 구버전은 셀 연동(=FLOAT)"
         )
-        SubtitleBar = "💡 본 영상은 SMILES for Excel이 설치된 환경에서 핵심 기능을 3분 내에 마스터하는 실전 가이드입니다."
+        SubtitleBar = "💡 본 영상은 func_SMILES2IMG이 설치된 환경에서 핵심 기능을 3분 내에 마스터하는 실전 가이드입니다."
         Duration = 13
     },
     @{
@@ -477,7 +477,7 @@ $excelScenes = @(
     },
     @{
         Badge = "핵심 요약 & 체크리스트"
-        Title = "SMILES for Excel 실전 활용 체크리스트"
+        Title = "func_SMILES2IMG 실전 활용 체크리스트"
         Subtitle = "화학 연구와 데이터 분석의 속도를 혁신하는 차세대 오피스 스프레드시트"
         Image = (Join-Path $assetsDir "excel-showcase.png")
         Formula = "상세 가이드: docs/EXCEL_GUIDE.md"
@@ -498,7 +498,7 @@ $excelScenes = @(
 $wordScenes = @(
     @{
         Badge = "개요 및 핵심 소개"
-        Title = "SMILES for Word 핵심 기능 3분 마스터"
+        Title = "func_SMILES2IMG 핵심 기능 3분 마스터"
         Subtitle = "학술 논문, 연구 보고서, 실험 노트를 위한 화학 구조식 자동 삽입 & Ketcher 연동"
         Image = (Join-Path $assetsDir "word-showcase.png")
         Formula = "Word 상단 메뉴 [SMILES] 탭 & 마우스 우클릭 메뉴"
@@ -588,7 +588,7 @@ $wordScenes = @(
     },
     @{
         Badge = "핵심 요약 & 체크리스트"
-        Title = "SMILES for Word 실전 활용 체크리스트"
+        Title = "func_SMILES2IMG 실전 활용 체크리스트"
         Subtitle = "화학 논문 및 실험 보고서 작성의 생산성을 극대화하는 솔루션"
         Image = (Join-Path $assetsDir "word-showcase.png")
         Formula = "상세 가이드: docs/WORD_GUIDE.md"
@@ -609,7 +609,7 @@ $wordScenes = @(
 $pptScenes = @(
     @{
         Badge = "개요 및 핵심 소개"
-        Title = "SMILES for PowerPoint 핵심 기능 3분 마스터"
+        Title = "func_SMILES2IMG 핵심 기능 3분 마스터"
         Subtitle = "연구 발표, 학회 세미나, 강의 슬라이드를 위한 고해상도 화학 구조식 & 반응식 프레젠테이션"
         Image = (Join-Path $assetsDir "powerpoint-showcase.png")
         Formula = "PowerPoint 상단 메뉴 [SMILES] 탭 & 슬라이드 우클릭 메뉴"
@@ -699,7 +699,7 @@ $pptScenes = @(
     },
     @{
         Badge = "핵심 요약 & 체크리스트"
-        Title = "SMILES for PowerPoint 실전 활용 체크리스트"
+        Title = "func_SMILES2IMG 실전 활용 체크리스트"
         Subtitle = "화학 학회, 연구 발표, 세미나를 위한 압도적 비주얼 프레젠테이션"
         Image = (Join-Path $assetsDir "powerpoint-showcase.png")
         Formula = "상세 가이드: docs/POWERPOINT_GUIDE.md"
@@ -716,15 +716,15 @@ $pptScenes = @(
 
 # Execution
 if ($TargetApp -eq "All" -or $TargetApp -eq "Excel") {
-    Build-VideoFromScenes -VideoName "excel-guide-video" -Scenes $excelScenes -AppTitle "SMILES for Excel" -AppColor "#107C41" -AppIcon "📗"
+    Build-VideoFromScenes -VideoName "excel-guide-video" -Scenes $excelScenes -AppTitle "func_SMILES2IMG" -AppColor "#107C41" -AppIcon "📗"
 }
 
 if ($TargetApp -eq "All" -or $TargetApp -eq "Word") {
-    Build-VideoFromScenes -VideoName "word-guide-video" -Scenes $wordScenes -AppTitle "SMILES for Word" -AppColor "#185ABD" -AppIcon "📘"
+    Build-VideoFromScenes -VideoName "word-guide-video" -Scenes $wordScenes -AppTitle "func_SMILES2IMG" -AppColor "#185ABD" -AppIcon "📘"
 }
 
 if ($TargetApp -eq "All" -or $TargetApp -eq "PowerPoint") {
-    Build-VideoFromScenes -VideoName "powerpoint-guide-video" -Scenes $pptScenes -AppTitle "SMILES for PowerPoint" -AppColor "#C43E1C" -AppIcon "📙"
+    Build-VideoFromScenes -VideoName "powerpoint-guide-video" -Scenes $pptScenes -AppTitle "func_SMILES2IMG" -AppColor "#C43E1C" -AppIcon "📙"
 }
 
 Write-Host "`n[ALL GUIDE VIDEOS GENERATED SUCCESSFULLY IN $videosDir]" -ForegroundColor Green

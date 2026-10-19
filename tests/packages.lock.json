@@ -11,6 +11,15 @@
           "System.Drawing.Common": "4.7.2"
         }
       },
+      "Microsoft.NETFramework.ReferenceAssemblies": {
+        "type": "Direct",
+        "requested": "[1.0.3, )",
+        "resolved": "1.0.3",
+        "contentHash": "vUc9Npcs14QsyOD01tnv/m8sQUnGTGOw1BCmKcv77LBJY7OxhJ+zJF7UD/sCL3lYNFuqmQEVlkfS4Quif6FyYg==",
+        "dependencies": {
+          "Microsoft.NETFramework.ReferenceAssemblies.net48": "1.0.3"
+        }
+      },
       "ExcelDna.AddIn": {
         "type": "Transitive",
         "resolved": "1.9.0",
@@ -45,6 +54,11 @@
         "resolved": "4.3.0",
         "contentHash": "P+MBhIM0YX+JqROuf7i306ZLJEjQYA9uUyRDE+OqwUI5sh41e2ZbPQV3LfAPh+29cmceE1pUffXsGfR4eMY3KA=="
       },
+      "Microsoft.NETFramework.ReferenceAssemblies.net48": {
+        "type": "Transitive",
+        "resolved": "1.0.3",
+        "contentHash": "zMk4D+9zyiEWByyQ7oPImPN/Jhpj166Ky0Nlla4eXlNL8hI/BtSJsgR8Inldd4NNpIAH3oh8yym0W2DrhXdSLQ=="
+      },
       "Microsoft.Office.Interop.PowerPoint": {
         "type": "Transitive",
         "resolved": "15.0.4420.1018",
@@ -71,7 +85,7 @@
           "ExcelDna.AddIn": "[1.9.0, )",
           "ExcelDna.IntelliSense": "[1.9.0, )",
           "ExcelDna.Interop": "[16.0.0, )",
-          "Smiles2Img.Core": "[1.4.0, )"
+          "Smiles2Img.Core": "[1.7.0, )"
         }
       },
       "smiles2img.core": {
@@ -86,14 +100,14 @@
         "dependencies": {
           "ExcelDna.Interop": "[16.0.0, )",
           "Microsoft.Office.Interop.PowerPoint": "[15.0.4420.1018, )",
-          "Smiles2Img.Core": "[1.4.0, )"
+          "Smiles2Img.Core": "[1.7.0, )"
         }
       },
       "smiles2img.word": {
         "type": "Project",
         "dependencies": {
           "Microsoft.Office.Interop.Word": "[15.0.4797.1004, )",
-          "Smiles2Img.Core": "[1.4.0, )"
+          "Smiles2Img.Core": "[1.7.0, )"
         }
       }
     },

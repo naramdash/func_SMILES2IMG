@@ -1,6 +1,6 @@
 # Third-Party Open Source Components & Notices
 
-**SMILES for Microsoft Office Suite (`func_SMILES2IMG`)**  
+**func_SMILES2IMG (Excel · Word · PowerPoint)**  
 Author: **KimJuho ([@naramdash](https://github.com/naramdash))**  
 Repository: [https://github.com/naramdash/func_SMILES2IMG](https://github.com/naramdash/func_SMILES2IMG)  
 Documentation: [https://naramdash.github.io/func_SMILES2IMG/](https://naramdash.github.io/func_SMILES2IMG/)  

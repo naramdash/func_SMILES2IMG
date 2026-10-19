@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$OutputPath = (Join-Path $PSScriptRoot '../assets/workflow-ketcher.png')
 )
 
@@ -26,7 +26,7 @@ $subTitleFont = New-Object System.Drawing.Font ("Segoe UI", 10.5, [System.Drawin
 $whiteBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::White)
 $subTitleBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(148, 163, 184)) # slate-400
 
-$g.DrawString("SMILES for Office — 4-Step Interactive Workflow", $titleFont, $whiteBrush, 32, 14)
+$g.DrawString("func_SMILES2IMG — 4-Step Interactive Workflow", $titleFont, $whiteBrush, 32, 14)
 $g.DrawString("Draw in one click, modify anytime with a double click — seamless chemical structure workflow", $subTitleFont, $subTitleBrush, 34, 48)
 
 # Cards layout

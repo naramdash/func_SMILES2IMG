@@ -32,7 +32,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Failed to initialize SMILES for Word:\n" + ex.Message, "SMILES2IMG", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("Failed to initialize func_SMILES2IMG:\n" + ex.Message, "func_SMILES2IMG", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
     }
 
@@ -195,7 +195,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
         <group id=""grpWordAbout"" label=""About"">
           <button id=""btnWordAbout""
                   label=""About SMILES""
-                  screentip=""About SMILES for Office""
+                  screentip=""About func_SMILES2IMG""
                   supertip=""Displays creator info, GitHub repository link, and open-source third-party licenses.""
                   imageMso=""Info""
                   size=""large""

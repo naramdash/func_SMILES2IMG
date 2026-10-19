@@ -1,8 +1,8 @@
 ﻿<#
 .SYNOPSIS
-    SMILES for Microsoft Office Suite Uninstaller (Excel, Word, PowerPoint)
+    func_SMILES2IMG Uninstaller (Excel, Word, PowerPoint)
 .DESCRIPTION
-    Removes SMILES add-in registry entries from Excel, Word, and PowerPoint,
+    Removes func_SMILES2IMG add-in registry entries from Excel, Word, and PowerPoint,
     unregisters COM classes from HKCU, and removes installed files from %APPDATA%\Microsoft\AddIns.
 #>
 [CmdletBinding()]
@@ -16,7 +16,7 @@ try {
 
 $ErrorActionPreference = 'Stop'
 
-Write-Host "=== SMILES for Microsoft Office Suite Uninstaller ===" -ForegroundColor Cyan
+Write-Host "=== func_SMILES2IMG Uninstaller ===" -ForegroundColor Cyan
 
 # 1. Check if Office applications are running
 $officeProcs = Get-Process -Name EXCEL, WINWORD, POWERPNT -ErrorAction SilentlyContinue
@@ -107,7 +107,7 @@ foreach ($f in $xllFiles) {
 $suiteDir = Join-Path $addInsDir 'Smiles2Img'
 if (Test-Path $suiteDir) {
     Remove-Item -LiteralPath $suiteDir -Recurse -Force -ErrorAction SilentlyContinue
-    Write-Host "[+] Deleted Office Suite directory: $suiteDir" -ForegroundColor Gray
+    Write-Host "[+] Deleted func_SMILES2IMG directory: $suiteDir" -ForegroundColor Gray
 }
 
 # 6. Remove cache directory
@@ -117,4 +117,4 @@ if (Test-Path $cacheDir) {
     Write-Host "[+] Cleaned cache directory: $cacheDir" -ForegroundColor Gray
 }
 
-Write-Host "`n[SUCCESS] SMILES for Microsoft Office Suite has been successfully uninstalled." -ForegroundColor Cyan
+Write-Host "`n[SUCCESS] func_SMILES2IMG has been successfully uninstalled." -ForegroundColor Cyan

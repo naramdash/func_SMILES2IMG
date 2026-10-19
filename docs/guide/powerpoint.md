@@ -1,43 +1,33 @@
-# Microsoft PowerPoint Guide
+# PowerPoint: Dark Mode Slides & 360° 3D Proteins
 
-Learn how to place high-resolution 2D chemical structures and reaction schemes onto presentation slides, switch entire decks to Dark Mode in one click, and present 360°-rotatable 3D protein models.
+Place transparent 2D chemical structures onto dark presentation slides without ugly white boxes, restyle entire slide decks in one click, and rotate 3D protein models live during your talk.
 
 <p align="center">
-  <img src="/powerpoint-showcase.png" alt="SMILES for PowerPoint Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/powerpoint-showcase.png" alt="func_SMILES2IMG PowerPoint Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-::: tip ✨ 3 Key Advantages for PowerPoint Presentations
-1. **Dark Mode & Transparent Backgrounds:** No more ugly white rectangular boxes on dark slides—export with alpha-transparent backgrounds or crisp white bonds in one click.
-2. **Double-Click Editing Preserves Slide Layout:** **Double-clicking** a molecule on your slide updates it in place while keeping its exact slide position and size.
-3. **Live 360° 3D Proteins on Slides:** Instead of static screenshots, insert real 3D protein models (`.glb`) that you can rotate and zoom with your mouse right during your talk!
-:::
+---
+
+## 🎯 How to Start in PowerPoint (3 Steps: ① ➔ ② ➔ ③)
+
+Unlike Excel, PowerPoint uses the top **`[SMILES]`** ribbon tab or keyboard shortcut <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>:
+
+<p align="center">
+  <img src="/powerpoint-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
+
+1. **① Click `[SMILES]` ➔ `[Insert / Edit Structure]`** on the top ribbon (or press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>).
+2. **② Sketch & Insert (`Ctrl + Enter`):** Draw your molecule or synthesis pathway in Ketcher (toggle **`[Background: Transparent]`** in the top bar for dark slides!) and press <kbd>Ctrl</kbd> + <kbd>Enter</kbd>.
+   * *Have a SMILES string on your clipboard?* Click **`[Paste Structure]`** to place a crisp molecule shape on your slide in 0.1s!
+3. **③ Double-Click Anytime to Edit:** **Double-click** any slide molecule to update it in place while keeping its exact slide coordinates and size.
 
 ---
 
-## 1. Place Structures & Reaction Schemes on Slides (3 Ways)
+## 2. Dark Mode (White Ink) vs. Standard Color in 1 Click (`Batch Style`)
 
-### Way ① Draw by Hand (`Insert / Edit Structure`)
-1. On any PowerPoint slide, click **`[SMILES] ➔ [Insert / Edit Structure]`** on the ribbon (or right-click an empty slide area ➔ **`Chemical Structure ➔ Insert / Edit Structure (Ketcher)...`**).
-2. Sketch your molecule or multi-step synthesis pathway (arrows, reagents, catalysts) in the **Ketcher 2D Editor**.
-   * *Tip: For dark or colored slides, toggle **`[Background: Transparent]`** in the top bar of Ketcher.*
-3. Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to place the rendered structure right at the center of your slide!
+Stop pasting white-background screenshots onto dark conference slides! Click **`[SMILES] ➔ [Batch Style]`** on the ribbon to switch all structures across your slide deck between **Standard Color**, **Dark Mode (White Ink + Transparent BG)**, **Publication B&W**, or **White Background**:
 
-### Way ② Convert a Text Box or Paste from Clipboard in 0.1s (`Paste Structure`)
-* **Convert a Text Box:** Select any text box containing a SMILES string and click **`[SMILES] ➔ [Paste Structure]`** to turn it into a crisp molecule shape immediately.
-* **Paste from Clipboard:** Copy any SMILES string, then click **`[SMILES] ➔ [Paste Structure]`** (or right-click a blank area of your slide ➔ **`Chemical Structure ➔ Paste Structure from Clipboard`**).
-
----
-
-## 2. Match Dark Mode or Print Handouts in 1 Click (`Batch Style`)
-
-Switching your slide deck from a light theme to a dark theme? Click **`[SMILES] ➔ [Batch Style]`** on the ribbon to restyle every chemical structure across your presentation (or selection) at once:
-
-| Style Preset | Slide Visual Result | Best For |
-| :--- | :--- | :--- |
-| **Standard Color** | IUPAC element colors + **transparent background** | Light-colored or gradient presentation themes |
-| **Dark Mode** | **Crisp white bonds** + transparent background | **Dark presentation themes** and auditorium OLED screens |
-| **Publication B&W** | High-contrast **monochrome line art (ACS style)** | Printed seminar handouts and lecture notes |
-| **White Background** | Element colors + **solid white background** | Placing structures over busy photos or textured backgrounds |
+<BatchStylePreview />
 
 ---
 

@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$ImagePath = (Join-Path $PSScriptRoot '../assets/ribbon-guide.png'),
     [string]$OutputPath = (Join-Path $PSScriptRoot '../assets/ribbon-guide.png')
 )

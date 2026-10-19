@@ -51,7 +51,7 @@ public static class WordStructureManager
         {
             MessageBox.Show(
                 "An error occurred while inserting molecule:\n" + ex.Message,
-                "SMILES for Word",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -81,7 +81,7 @@ public static class WordStructureManager
             {
                 MessageBox.Show(
                     "No molecular structure image selected.\nPlease select a molecular structure picture first.",
-                    "SMILES for Word",
+                    "func_SMILES2IMG",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
@@ -112,7 +112,7 @@ public static class WordStructureManager
         {
             MessageBox.Show(
                 "An error occurred while editing molecule:\n" + ex.Message,
-                "SMILES for Word",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -726,7 +726,7 @@ public static class WordStructureManager
 
             MessageBox.Show(
                 "No valid SMILES or KET structure data found in selection or clipboard.\nPlease copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) or select text in the document first.",
-                "SMILES for Word",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
         }
@@ -734,7 +734,7 @@ public static class WordStructureManager
         {
             MessageBox.Show(
                 "An error occurred while inserting structure from clipboard:\n" + ex.Message,
-                "SMILES for Word",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -976,7 +976,7 @@ public static class WordStructureManager
             {
                 MessageBox.Show(
                     "Could not retrieve molecule properties from the selected structure.\nPlease select a molecular structure picture or text first.",
-                    "SMILES for Word",
+                    "func_SMILES2IMG",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
@@ -992,7 +992,7 @@ public static class WordStructureManager
         {
             MessageBox.Show(
                 "An error occurred while calculating molecule info:\n" + ex.Message,
-                "SMILES for Word",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }

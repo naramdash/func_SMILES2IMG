@@ -61,7 +61,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Failed to initialize SMILES for PowerPoint:\n" + ex.Message, "SMILES2IMG", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("Failed to initialize func_SMILES2IMG:\n" + ex.Message, "func_SMILES2IMG", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
     }
 
@@ -265,7 +265,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
         <group id=""grpPptAbout"" label=""About"">
           <button id=""btnPptAbout""
                   label=""About SMILES""
-                  screentip=""About SMILES for Office""
+                  screentip=""About func_SMILES2IMG""
                   supertip=""Displays creator info, GitHub repository link, and open-source third-party licenses.""
                   imageMso=""Info""
                   size=""large""

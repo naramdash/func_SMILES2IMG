@@ -510,7 +510,7 @@ public enum StructureFormatPreference
             {
                 MessageBox.Show(
                     "Cannot retrieve formula/molecular weight for the selected cell or image.\nPlease select a molecular structure cell or image.",
-                    "SMILES for Excel",
+                    "func_SMILES2IMG",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
@@ -527,7 +527,7 @@ public enum StructureFormatPreference
         {
             MessageBox.Show(
                 "An error occurred while calculating molecule info: " + ex.Message,
-                "SMILES for Excel",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -559,7 +559,7 @@ public enum StructureFormatPreference
             {
                 MessageBox.Show(
                     "No valid SMILES or KET structure data found on clipboard (or active cell).\nPlease copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) and try again.",
-                    "SMILES for Excel",
+                    "func_SMILES2IMG",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
@@ -598,7 +598,7 @@ public enum StructureFormatPreference
         {
             MessageBox.Show(
                 "An error occurred during quick paste: " + ex.Message,
-                "SMILES for Excel",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -788,7 +788,7 @@ public enum StructureFormatPreference
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Error importing SDF file:\n" + ex.Message, "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("Error importing SDF file:\n" + ex.Message, "func_SMILES2IMG", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
     }
 
@@ -894,7 +894,7 @@ public enum StructureFormatPreference
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Error exporting SDF file:\n" + ex.Message, "SMILES for Excel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("Error exporting SDF file:\n" + ex.Message, "func_SMILES2IMG", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
     }
 

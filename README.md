@@ -1,51 +1,52 @@
-# func_SMILES2IMG — Free & Open-Source Office Chemical Add-in Suite (Excel · Word · PowerPoint)
+# func_SMILES2IMG — Chemical Structures & 3D Proteins inside Excel, Word & PowerPoint
 
 [![Platform](https://img.shields.io/badge/Platform-Windows%20Office%20(Excel%20%7C%20Word%20%7C%20PowerPoint)-blue.svg)](https://naramdash.github.io/func_SMILES2IMG/guide/getting-started)
 [![License](https://img.shields.io/badge/License-MIT-success.svg)](LICENSE)
-[![Docs](https://img.shields.io/badge/Documentation-GitHub%20Pages-informational.svg)](https://naramdash.github.io/func_SMILES2IMG/)
+[![Docs EN](https://img.shields.io/badge/Docs-English%20Guide-informational.svg)](https://naramdash.github.io/func_SMILES2IMG/)
+[![Docs KO](https://img.shields.io/badge/문서-🇰🇷%20한국어%20가이드-0f766e.svg)](https://naramdash.github.io/func_SMILES2IMG/ko/)
 [![Framework](https://img.shields.io/badge/.NET%20Framework-4.8-512BD4.svg)](https://dotnet.microsoft.com/)
 [![Excel-DNA](https://img.shields.io/badge/Excel--DNA-1.9.0-green.svg)](https://excel-dna.net/)
 [![EPAM Indigo](https://img.shields.io/badge/EPAM%20Indigo-1.49.0--rc.2-orange.svg)](https://lifescience.opensource.epam.com/indigo/)
 [![EPAM Ketcher](https://img.shields.io/badge/EPAM%20Ketcher-v3.18.0-blueviolet.svg)](https://lifescience.opensource.epam.com/ketcher/)
 [![Mol* Viewer](https://img.shields.io/badge/Mol*--Viewer-v5.13.1-teal.svg)](https://molstar.org/)
 
-> **A 100% free and open-source Microsoft Office add-in suite (Excel, Word, PowerPoint) to render publication-quality 2D chemical structures directly from SMILES/KET strings, explore 3D biological macromolecules via embedded Mol*, calculate chemical properties via native formulas, and sketch molecules interactively via embedded EPAM Ketcher.**  
-> 100% local and offline execution without external web requests, cloud subscriptions, or administrative privileges.
+> **Stop copy-pasting chemical structures into Office.**  
+> Type a compound name or SMILES to auto-render 2D chemical structures, molecular weights, and Lipinski Rule of 5 across hundreds of Excel rows. Double-click any cell or picture to sketch in 2D with embedded EPAM Ketcher, or rotate 3D proteins with Mol\* — **100% free, local, and offline (no admin rights required).**
+
+<p align="center">
+  <img src="assets/hero-demo.gif" alt="func_SMILES2IMG Demo — Auto-render in Excel and double-click to edit in Ketcher 2D" width="820" />
+</p>
 
 ---
 
-## 📖 User Documentation
+## 📖 User Documentation & Interactive Web Tools
 
-Complete user manuals, visual walkthroughs, parameter recipes, and guides for Excel, Word, and PowerPoint are hosted on our documentation site:
-
-👉 **[Online Documentation Site (English & 한국어)](https://naramdash.github.io/func_SMILES2IMG/)**
-
-* 📗 [**Microsoft Excel Guide**](https://naramdash.github.io/func_SMILES2IMG/guide/excel) — In-cell formulas (`=SMILES2IMG`, `=KET2IMG`), property calculation (`=SMILES2MW`, `=SMILES2NAME`, etc.), chemical styling, double-click editing.
-* 📘 [**Microsoft Word Guide**](https://naramdash.github.io/func_SMILES2IMG/guide/word) — Inline figures, ribbon `[SMILES]` tab, 0.1s Quick Insert, Mol* 3D models, table layout preservation.
-* 📙 [**Microsoft PowerPoint Guide**](https://naramdash.github.io/func_SMILES2IMG/guide/powerpoint) — One-click slide placement, dark theme transparent backgrounds, Mol* interactive 3D GLB models.
-* ✏️ [**Ketcher 2D Editor Guide**](https://naramdash.github.io/func_SMILES2IMG/guide/ketcher) — Offline structure sketcher, multi-step reaction schemes, molecular weight calculation.
-* 🧬 [**Mol* 3D Viewer Guide**](https://naramdash.github.io/func_SMILES2IMG/guide/molstar) — Macromolecular 3D viewer (PDB/mmCIF), direct PDB download, rotatable GLB 3D models & 2D pictures.
-* 📐 [**Excel Formula Reference**](https://naramdash.github.io/func_SMILES2IMG/reference/formula) — Full parameter specifications for rendering and property calculation formulas.
-* ❓ [**Troubleshooting & FAQ**](https://naramdash.github.io/func_SMILES2IMG/guide/faq) — Smart App Control, `#VALUE!` resolution, and version compatibility.
+* 🇰🇷 **[한국어 공식 가이드 및 1분 시작하기](https://naramdash.github.io/func_SMILES2IMG/ko/)** · **[🛠️ 웹 수식 생성기 체험](https://naramdash.github.io/func_SMILES2IMG/ko/tools/formula-builder)**
+* 🇺🇸 **[English Documentation & 1-Min Quickstart](https://naramdash.github.io/func_SMILES2IMG/)** · **[🛠️ Interactive Formula Generator](https://naramdash.github.io/func_SMILES2IMG/tools/formula-builder)**
 
 ---
 
-## ⚡ Quick Install
+## ⚡ 10-Second Quick Install (Excel · Word · PowerPoint)
 
-Open **PowerShell** and run this single command to automatically install, configure security, and register the add-in across the entire Microsoft Office suite (Excel, Word, PowerPoint):
+### Option A. 1-Click Installer for Researchers (No Terminal Needed)
+👉 **[📥 Download `Install-func_SMILES2IMG.cmd`](https://naramdash.github.io/func_SMILES2IMG/Install-func_SMILES2IMG.cmd)** — Close open Office apps and double-click the downloaded file.
+*(✅ No Administrator Rights Needed · 🛡️ 100% Offline Execution · 💻 Auto-Detects 32/64-bit Office)*
+
+### Option B. 1-Line PowerShell Command (For Developers)
+Open **PowerShell** and paste this single command:
 
 ```powershell
-# Stable release (v1.7.0)
+# Stable release (v1.7.1)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
 > **What the installer automates:**  
 > 1. Detects your Office bitness (32-bit vs. 64-bit) and installed Office applications (Excel, Word, PowerPoint)  
-> 2. Downloads and places the unified suite (Excel XLL, Word COM DLL, PowerPoint COM DLL) in `%APPDATA%\Microsoft\AddIns\Smiles2Img`  
+> 2. Downloads and places `func_SMILES2IMG` (Excel XLL, Word COM DLL, PowerPoint COM DLL) in `%APPDATA%\Microsoft\AddIns\Smiles2Img`  
 > 3. Unblocks files (`Unblock-File`) to remove Windows security flags automatically  
 > 4. Registers Excel, Word, and PowerPoint add-ins in HKCU registry (no admin rights required, loads automatically on start)  
-> 💡 **Future Updates:** Running this exact command again in the future automatically upgrades to the latest release!  
-> 🗑️ **Uninstallation:** Run `irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex` anytime to cleanly remove all files and registry entries.
+> 💡 **Future Updates:** Running the installer again automatically upgrades to the latest release!  
+> 🗑️ **Uninstallation:** Run [`Uninstall-func_SMILES2IMG.cmd`](https://naramdash.github.io/func_SMILES2IMG/Uninstall-func_SMILES2IMG.cmd) or `irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex` anytime.
 
 ---
 
@@ -139,12 +140,12 @@ func_SMILES2IMG/
 │   │   ├── Smiles2Img-AddIn64-packed.xll # 64-bit standalone Excel XLL
 │   │   ├── Word/                       # 64-bit Word COM add-in binaries
 │   │   ├── PowerPoint/                 # 64-bit PowerPoint COM add-in binaries
-│   │   └── Smiles2Img-Office-x64.zip   # 64-bit unified Office Suite package
+│   │   └── func_SMILES2IMG-x64.zip     # 64-bit unified func_SMILES2IMG package
 │   └── x86/
 │       ├── Smiles2Img-AddIn-packed.xll   # 32-bit standalone Excel XLL
 │       ├── Word/                       # 32-bit Word COM add-in binaries
 │       ├── PowerPoint/                 # 32-bit PowerPoint COM add-in binaries
-│       └── Smiles2Img-Office-x86.zip   # 32-bit unified Office Suite package
+│       └── func_SMILES2IMG-x86.zip     # 32-bit unified func_SMILES2IMG package
 ├── assets/                             # Visual showcase assets & documentation screenshots
 ├── tests/                              # Automated test suites
 │   ├── Excel-Smoke.ps1                 # Full COM automation E2E smoke tests

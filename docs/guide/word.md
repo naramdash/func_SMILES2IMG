@@ -1,30 +1,25 @@
-# Microsoft Word Guide
+# Word: Manuscripts, Inline Structures & Summary Tables
 
-Learn how to insert and edit high-resolution 2D chemical structures, reaction schemes, and 3D proteins inside Word manuscripts, journal articles, thesis chapters, and tables.
+Insert high-resolution 2D chemical structures, multi-step reaction schemes, and 3D proteins directly into Word paragraphs and tables—and convert your entire manuscript to **ACS Black & White** in one click.
 
 <p align="center">
-  <img src="/word-showcase.png" alt="SMILES for Word Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/word-showcase.png" alt="func_SMILES2IMG Word Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
-
-::: tip ✨ 3 Key Advantages for Word Manuscripts
-1. **Natural Inline Flow:** Structures are inserted as inline pictures that flow naturally within sentences and align cleanly inside table cells.
-2. **Double-Click Editing Without Breaking Tables:** **Double-clicking** a structure inside a table updates it in place without messing up your column widths or row heights.
-3. **Editable Across Computers:** The underlying chemical structure is saved inside the `.docx` file itself, so co-authors on other PCs can double-click to edit at any time.
-:::
 
 ---
 
-## 1. Insert Structures & Reactions into Text or Tables (3 Ways)
+## 🎯 How to Start in Word (No Formulas Needed: ① ➔ ② ➔ ③)
 
-### Way ① Draw by Hand (`Insert / Edit Structure`)
-1. Place your cursor in any paragraph or table cell in Word.
-2. Click **`[SMILES] ➔ [Insert / Edit Structure]`** on the ribbon (or right-click ➔ **`Chemical Structure ➔ Insert / Edit Structure (Ketcher)...`**).
-3. Draw your molecule or multi-step reaction scheme (arrows, reagents, catalysts, temperatures) in the **Ketcher 2D Editor**.
-4. Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to insert the structure right at your cursor!
+Unlike Excel, Word uses the top **`[SMILES]`** ribbon tab or keyboard shortcut <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>:
 
-### Way ② Convert Highlighted SMILES or Paste from Clipboard in 0.1s (`Paste Structure`)
-* **Convert Highlighted Text:** Highlight any SMILES text typed in your document (e.g., `c1ccccc1`) and click **`[SMILES] ➔ [Paste Structure]`** to replace the text with a rendered structure picture on the spot.
-* **Paste from Clipboard:** Copy a SMILES string from a paper, website, or ChemDraw, then click **`[SMILES] ➔ [Paste Structure]`** (or right-click ➔ **`Chemical Structure ➔ Paste Structure from Clipboard`**).
+<p align="center">
+  <img src="/word-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
+
+1. **① Click `[SMILES]` ➔ `[Insert / Edit Structure]`** on the top ribbon (or press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>).
+2. **② Sketch in 2D (or Paste SMILES):** Draw your molecule or reaction scheme in the built-in Ketcher 2D editor and press <kbd>Ctrl</kbd> + <kbd>Enter</kbd>.
+   * *Have a SMILES string on your clipboard?* Click **`[Paste Structure]`** to insert it as an inline figure in 0.1 seconds!
+3. **③ Double-Click Anytime to Edit:** **Double-click** any structure inside a paragraph or Word table cell to reopen and update it in place without breaking table column widths!
 
 ---
 

@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$OutputPath = (Join-Path $PSScriptRoot '../assets/powerpoint-showcase.png')
 )
 
@@ -50,7 +50,7 @@ try {
 
     # Title Banner
     $titleBox = $slide.Shapes.AddTextbox(1, 40, 25, 880, 50)
-    $titleBox.TextFrame.TextRange.Text = "SMILES for PowerPoint — Chemical Structure Showcase"
+    $titleBox.TextFrame.TextRange.Text = "func_SMILES2IMG — Chemical Structure Showcase"
     $titleBox.TextFrame.TextRange.Font.Name = "Segoe UI"
     $titleBox.TextFrame.TextRange.Font.Size = 24
     $titleBox.TextFrame.TextRange.Font.Bold = $msoTrue

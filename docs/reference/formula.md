@@ -1,9 +1,34 @@
-# Excel Chemical Formula Cheat Sheet
+# 25+ Excel Formula & Style Keyword Cheat Sheet
 
-Quick-lookup reference tables for all **25+ Excel chemical functions and rendering options**, organized by task.
+Don't memorize option keywords! **Copy one of the Top 5 essential formulas below**, or **click options in the interactive generator widget** to build and preview your custom formula in one click.
 
-> 🛠️ **Want to build and preview formulas interactively by clicking options?**  
-> 👉 Open the [**🛠️ Excel Formula Generator & Style Simulator ➔**](/tools/formula-builder) at the bottom of the sidebar!
+---
+
+## ⭐ Top 5 Ready-to-Copy Formulas (90% of Daily Lab Use)
+
+Paste any of these 5 formulas directly into Excel (on Excel 2016–2021, append **`.FLOAT`** to `...2IMG` functions):
+
+```text
+=NAME2IMG("Aspirin")
+```
+```text
+=SMILES2IMG(A2)
+```
+```text
+=SMILES2IMG(A2, "", "bw")
+```
+```text
+=SMILES2MW(A2)
+```
+```text
+=SMILES2LIPINSKI(A2)
+```
+
+---
+
+## 🛠️ Click to Build & Preview Any Formula Interactively
+
+<FormulaBuilder />
 
 ---
 

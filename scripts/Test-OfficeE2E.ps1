@@ -1,6 +1,6 @@
-<#
+﻿<#
 .SYNOPSIS
-    End-to-End (E2E) Automated Verification for SMILES for Microsoft Office Suite (Word, PowerPoint, Excel)
+    End-to-End (E2E) Automated Verification for func_SMILES2IMG (Word, PowerPoint, Excel)
 #>
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Windows.Forms

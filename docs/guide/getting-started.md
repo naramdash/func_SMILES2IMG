@@ -1,28 +1,34 @@
-# Install & 1-Minute Quickstart
+# 1-Min Install & Your First Molecule
 
-**func_SMILES2IMG (SMILES for Office)** is a free, 100% offline add-in suite for Microsoft Excel, Word, and PowerPoint that lets you draw 2D chemical structures and reactions, calculate molecular properties via formulas, and visualize 3D proteins.
+Install **`func_SMILES2IMG`** in 10 seconds and render your first 2D chemical structure or 3D protein inside Excel, Word, or PowerPoint.
 
----
-
-## Step 1. 10-Second Install
-
-1. **Close Excel, Word, and PowerPoint** if they are currently open.
-2. Open **PowerShell** from the Windows Start menu and paste this command (no Administrator rights required):
-
-```powershell
-irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
-```
-
-3. Once you see `"Installation complete!"`, you are ready to go!
+<p align="center">
+  <img src="/hero-demo.gif" alt="func_SMILES2IMG 1-Minute Quickstart Demo" width="100%" style="max-width: 760px; border-radius: 10px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);" />
+</p>
 
 ---
 
-## Step 2. Your First Molecule in 1 Minute
+## Step 1. 10-Second One-Click Install
 
-Open Excel, Word, or PowerPoint and try these 3 core workflows right away:
+<QuickInstallBox :hide-quickstart-btn="true" />
 
-### ① Render a Molecule by Formula in Excel
-Open Excel and type either formula into any empty cell (widen the row height slightly for a larger view):
+---
+
+## Step 2. Restart Office & Check the `[SMILES]` Ribbon Tab
+
+1. **Completely close and reopen** Excel, Word, or PowerPoint.
+2. Confirm that the **`[SMILES]`** tab appears on the top Office ribbon:
+
+<p align="center">
+  <img src="/excel-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Office" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
+
+---
+
+## Step 3. Render Your First Molecule (Pick Your App)
+
+### 📗 Option A. Using Microsoft Excel? (Copy & Paste a Formula)
+Copy either formula below and paste it into any empty cell (widen the row height slightly for a larger image):
 
 ```text
 =NAME2IMG("Aspirin")
@@ -32,69 +38,54 @@ Or from a SMILES string:
 =SMILES2IMG("CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
 ```
 > 💡 **Using Excel 2016, 2019, or 2021?**  
-> Append `.FLOAT` to the formula name—for example, `=NAME2IMG.FLOAT("Aspirin")` or `=SMILES2IMG.FLOAT(A2)`—to place a cell-locked picture shape that moves and resizes with the cell!
+> Append **`.FLOAT`** to the formula name—for example, `=NAME2IMG.FLOAT("Aspirin")` or `=SMILES2IMG.FLOAT(A2)`!
 
-### ② Draw a Molecule or Reaction by Hand (`Ctrl + Shift + K`)
-In Excel, Word, or PowerPoint:
-1. Click the **`[SMILES]`** tab on the top ribbon and click **`[Insert / Edit (SMILES)]`** in Excel (or **`[Insert / Edit Structure]`** in Word & PowerPoint)—or simply press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>.
+### 📘📙 Option B. Using Word or PowerPoint? (Press `Ctrl + Shift + K`)
+Word and PowerPoint do not use cell formulas—use the ribbon button or shortcut instead:
+1. Click **`[SMILES]` ➔ `[Insert / Edit Structure]`** on the top ribbon, or press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>.
 2. Sketch your molecule or reaction scheme inside the built-in **Ketcher 2D Editor**.
-3. Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (or click **Apply**) to insert a crisp structure directly into your cell, document, or slide!
-
-### ③ Double-Click to Edit & Right-Click to Copy Properties
-* **Edit In-Place:** **Double-click** any inserted molecule cell or picture to reopen the sketcher and modify it in place.
-* **Copy Formula & MW:** **Right-click** any molecule ➔ **`Chemical Structure`** ➔ **`Copy Molecule Info`** to copy Molecular Weight (`180.16 g/mol`), Formula (`C9H8O4`), InChIKey, or a full table row in one click.
+3. Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (or click **Apply**) to insert a crisp structure directly onto your page or slide!
+4. **Edit Anytime:** **Double-click** any inserted molecule picture to reopen the editor and modify it in place.
 
 ---
 
-## Step 3. Explore by Application
+::: details ❓ Seeing `#NAME?` in Excel or Missing the `[SMILES]` Tab? (30-Second Fix)
+If formulas show `#NAME?` or the `[SMILES]` tab is missing right after installation, check these 3 common causes:
 
-Pick the guide for the Office app you are working in:
-
-* 📗 **[Microsoft Excel Guide](/guide/excel):** Build compound tables, auto-calculate MW & Lipinski Ro5, highlight substructures, and import/export `.sdf` files
-* 📘 **[Microsoft Word Guide](/guide/word):** Insert inline structures inside paragraphs and tables, and convert entire manuscripts to ACS Black & White
-* 📙 **[Microsoft PowerPoint Guide](/guide/powerpoint):** Use transparent backgrounds for dark slides and embed 360°-rotatable 3D protein models
-* 📐 **[Excel Formula Cheat Sheet](/reference/formula):** Quick lookup table for all 25+ chemical functions and styling options
-
----
-
-## 🛠️ Troubleshooting Install Issues (10-Second Fix)
-
-### Windows 11 Warning or `#NAME?` in Excel (Smart App Control)
-If Windows 11 **Smart App Control (SAC)** is enabled in strict mode, Windows may block unsigned open-source add-ins with a *"file format and extension do not match"* message or show `#NAME?` in Excel.
-
-::: tip Your Antivirus Stays 100% Active
-Turning off Smart App Control **does not disable Microsoft Defender Antivirus**. Real-time virus and threat protection remains 100% active.
+1. **Did you restart Excel / Word / PowerPoint?**  
+   Add-ins load when Office starts. Close all open Office windows completely and reopen the app.
+2. **Are you on Excel 2016, 2019, or 2021?**  
+   In-cell image formulas (`=SMILES2IMG`) require Microsoft 365 or Excel 2024+. On Excel 2016–2021, use **`.FLOAT`** formulas instead:
+   ```text
+   =NAME2IMG.FLOAT("Aspirin")
+   ```
+3. **Windows 11 Smart App Control (SAC) Blocking Unsigned Open-Source Add-ins:**  
+   If Windows 11 shows a *"file format and extension do not match"* warning:
+   - Open Windows **Settings** (<kbd>Win</kbd> + <kbd>I</kbd>) ➔ **Privacy & security** ➔ **Windows Security** ➔ **App & browser control**.
+   - Click **Smart App Control settings** and switch it to **Off**, then restart Office. *(Microsoft Defender Antivirus real-time protection remains 100% active.)*
 :::
-
-1. Open Windows **Settings** (<kbd>Win</kbd> + <kbd>I</kbd>) ➔ **Privacy & security** ➔ **Windows Security**.
-2. Click **App & browser control** ➔ **Smart App Control settings**.
-3. Switch it to **Off**, then restart Excel / Word / PowerPoint.
 
 ---
 
 ## 🔄 Updating & Uninstalling
 
-* **Check for Updates / Upgrade:**
-  - Click **`[SMILES]`** on the Office ribbon ➔ **`[About SMILES]`** ➔ **`[Check for Updates]`**.
-  - Or re-run the one-line PowerShell install command anytime to upgrade to the latest release (`v1.7.0`).
+* **Upgrade to the Latest Release (`v1.7.1`):**
+  - Click **`[SMILES]` ➔ `[About SMILES]` ➔ `[Check for Updates]`** on the Office ribbon, or simply run <a href="/func_SMILES2IMG/Install-func_SMILES2IMG.cmd" download="Install-func_SMILES2IMG.cmd"><code>Install-func_SMILES2IMG.cmd</code></a> again.
 * **Uninstall Cleanly:**
-  ```powershell
-  irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex
-  ```
+  - Download and double-click **<a href="/func_SMILES2IMG/Uninstall-func_SMILES2IMG.cmd" download="Uninstall-func_SMILES2IMG.cmd"><code>Uninstall-func_SMILES2IMG.cmd</code></a>**, or run in PowerShell:
+    ```powershell
+    irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex
+    ```
 
 ---
 
-## 📚 Advanced & Offline Setup (Click to Expand)
+## 📚 Corporate Network & System Info (Click to Expand)
 
-::: details 🏢 Offline / Corporate Network Manual Installation
-If your organization blocks remote PowerShell scripts:
-1. Download `Smiles2Img-Office-x64.zip` (or `x86.zip` for 32-bit Office) and `install.ps1` from [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases).
+::: details 🏢 Offline / Corporate Network Manual ZIP Installation
+If your company firewall blocks GitHub scripts:
+1. Download `func_SMILES2IMG-x64.zip` (or `func_SMILES2IMG-x86.zip` for 32-bit Office) from [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest).
 2. Right-click the `.zip` file ➔ **Properties** ➔ check **Unblock** at the bottom ➔ click **OK**.
-3. Extract the archive to `%APPDATA%\Microsoft\AddIns\Smiles2Img`.
-4. Open PowerShell in that folder and run:
-   ```powershell
-   powershell -ExecutionPolicy Bypass -File install.ps1
-   ```
+3. Extract the archive and double-click **`Install-func_SMILES2IMG.cmd`** inside the extracted folder.
 :::
 
 ::: details 💻 System Requirements
@@ -102,20 +93,5 @@ If your organization blocks remote PowerShell scripts:
 | :--- | :--- | :--- |
 | **OS** | Windows 10 / Windows 11 | Supports both 32-bit and 64-bit systems |
 | **Microsoft Office** | Office 2016 / 2019 / 2021 / 2024 / Microsoft 365 | Desktop installations |
-| **Runtime** | .NET Framework 4.8 & Edge WebView2 | Pre-installed on modern Windows 10 & Windows 11 |
-:::
-
-::: details ⚙️ What the Installer Does Under the Hood
-1. Detects whether your Office installation is 32-bit (`x86`) or 64-bit (`x64`).
-2. Downloads the latest release package to `%APPDATA%\Microsoft\AddIns\Smiles2Img`.
-3. Strips Windows download block flags (`Unblock-File`).
-4. Registers the Excel XLL add-in and Word/PowerPoint COM add-ins under your current user registry (`HKCU`) without requiring admin rights.
-:::
-
-::: details ✨ What's New in v1.7.0
-* **In-Cell SAR & Drug-Likeness:** Screen compounds with `=SMILES.MATCH`, `=SMILES.SIMILARITY`, `=SMILES2LIPINSKI`, `=SMILES2LOGP`, and `=SMILES2TPSA`.
-* **Chemical Name & CAS Lookup:** Render structures directly from names or CAS numbers via `=NAME2IMG("Aspirin")` and `=NAME2SMILES("50-78-2")`.
-* **1-Click Batch Style:** Unify all structures in a sheet, document, or slide deck into Standard Color, ACS Publication B&W, White Background, or Dark Mode.
-* **Vector SVG Copy & Excel `.sdf` I/O:** Copy lossless SVG vectors for Illustrator/Inkscape and import/export `.sdf` chemical tables in Excel.
-* **Redesigned Molecule Info Window:** Clean property table with one-click export to Excel rows (TSV), Markdown tables, bullet lists, and JSON.
+| **Runtime** | .NET Framework 4.8 & Edge WebView2 | Pre-installed on Windows 10 & Windows 11 |
 :::

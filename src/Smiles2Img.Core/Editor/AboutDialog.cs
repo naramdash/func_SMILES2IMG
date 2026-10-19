@@ -95,7 +95,7 @@ public sealed class AboutDialog : Form
 
     public AboutDialog(string? appName = null)
     {
-        Text = "About SMILES for Microsoft Office";
+        Text = "About func_SMILES2IMG";
 
         float dpiScale = 1.0f;
         try
@@ -150,7 +150,7 @@ public sealed class AboutDialog : Form
 
         var lblTitle = new Label
         {
-            Text = "SMILES for Microsoft Office Suite",
+            Text = "func_SMILES2IMG",
             UseMnemonic = false,
             ForeColor = Color.White,
             Font = new Font("Segoe UI", 13.5f, FontStyle.Bold),
@@ -414,7 +414,7 @@ public sealed class AboutDialog : Form
 
         AddRow("Project:", new Label
         {
-            Text = "func_SMILES2IMG (SMILES for Microsoft Office Suite)",
+            Text = "func_SMILES2IMG",
             Font = new Font("Segoe UI", 9.75f, FontStyle.Bold),
             ForeColor = Color.FromArgb(17, 24, 39),
             AutoSize = true
@@ -422,7 +422,7 @@ public sealed class AboutDialog : Form
 
         AddRow("Version:", new Label
         {
-            Text = $"{GetProductVersion()} (Unified Office Edition)",
+            Text = $"{GetProductVersion()} (Excel · Word · PowerPoint)",
             Font = new Font("Segoe UI", 9.5f, FontStyle.Regular),
             ForeColor = Color.FromArgb(37, 99, 235),
             AutoSize = true
@@ -474,7 +474,7 @@ public sealed class AboutDialog : Form
             BackColor = Color.White,
             ForeColor = Color.FromArgb(75, 85, 99),
             Font = new Font("Segoe UI", 9.25f, FontStyle.Regular),
-            Text = "SMILES for Microsoft Office Suite seamlessly integrates chemical structure sketching, formula calculation, and 3D macromolecular visualization into Excel, Word, and PowerPoint.\r\n\r\n" +
+            Text = "func_SMILES2IMG seamlessly integrates chemical structure sketching, formula calculation, and 3D macromolecular visualization into Excel, Word, and PowerPoint.\r\n\r\n" +
                    "• Microsoft Excel: In-cell (=SMILES2IMG, =INCHI2IMG, =KET2IMG), floating (.FLOAT), and property formulas (=SMILES2NAME, =SMILES2MW, =SMILES2FORMULA, =SMILES2INCHI, =SMILES2INCHIKEY).\r\n" +
                    "• Microsoft Word: Inline and floating high-resolution molecular images with 100% 2D KET canvas preservation and live round-trip editing.\r\n" +
                    "• Microsoft PowerPoint: Slide shapes with KET metadata, 3D macromolecular Mol* integration, and instant formula conversion.\r\n" +
@@ -609,7 +609,7 @@ public sealed class AboutDialog : Form
     {
         var sb = new StringBuilder();
         sb.AppendLine("================================================================================");
-        sb.AppendLine(" SMILES for Microsoft Office Suite (func_SMILES2IMG)");
+        sb.AppendLine(" func_SMILES2IMG (Excel · Word · PowerPoint)");
         sb.AppendLine($" Version: {GetProductVersion()}");
         sb.AppendLine(" Author: KimJuho (naramdash)");
         sb.AppendLine(" Repository: https://github.com/naramdash/func_SMILES2IMG");
@@ -693,7 +693,7 @@ public sealed class AboutDialog : Form
             var req = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(
                 "https://api.github.com/repos/naramdash/func_SMILES2IMG/releases/latest");
             req.Method = "GET";
-            req.UserAgent = "Smiles2Img-OfficeAddIn";
+            req.UserAgent = "func_SMILES2IMG";
             req.Accept = "application/vnd.github+json";
             req.Timeout = 4000;
             req.ReadWriteTimeout = 4000;

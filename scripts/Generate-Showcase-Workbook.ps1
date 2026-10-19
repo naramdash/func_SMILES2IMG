@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$AddInPath = (Join-Path $PSScriptRoot '../dist/x64/Smiles2Img-AddIn64-packed.xll'),
     [string]$OutputPath = (Join-Path $PSScriptRoot '../SMILES2IMG_Comprehensive_Showcase.xlsx')
 )

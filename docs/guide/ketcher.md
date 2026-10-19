@@ -1,15 +1,15 @@
-# Ketcher 2D Sketcher Guide
+# Draw 2D Structures & Reaction Schemes (Ketcher)
 
-Learn how to sketch molecules and multi-step organic reaction schemes directly inside Excel, Word, and PowerPoint using the built-in **Ketcher 2D Editor**.
+Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> to draw molecules and multi-step reaction schemes from scratch, or **double-click any existing structure** in Excel, Word, or PowerPoint to reopen and edit it in place in 0.05 seconds.
 
 <p align="center">
-  <img src="/ketcher-guide.png" alt="Ketcher Editor Interface" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/hero-demo.gif" alt="Double-Click Any Cell or Structure to Edit in Ketcher 2D" width="100%" style="max-width: 760px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-::: tip 💡 Why You'll Love It
-* **100% Offline & Private:** Runs entirely on your local PC without internet access—keeping unpublished structures completely confidential.
-* **Instant Reopen (<0.05s):** Opens instantaneously whenever you double-click a structure to make quick edits.
-* **Live MW & Formula Calculation:** Automatically displays **Formula, Molecular Weight (MW), and Exact Mass** in the top bar while you draw.
+::: tip 💡 Two-Way Round-Trip Editing Across Excel, Word & PowerPoint
+* **Double-Click Re-Editing (<0.05s):** Every structure inserted into an Excel cell, Word page, or PowerPoint slide retains its lossless chemical coordinates—just **double-click** it anytime to modify atoms, bonds, or reaction arrows!
+* **Live MW & Formula Bar:** Automatically displays **Formula, Molecular Weight (MW), and Exact Mass** in the top bar while you draw.
+* **100% Offline & Confidential:** Runs entirely on your local PC without internet access.
 :::
 
 ---

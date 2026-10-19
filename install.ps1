@@ -1,6 +1,6 @@
-<#
+﻿<#
 .SYNOPSIS
-    SMILES for Microsoft Office Suite Automatic Installer (Excel, Word, PowerPoint)
+    func_SMILES2IMG Automatic Installer (Excel, Word, PowerPoint)
 .DESCRIPTION
     Automatically detects Office bitness (32-bit vs 64-bit),
     installs Excel Add-in (.xll) and Word/PowerPoint COM Add-ins (.dll),
@@ -22,7 +22,7 @@ try {
 
 $ErrorActionPreference = 'Stop'
 
-Write-Host "=== SMILES for Microsoft Office Suite Installer (Excel, Word, PowerPoint) ===" -ForegroundColor Cyan
+Write-Host "=== func_SMILES2IMG Installer (Excel, Word, PowerPoint) ===" -ForegroundColor Cyan
 
 # 1. Check if Office applications are running
 $officeProcs = Get-Process -Name EXCEL, WINWORD, POWERPNT -ErrorAction SilentlyContinue
@@ -75,7 +75,7 @@ if (-not (Test-Path $suiteDir))  { New-Item -ItemType Directory -Path $suiteDir 
 $tag = if ($Version -eq 'latest' -or [string]::IsNullOrWhiteSpace($Version)) { 'latest' } else { if ($Version -notmatch '^v') { "v$Version" } else { $Version } }
 
 # -------------------------------------------------------------
-# 4. Deploy Office Suite Files (%APPDATA%\Microsoft\AddIns\Smiles2Img)
+# 4. Deploy func_SMILES2IMG Files (%APPDATA%\Microsoft\AddIns\Smiles2Img)
 # -------------------------------------------------------------
 $unpackedXllName = if ($bitness -eq 'x64') { 'Smiles2Img-AddIn64.xll' } else { 'Smiles2Img-AddIn.xll' }
 $dnaName         = if ($bitness -eq 'x64') { 'Smiles2Img-AddIn64.dna' } else { 'Smiles2Img-AddIn.dna' }
@@ -86,15 +86,15 @@ $localPptDir  = if ($PSScriptRoot) { Join-Path $PSScriptRoot "dist\$bitness\Powe
 $localBinDir  = if ($PSScriptRoot) { Join-Path $PSScriptRoot "src\Smiles2Img.Excel\bin\Release\net48" } else { $null }
 
 if ($localWordDir -and (Test-Path $localWordDir) -and $localPptDir -and (Test-Path $localPptDir) -and $localBinDir -and (Test-Path $localBinDir)) {
-    Write-Host "[+] Installing Office Suite files from local build..." -ForegroundColor Cyan
+    Write-Host "[+] Installing func_SMILES2IMG files from local build..." -ForegroundColor Cyan
     Copy-Item -Path "$localWordDir\*.dll" -Destination $suiteDir -Force
     Copy-Item -Path "$localPptDir\*.dll" -Destination $suiteDir -Force
     Copy-Item -Path "$localBinDir\*.dll" -Destination $suiteDir -Force
     Copy-Item -LiteralPath (Join-Path $localBinDir $unpackedXllName) -Destination (Join-Path $suiteDir $unpackedXllName) -Force
     Copy-Item -LiteralPath (Join-Path $localBinDir $dnaName) -Destination (Join-Path $suiteDir $dnaName) -Force
 } else {
-    # Remote download suite zip
-    $zipName = "Smiles2Img-Office-$bitness.zip"
+    # Remote download zip package
+    $zipName = "func_SMILES2IMG-$bitness.zip"
     $zipUrl = if ($tag -eq 'latest') {
         "https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/$zipName"
     } else {
@@ -102,11 +102,11 @@ if ($localWordDir -and (Test-Path $localWordDir) -and $localPptDir -and (Test-Pa
     }
     $tempZip = Join-Path $env:TEMP $zipName
     try {
-        Write-Host "[+] Downloading Office Suite package ($tag): $zipUrl" -ForegroundColor Cyan
+        Write-Host "[+] Downloading func_SMILES2IMG package ($tag): $zipUrl" -ForegroundColor Cyan
         Invoke-WebRequest -Uri $zipUrl -OutFile $tempZip -UseBasicParsing
         Expand-Archive -LiteralPath $tempZip -DestinationPath $suiteDir -Force
     } catch {
-        Write-Warning "Office Suite zip package not found on release ($($_.Exception.Message))."
+        Write-Warning "func_SMILES2IMG zip package not found on release ($($_.Exception.Message))."
         Write-Warning "Falling back to standalone packed Excel Add-in..."
     } finally {
         if (Test-Path $tempZip) { Remove-Item $tempZip -Force -ErrorAction SilentlyContinue }
@@ -246,8 +246,8 @@ if (Test-Path $wordDllPath) {
         -AssemblyString $wordAssembly `
         -DllPath $wordDllPath `
         -OfficeApp "Word" `
-        -FriendlyName "SMILES for Word" `
-        -Description "SMILES 화학 구조식 렌더러 및 Ketcher 에디터"
+        -FriendlyName "func_SMILES2IMG" `
+        -Description "func_SMILES2IMG 화학 구조식 렌더러 및 Ketcher 에디터"
 }
 
 # Register PowerPoint COM Add-in
@@ -261,8 +261,8 @@ if (Test-Path $pptDllPath) {
         -AssemblyString $pptAssembly `
         -DllPath $pptDllPath `
         -OfficeApp "PowerPoint" `
-        -FriendlyName "SMILES for PowerPoint" `
-        -Description "SMILES 화학 구조식 렌더러 및 Ketcher 에디터"
+        -FriendlyName "func_SMILES2IMG" `
+        -Description "func_SMILES2IMG 화학 구조식 렌더러 및 Ketcher 에디터"
 }
 
 # Register Windows Toast Notification AUMID
@@ -275,7 +275,7 @@ try {
 # -------------------------------------------------------------
 # 6. Success Output
 # -------------------------------------------------------------
-Write-Host "`n[SUCCESS] SMILES for Microsoft Office Suite has been successfully installed!" -ForegroundColor Cyan
+Write-Host "`n[SUCCESS] func_SMILES2IMG has been successfully installed!" -ForegroundColor Cyan
 Write-Host "  * Excel:      Type =SMILES2IMG(""CCO"") in any cell" -ForegroundColor White
 Write-Host "  * Word:       Click 'Insert Structure' in the [SMILES] ribbon tab" -ForegroundColor White
 Write-Host "  * PowerPoint: Click 'Insert Structure' in the [SMILES] ribbon tab" -ForegroundColor White
