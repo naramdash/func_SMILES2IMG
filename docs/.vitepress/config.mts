@@ -25,23 +25,23 @@ export default defineConfig({
           next: 'Next Step'
         },
         nav: [
-          { text: '🇰🇷 한국어 가이드', link: '/ko/' },
-          { text: '🚀 Quickstart', link: '/guide/getting-started' },
           {
-            text: '📘 Guides (Excel · Word · PPT)',
+            text: 'v1.7.1',
             items: [
-              { text: '📗 Excel: Structure Tables & Name/CAS', link: '/guide/excel' },
-              { text: '🔬 Excel: MW, Lipinski, SAR & SDF', link: '/guide/excel-cheminformatics' },
-              { text: '📘 Word: Manuscripts & Summary Tables', link: '/guide/word' },
-              { text: '📙 PowerPoint: Dark Mode & 3D Proteins', link: '/guide/powerpoint' },
-              { text: '✏️ Draw 2D & Reactions (Ketcher)', link: '/guide/ketcher' },
-              { text: '🧬 Insert & Rotate 3D Proteins (Mol*)', link: '/guide/molstar' },
-              { text: '📐 1-Click ACS B&W & SVG Export', link: '/guide/publishing' }
+              {
+                text: 'Release Notes (v1.7.1)',
+                link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.7.1'
+              },
+              {
+                text: 'All Releases',
+                link: 'https://github.com/naramdash/func_SMILES2IMG/releases'
+              },
+              {
+                text: 'Issue Tracker & Feedback',
+                link: 'https://github.com/naramdash/func_SMILES2IMG/issues'
+              }
             ]
-          },
-          { text: '🛠️ Formula Builder', link: '/tools/formula-builder', activeMatch: '^/tools/' },
-          { text: '📑 Formula Cheat Sheet', link: '/reference/formula', activeMatch: '^/reference/' },
-          { text: 'v1.7.1', link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.7.1' }
+          }
         ],
         sidebar: [
           {
@@ -68,9 +68,14 @@ export default defineConfig({
             ]
           },
           {
-            text: '🛠️ Formula Tools & Reference',
+            text: '🛠️ Interactive Web Tools',
             items: [
-              { text: '⚡ Interactive Formula Builder', link: '/tools/formula-builder' },
+              { text: '⚡ Interactive Formula Builder', link: '/tools/formula-builder' }
+            ]
+          },
+          {
+            text: '📑 Reference & Support',
+            items: [
               { text: '📑 25+ Formula & Style Cheat Sheet', link: '/reference/formula' },
               { text: '❓ Troubleshooting & #NAME? Fix (FAQ)', link: '/guide/faq' }
             ]
@@ -102,22 +107,23 @@ export default defineConfig({
           next: '다음 단계 가이드'
         },
         nav: [
-          { text: '🚀 시작하기 (Quickstart)', link: '/ko/guide/getting-started' },
           {
-            text: '📘 실무 가이드 (Excel · Word · PPT)',
+            text: 'v1.7.1',
             items: [
-              { text: '📗 Excel 1부: 구조식 테이블 & 이름/CAS 변환', link: '/ko/guide/excel' },
-              { text: '🔬 Excel 2부: 물성(MW·Lipinski), SAR & SDF', link: '/ko/guide/excel-cheminformatics' },
-              { text: '📘 Word: 학술 논문 본문 & 요약 표 작성', link: '/ko/guide/word' },
-              { text: '📙 PowerPoint: 다크 모드 & 3D 발표 슬라이드', link: '/ko/guide/powerpoint' },
-              { text: '✏️ 2D 구조 및 반응식 직접 그리기 (Ketcher)', link: '/ko/guide/ketcher' },
-              { text: '🧬 3D 단백질(PDB) 삽입 및 360° 회전 (Mol*)', link: '/ko/guide/molstar' },
-              { text: '📐 논문 투고용 ACS 일괄 변환 & SVG 내보내기', link: '/ko/guide/publishing' }
+              {
+                text: '최신 릴리스 노트 (v1.7.1)',
+                link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.7.1'
+              },
+              {
+                text: '전체 버전 릴리스 목록',
+                link: 'https://github.com/naramdash/func_SMILES2IMG/releases'
+              },
+              {
+                text: '버그 제보 및 기능 제안 (Issues)',
+                link: 'https://github.com/naramdash/func_SMILES2IMG/issues'
+              }
             ]
-          },
-          { text: '🛠️ 수식 자동 생성기', link: '/ko/tools/formula-builder', activeMatch: '^/ko/tools/' },
-          { text: '📑 전체 수식 사전', link: '/ko/reference/formula', activeMatch: '^/ko/reference/' },
-          { text: 'v1.7.1', link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.7.1' }
+          }
         ],
         sidebar: [
           {
@@ -144,9 +150,14 @@ export default defineConfig({
             ]
           },
           {
-            text: '🛠️ 엑셀 수식 도구 & 레퍼런스 (Reference)',
+            text: '🛠️ 웹 인터랙티브 도구',
             items: [
-              { text: '⚡ 클릭으로 만드는 수식 생성기', link: '/ko/tools/formula-builder' },
+              { text: '⚡ 클릭으로 만드는 수식 생성기', link: '/ko/tools/formula-builder' }
+            ]
+          },
+          {
+            text: '📑 레퍼런스 및 고객 지원',
+            items: [
               { text: '📑 25+ 전체 수식 & 스타일 키워드 사전', link: '/ko/reference/formula' },
               { text: '❓ 설치 및 #NAME? 문제 해결 (FAQ)', link: '/ko/guide/faq' }
             ]
