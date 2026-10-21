@@ -22,19 +22,19 @@ const presetInfo = computed(() => {
         return {
           title: 'Publication B&W (ACS 논문·특허용 흑백)',
           desc: '원소 색상을 모두 제거하고 고대비 검은색 선과 글자로 통일합니다. ACS, Wiley, Elsevier 등 인쇄 학술지 투고 및 특허 명세서 제출 시 표준 규격입니다.',
-          formula: '=SMILES2IMG(A2, "", "bw")'
+          formula: '=SMILES2IMG(A2, , "bw")'
         }
       case 'whitebg':
         return {
           title: 'White Background (불투명 흰색 사각형 배경)',
           desc: '분자 뒤에 깔끔한 흰색 사각형 배경을 깔아줍니다. 줄무늬 색상이 칠해진 엑셀 표, 음영이 들어간 워드 표, 사진 배경 슬라이드 위에서도 분자가 또렷하게 보입니다.',
-          formula: '=SMILES2IMG(A2, "white", "colored")'
+          formula: '=SMILES2IMG(A2, "white")'
         }
       case 'dark':
         return {
           title: 'Dark Mode (다크 슬라이드·테마용 흰색 선)',
           desc: '결합선과 탄소 골격을 선명한 흰색 잉크로 바꾸고 투명 배경을 유지합니다. 어두운 학회 발표 슬라이드(PPT)나 다크 모드 엑셀에서 흰 네모 테두리 없이 완벽히 어우러집니다.',
-          formula: '=SMILES2IMG(A2, "trans", "white")'
+          formula: '=SMILES2IMG(A2, "#1e1e1e", "white")'
         }
       default:
         return {
@@ -49,19 +49,19 @@ const presetInfo = computed(() => {
         return {
           title: 'Publication B&W (ACS & Patent Monochrome)',
           desc: 'Removes all element colors and renders crisp black bonds and labels. Ideal for print journal manuscripts (ACS, Wiley, Elsevier, RSC) and patent filings.',
-          formula: '=SMILES2IMG(A2, "", "bw")'
+          formula: '=SMILES2IMG(A2, , "bw")'
         }
       case 'whitebg':
         return {
           title: 'White Background (Solid White Box)',
           desc: 'Places a solid white background behind the structure so atoms and bonds stay clearly legible over shaded table rows, colored cells, or photo slide backgrounds.',
-          formula: '=SMILES2IMG(A2, "white", "colored")'
+          formula: '=SMILES2IMG(A2, "white")'
         }
       case 'dark':
         return {
           title: 'Dark Mode (White Ink + Transparent BG)',
           desc: 'Renders bonds in crisp white ink over a transparent background—blending seamlessly into dark PowerPoint slide decks and dark-mode spreadsheets without ugly white boxes.',
-          formula: '=SMILES2IMG(A2, "trans", "white")'
+          formula: '=SMILES2IMG(A2, "#1e1e1e", "white")'
         }
       default:
         return {

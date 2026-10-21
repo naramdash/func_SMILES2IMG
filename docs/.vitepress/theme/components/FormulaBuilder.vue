@@ -88,6 +88,11 @@ const styleTokens = computed(() => {
   if (optStereo.value) tokens.push('stereo')
   if (optH.value) tokens.push('h')
   if (optAllC.value) tokens.push('all-c')
+  return tokens
+})
+
+const transformTokens = computed(() => {
+  const tokens: string[] = []
   if (optFlip.value) tokens.push('flip')
   if (optFlipY.value) tokens.push('flipy')
   if (optRot90.value) tokens.push('rot90')
@@ -95,14 +100,32 @@ const styleTokens = computed(() => {
 })
 
 const generatedFormula = computed(() => {
-  const styleStr = styleTokens.value.join(' ')
-  if (!bgMode.value && !styleStr) {
+  const bg = bgMode.value
+  const style = styleTokens.value.join(' ')
+  const transform = transformTokens.value.join(' ')
+
+  if (!bg && !style && !transform) {
     return `=${funcName.value}(${firstArg.value})`
   }
-  if (bgMode.value && !styleStr) {
-    return `=${funcName.value}(${firstArg.value}, "${bgMode.value}")`
+  if (bg && !style && !transform) {
+    return `=${funcName.value}(${firstArg.value}, "${bg}")`
   }
-  return `=${funcName.value}(${firstArg.value}, "${bgMode.value}", "${styleStr}")`
+  if (!bg && style && !transform) {
+    return `=${funcName.value}(${firstArg.value}, , "${style}")`
+  }
+  if (!bg && !style && transform) {
+    return `=${funcName.value}(${firstArg.value}, , , "${transform}")`
+  }
+  if (bg && style && !transform) {
+    return `=${funcName.value}(${firstArg.value}, "${bg}", "${style}")`
+  }
+  if (!bg && style && transform) {
+    return `=${funcName.value}(${firstArg.value}, , "${style}", "${transform}")`
+  }
+  if (bg && !style && transform) {
+    return `=${funcName.value}(${firstArg.value}, "${bg}", , "${transform}")`
+  }
+  return `=${funcName.value}(${firstArg.value}, "${bg}", "${style}", "${transform}")`
 })
 
 const bondColor = computed(() => {
