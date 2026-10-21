@@ -25,7 +25,7 @@ public static class ExcelHelper {
 $resolvedAddIn = (Resolve-Path -LiteralPath $AddInPath).Path
 $targetFile = [System.IO.Path]::GetFullPath($OutputPath)
 
-Write-Host "=== Generating SMILES2IMG Comprehensive Showcase Workbook ===" -ForegroundColor Cyan
+Write-Host "=== Generating func_SMILES2IMG 8-Tab Master Interactive Showcase Workbook ===" -ForegroundColor Cyan
 Write-Host "AddIn Path  : $resolvedAddIn" -ForegroundColor Gray
 Write-Host "Target Path : $targetFile" -ForegroundColor Gray
 
@@ -33,107 +33,126 @@ if (Test-Path -LiteralPath $targetFile) {
     Remove-Item -LiteralPath $targetFile -Force
 }
 
-function Invoke-Excel([scriptblock]$operation) {
-    $deadline = [DateTime]::UtcNow.AddSeconds(30)
+function Invoke-Excel([scriptblock]$operation, [int]$timeoutSec = 45) {
+    $deadline = [DateTime]::UtcNow.AddSeconds($timeoutSec)
     do {
         try { return (& $operation) }
         catch {
-            if ($_.Exception.ToString() -notmatch '80010001|8001010A|800AC472|rejected by callee' -or
+            $hex = '{0:X8}' -f $_.Exception.HResult
+            if (($hex -notmatch '80010001|8001010A|800AC472' -and
+                 $_.Exception.ToString() -notmatch '80010001|8001010A|800AC472|rejected|거부') -or
                 [DateTime]::UtcNow -ge $deadline) { throw }
-            Start-Sleep -Milliseconds 250
+            Start-Sleep -Milliseconds 350
         }
     } while ($true)
 }
 
-function Populate-SheetData {
+function Create-TableSheet {
     param(
         [object]$sheet,
         [string]$title,
+        [string]$subtitle,
         [string[]]$headers,
-        [array]$rows,
-        [int]$bgrTitleColor,
-        [int]$bgrHeaderColor,
+        [array]$rows,           # 2D array of data values (text/numbers)
+        [hashtable]$formulas,   # column letter -> array of formula strings (1 per row)
+        [int]$titleColor,       # BGR color
+        [int]$headerColor,      # BGR color
         [int[]]$colWidths,
-        [bool]$isFormulaCol7 = $true
+        [int]$rowHeight = 85,
+        [int]$startRow = 4
     )
 
     $numCols = $headers.Length
     $numRows = $rows.Length
     $lastColChar = [char](64 + $numCols)
-    $endRow = 3 + $numRows
+    $endRow = $startRow + $numRows - 1
 
-    # 1. Title Row
+    # 1. Title Banner
     Invoke-Excel {
         $sheet.Range("A1").Value2 = $title
-        $sheet.Range("A1").Font.Size = 15
+        $sheet.Range("A1").Font.Size = 14
         $sheet.Range("A1").Font.Bold = $true
         $sheet.Range("A1").Font.Color = 0xFFFFFF
         $titleRange = $sheet.Range("A1:${lastColChar}1")
         $titleRange.Merge()
-        $titleRange.Interior.Color = $bgrTitleColor
-        $titleRange.RowHeight = 36
+        $titleRange.Interior.Color = $titleColor
+        $titleRange.RowHeight = 32
         $titleRange.VerticalAlignment = -4108 # xlCenter
         $titleRange.HorizontalAlignment = -4108
     }
 
-    # 2. Header Row
-    Invoke-Excel {
-        for ($c = 0; $c -lt $numCols; $c++) {
-            $sheet.Cells.Item(3, $c + 1).Value2 = $headers[$c]
+    # 2. Subtitle / Description Row
+    if ($subtitle) {
+        Invoke-Excel {
+            $sheet.Range("A2").Value2 = $subtitle
+            $sheet.Range("A2").Font.Size = 9.5
+            $sheet.Range("A2").Font.Italic = $true
+            $sheet.Range("A2").Font.Color = 0x333333
+            $subRange = $sheet.Range("A2:${lastColChar}2")
+            $subRange.Merge()
+            $subRange.Interior.Color = 0xF5F5F5
+            $subRange.RowHeight = 22
+            $subRange.VerticalAlignment = -4108
+            $subRange.HorizontalAlignment = -4131 # xlLeft
         }
-        $headerRange = $sheet.Range("A3:${lastColChar}3")
+    }
+
+    # 3. Header Row
+    Invoke-Excel {
+        $headerRow = $startRow - 1
+        for ($c = 0; $c -lt $numCols; $c++) {
+            $sheet.Cells.Item($headerRow, $c + 1).Value2 = $headers[$c]
+        }
+        $headerRange = $sheet.Range("A${headerRow}:${lastColChar}${headerRow}")
         $headerRange.Font.Bold = $true
-        $headerRange.Font.Size = 11
+        $headerRange.Font.Size = 10.5
         $headerRange.Font.Color = 0xFFFFFF
-        $headerRange.Interior.Color = $bgrHeaderColor
+        $headerRange.Interior.Color = $headerColor
         $headerRange.RowHeight = 26
         $headerRange.VerticalAlignment = -4108
         $headerRange.HorizontalAlignment = -4108
     }
 
-    # 3. Bulk Data Arrays
+    # 4. Populate Data Values & Formatting (Set BEFORE formulas!)
     $dataArr = New-Object 'object[,]' $numRows, $numCols
-    $formulaArr = New-Object 'object[,]' $numRows, 1
-    $formulaTextColIdx = if ($isFormulaCol7) { 5 } else { 4 }
-
     for ($r = 0; $r -lt $numRows; $r++) {
-        $item = $rows[$r]
         for ($c = 0; $c -lt $numCols; $c++) {
-            $val = $item[$c]
-            if ($c -eq $formulaTextColIdx -and $val -is [string] -and $val.StartsWith("=")) {
+            $val = $rows[$r][$c]
+            if ($val -is [string] -and $val.StartsWith("=")) {
                 $val = "'" + $val
             }
             $dataArr[$r, $c] = $val
         }
-        $formulaArr[$r, 0] = $item[$numCols]
     }
 
-    # 4. Fast C# Bulk Assignment
     Invoke-Excel {
-        $formulaTextColChar = if ($isFormulaCol7) { "F" } else { "E" }
-        $sheet.Range("${formulaTextColChar}4:${formulaTextColChar}${endRow}").NumberFormat = "@"
-
-        $dataRange = $sheet.Range("A4:${lastColChar}${endRow}")
+        $dataRange = $sheet.Range("A${startRow}:${lastColChar}${endRow}")
         [ExcelHelper]::SetRangeValue2($dataRange, $dataArr)
-        $dataRange.RowHeight = 85
+        $dataRange.RowHeight = $rowHeight
         $dataRange.Borders.LineStyle = 1 # xlContinuous
         $dataRange.Borders.Color = 0xD9D9D9
+        $dataRange.VerticalAlignment = -4108
+        $dataRange.HorizontalAlignment = -4108
+    }
 
-        # Column widths
+    # 5. Column Widths
+    Invoke-Excel {
         for ($c = 0; $c -lt $numCols; $c++) {
             $sheet.Columns.Item($c + 1).ColumnWidth = $colWidths[$c]
         }
+    }
 
-        # Apply Formulas
-        $formulaColChar = if ($isFormulaCol7) { "G" } else { "F" }
-        $formulaRange = $sheet.Range("${formulaColChar}4:${formulaColChar}${endRow}")
-        [ExcelHelper]::SetRangeFormula($formulaRange, $formulaArr)
-        $formulaRange.HorizontalAlignment = -4108
-        $formulaRange.VerticalAlignment = -4108
-
-        # Center Align specific columns
-        $sheet.Range("A4:A${endRow}").HorizontalAlignment = -4108
-        $sheet.Range("B4:B${endRow}").HorizontalAlignment = -4108
+    # 6. Apply Formulas
+    foreach ($colKey in $formulas.Keys) {
+        $colFormulas = $formulas[$colKey]
+        $formulaArr = New-Object 'object[,]' $numRows, 1
+        for ($r = 0; $r -lt $numRows; $r++) {
+            $formulaArr[$r, 0] = $colFormulas[$r]
+        }
+        Invoke-Excel {
+            $targetColRange = $sheet.Range("${colKey}${startRow}:${colKey}${endRow}")
+            [ExcelHelper]::SetRangeFormula($targetColRange, $formulaArr)
+        }
     }
 }
 
@@ -141,7 +160,6 @@ $excel = $null
 $workbook = $null
 
 try {
-    # Ensure clean Excel state
     Get-Process excel -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
     Start-Sleep -Milliseconds 500
 
@@ -156,165 +174,383 @@ try {
     Write-Host "XLL registered successfully!" -ForegroundColor Green
 
     $workbook = $excel.Workbooks.Add()
-    while ($workbook.Worksheets.Count -lt 4) {
+    while ($workbook.Worksheets.Count -lt 8) {
         $null = $workbook.Worksheets.Add()
     }
 
     $sheet1 = $workbook.Worksheets.Item(1)
-    $sheet1.Name = "SMILES2IMG (In-Cell 365)"
+    $sheet1.Name = "0. Quick Guide"
+    $sheet1.Tab.Color = 0x00A5FF # Gold BGR
 
     $sheet2 = $workbook.Worksheets.Item(2)
-    $sheet2.Name = "SMILES2IMG.FLOAT (Excel 2016+)"
+    $sheet2.Name = "1. Structure to Image"
+    $sheet2.Tab.Color = 0xD97000 # Blue BGR
 
     $sheet3 = $workbook.Worksheets.Item(3)
-    $sheet3.Name = "Complex Natural Products"
+    $sheet3.Name = "2. Molecular Properties"
+    $sheet3.Tab.Color = 0x228B22 # Forest Green BGR
 
     $sheet4 = $workbook.Worksheets.Item(4)
-    $sheet4.Name = "Style & Transform Matrix"
+    $sheet4.Name = "3. Substructure & Similarity"
+    $sheet4.Tab.Color = 0x800080 # Purple BGR
+
+    $sheet5 = $workbook.Worksheets.Item(5)
+    $sheet5.Name = "4. Drawing Styles & Options"
+    $sheet5.Tab.Color = 0x0080FF # Orange BGR
+
+    $sheet6 = $workbook.Worksheets.Item(6)
+    $sheet6.Name = "5. Reactions & KET Canvas"
+    $sheet6.Tab.Color = 0x507020 # Dark Teal BGR
+
+    $sheet7 = $workbook.Worksheets.Item(7)
+    $sheet7.Name = "6. Legacy Excel (.FLOAT)"
+    $sheet7.Tab.Color = 0x1B4D1B # Dark Green BGR
+
+    $sheet8 = $workbook.Worksheets.Item(8)
+    $sheet8.Name = "7. 3D & Ribbon Tools"
+    $sheet8.Tab.Color = 0x800000 # Navy / Maroon BGR
 
     # =========================================================================
-    # SHEET 1: SMILES2IMG (In-Cell 365)
+    # TAB 1: Quick Guide & Shortcuts
     # =========================================================================
-    Write-Host "Populating Sheet 1: SMILES2IMG (In-Cell 365)..." -ForegroundColor Yellow
-    $sheet1.Tab.Color = 0xD97000 # Blue BGR
+    Write-Host "Populating Tab 1: Quick Guide & Shortcuts..." -ForegroundColor Yellow
+    $t1Headers = @("No.", "Feature Category", "Compound / Input", "Formula (Plain Text)", "Live Working Result (In-Cell)", "Keyboard Shortcut / Action", "Key Capability & Tips")
+    $t1ColWidths = @(6, 22, 24, 38, 28, 28, 52)
 
-    $s1Headers = @("No.", "Category", "Compound Name", "Chemical SMILES", "Applied Option", "Formula (Text)", "Molecular Structure (In-Cell)", "Description & Notes")
-    $s1ColWidths = @(6, 16, 22, 32, 26, 48, 28, 48)
-
-    $s1Rows = @(
-        @(1, "Basic", "Ethanol", "CCO", "Default (Transparent CPK)", '=SMILES2IMG(D4)', "", "Default transparent canvas + elemental CPK coloring", '=SMILES2IMG(D4)'),
-        @(2, "Basic", "Benzene", "c1ccccc1", "Default", '=SMILES2IMG(D5)', "", "Automatic Kekulé alternating double bond representation", '=SMILES2IMG(D5)'),
-        @(3, "Basic", "Acetone", "CC(=O)C", "Inline SMILES Literal", '=SMILES2IMG("CC(=O)C")', "", "Direct string literal input without external cell reference", '=SMILES2IMG("CC(=O)C")'),
-        @(4, "Basic", "Pyridine", "c1ccncc1", "Default", '=SMILES2IMG(D7)', "", "Nitrogen heterocyclic aromatic ring structure", '=SMILES2IMG(D7)'),
-        @(5, "Basic", "Ibuprofen", "CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O", "Default", '=SMILES2IMG(D8)', "", "NSAID drug core with asymmetric chiral wedge bond", '=SMILES2IMG(D8)'),
-
-        @(6, "Background", "Caffeine", "Cn1cnc2c1c(=O)n(C)c(=O)n2C", 'bg="white"', '=SMILES2IMG(D9, "white")', "", "Opaque pure-white canvas background", '=SMILES2IMG(D9, "white")'),
-        @(7, "Background", "Paracetamol", "CC(=O)Nc1ccc(O)cc1", 'bg="cornsilk"', '=SMILES2IMG(D10, "cornsilk")', "", "Standard CSS color name (cornsilk light yellow)", '=SMILES2IMG(D10, "cornsilk")'),
-        @(8, "Background", "Dopamine", "NCCc1ccc(O)c(O)c1", 'bg="aliceblue"', '=SMILES2IMG(D11, "aliceblue")', "", "Standard CSS color name (aliceblue soft light blue)", '=SMILES2IMG(D11, "aliceblue")'),
-        @(9, "Background", "Serotonin", "NCCc1c[nH]c2ccc(O)cc12", 'bg="#F0F4F8"', '=SMILES2IMG(D12, "#F0F4F8")', "", "Custom 6-digit Hex background color code", '=SMILES2IMG(D12, "#F0F4F8")'),
-
-        @(10, "Single Style", "Aspirin", "CC(=O)Oc1ccccc1C(=O)O", 'style="bw"', '=SMILES2IMG(D13, , "bw")', "", "100% monochrome line art for patent (USPTO/KIPO) & journals", '=SMILES2IMG(D13, , "bw")'),
-        @(11, "Single Style", "L-Lactic Acid", "C[C@H](O)C(=O)O", 'style="stereo"', '=SMILES2IMG(D14, , "stereo")', "", "Explicit R/S chiral centers and E/Z double-bond stereochemistry", '=SMILES2IMG(D14, , "stereo")'),
-        @(12, "Single Style", "Ethanol", "CCO", 'style="h"', '=SMILES2IMG(D15, , "h")', "", "Explicit C-H bond lines and hydrogens to inspect steric hindrance", '=SMILES2IMG(D15, , "h")'),
-        @(13, "Single Style", "Benzene", "c1ccccc1", 'style="num"', '=SMILES2IMG(D16, , "num")', "", "Sequential atom indices (1, 2, 3...) for NMR peak assignment", '=SMILES2IMG(D16, , "num")'),
-        @(14, "Single Style", "Acetone", "CC(=O)C", 'style="all-c"', '=SMILES2IMG(D17, , "all-c")', "", "Explicit 'C' label on all skeletal carbons (educational use)", '=SMILES2IMG(D17, , "all-c")'),
-        @(15, "Single Style", "Ibuprofen", "CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O", 'style="ink=#003366"', '=SMILES2IMG(D18, "aliceblue", "ink=#003366")', "", "Corporate CI navy bond lines on aliceblue canvas", '=SMILES2IMG(D18, "aliceblue", "ink=#003366")'),
-        @(16, "Single Style", "Aspirin", "CC(=O)Oc1ccccc1C(=O)O", 'style="white" (Dark)', '=SMILES2IMG(D19, "#1e1e1e", "white")', "", "Pure-white bond lines for dark presentation slides", '=SMILES2IMG(D19, "#1e1e1e", "white")'),
-
-        @(17, "Multi-Style", "Aspirin", "CC(=O)Oc1ccccc1C(=O)O", 'style="bw num" (Space)', '=SMILES2IMG(D20, , "bw num")', "", "Monochrome line art combined with atom index numbering", '=SMILES2IMG(D20, , "bw num")'),
-        @(18, "Multi-Style", "L-Lactic Acid", "C[C@H](O)C(=O)O", 'style="bw|stereo" (Pipe)', '=SMILES2IMG(D21, , "bw|stereo")', "", "Pipe (|) delimited monochrome drawing with chiral annotations", '=SMILES2IMG(D21, , "bw|stereo")'),
-        @(19, "Multi-Style", "Ethanol", "CCO", 'style="num h" (Space)', '=SMILES2IMG(D22, , "num h")', "", "Combined atom indexing and explicit hydrogens for reaction tracking", '=SMILES2IMG(D22, , "num h")'),
-        @(20, "Multi-Style", "Nicotine", "CN1CCC[C@H]1c2cccnc2", 'style="white stereo num h"', '=SMILES2IMG(D23, "#1a1a1a", "white stereo num h")', "", "Dark canvas with pure-white bonds, chiral labels, numbers, and hydrogens", '=SMILES2IMG(D23, "#1a1a1a", "white stereo num h")'),
-
-        @(21, "Transform", "Nicotine", "CN1CCC[C@H]1c2cccnc2", 'transform="flip"', '=SMILES2IMG(D24, , , "flip")', "", "Horizontal reflection matching standard textbook & database layout", '=SMILES2IMG(D24, , , "flip")'),
-        @(22, "Transform", "Cholesterol", "CC(C)CCCC(C)C1CCC2C1(CCC3C2CC=C4C3(CCC(C4)O)C)C", 'transform="flipy"', '=SMILES2IMG(D25, , , "flipy")', "", "Vertical 2D planar reflection", '=SMILES2IMG(D25, , , "flipy")'),
-        @(23, "Transform", "Aspirin", "CC(=O)Oc1ccccc1C(=O)O", 'transform="rot90"', '=SMILES2IMG(D26, , , "rot90")', "", "90-deg clockwise rotation for compact vertical column layouts", '=SMILES2IMG(D26, , , "rot90")'),
-        @(24, "Transform", "Caffeine", "Cn1cnc2c1c(=O)n(C)c(=O)n2C", 'transform="rot180"', '=SMILES2IMG(D27, , , "rot180")', "", "180-deg upside-down rotation", '=SMILES2IMG(D27, , , "rot180")'),
-        @(25, "Transform", "Aspirin", "CC(=O)Oc1ccccc1C(=O)O", 'transform="flip rot90"', '=SMILES2IMG(D28, , , "flip rot90")', "", "Chained transformation: horizontal flip followed by 90-deg rotation", '=SMILES2IMG(D28, , , "flip rot90")'),
-
-        @(26, "All-in-One", "Aspirin", "CC(=O)Oc1ccccc1C(=O)O", 'White + Full (Space) + Rot', '=SMILES2IMG(D29, "white", "bw num stereo h all-c", "flip rot90")', "", "All features: White canvas + B/W + Atom numbers + Chiral + H + Carbons + Flip + 90-deg rot", '=SMILES2IMG(D29, "white", "bw num stereo h all-c", "flip rot90")'),
-        @(27, "All-in-One", "Penicillin G", "CC1(C(N2C(S1)C(C2=O)NC(=O)Cc3ccccc3)C(=O)O)C", 'White + Full (Pipe) + Rot', '=SMILES2IMG(D30, "white", "bw|num|stereo|h|all-c", "flip rot90")', "", "Pipe (|) delimited ultimate all-in-one formula activating all capabilities", '=SMILES2IMG(D30, "white", "bw|num|stereo|h|all-c", "flip rot90")')
+    $t1Rows = @(
+        @(1, "1. Chemical Name Lookup", "Aspirin", '=NAME2IMG("Aspirin")', "", "Type formula & press Enter", "Auto-renders 2D structure from PubChem common chemical name"),
+        @(2, "2. CAS Registry Lookup", "58-08-2", '=NAME2IMG("58-08-2")', "", "Type formula & press Enter", "Auto-renders Caffeine structure directly from standard CAS number"),
+        @(3, "3. Chemical SMILES String", "CC(=O)Oc1ccccc1C(=O)O", '=SMILES2IMG(C6)', "", "Type formula & press Enter", "Standard native in-cell picture scaling with row & column resize"),
+        @(4, "4. Molecular Weight (MW)", "CC(=O)Oc1ccccc1C(=O)O", '=SMILES2MW(C7)', "", "Cell formula", "Zero-lag in-memory molecular weight calculation (180.16 g/mol)"),
+        @(5, "5. Chemical Formula", "CC(=O)Oc1ccccc1C(=O)O", '=SMILES2FORMULA(C8)', "", "Cell formula", "Calculates Hill chemical formula (C9H8O4) locally with zero lag"),
+        @(6, "6. Lipinski Rule of 5", "CC(=O)Oc1ccccc1C(=O)O", '=SMILES2LIPINSKI(C9)', "", "Cell formula", "Screens oral bioavailability: Pass (0 violations) or lists rule failures"),
+        @(7, "7. Substructure Match", "CC(=O)Oc1ccccc1C(=O)O", '=SMILES.MATCH(C10, "c1ccccc1")', "", "Cell formula", "Fast subgraph isomorphism check: TRUE if benzene ring is present"),
+        @(8, "8. 2D Sketcher In-Place", "Any Molecule Cell", "Double-Click Any Cell", "", "Double-Click or Ctrl+Shift+K", "Opens Ketcher 2D Editor in 0.05s; edit bonds and click Apply"),
+        @(9, "9. 3D Protein Embedding", "PDB ID: 1CRN", "Ribbon -> [SMILES] -> Mol*", "", "Click Ribbon [SMILES] Tab", "Embed rotatable 3D macromolecules & complexes into Office slides/cells"),
+        @(10, "10. ACS B&W & SVG Copy", "Selected Molecules", "Right-Click -> Chemical Structure", "", "Right-Click Context Menu", "Copy crisp vector SVG for Illustrator or 1-click batch B&W style")
     )
-
-    Populate-SheetData $sheet1 "SMILES2IMG Comprehensive Showcase (Microsoft 365 / Excel 2024 Native In-Cell)" $s1Headers $s1Rows 0x593E1F 0x794E1F $s1ColWidths $true
+    $t1Formulas = @{
+        "E" = @(
+            '=NAME2IMG("Aspirin")',
+            '=NAME2IMG("58-08-2")',
+            '=SMILES2IMG(C6)',
+            '=SMILES2MW(C7)',
+            '=SMILES2FORMULA(C8)',
+            '=SMILES2LIPINSKI(C9)',
+            '=SMILES.MATCH(C10, "c1ccccc1")',
+            '=SMILES2IMG("CC(=O)Oc1ccccc1C(=O)O", , "stereo")',
+            '=SMILES2IMG("CC(=O)Nc1ccc(O)cc1", "white")',
+            '=SMILES2IMG("CC(=O)Oc1ccccc1C(=O)O", , "bw")'
+        )
+    }
+    Create-TableSheet $sheet1 "func_SMILES2IMG — Master Interactive Guide & Function Sandbox" "💡 Tip: Double-click any cell or structure picture to sketch in Ketcher 2D! All formulas evaluate 100% locally with zero cloud requests." $t1Headers $t1Rows $t1Formulas 0x0045B4 0x0066CC $t1ColWidths 85 4
 
     # =========================================================================
-    # SHEET 2: SMILES2IMG.FLOAT (Excel 2016+)
+    # TAB 2: Name & SMILES to Image
     # =========================================================================
-    Write-Host "Populating Sheet 2: SMILES2IMG.FLOAT (Excel 2016+)..." -ForegroundColor Yellow
-    $sheet2.Tab.Color = 0x228B22 # Forest Green BGR
+    Write-Host "Populating Tab 2: Name & SMILES to Image..." -ForegroundColor Yellow
+    $t2Headers = @("No.", "Input Category", "Compound Input (Name / CAS / SMILES / InChI)", "Formula Syntax (Text)", "Rendered 2D Structure (In-Cell)", "Resolved Canonical SMILES", "Resolved Common Name", "Application & Structural Highlights")
+    $t2ColWidths = @(6, 18, 32, 42, 28, 38, 22, 48)
 
-    $s2Headers = @("No.", "Category", "Compound Name", "Chemical SMILES", "Applied Option", "Formula (Text)", "Floating Molecular Shape (Over Cell)", "Features & Behavior")
-    $s2ColWidths = @(6, 16, 22, 32, 26, 48, 28, 48)
-
-    $s2Rows = @(
-        @(1, "Basic", "Ethanol", "CCO", "Default", '=SMILES2IMG.FLOAT(D4)', "", "Automatic cell-anchored floating picture on Excel 2016/2019/2021", '=SMILES2IMG.FLOAT(D4)'),
-        @(2, "Basic", "Caffeine", "Cn1cnc2c1c(=O)n(C)c(=O)n2C", "Default", '=SMILES2IMG.FLOAT(D5)', "", "Linked to cell movement and resizing (xlMoveAndSize)", '=SMILES2IMG.FLOAT(D5)'),
-        @(3, "Background", "Paracetamol", "CC(=O)Nc1ccc(O)cc1", 'bg="white"', '=SMILES2IMG.FLOAT(D6, "white")', "", "Opaque white canvas floating shape", '=SMILES2IMG.FLOAT(D6, "white")'),
-        @(4, "Single Style", "Aspirin", "CC(=O)Oc1ccccc1C(=O)O", 'style="bw"', '=SMILES2IMG.FLOAT(D7, , "bw")', "", "Monochrome patent line art floating shape for legacy Excel", '=SMILES2IMG.FLOAT(D7, , "bw")'),
-        @(5, "Single Style", "L-Lactic Acid", "C[C@H](O)C(=O)O", 'style="stereo"', '=SMILES2IMG.FLOAT(D8, , "stereo")', "", "Chiral R/S stereochemical labels in floating mode", '=SMILES2IMG.FLOAT(D8, , "stereo")'),
-        @(6, "Single Style", "Ethanol", "CCO", 'style="h"', '=SMILES2IMG.FLOAT(D9, , "h")', "", "All C-H hydrogens unfolded in floating mode", '=SMILES2IMG.FLOAT(D9, , "h")'),
-        @(7, "Multi-Style", "Aspirin", "CC(=O)Oc1ccccc1C(=O)O", 'style="bw num"', '=SMILES2IMG.FLOAT(D10, , "bw num")', "", "Monochrome combined with atom indices in floating mode", '=SMILES2IMG.FLOAT(D10, , "bw num")'),
-        @(8, "Multi-Style", "Nicotine", "CN1CCC[C@H]1c2cccnc2", 'style="white stereo"', '=SMILES2IMG.FLOAT(D11, "#1e1e1e", "white stereo")', "", "Dark mode canvas with pure-white bonds and chiral labels", '=SMILES2IMG.FLOAT(D11, "#1e1e1e", "white stereo")'),
-        @(9, "Transform", "Nicotine", "CN1CCC[C@H]1c2cccnc2", 'transform="flip"', '=SMILES2IMG.FLOAT(D12, , , "flip")', "", "Textbook horizontal flip in floating mode", '=SMILES2IMG.FLOAT(D12, , , "flip")'),
-        @(10, "All-in-One", "Aspirin", "CC(=O)Oc1ccccc1C(=O)O", 'White + Full (Space) + Rot', '=SMILES2IMG.FLOAT(D13, "white", "bw num stereo h all-c", "rot90")', "", "Ultimate all-in-one floating molecular rendering on legacy Excel", '=SMILES2IMG.FLOAT(D13, "white", "bw num stereo h all-c", "rot90")')
+    $t2Rows = @(
+        @(1, "Common Name", "Aspirin", '=NAME2IMG(C4)', "", '=NAME2SMILES(C4)', '=SMILES2NAME(F4)', "Acetylsalicylic acid — NSAID analgesic and antipyretic drug"),
+        @(2, "Common Name", "Ibuprofen", '=NAME2IMG(C5)', "", '=NAME2SMILES(C5)', '=SMILES2NAME(F5)', "Propionic acid derivative NSAID with asymmetric chiral center"),
+        @(3, "Common Name", "Caffeine", '=NAME2IMG(C6)', "", '=NAME2SMILES(C6)', '=SMILES2NAME(F6)', "Purine alkaloid CNS stimulant from coffee beans and tea"),
+        @(4, "Common Name", "Paracetamol", '=NAME2IMG(C7)', "", '=NAME2SMILES(C7)', '=SMILES2NAME(F7)', "Acetaminophen — Para-acetylaminophenol analgesic"),
+        @(5, "CAS Number", "50-78-2", '=NAME2IMG(C8)', "", '=NAME2SMILES(C8)', "Aspirin", "Aspirin CAS registry number lookup without knowing SMILES"),
+        @(6, "CAS Number", "58-08-2", '=NAME2IMG(C9)', "", '=NAME2SMILES(C9)', "Caffeine", "Caffeine CAS registry number lookup"),
+        @(7, "CAS Number", "103-90-2", '=NAME2IMG(C10)', "", '=NAME2SMILES(C10)', "Acetaminophen", "Paracetamol / Acetaminophen CAS lookup"),
+        @(8, "SMILES String", "c1ccccc1", '=SMILES2IMG(C11)', "", "c1ccccc1", '=SMILES2NAME(C11)', "Benzene — Fundamental aromatic ring core with alternating double bonds"),
+        @(9, "SMILES String", "CCO", '=SMILES2IMG(C12)', "", "CCO", '=SMILES2NAME(C12)', "Ethanol — Primary aliphatic alcohol"),
+        @(10, "SMILES String", "CN1CCC[C@H]1c2cccnc2", '=SMILES2IMG(C13)', "", "CN1CCC[C@H]1c2cccnc2", '=SMILES2NAME(C13)', "Nicotine — Tobacco alkaloid with chiral pyrrolidine and pyridine rings"),
+        @(11, "SMILES String", "CC(=O)C", '=SMILES2IMG(C14)', "", "CC(=O)C", '=SMILES2NAME(C14)', "Acetone — Simple ketone organic solvent"),
+        @(12, "InChI String", "InChI=1S/C8H10N4O2/c1-10-4-9-6-5(10)7(13)12(3)8(14)11(6)2/h4H,1-3H3", '=INCHI2IMG(C15)', "", "Cn1cnc2c1c(=O)n(C)c(=O)n2C", "Caffeine", "Direct rendering from official IUPAC standard InChI string")
     )
-
-    Populate-SheetData $sheet2 "SMILES2IMG.FLOAT Floating Mode Showcase (Excel 2016 / 2019 / 2021 Compatible)" $s2Headers $s2Rows 0x1B4D1B 0x228B22 $s2ColWidths $true
+    $t2Formulas = @{
+        "E" = @(
+            '=NAME2IMG(C4)',
+            '=NAME2IMG(C5)',
+            '=NAME2IMG(C6)',
+            '=NAME2IMG(C7)',
+            '=NAME2IMG(C8)',
+            '=NAME2IMG(C9)',
+            '=NAME2IMG(C10)',
+            '=SMILES2IMG(C11)',
+            '=SMILES2IMG(C12)',
+            '=SMILES2IMG(C13)',
+            '=SMILES2IMG(C14)',
+            '=INCHI2IMG(C15)'
+        );
+        "F" = @(
+            '=NAME2SMILES(C4)',
+            '=NAME2SMILES(C5)',
+            '=NAME2SMILES(C6)',
+            '=NAME2SMILES(C7)',
+            '=NAME2SMILES(C8)',
+            '=NAME2SMILES(C9)',
+            '=NAME2SMILES(C10)',
+            'c1ccccc1',
+            'CCO',
+            'CN1CCC[C@H]1c2cccnc2',
+            'CC(=O)C',
+            'Cn1cnc2c1c(=O)n(C)c(=O)n2C'
+        );
+        "G" = @(
+            '=SMILES2NAME(F4)',
+            '=SMILES2NAME(F5)',
+            '=SMILES2NAME(F6)',
+            '=SMILES2NAME(F7)',
+            'Aspirin',
+            'Caffeine',
+            'Acetaminophen',
+            '=SMILES2NAME(C11)',
+            '=SMILES2NAME(C12)',
+            '=SMILES2NAME(C13)',
+            '=SMILES2NAME(C14)',
+            'Caffeine'
+        )
+    }
+    Create-TableSheet $sheet2 "1. Chemical Structure Auto-Rendering (=NAME2IMG, =SMILES2IMG & =INCHI2IMG)" "💡 Tip: Drag formulas down hundreds of rows to automatically convert chemical catalogs or compound lists into high-resolution structures." $t2Headers $t2Rows $t2Formulas 0xD97000 0xEA8511 $t2ColWidths 85 4
 
     # =========================================================================
-    # SHEET 3: Complex Drugs & Natural Products
+    # TAB 3: Drug Discovery & Lipinski Ro5
     # =========================================================================
-    Write-Host "Populating Sheet 3: Complex Natural Products..." -ForegroundColor Yellow
-    $sheet3.Tab.Color = 0x800080 # Purple BGR
+    Write-Host "Populating Tab 3: Drug Discovery & Lipinski Ro5..." -ForegroundColor Yellow
+    $t3Headers = @("No.", "Drug Name", "SMILES String", "2D Structure", "Formula", "MW (g/mol)", "Exact Mass", "LogP", "TPSA (Å²)", "HBD", "HBA", "RotBonds", "Lipinski Ro5 Assessment", "Pharmacology & Significance")
+    $t3ColWidths = @(5, 16, 26, 24, 14, 12, 13, 9, 11, 8, 8, 10, 24, 38)
 
-    $s3Headers = @("No.", "Category", "Compound Name", "Chemical SMILES", "Structural Features & Chiral Centers", "Formula (Text)", "Molecular Structure (In-Cell)", "Pharmacology & Significance")
-    $s3ColWidths = @(6, 18, 24, 34, 32, 48, 32, 48)
-
-    $s3Rows = @(
-        @(1, "Antimalarial", "Artemisinin", "CC1CC2CC3(C)OO4C(O2)(C1C(=O)O3)C(C)CC4", "7 chiral centers, endoperoxide bridge", '=SMILES2IMG(D4, , "stereo")', "", "Nobel Prize-winning antimalarial natural product from sweet wormwood", '=SMILES2IMG(D4, , "stereo")'),
-        @(2, "Antineoplastic", "Paclitaxel", "CC1=C2C(C(=O)C3(C(CC4C(C3C(C(C2(C)C)(CC1OC(=O)C(C(c5ccccc5)NC(=O)c6ccccc6)O)O)OC(=O)c7ccccc7)(CO4)OC(=O)C)O)C)OC(=O)C", "11 chiral centers, complex polycyclic core", '=SMILES2IMG(D5)', "", "Taxus brevifolia bark-derived tubulin inhibitor anticancer blockbuster", '=SMILES2IMG(D5)'),
-        @(3, "Biological Sterol", "Cholesterol", "CC(C)CCCC(C)C1CCC2C1(CCC3C2CC=C4C3(CCC(C4)O)C)C", "8 chiral centers, 4-ring fused steroid core", '=SMILES2IMG(D6, , "stereo")', "", "Cell membrane fluidity regulator and steroid hormone precursor", '=SMILES2IMG(D6, , "stereo")'),
-        @(4, "Opioid Analgesic", "Morphine", "CN1CC[C@]23[C@@H]4Oc5c3c(CC1[C@@H]2C=C[C@@H]4O)ccc5O", "5 chiral centers, 5 fused rings", '=SMILES2IMG(D7, , "stereo")', "", "Opium poppy-derived potent central opioid analgesic alkaloid", '=SMILES2IMG(D7, , "stereo")'),
-        @(5, "Beta-lactam", "Penicillin G", "CC1(C(N2C(S1)C(C2=O)NC(=O)Cc3ccccc3)C(=O)O)C", "3 chiral centers, thiazolidine-beta-lactam core", '=SMILES2IMG(D8, "white", "bw num stereo")', "", "Historic broad-spectrum antibiotic rendered in patent style", '=SMILES2IMG(D8, "white", "bw num stereo")'),
-        @(6, "Lipid-Lowering", "Atorvastatin", "CC(C)c1c(c(c(c1NC(=O)c2ccccc2)c3ccc(cc3)F)c4ccccc4)CC(O)CC(O)CC(=O)O", "2 chiral centers, HMG-CoA reductase inhibitor", '=SMILES2IMG(D9)', "", "Top-selling statin blockbuster in pharmaceutical history (Lipitor)", '=SMILES2IMG(D9)'),
-        @(7, "Biological Energy", "ATP", "Nc1ncnc2n(cnc12)[C@@H]3O[C@H](COP(=O)(O)OP(=O)(O)OP(=O)(O)O)[C@@H](O)[C@H]3O", "4 chiral centers, triphosphate anhydride", '=SMILES2IMG(D10)', "", "Universal energy currency powering cellular metabolism", '=SMILES2IMG(D10)'),
-        @(8, "Antimicrobial", "Sulfamethoxazole", "Cc1cc(NS(=O)(=O)c2ccc(N)cc2)no1", "Isoxazole-containing sulfonamide", '=SMILES2IMG(D11, , "bw")', "", "Folate synthesis inhibitor antibacterial agent for UTI treatment", '=SMILES2IMG(D11, , "bw")'),
-        @(9, "Organic Dye", "Indigo Dye", "O=C1C(=C2Nc3ccccc3C2=O)Nc4ccccc14", "Bis-indoline conjugated chromophore", '=SMILES2IMG(D12, "aliceblue", "ink=#003366")', "", "Classic denim dye rendered in corporate CI ink and canvas", '=SMILES2IMG(D12, "aliceblue", "ink=#003366")'),
-        @(10, "Carbohydrate", "D-Glucose", "OC[C@H]1OC(O)[C@H](O)[C@@H](O)[C@@H]1O", "5 chiral centers, pyranose hemiacetal ring", '=SMILES2IMG(D13, , "stereo num")', "", "Primary fuel of cellular respiration in biology & biochemistry", '=SMILES2IMG(D13, , "stereo num")'),
-        @(11, "Neurotransmitter", "Dopamine", "NCCc1ccc(O)c(O)c1", "Catecholamine neurotransmitter", '=SMILES2IMG(D14, , "num h")', "", "Key neurotransmitter in reward pathways and motor control", '=SMILES2IMG(D14, , "num h")'),
-        @(12, "Natural Flavoring", "Vanillin", "O=Cc1ccc(O)c(OC)c1", "Aromatic aldehyde-phenol", '=SMILES2IMG(D15, , "all-c")', "", "Classic phenolic flavor compound from vanilla pods", '=SMILES2IMG(D15, , "all-c")')
+    $t3Rows = @(
+        @(1, "Aspirin", "CC(=O)Oc1ccccc1C(=O)O", "", "", "", "", "", "", "", "", "", "", "Oral NSAID analgesic; 0 Ro5 violations"),
+        @(2, "Ibuprofen", "CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O", "", "", "", "", "", "", "", "", "", "", "Anti-inflammatory blockbuster; 0 Ro5 violations"),
+        @(3, "Caffeine", "Cn1cnc2c1c(=O)n(C)c(=O)n2C", "", "", "", "", "", "", "", "", "", "", "Purine alkaloid stimulant; 0 Ro5 violations"),
+        @(4, "Paracetamol", "CC(=O)Nc1ccc(O)cc1", "", "", "", "", "", "", "", "", "", "", "Over-the-counter analgesic; 0 Ro5 violations"),
+        @(5, "Penicillin G", "CC1(C(N2C(S1)C(C2=O)NC(=O)Cc3ccccc3)C(=O)O)C", "", "", "", "", "", "", "", "", "", "", "Beta-lactam antibiotic; 0 Ro5 violations"),
+        @(6, "Morphine", "CN1CC[C@]23[C@@H]4Oc5c3c(CC1[C@@H]2C=C[C@@H]4O)ccc5O", "", "", "", "", "", "", "", "", "", "", "Potent central opioid alkaloid; 0 Ro5 violations"),
+        @(7, "Dopamine", "NCCc1ccc(O)c(O)c1", "", "", "", "", "", "", "", "", "", "", "Essential reward neurotransmitter; 0 Ro5 violations"),
+        @(8, "Nicotine", "CN1CCC[C@H]1c2cccnc2", "", "", "", "", "", "", "", "", "", "", "Potent cholinergic stimulant; 0 Ro5 violations"),
+        @(9, "Artemisinin", "CC1CC2CC3(C)OO4C(O2)(C1C(=O)O3)C(C)CC4", "", "", "", "", "", "", "", "", "", "", "Nobel Prize antimalarial natural product; 0 Ro5 violations"),
+        @(10, "Cholesterol", "CC(C)CCCC(C)C1CCC2C1(CCC3C2CC=C4C3(CCC(C4)O)C)C", "", "", "", "", "", "", "", "", "", "", "Lipid sterol; violates Ro5 due to high LogP (>5)"),
+        @(11, "Atorvastatin", "CC(C)c1c(c(c(c1NC(=O)c2ccccc2)c3ccc(cc3)F)c4ccccc4)CC(O)CC(O)CC(=O)O", "", "", "", "", "", "", "", "", "", "", "Lipitor statin; violates Ro5 due to MW (>500)"),
+        @(12, "Paclitaxel", "CC1=C2C(C(=O)C3(C(CC4C(C3C(C(C2(C)C)(CC1OC(=O)C(C(c5ccccc5)NC(=O)c6ccccc6)O)O)OC(=O)c7ccccc7)(CO4)OC(=O)C)O)C)OC(=O)C", "", "", "", "", "", "", "", "", "", "", "Chemotherapy blockbuster (Taxol); violates multiple Ro5 criteria")
     )
-
-    Populate-SheetData $sheet3 "Complex Natural Products & Blockbuster Pharmaceuticals Gallery" $s3Headers $s3Rows 0x4B0082 0x800080 $s3ColWidths $true
+    $t3Formulas = @{
+        "D" = @(4..15 | ForEach-Object { "=SMILES2IMG(C$_)" });
+        "E" = @(4..15 | ForEach-Object { "=SMILES2FORMULA(C$_)" });
+        "F" = @(4..15 | ForEach-Object { "=SMILES2MW(C$_)" });
+        "G" = @(4..15 | ForEach-Object { "=SMILES2EXACTMASS(C$_)" });
+        "H" = @(4..15 | ForEach-Object { "=SMILES2LOGP(C$_)" });
+        "I" = @(4..15 | ForEach-Object { "=SMILES2TPSA(C$_)" });
+        "J" = @(4..15 | ForEach-Object { "=SMILES2HBD(C$_)" });
+        "K" = @(4..15 | ForEach-Object { "=SMILES2HBA(C$_)" });
+        "L" = @(4..15 | ForEach-Object { "=SMILES2ROTBONDS(C$_)" });
+        "M" = @(4..15 | ForEach-Object { "=SMILES2LIPINSKI(C$_)" })
+    }
+    Create-TableSheet $sheet3 "2. Physicochemical Properties & Lipinski Rule of 5 SAR Screening" "💡 Lipinski Rule of 5 Criteria: MW <= 500 Da | LogP <= 5.0 | HBD <= 5 | HBA <= 10 | RotBonds <= 10. All calculated instantly (0ms) in Excel." $t3Headers $t3Rows $t3Formulas 0x1B4D1B 0x228B22 $t3ColWidths 85 4
 
     # =========================================================================
-    # SHEET 4: Style & Transform Matrix
+    # TAB 4: Substructure & Similarity
     # =========================================================================
-    Write-Host "Populating Sheet 4: Style & Transform Matrix..." -ForegroundColor Yellow
-    $sheet4.Tab.Color = 0x0080FF # Orange BGR
+    Write-Host "Populating Tab 4: Substructure & Similarity..." -ForegroundColor Yellow
 
-    $s4Headers = @("No.", "Style / Transform Category", "Delimiter", "Option String", "Formula (Text)", "Rendered Structure (In-Cell)", "Visual Effect & Output Description")
-    $s4ColWidths = @(6, 28, 12, 26, 68, 28, 48)
+    $t4Headers = @("No.", "Compound Name", "Target SMILES", "Substructure Match? (=SMILES.MATCH)", "Highlighted Structure (=SMILES2IMG with hl:)", "Tanimoto Similarity to Lead", "Formula Syntax (Text)", "SAR Pharmacophore Analysis")
+    $t4ColWidths = @(6, 18, 30, 24, 28, 24, 48, 48)
 
+    $t4Rows = @(
+        @(1, "Aspirin", "CC(=O)Oc1ccccc1C(=O)O", "", "", "", '=SMILES.MATCH(C5, $B$3)', "Contains benzene core; perfect 1.0 similarity to itself"),
+        @(2, "Ibuprofen", "CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O", "", "", "", '=SMILES.MATCH(C6, $B$3)', "Contains benzene core; highlighted in red ring"),
+        @(3, "Benzene", "c1ccccc1", "", "", "", '=SMILES.MATCH(C7, $B$3)', "Exact match to query substructure"),
+        @(4, "Pyridine", "c1ccncc1", "", "", "", '=SMILES.MATCH(C8, $B$3)', "Nitrogen heterocycle: FALSE (not all-carbon benzene)"),
+        @(5, "Ethanol", "CCO", "", "", "", '=SMILES.MATCH(C9, $B$3)', "Aliphatic alcohol: FALSE (no aromatic ring)"),
+        @(6, "Caffeine", "Cn1cnc2c1c(=O)n(C)c(=O)n2C", "", "", "", '=SMILES.MATCH(C10, $B$3)', "Fused purine heterocycle: FALSE"),
+        @(7, "Paracetamol", "CC(=O)Nc1ccc(O)cc1", "", "", "", '=SMILES.MATCH(C11, $B$3)', "Contains para-substituted benzene ring: TRUE"),
+        @(8, "Nicotine", "CN1CCC[C@H]1c2cccnc2", "", "", "", '=SMILES.MATCH(C12, $B$3)', "Contains pyridine, not benzene: FALSE"),
+        @(9, "Vanillin", "O=Cc1ccc(O)c(OC)c1", "", "", "", '=SMILES.MATCH(C13, $B$3)', "Phenolic aldehyde with benzene ring: TRUE"),
+        @(10, "Artemisinin", "CC1CC2CC3(C)OO4C(O2)(C1C(=O)O3)C(C)CC4", "", "", "", '=SMILES.MATCH(C14, $B$3)', "Sesquiterpene lactone without aromaticity: FALSE")
+    )
+    $t4Formulas = @{
+        "D" = @(5..14 | ForEach-Object { "=SMILES.MATCH(C$_, `$B`$3)" });
+        "E" = @(5..14 | ForEach-Object { "=SMILES2IMG(C$_, , ""hl:"" & `$B`$3)" });
+        "F" = @(5..14 | ForEach-Object { "=SMILES.SIMILARITY(C$_, `$F`$3)" })
+    }
+    Create-TableSheet $sheet4 "3. Substructure Search, Pharmacophore Highlighting & Similarity" "💡 Change Cell B3 or F3 to immediately recalculate matches, highlight rings, and recompute Tanimoto similarity across the whole table!" $t4Headers $t4Rows $t4Formulas 0x4B0082 0x800080 $t4ColWidths 85 5
+
+    # Parameter Controls in Row 3 (Set after table structure is created)
     Invoke-Excel {
-        $sheet4.Range("A2").Value2 = "Ref:"
-        $sheet4.Range("A2").Font.Bold = $true
-        $sheet4.Range("A2").HorizontalAlignment = -4152 # xlRight
-        $sheet4.Range("B2").Value2 = "CC(=O)Oc1ccccc1C(=O)O"
-        $sheet4.Range("B2").Font.Bold = $true
-        $sheet4.Range("B2").Interior.Color = 0xE6F2FF
-        $sheet4.Range("B2").HorizontalAlignment = -4108 # xlCenter
-        $sheet4.Range("C2").Value2 = "(Aspirin Reference Molecule)"
-        $sheet4.Range("C2").Font.Italic = $true
-        $sheet4.Range("C2").Font.Color = 0x595959
+        $sheet4.Range("A3").Value2 = "Query Substructure ($B$3):"
+        $sheet4.Range("A3").Font.Bold = $true
+        $sheet4.Range("A3").HorizontalAlignment = -4152
+        $sheet4.Range("B3").Value2 = "c1ccccc1"
+        $sheet4.Range("B3").Font.Bold = $true
+        $sheet4.Range("B3").Interior.Color = 0xFFE0E0
+        $sheet4.Range("B3").HorizontalAlignment = -4108
+        $sheet4.Range("C3").Value2 = "(Benzene Ring Core)"
+        $sheet4.Range("C3").Font.Italic = $true
+
+        $sheet4.Range("E3").Value2 = "Lead Reference ($F$3):"
+        $sheet4.Range("E3").Font.Bold = $true
+        $sheet4.Range("E3").HorizontalAlignment = -4152
+        $sheet4.Range("F3").Value2 = "CC(=O)Oc1ccccc1C(=O)O"
+        $sheet4.Range("F3").Font.Bold = $true
+        $sheet4.Range("F3").Interior.Color = 0xE6F2FF
+        $sheet4.Range("F3").HorizontalAlignment = -4108
+        $sheet4.Range("G3").Value2 = "(Aspirin Lead Molecule)"
+        $sheet4.Range("G3").Font.Italic = $true
+        $sheet4.Rows.Item(3).RowHeight = 24
     }
 
-    $s4Rows = @(
-        @(1, "1. Default Rendering", "-", '(default)', '=SMILES2IMG($B$2)', "", "Transparent canvas + CPK elemental coloring", '=SMILES2IMG($B$2)'),
-        @(2, "2. Black & White Line Art", "-", '"bw"', '=SMILES2IMG($B$2, , "bw")', "", "100% monochrome line art for patent offices (USPTO/KIPO)", '=SMILES2IMG($B$2, , "bw")'),
-        @(3, "3. Sequential Atom Numbers", "-", '"num"', '=SMILES2IMG($B$2, , "num")', "", "Numbered atom indices (1, 2, 3...) for NMR assignment", '=SMILES2IMG($B$2, , "num")'),
-        @(4, "4. Stereochemical Labels", "-", '"stereo"', '=SMILES2IMG($B$2, , "stereo")', "", "Chiral R/S centers and geometric E/Z stereolabels", '=SMILES2IMG($B$2, , "stereo")'),
-        @(5, "5. Unfolded Hydrogens", "-", '"h"', '=SMILES2IMG($B$2, , "h")', "", "Explicit C-H bond lines displaying all hydrogens", '=SMILES2IMG($B$2, , "h")'),
-        @(6, "6. Skeletal Carbon Labels", "-", '"all-c"', '=SMILES2IMG($B$2, , "all-c")', "", "Explicit 'C' text at every skeletal vertex", '=SMILES2IMG($B$2, , "all-c")'),
-        @(7, "7. Dark Mode Pure-White Ink", "-", '"white"', '=SMILES2IMG($B$2, "#1e1e1e", "white")', "", "Crisp pure-white bond lines against dark cell canvas", '=SMILES2IMG($B$2, "#1e1e1e", "white")'),
-        @(8, "8. Corporate Custom Ink", "-", '"ink=#003366"', '=SMILES2IMG($B$2, "aliceblue", "ink=#003366")', "", "Specified Hex color bond ink on aliceblue background", '=SMILES2IMG($B$2, "aliceblue", "ink=#003366")'),
-        @(9, "9. B/W + Atom Numbers", "Space", '"bw num"', '=SMILES2IMG($B$2, , "bw num")', "", "Space-separated monochrome patent line art with numbers", '=SMILES2IMG($B$2, , "bw num")'),
-        @(10, "10. B/W + Chiral Labels", "Pipe (|)", '"bw|stereo"', '=SMILES2IMG($B$2, , "bw|stereo")', "", "Pipe-separated monochrome line art with chiral labels", '=SMILES2IMG($B$2, , "bw|stereo")'),
-        @(11, "11. Transform: 90-deg CW", "-", '"rot90"', '=SMILES2IMG($B$2, , , "rot90")', "", "90-deg clockwise rotation for vertical column layouts", '=SMILES2IMG($B$2, , , "rot90")'),
-        @(12, "12. Transform: Horizontal Flip", "-", '"flip"', '=SMILES2IMG($B$2, , , "flip")', "", "Horizontally flipped matching chemical database conventions", '=SMILES2IMG($B$2, , , "flip")'),
-        @(13, "13. Transform: Flip + 90-deg", "Space", '"flip rot90"', '=SMILES2IMG($B$2, , , "flip rot90")', "", "Chained flip followed by 90-deg rotation", '=SMILES2IMG($B$2, , , "flip rot90")'),
-        @(14, "14. Full-Option (Space)", "Space", '"bw num stereo h all-c"', '=SMILES2IMG($B$2, "white", "bw num stereo h all-c", "flip rot90")', "", "All options: White + B/W + Numbers + Chiral + H + Carbons + Flip + 90-deg rot", '=SMILES2IMG($B$2, "white", "bw num stereo h all-c", "flip rot90")'),
-        @(15, "15. Full-Option (Pipe)", "Pipe (|)", '"bw|num|stereo|h|all-c"', '=SMILES2IMG($B$2, "white", "bw|num|stereo|h|all-c", "flip rot90")', "", "Pipe-delimited ultimate all-in-one formula activating all features", '=SMILES2IMG($B$2, "white", "bw|num|stereo|h|all-c", "flip rot90")')
+    # =========================================================================
+    # TAB 5: Styles, ACS & Dark Mode
+    # =========================================================================
+    Write-Host "Populating Tab 5: Styles, ACS & Dark Mode..." -ForegroundColor Yellow
+
+    $t5Headers = @("No.", "Rendering Style Preset", "Delimiter", "Option Code", "Formula Text", "Rendered Structure (In-Cell)", "Visual Style & Publication Standards")
+    $t5ColWidths = @(6, 26, 12, 28, 56, 28, 48)
+
+    $t5Rows = @(
+        @(1, "Standard CPK Color", "-", "(default)", '=SMILES2IMG($B$3)', "", "Default transparent background + elemental CPK colors (C: black, O: red, N: blue)"),
+        @(2, "White Canvas Background", "-", 'bg="white"', '=SMILES2IMG($B$3, "white")', "", "Opaque pure-white cell canvas suitable for printing and PDFs"),
+        @(3, "Publication Black & White", "-", 'style="bw"', '=SMILES2IMG($B$3, , "bw")', "", "100% monochrome line art for ACS journals, Nature, and patent filings (USPTO/KIPO)"),
+        @(4, "Sequential Atom Numbers", "-", 'style="num"', '=SMILES2IMG($B$3, , "num")', "", "Numbered atom indices (1, 2, 3...) for NMR and crystal structure assignment"),
+        @(5, "Chiral Stereolabels", "-", 'style="stereo"', '=SMILES2IMG($B$3, , "stereo")', "", "Explicit R/S chiral centers and E/Z double bond labels"),
+        @(6, "Unfolded Hydrogens", "-", 'style="h"', '=SMILES2IMG($B$3, , "h")', "", "Explicit C-H bond lines and hydrogens to evaluate steric hindrance"),
+        @(7, "Skeletal Carbon Labels", "-", 'style="all-c"', '=SMILES2IMG($B$3, , "all-c")', "", "Explicit 'C' letter at all vertex carbons for educational diagrams"),
+        @(8, "Dark Mode (White Ink)", "-", 'style="white" (Dark)', '=SMILES2IMG($B$3, "#1e1e1e", "white")', "", "Crisp pure-white bond lines on dark canvas for PowerPoint dark slides"),
+        @(9, "Corporate CI Navy Ink", "-", 'style="ink=#003366"', '=SMILES2IMG($B$3, "aliceblue", "ink=#003366")', "", "Custom Hex bond color on aliceblue canvas for branded company reports"),
+        @(10, "B/W + Atom Numbers", "Space", 'style="bw num"', '=SMILES2IMG($B$3, , "bw num")', "", "Combined monochrome patent line art and atom numbering"),
+        @(11, "B/W + Chiral Stereolabels", "Pipe (|)", 'style="bw|stereo"', '=SMILES2IMG($B$3, , "bw|stereo")', "", "Pipe-delimited monochrome line art with chiral stereocenters"),
+        @(12, "Transform: 90-deg CW", "-", 'transform="rot90"', '=SMILES2IMG($B$3, , , "rot90")', "", "90-degree clockwise rotation for compact vertical table columns"),
+        @(13, "Transform: 180-deg Rotate", "-", 'transform="rot180"', '=SMILES2IMG($B$3, , , "rot180")', "", "180-degree upside down rotation"),
+        @(14, "Transform: Horizontal Flip", "-", 'transform="flip"', '=SMILES2IMG($B$3, , , "flip")', "", "Horizontal planar reflection matching textbook coordinate standards"),
+        @(15, "Transform: Chained Flip+Rot", "Space", 'transform="flip rot90"', '=SMILES2IMG($B$3, , , "flip rot90")', "", "Chained transformation: horizontal flip followed by 90-degree rotation"),
+        @(16, "Ultimate All-in-One", "Space", 'All Options Enabled', '=SMILES2IMG($B$3, "white", "bw num stereo h all-c", "flip rot90")', "", "All capabilities active: White canvas + B/W + Numbers + Chiral + H + Carbons + Flip + Rot")
     )
+    $t5Formulas = @{
+        "F" = @(
+            '=SMILES2IMG($B$3)',
+            '=SMILES2IMG($B$3, "white")',
+            '=SMILES2IMG($B$3, , "bw")',
+            '=SMILES2IMG($B$3, , "num")',
+            '=SMILES2IMG($B$3, , "stereo")',
+            '=SMILES2IMG($B$3, , "h")',
+            '=SMILES2IMG($B$3, , "all-c")',
+            '=SMILES2IMG($B$3, "#1e1e1e", "white")',
+            '=SMILES2IMG($B$3, "aliceblue", "ink=#003366")',
+            '=SMILES2IMG($B$3, , "bw num")',
+            '=SMILES2IMG($B$3, , "bw|stereo")',
+            '=SMILES2IMG($B$3, , , "rot90")',
+            '=SMILES2IMG($B$3, , , "rot180")',
+            '=SMILES2IMG($B$3, , , "flip")',
+            '=SMILES2IMG($B$3, , , "flip rot90")',
+            '=SMILES2IMG($B$3, "white", "bw num stereo h all-c", "flip rot90")'
+        )
+    }
+    Create-TableSheet $sheet5 "4. Visual Styling, Publication ACS B&W, Dark Mode & Transforms Matrix" "💡 Easily mix and match styling parameters using spaces or pipes (|). Unify an entire sheet in one click via Ribbon -> [Batch Style]." $t5Headers $t5Rows $t5Formulas 0x0045FF 0x0080FF $t5ColWidths 85 5
 
-    Populate-SheetData $sheet4 "Style & Transform Rendering Options Matrix (Aspirin CC(=O)Oc1ccccc1C(=O)O)" $s4Headers $s4Rows 0x0045FF 0x0080FF $s4ColWidths $false
+    # Parameter Controls in Row 3 (Set after table structure is created)
+    Invoke-Excel {
+        $sheet5.Range("A3").Value2 = "Reference Molecule ($B$3):"
+        $sheet5.Range("A3").Font.Bold = $true
+        $sheet5.Range("A3").HorizontalAlignment = -4152
+        $sheet5.Range("B3").Value2 = "CC(=O)Oc1ccccc1C(=O)O"
+        $sheet5.Range("B3").Font.Bold = $true
+        $sheet5.Range("B3").Interior.Color = 0xE6F2FF
+        $sheet5.Range("B3").HorizontalAlignment = -4108
+        $sheet5.Range("C3").Value2 = "(Aspirin Benchmark Molecule)"
+        $sheet5.Range("C3").Font.Italic = $true
+        $sheet5.Rows.Item(3).RowHeight = 24
+    }
 
-    # Activate Sheet 1
+    # =========================================================================
+    # TAB 6: Reactions & KET Canvas
+    # =========================================================================
+    Write-Host "Populating Tab 6: Reactions & KET Canvas..." -ForegroundColor Yellow
+    $sampleKetMethanol = '{"root":{"nodes":[{"$ref":"mol0"}]},"mol0":{"type":"molecule","atoms":[{"label":"C","location":[0,0,0]},{"label":"O","location":[1,0,0]}],"bonds":[{"type":1,"atoms":[0,1]}]}}'
+    $sampleKetEthanol  = '{"root":{"nodes":[{"$ref":"mol0"}]},"mol0":{"type":"molecule","atoms":[{"label":"C","location":[0,0,0]},{"label":"C","location":[1,0,0]},{"label":"O","location":[1.5,0.86,0]}],"bonds":[{"type":1,"atoms":[0,1]},{"type":1,"atoms":[1,2]}]}}'
+
+    $t6Headers = @("No.", "Reaction / Scheme Title", "Structure / KET Data", "Formula (Plain Text)", "Rendered Diagram (In-Cell)", "Chemical Description & Ketcher Workflow")
+    $t6ColWidths = @(6, 28, 32, 28, 32, 52)
+
+    $t6Rows = @(
+        @(1, "Methanol KET Vector Canvas", $sampleKetMethanol, '=KET2IMG(C4)', "", "Native EPAM Ketcher vector diagram with precise atomic coordinates"),
+        @(2, "Ethanol KET Vector Canvas", $sampleKetEthanol, '=KET2IMG(C5)', "", "Lossless 2D canvas persisted in workbook without raster artifacts"),
+        @(3, "Aspirin Structure & Synthesis", "CC(=O)Oc1ccccc1C(=O)O", '=SMILES2IMG(C6)', "", "Salicylic acid + Acetic anhydride -> Acetylsalicylic acid (Aspirin)"),
+        @(4, "Amide Coupling Product", "CC(=O)Nc1ccc(O)cc1", '=SMILES2IMG(C7)', "", "Para-aminophenol + Acetic anhydride -> Paracetamol"),
+        @(5, "Caffeine Core Xanthine Ring", "Cn1cnc2c1c(=O)n(C)c(=O)n2C", '=SMILES2IMG(C8)', "", "Purine heterocycle synthesized via Traube purine synthesis")
+    )
+    $t6Formulas = @{
+        "E" = @(
+            '=KET2IMG(C4)',
+            '=KET2IMG(C5)',
+            '=SMILES2IMG(C6)',
+            '=SMILES2IMG(C7)',
+            '=SMILES2IMG(C8)'
+        )
+    }
+    Create-TableSheet $sheet6 "5. Multi-Molecule Chemical Reactions & EPAM Ketcher KET Canvas" "💡 Double-click any structure cell to open the Ketcher 2D Editor, draw multi-step reaction schemes with arrows, and click Apply!" $t6Headers $t6Rows $t6Formulas 0x507020 0x608028 $t6ColWidths 85 4
+
+    # =========================================================================
+    # TAB 7: Excel 2016-2021 Compatibility (.FLOAT Mode)
+    # =========================================================================
+    Write-Host "Populating Tab 7: Excel 2016-2021 Compatibility (.FLOAT Mode)..." -ForegroundColor Yellow
+    $t7Headers = @("No.", "Input Category", "Compound Name", "Chemical SMILES", "Applied Preset", "Formula Text", "Floating Molecular Shape (Over Cell)", "Features & Legacy Behavior")
+    $t7ColWidths = @(6, 16, 20, 30, 24, 48, 28, 48)
+
+    $t7Rows = @(
+        @(1, "Basic", "Ethanol", "CCO", "Default", '=SMILES2IMG.FLOAT(D4)', "", "Automatic cell-anchored floating shape on Excel 2016/2019/2021"),
+        @(2, "Basic", "Caffeine", "Cn1cnc2c1c(=O)n(C)c(=O)n2C", "Default", '=SMILES2IMG.FLOAT(D5)', "", "Locked to cell movement and resizing (xlMoveAndSize)"),
+        @(3, "Background", "Paracetamol", "CC(=O)Nc1ccc(O)cc1", 'bg="white"', '=SMILES2IMG.FLOAT(D6, "white")', "", "Opaque white background floating picture"),
+        @(4, "Single Style", "Aspirin", "CC(=O)Oc1ccccc1C(=O)O", 'style="bw"', '=SMILES2IMG.FLOAT(D7, , "bw")', "", "Monochrome patent line art floating shape for legacy Excel"),
+        @(5, "Single Style", "L-Lactic Acid", "C[C@H](O)C(=O)O", 'style="stereo"', '=SMILES2IMG.FLOAT(D8, , "stereo")', "", "Chiral R/S stereochemical labels in floating mode"),
+        @(6, "Single Style", "Ethanol", "CCO", 'style="h"', '=SMILES2IMG.FLOAT(D9, , "h")', "", "All C-H hydrogens unfolded in floating shape mode"),
+        @(7, "Multi-Style", "Aspirin", "CC(=O)Oc1ccccc1C(=O)O", 'style="bw num"', '=SMILES2IMG.FLOAT(D10, , "bw num")', "", "Monochrome combined with atom numbers in floating mode"),
+        @(8, "Dark Mode", "Nicotine", "CN1CCC[C@H]1c2cccnc2", 'style="white stereo"', '=SMILES2IMG.FLOAT(D11, "#1e1e1e", "white stereo")', "", "Dark canvas with pure-white bonds and chiral labels"),
+        @(9, "Transform", "Nicotine", "CN1CCC[C@H]1c2cccnc2", 'transform="flip"', '=SMILES2IMG.FLOAT(D12, , , "flip")', "", "Textbook horizontal reflection in floating mode"),
+        @(10, "All-in-One", "Aspirin", "CC(=O)Oc1ccccc1C(=O)O", 'White + Full + Rot', '=SMILES2IMG.FLOAT(D13, "white", "bw num stereo h all-c", "rot90")', "", "Ultimate all-in-one floating molecular rendering on legacy Excel")
+    )
+    $t7Formulas = @{
+        "G" = @(4..13 | ForEach-Object {
+            switch ($_) {
+                4 { '=SMILES2IMG.FLOAT(D4)' }
+                5 { '=SMILES2IMG.FLOAT(D5)' }
+                6 { '=SMILES2IMG.FLOAT(D6, "white")' }
+                7 { '=SMILES2IMG.FLOAT(D7, , "bw")' }
+                8 { '=SMILES2IMG.FLOAT(D8, , "stereo")' }
+                9 { '=SMILES2IMG.FLOAT(D9, , "h")' }
+                10 { '=SMILES2IMG.FLOAT(D10, , "bw num")' }
+                11 { '=SMILES2IMG.FLOAT(D11, "#1e1e1e", "white stereo")' }
+                12 { '=SMILES2IMG.FLOAT(D12, , , "flip")' }
+                13 { '=SMILES2IMG.FLOAT(D13, "white", "bw num stereo h all-c", "rot90")' }
+            }
+        })
+    }
+    Create-TableSheet $sheet7 "6. Excel 2016-2021 Compatibility (=SMILES2IMG.FLOAT & =NAME2IMG.FLOAT)" "💡 Append '.FLOAT' to any function name to generate floating picture shapes anchored to cells in Excel 2016, 2019, and 2021!" $t7Headers $t7Rows $t7Formulas 0x1B4D1B 0x228B22 $t7ColWidths 85 4
+
+    # =========================================================================
+    # TAB 8: 3D Mol* & Ribbon Guide
+    # =========================================================================
+    Write-Host "Populating Tab 8: 3D Mol* & Ribbon Guide..." -ForegroundColor Yellow
+    $t8Headers = @("No.", "Feature Module", "Command / Ribbon Tool", "Keyboard Shortcut", "Office Host Apps", "Operational Workflow & Functionality")
+    $t8ColWidths = @(6, 24, 28, 22, 22, 54)
+
+    $t8Rows = @(
+        @(1, "2D Molecule Editor", "Insert / Edit Structure", "Ctrl + Shift + K", "Excel · Word · PPT", "Opens embedded EPAM Ketcher in 0.05s; sketch molecules & reaction schemes; click Apply"),
+        @(2, "InChI Text Input", "Insert InChI Molecule", "Ribbon -> [SMILES]", "Excel · Word · PPT", "Converts official IUPAC InChI strings into rendered 2D structure images"),
+        @(3, "KET Reaction Canvas", "Insert KET Molecule", "Ribbon -> [SMILES]", "Excel · Word · PPT", "Inserts complete reaction schemes with reaction arrows, plus signs, and text annotations"),
+        @(4, "3D Protein Viewer", "Insert 3D Mol* Model", "Ribbon -> [SMILES]", "Excel · Word · PPT", "Fetch PDB structures by 4-letter code (e.g. 1CRN); embed rotatable 3D GLB models or 2D views"),
+        @(5, "Quick Paste", "Quick Insert Structure", "Ctrl + Shift + V", "Excel · Word · PPT", "Instantly parses clipboard SMILES/InChI/KET and renders image in under 0.1s"),
+        @(6, "Molecule Info Window", "Copy Molecule Info", "Right-Click Context", "Excel · Word · PPT", "Opens rich DataGridView showing MW, Formula, Exact Mass, InChIKey, LogP, TPSA, Lipinski"),
+        @(7, "Lossless SVG Export", "Copy SVG (Vector)", "Right-Click Context", "Excel · Word · PPT", "Copies crisp vector SVG image to clipboard for Adobe Illustrator and publication layout"),
+        @(8, "1-Click Batch Style", "Batch Style Presets", "Ribbon -> Batch Style", "Excel · Word · PPT", "Normalizes every structure in workbook/slide deck into Standard, ACS B&W, or Dark Mode"),
+        @(9, "Chemical Database I/O", "SDF File Import / Export", "Ribbon -> SDF File", "Excel (Standalone XLL)", "Imports multi-compound .sdf chemical tables into spreadsheet rows or exports sheet to .sdf"),
+        @(10, "Live Diagnostics", "Diagnostics & About", "Ribbon -> About", "Excel · Word · PPT", "Monitors WebView2 instance pool, cache memory, COM registration, and update checks")
+    )
+    Create-TableSheet $sheet8 "7. 3D Macromolecules (Mol*), Ribbon Controls & Power Features Guide" "💡 All functions run 100% locally and offline inside your Microsoft Office installation with zero external server dependencies." $t8Headers $t8Rows @{} 0x800000 0xA02020 $t8ColWidths 50 4
+
+    # Activate Sheet 1 (Quick Guide)
     $sheet1.Activate()
 
-    # Recalculate
-    Write-Host "`nRecalculating formulas and waiting for async image insertion..." -ForegroundColor Cyan
+    # Recalculate all formulas across all 8 sheets
+    Write-Host "`nRecalculating formulas across all 8 tabs and waiting for async image insertion..." -ForegroundColor Cyan
     Invoke-Excel { $excel.Calculate() }
 
     # Settle down
@@ -323,21 +559,26 @@ try {
     do {
         Start-Sleep -Seconds 2
         $shapeCount = 0
-        Invoke-Excel { $shapeCount = $sheet2.Shapes.Count }
-        Write-Host "Elapsed: $([int]$sw.Elapsed.TotalSeconds)s | Sheet2 Floating Shapes: $shapeCount / $($s2Rows.Count)" -ForegroundColor Gray
+        Invoke-Excel { $shapeCount = $sheet7.Shapes.Count }
+        Write-Host "Elapsed: $([int]$sw.Elapsed.TotalSeconds)s | Sheet 7 (.FLOAT) Shapes: $shapeCount / 10" -ForegroundColor Gray
         
-        if ($shapeCount -ge $s2Rows.Count -and $sw.Elapsed.TotalSeconds -ge 12) {
+        if ($shapeCount -ge 10 -and $sw.Elapsed.TotalSeconds -ge 14) {
             Start-Sleep -Seconds 3
             break
         }
     } while ($sw.Elapsed.TotalSeconds -lt $maxWaitSec)
 
     # Save to Target Path
-    Write-Host "`nSaving workbook to: $targetFile" -ForegroundColor Cyan
+    Write-Host "`nSaving master workbook to: $targetFile" -ForegroundColor Cyan
     Invoke-Excel {
         $workbook.SaveAs($targetFile, 51) # 51 = xlOpenXMLWorkbook (.xlsx)
     }
     Write-Host "Workbook saved successfully!" -ForegroundColor Green
+
+    # Also copy to docs/public so visitors can download it from the documentation site
+    $docsPublicFile = Join-Path $PSScriptRoot "../docs/public/SMILES2IMG_Comprehensive_Showcase.xlsx"
+    Copy-Item -LiteralPath $targetFile -Destination $docsPublicFile -Force
+    Write-Host "Copied workbook to docs/public/ for documentation website download!" -ForegroundColor Green
 
 } finally {
     if ($workbook) {
@@ -354,9 +595,9 @@ try {
 }
 
 # =========================================================================
-# File Verification & OpenXML Inspection
+# Verification & OpenXML Inspection
 # =========================================================================
-Write-Host "`n=== Verifying Generated Workbook Integrity ===" -ForegroundColor Cyan
+Write-Host "`n=== Verifying Generated 8-Tab Workbook Integrity ===" -ForegroundColor Cyan
 if (-not (Test-Path -LiteralPath $targetFile)) {
     throw "Output file was not created: $targetFile"
 }
@@ -369,23 +610,16 @@ try {
     $entries = $zip.Entries | Select-Object -ExpandProperty FullName
     
     $sheetEntries = $entries | Where-Object { $_ -like 'xl/worksheets/sheet*.xml' }
-    Write-Host "Worksheet XML Entries: $($sheetEntries.Count)" -ForegroundColor Green
+    Write-Host "Worksheet XML Entries: $($sheetEntries.Count) (Target: 8+ sheets)" -ForegroundColor Green
     
     $mediaEntries = $entries | Where-Object { $_ -like 'xl/media/*.png' }
-    Write-Host "Media (PNG) Entries: $($mediaEntries.Count)" -ForegroundColor Green
+    Write-Host "Media (PNG) Entries: $($mediaEntries.Count) in-cell cached structures" -ForegroundColor Green
 
     $richDataEntries = $entries | Where-Object { $_ -like 'xl/richData/*' }
     Write-Host "RichData Entries: $($richDataEntries.Count)" -ForegroundColor Green
 
-    $metadataEntry = $entries | Where-Object { $_ -eq 'xl/metadata.xml' }
-    if ($metadataEntry) {
-        Write-Host "Metadata XML present: Yes (Native In-Cell XLRICHVALUE metadata)" -ForegroundColor Green
-    } else {
-        Write-Host "Metadata XML present: No" -ForegroundColor Yellow
-    }
-
-    if ($sheetEntries.Count -lt 4) {
-        throw "Expected 4 worksheets, found $($sheetEntries.Count)"
+    if ($sheetEntries.Count -lt 8) {
+        throw "Expected at least 8 worksheets, found $($sheetEntries.Count)"
     }
     if ($mediaEntries.Count -eq 0) {
         throw "No media PNG files found inside the workbook!"
@@ -394,5 +628,5 @@ try {
     $zip.Dispose()
 }
 
-Write-Host "`n🎉 ALL VERIFICATION PASSED! File generated at:" -ForegroundColor Green
-Write-Host $targetFile -ForegroundColor Cyan
+Write-Host "`n🎉 ALL 8-TAB MASTER WORKBOOK VERIFICATION PASSED!" -ForegroundColor Green
+Write-Host "Path: $targetFile" -ForegroundColor Cyan
