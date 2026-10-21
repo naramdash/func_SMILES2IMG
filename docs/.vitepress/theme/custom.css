@@ -14,7 +14,7 @@
 
 /* Hero Top Language Pill Banner */
 .s2i-hero-top-pill-wrap {
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -31,9 +31,9 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
+  padding: 5px 14px;
   border-radius: 999px;
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   font-weight: 700;
   background: var(--vp-c-brand-soft);
   color: var(--vp-c-brand-1) !important;
@@ -61,9 +61,9 @@
 
 .s2i-hero-badge {
   display: inline-block;
-  padding: 5px 12px;
+  padding: 4px 12px;
   border-radius: 999px;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   background: var(--vp-c-brand-soft);
   color: var(--vp-c-brand-1);
@@ -87,10 +87,30 @@
   color: var(--vp-c-brand-1) !important;
 }
 
+/* Compact Hero Vertical Rhythm for 100% Above-The-Fold Visibility */
+.VPHero {
+  padding-top: calc(var(--vp-nav-height) + 16px) !important;
+  padding-bottom: 20px !important;
+}
+
+@media (min-width: 640px) {
+  .VPHero {
+    padding-top: calc(var(--vp-nav-height) + 20px) !important;
+    padding-bottom: 22px !important;
+  }
+}
+
+@media (min-width: 960px) {
+  .VPHero {
+    padding-top: calc(var(--vp-nav-height) + 22px) !important;
+    padding-bottom: 24px !important;
+  }
+}
+
 /* Hero Widescreen Demo GIF Showcase Styling */
 .VPHero.has-image .image-container {
   width: 100% !important;
-  max-width: 540px !important;
+  max-width: 520px !important;
   height: auto !important;
   transform: none !important;
   display: flex;
@@ -109,7 +129,7 @@
   left: auto !important;
   transform: none !important;
   width: 100% !important;
-  max-width: 540px !important;
+  max-width: 520px !important;
   max-height: none !important;
   border-radius: 12px;
   border: 1px solid var(--vp-c-divider);
@@ -121,8 +141,11 @@
     max-width: 540px !important;
   }
   .VPHero.has-image .text {
-    font-size: 2.6rem !important;
-    line-height: 1.18 !important;
+    font-size: 2.5rem !important;
+    line-height: 1.16 !important;
+  }
+  .VPHero.has-image .actions {
+    padding-top: 14px !important;
   }
 }
 
