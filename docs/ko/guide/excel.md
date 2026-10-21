@@ -8,8 +8,8 @@
 
 <div class="s2i-card-grid" style="margin-top: 12px;">
   <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
-    <div class="s2i-card-title">📥 수식이 입력된 샘플 엑셀 파일 다운로드 (.xlsx)</div>
-    <p class="s2i-card-desc">직접 타이핑할 필요 없이, 구조식과 스타일 수식이 미리 적용된 시트를 바로 열어보세요</p>
+    <div class="s2i-card-title">📥 8개 탭 마스터 쇼케이스 엑셀 파일 다운로드 (.xlsx)</div>
+    <p class="s2i-card-desc">0.빠른시작 · 1.구조식생성 · 2.물성/Lipinski · 3.부분구조/유사도 · 4.스타일매트릭스 · 5.반응식 · 6.구형호환 · 7.리본도구 총 8개 시트</p>
   </a>
   <a href="../guide/excel-cheminformatics" class="s2i-card">
     <div class="s2i-card-title">🔬 이어서 보기: Excel 2부 (물성·Lipinski·SAR·SDF) ➔</div>

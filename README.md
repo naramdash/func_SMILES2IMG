@@ -23,6 +23,7 @@
 
 * 🇰🇷 **[한국어 공식 가이드 및 1분 시작하기](https://naramdash.github.io/func_SMILES2IMG/ko/)** · **[🛠️ 웹 수식 생성기 체험](https://naramdash.github.io/func_SMILES2IMG/ko/tools/formula-builder)**
 * 🇺🇸 **[English Documentation & 1-Min Quickstart](https://naramdash.github.io/func_SMILES2IMG/)** · **[🛠️ Interactive Formula Generator](https://naramdash.github.io/func_SMILES2IMG/tools/formula-builder)**
+* 📊 **[📥 Download 8-Tab Master Interactive Excel Showcase (.xlsx)](https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/SMILES2IMG_Comprehensive_Showcase.xlsx)** — 8 category tabs featuring live in-cell structures, Lipinski Ro5 drug screening, substructure matching, styling matrix, and reaction canvases.
 
 ---
 

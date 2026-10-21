@@ -40,3 +40,16 @@ features:
 ## ⚡ 10초 원클릭 설치 (Excel · Word · PowerPoint 통합)
 
 <QuickInstallBox />
+
+---
+
+## 📊 전 기능 실습용 8개 탭 마스터 엑셀 가이드 다운로드
+
+수식을 직접 타이핑할 필요 없이, 모든 기능과 실제 동작하는 인셀 화학 구조식 및 수식 설명이 카테고리별로 완벽히 정리된 **8개 탭 마스터 쇼케이스 엑셀 파일**을 바로 다운로드해 사용해 보세요:
+
+<div class="s2i-card-grid" style="margin-top: 16px;">
+  <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
+    <div class="s2i-card-title">📥 func_SMILES2IMG_Comprehensive_Showcase.xlsx 다운로드 (.xlsx)</div>
+    <p class="s2i-card-desc">0. 빠른 시작 & 단축키 · 1. 이름/CAS/SMILES 변환 · 2. 의약화학 & Lipinski Ro5 · 3. 부분구조 검색 & 유사도 · 4. 학술 흑백/다크모드 스타일 · 5. KET 반응식 · 6. 구형 엑셀 (.FLOAT) · 7. 3D & 리본 도구 총 8개 시트 수록 (수식 오류 0건 검증 완료)</p>
+  </a>
+</div>

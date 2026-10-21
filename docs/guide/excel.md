@@ -8,8 +8,8 @@ Turn chemical names, CAS numbers, or SMILES strings into crisp in-cell structure
 
 <div class="s2i-card-grid" style="margin-top: 12px;">
   <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
-    <div class="s2i-card-title">📥 Download Sample Excel Workbook (.xlsx)</div>
-    <p class="s2i-card-desc">Open a ready-made showcase sheet pre-filled with live structure & property formulas</p>
+    <div class="s2i-card-title">📥 Download 8-Tab Master Showcase Excel Workbook (.xlsx)</div>
+    <p class="s2i-card-desc">0.Quick Guide · 1.Structures · 2.Properties/Lipinski · 3.Substructure · 4.Styles Matrix · 5.Reactions · 6.Legacy .FLOAT · 7.Ribbon Tools</p>
   </a>
   <a href="../guide/excel-cheminformatics" class="s2i-card">
     <div class="s2i-card-title">🔬 Next: Excel Part 2 (MW, Lipinski, SAR & .sdf) ➔</div>

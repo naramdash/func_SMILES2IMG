@@ -12,8 +12,8 @@ Automatically calculate **Molecular Weight, Exact Mass, LogP, and Lipinski Rule 
     <p class="s2i-card-desc">Test [SMILES] ➔ [SDF File] ➔ [Import SDF] in Excel to generate an 8-column SAR table in 1 click</p>
   </a>
   <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
-    <div class="s2i-card-title">📥 Download Pre-Built Excel Showcase (.xlsx)</div>
-    <p class="s2i-card-desc">Explore live MW, Exact Mass, Lipinski, and substructure highlighting formulas</p>
+    <div class="s2i-card-title">📥 Download 8-Tab Master Excel Showcase (.xlsx)</div>
+    <p class="s2i-card-desc">0.Quick Guide · 1.Structures · 2.Properties/Lipinski · 3.Substructure · 4.Styles Matrix · 5.Reactions · 6.Legacy .FLOAT · 7.Ribbon Tools</p>
   </a>
 </div>
 

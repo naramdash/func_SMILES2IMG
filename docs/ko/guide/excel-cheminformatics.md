@@ -12,8 +12,8 @@
     <p class="s2i-card-desc">엑셀 리본 [SMILES] ➔ [SDF File] ➔ [Import SDF]로 열어 8열 약물성 시트가 자동 생성되는 것을 바로 체험하세요</p>
   </a>
   <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
-    <div class="s2i-card-title">📥 수식이 완성된 샘플 엑셀 시트 (.xlsx)</div>
-    <p class="s2i-card-desc">구조식·분자량·스타일 옵션이 미리 입력된 종합 쇼케이스 통합 문서를 열어보세요</p>
+    <div class="s2i-card-title">📥 8개 탭 마스터 쇼케이스 엑셀 파일 (.xlsx)</div>
+    <p class="s2i-card-desc">0.빠른시작 · 1.구조식생성 · 2.물성/Lipinski · 3.부분구조/유사도 · 4.스타일매트릭스 · 5.반응식 · 6.구형호환 · 7.리본도구 총 8개 시트</p>
   </a>
 </div>
 

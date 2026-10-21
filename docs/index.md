@@ -40,3 +40,16 @@ features:
 ## ⚡ 10-Second Quick Install (Excel · Word · PowerPoint)
 
 <QuickInstallBox />
+
+---
+
+## 📊 Download Live Interactive Master Showcase Workbook (8 Tabs)
+
+Explore all features without typing formulas from scratch. Download the official **8-tab interactive master Excel workbook** containing working live in-cell structures, Lipinski screening, substructure matching, styling matrix, and reaction canvases:
+
+<div class="s2i-card-grid" style="margin-top: 16px;">
+  <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
+    <div class="s2i-card-title">📥 Download func_SMILES2IMG_Comprehensive_Showcase.xlsx (.xlsx)</div>
+    <p class="s2i-card-desc">0. Quick Guide & Shortcuts · 1. Structure to Image (Name/CAS/SMILES) · 2. Molecular Properties & Lipinski Ro5 · 3. Substructure & Similarity · 4. Drawing Styles & Options · 5. Reactions & KET Canvas · 6. Legacy Excel (.FLOAT) · 7. 3D & Ribbon Tools (8 sheets, 100% audited with zero errors)</p>
+  </a>
+</div>

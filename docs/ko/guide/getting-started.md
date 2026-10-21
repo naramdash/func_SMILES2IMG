@@ -40,6 +40,16 @@
 > 💡 **구버전 엑셀(Excel 2016 / 2019 / 2021)을 쓰시나요?**  
 > 함수 이름 뒤에 **`.FLOAT`**를 붙여 `=NAME2IMG.FLOAT("Aspirin")` 또는 `=SMILES2IMG.FLOAT(A2)`로 입력하면 셀 크기에 맞춰 움직이는 그림으로 똑같이 생성됩니다!
 
+::: tip 📥 전 기능 실습용 8개 탭 마스터 쇼케이스 엑셀 파일 제공
+수식을 일일이 칠 필요 없이, 모든 기능과 실제 동작하는 인셀 화학 구조식 및 수식 설명이 탭별로 정리된 **8개 탭 마스터 가이드 통합 문서**를 바로 다운로드해 사용해 보세요:
+<div style="margin: 10px 0 4px 0;">
+  <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card" style="display: block; padding: 12px 16px; border: 1.5px solid var(--vp-c-brand-1); border-radius: 8px; text-decoration: none;">
+    <div style="font-weight: 700; color: var(--vp-c-brand-1); font-size: 1rem;">📥 func_SMILES2IMG 마스터 쇼케이스 엑셀 파일 다운로드 (.xlsx)</div>
+    <div style="color: var(--vp-c-text-2); font-size: 0.88rem; margin-top: 4px;">• 0. Quick Guide & 단축키 • 1. 이름/CAS/SMILES 변환 • 2. 의약화학 & Lipinski Ro5 • 3. 부분구조 검색 & 유사도 • 4. 학술 흑백/다크모드 스타일 • 5. KET 반응식 • 6. 구형 엑셀 (.FLOAT) • 7. 3D & 리본 도구</div>
+  </a>
+</div>
+:::
+
 ### 📘📙 B. 워드(Word) · 파워포인트(PPT) 사용자라면? — `Ctrl + Shift + K` 누르기
 Word와 PowerPoint는 셀 수식을 치는 대신 **리본 버튼이나 단축키**로 바로 그립니다:
 1. 상단 리본 메뉴에서 **`[SMILES]` ➔ `[Insert / Edit Structure]`** 버튼을 클릭하거나, 키보드에서 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누릅니다.

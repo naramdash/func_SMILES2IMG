@@ -40,6 +40,16 @@ Or from a SMILES string:
 > 💡 **Using Excel 2016, 2019, or 2021?**  
 > Append **`.FLOAT`** to the formula name—for example, `=NAME2IMG.FLOAT("Aspirin")` or `=SMILES2IMG.FLOAT(A2)`!
 
+::: tip 📥 Download Live Interactive 8-Tab Master Excel Showcase
+Explore all capabilities without manual typing! Download the official **8-tab master guide workbook** with live in-cell structures, drug property screening, substructure matching, styling matrix, and reaction schemes:
+<div style="margin: 10px 0 4px 0;">
+  <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card" style="display: block; padding: 12px 16px; border: 1.5px solid var(--vp-c-brand-1); border-radius: 8px; text-decoration: none;">
+    <div style="font-weight: 700; color: var(--vp-c-brand-1); font-size: 1rem;">📥 Download func_SMILES2IMG Master Showcase Workbook (.xlsx)</div>
+    <div style="color: var(--vp-c-text-2); font-size: 0.88rem; margin-top: 4px;">• 0. Quick Guide & Shortcuts • 1. Name/CAS/SMILES • 2. Drug Properties & Lipinski • 3. Substructure & Similarity • 4. Drawing Styles & Options • 5. Reactions & KET Canvas • 6. Legacy Excel (.FLOAT) • 7. 3D & Ribbon Tools</div>
+  </a>
+</div>
+:::
+
 ### 📘📙 Option B. Using Word or PowerPoint? (Press `Ctrl + Shift + K`)
 Word and PowerPoint do not use cell formulas—use the ribbon button or shortcut instead:
 1. Click **`[SMILES]` ➔ `[Insert / Edit Structure]`** on the top ribbon, or press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>.
