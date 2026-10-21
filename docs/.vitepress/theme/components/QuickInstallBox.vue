@@ -98,26 +98,21 @@ async function copyText(text: string, isUninstall = false) {
   <!-- Page Variant: Used on Getting Started and Documentation pages -->
   <div v-else class="s2i-page-qib s2i-widget">
     <div class="s2i-page-qib-header">
-      <div class="s2i-page-qib-badge">
-        {{ isKo ? '⚡ 10초 PowerShell 자동 설치' : '⚡ 10-Second PowerShell Auto-Install' }}
+      <div class="s2i-page-qib-topline">
+        <span class="s2i-page-qib-badge">
+          {{ isKo ? '⚡ 10초 PowerShell 자동 설치' : '⚡ 10-Second PowerShell Auto-Install' }}
+        </span>
+        <span class="s2i-page-qib-hint">
+          {{
+            isKo
+              ? '명령어 1줄 복사 후 Windows PowerShell에 붙여넣고 Enter'
+              : 'Copy this 1-line command, paste into PowerShell & press Enter'
+          }}
+        </span>
       </div>
-      <h3 class="s2i-page-qib-title">
-        {{
-          isKo
-            ? 'Windows PowerShell에 명령어 한 줄만 붙여넣으면 끝납니다'
-            : 'Paste One Line into Windows PowerShell — That’s It'
-        }}
-      </h3>
-      <p class="s2i-page-qib-desc">
-        {{
-          isKo
-            ? 'Excel, Word, PowerPoint(32비트/64비트)를 자동 감지하고 최신 안정판 바이너리 다운로드, Windows 보안 해제(Unblock), 추가 기능 등록을 10초 만에 완료합니다.'
-            : 'Auto-detects Excel, Word, and PowerPoint (32/64-bit), downloads the latest release, unblocks security flags, and registers add-ins in 10 seconds.'
-        }}
-      </p>
     </div>
 
-    <!-- Terminal Command Box -->
+    <!-- Terminal Command Box (Immediately visible above the fold) -->
     <div class="s2i-page-terminal">
       <div class="s2i-page-terminal-bar">
         <div class="s2i-page-terminal-dots">
@@ -276,17 +271,24 @@ async function copyText(text: string, isUninstall = false) {
    HERO VARIANT (Ultra-compact, placed below Hero action buttons)
    ============================================================ */
 .s2i-hero-qib {
-  margin-top: 18px;
+  margin-top: 14px;
   width: 100%;
   max-width: 540px;
   background: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-divider);
   border-radius: 12px;
-  padding: 12px 14px;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+  padding: 10px 14px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+@media (max-width: 959px) {
+  .s2i-hero-qib {
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 .s2i-hero-qib-head {
@@ -358,22 +360,27 @@ async function copyText(text: string, isUninstall = false) {
   margin: 0 !important;
   user-select: all;
 }
+.s2i-terminal-code::before,
+.s2i-terminal-code::after {
+  content: none !important;
+}
 
 .s2i-terminal-copy-btn {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   background: var(--vp-c-brand-1);
-  color: #ffffff;
+  color: #ffffff !important;
   border: none;
   border-radius: 6px;
-  padding: 5px 12px;
-  font-size: 0.78rem;
+  padding: 6px 13px;
+  font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s ease;
   user-select: none;
+  box-shadow: 0 2px 8px rgba(15, 118, 110, 0.25);
 }
 .s2i-terminal-copy-btn:hover {
   background: var(--vp-c-brand-2);
@@ -402,42 +409,38 @@ async function copyText(text: string, isUninstall = false) {
    PAGE VARIANT (Full width, rich step cards for Getting Started)
    ============================================================ */
 .s2i-page-qib {
-  padding: 24px;
-  border-radius: 14px;
+  padding: 16px 18px;
+  border-radius: 12px;
   background: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-divider);
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  margin: 18px 0 28px 0;
+  gap: 12px;
+  margin: 10px 0 24px 0;
+}
+
+.s2i-page-qib-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .s2i-page-qib-badge {
   display: inline-block;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  padding: 4px 12px;
+  padding: 3px 12px;
   border-radius: 999px;
   background: var(--vp-c-brand-soft);
   color: var(--vp-c-brand-1);
-  margin-bottom: 8px;
 }
 
-.s2i-page-qib-title {
-  margin: 0 0 6px 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: var(--vp-c-text-1);
-  line-height: 1.3;
-}
-
-.s2i-page-qib-desc {
-  margin: 0 !important;
-  font-size: 0.94rem;
+.s2i-page-qib-hint {
+  font-size: 0.84rem;
+  font-weight: 600;
   color: var(--vp-c-text-2);
-  line-height: 1.55;
 }
 
 /* Terminal box inside page */
@@ -446,14 +449,14 @@ async function copyText(text: string, isUninstall = false) {
   border: 1px solid #334155;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.12);
 }
 
 .s2i-page-terminal-bar {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 14px;
+  padding: 7px 14px;
   background: #1e293b;
   border-bottom: 1px solid #334155;
 }
@@ -464,8 +467,8 @@ async function copyText(text: string, isUninstall = false) {
 }
 
 .s2i-page-terminal-dots .dot {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
 }
 .s2i-page-terminal-dots .dot.red {
@@ -490,7 +493,7 @@ async function copyText(text: string, isUninstall = false) {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  padding: 12px 14px;
+  padding: 10px 14px;
 }
 
 .s2i-page-terminal-cmd {
@@ -531,28 +534,28 @@ async function copyText(text: string, isUninstall = false) {
 .s2i-page-steps {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
+  gap: 10px;
 }
 
 .s2i-step-card {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 10px;
   background: var(--vp-c-bg);
   border: 1px solid var(--vp-c-divider);
-  border-radius: 10px;
-  padding: 12px 14px;
+  border-radius: 8px;
+  padding: 10px 12px;
 }
 
 .s2i-step-num {
   flex-shrink: 0;
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: var(--vp-c-brand-soft);
   color: var(--vp-c-brand-1);
   font-weight: 800;
-  font-size: 0.84rem;
+  font-size: 0.8rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -565,25 +568,25 @@ async function copyText(text: string, isUninstall = false) {
   gap: 2px;
 }
 .s2i-step-body strong {
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   color: var(--vp-c-text-1);
 }
 .s2i-step-body p {
   margin: 0 !important;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: var(--vp-c-text-2);
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
 /* Trust Badges */
 .s2i-trust-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 14px;
+  gap: 6px 12px;
 }
 
 .s2i-trust-pill {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--vp-c-text-2);
 }
@@ -591,13 +594,13 @@ async function copyText(text: string, isUninstall = false) {
 /* Details Section */
 .s2i-page-details {
   border-top: 1px solid var(--vp-c-divider);
-  padding-top: 12px;
-  margin-top: 4px;
+  padding-top: 10px;
+  margin-top: 2px;
 }
 
 .s2i-details-summary {
   cursor: pointer;
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   font-weight: 700;
   color: var(--vp-c-text-2);
   user-select: none;
@@ -607,11 +610,11 @@ async function copyText(text: string, isUninstall = false) {
 }
 
 .s2i-details-content {
-  margin-top: 12px;
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 10px 14px;
+  gap: 12px;
+  padding: 10px 12px;
   background: var(--vp-c-bg);
   border-radius: 8px;
   border: 1px solid var(--vp-c-divider);
@@ -621,7 +624,7 @@ async function copyText(text: string, isUninstall = false) {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   color: var(--vp-c-text-2);
 }
 .s2i-details-sub p {
