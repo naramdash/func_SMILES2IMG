@@ -42,8 +42,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            Install-func_SMILES2IMG.cmd
-            Uninstall-func_SMILES2IMG.cmd
             dist/x64/func_SMILES2IMG-x64.zip
             dist/x86/func_SMILES2IMG-x86.zip
             dist/x64/Smiles2Img-AddIn64-packed.xll

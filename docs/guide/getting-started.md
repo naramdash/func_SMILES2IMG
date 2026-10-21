@@ -2,14 +2,6 @@
 
 Install **`func_SMILES2IMG`** in 10 seconds and render your first 2D chemical structure or 3D protein inside Excel, Word, or PowerPoint.
 
-<p align="center">
-  <img src="/hero-demo.gif" alt="func_SMILES2IMG 1-Minute Quickstart Demo" width="100%" style="max-width: 760px; border-radius: 10px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);" />
-</p>
-
----
-
-## Step 1. 10-Second One-Click Install
-
 <QuickInstallBox :hide-quickstart-btn="true" />
 
 ---
@@ -26,6 +18,10 @@ Install **`func_SMILES2IMG`** in 10 seconds and render your first 2D chemical st
 ---
 
 ## Step 3. Render Your First Molecule (Pick Your App)
+
+<p align="center">
+  <img src="/hero-demo.gif" alt="func_SMILES2IMG 1-Minute Quickstart Demo" width="100%" style="max-width: 760px; border-radius: 10px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);" />
+</p>
 
 ### 📗 Option A. Using Microsoft Excel? (Copy & Paste a Formula)
 Copy either formula below and paste it into any empty cell (widen the row height slightly for a larger image):
@@ -69,10 +65,10 @@ If formulas show `#NAME?` or the `[SMILES]` tab is missing right after installat
 
 ## 🔄 Updating & Uninstalling
 
-* **Upgrade to the Latest Release (`v1.7.1`):**
-  - Click **`[SMILES]` ➔ `[About SMILES]` ➔ `[Check for Updates]`** on the Office ribbon, or simply run <a href="/func_SMILES2IMG/Install-func_SMILES2IMG.cmd" download="Install-func_SMILES2IMG.cmd"><code>Install-func_SMILES2IMG.cmd</code></a> again.
+* **Upgrade to the Latest Release:**
+  - Click **`[SMILES]` ➔ `[About SMILES]` ➔ `[Check for Updates]`** on the Office ribbon, or re-run the 1-line PowerShell install command anytime to upgrade automatically.
 * **Uninstall Cleanly:**
-  - Download and double-click **<a href="/func_SMILES2IMG/Uninstall-func_SMILES2IMG.cmd" download="Uninstall-func_SMILES2IMG.cmd"><code>Uninstall-func_SMILES2IMG.cmd</code></a>**, or run in PowerShell:
+  - Run this single command in PowerShell to remove all add-in files and registry entries:
     ```powershell
     irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex
     ```
@@ -85,7 +81,10 @@ If formulas show `#NAME?` or the `[SMILES]` tab is missing right after installat
 If your company firewall blocks GitHub scripts:
 1. Download `func_SMILES2IMG-x64.zip` (or `func_SMILES2IMG-x86.zip` for 32-bit Office) from [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest).
 2. Right-click the `.zip` file ➔ **Properties** ➔ check **Unblock** at the bottom ➔ click **OK**.
-3. Extract the archive and double-click **`Install-func_SMILES2IMG.cmd`** inside the extracted folder.
+3. Extract the archive, open PowerShell in that folder, and run:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File install.ps1
+   ```
 :::
 
 ::: details 💻 System Requirements

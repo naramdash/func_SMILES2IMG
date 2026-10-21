@@ -12,7 +12,7 @@
   1. **제품 UI 및 코드 (`src/`)**: 리본 메뉴(`About func_SMILES2IMG`), `AboutDialog`, 메시지 박스 타이틀(`func_SMILES2IMG`), COM Add-in 등록 `FriendlyName` (`func_SMILES2IMG (Word)`, `func_SMILES2IMG (PowerPoint)`).
   2. **문서 사이트 (`docs/`, `README.md`, `THIRD_PARTY_NOTICES.md`)**: VitePress 사이트 타이틀, 히어로 타이틀, 본문, 이미지 대체 텍스트(`alt`), 메타데이터 전체에서 **`func_SMILES2IMG`**로 표기합니다.
   3. **빌드 아티팩트 및 GitHub Release (`gh release`, `.github/workflows/release.yml`, `scripts/Package-Release.ps1`)**:
-     - 원클릭 설치/제거 스크립트: `Install-func_SMILES2IMG.cmd`, `Uninstall-func_SMILES2IMG.cmd`
+     - 원클릭 설치/제거 스크립트: `install.ps1`, `uninstall.ps1`
      - 배포 패키지 아카이브: `func_SMILES2IMG-x64.zip`, `func_SMILES2IMG-x86.zip`
      - GitHub Release 제목 및 본문 헤더: `func_SMILES2IMG vX.Y.Z`
 

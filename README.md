@@ -28,15 +28,9 @@
 
 ## ⚡ 10-Second Quick Install (Excel · Word · PowerPoint)
 
-### Option A. 1-Click Installer for Researchers (No Terminal Needed)
-👉 **[📥 Download `Install-func_SMILES2IMG.cmd`](https://naramdash.github.io/func_SMILES2IMG/Install-func_SMILES2IMG.cmd)** — Close open Office apps and double-click the downloaded file.
-*(✅ No Administrator Rights Needed · 🛡️ 100% Offline Execution · 💻 Auto-Detects 32/64-bit Office)*
-
-### Option B. 1-Line PowerShell Command (For Developers)
-Open **PowerShell** and paste this single command:
+Open **PowerShell** and run this single command to automatically install, configure security, and register the add-in across Microsoft Office (Excel, Word, PowerPoint):
 
 ```powershell
-# Stable release (v1.7.1)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
@@ -45,8 +39,8 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 > 2. Downloads and places `func_SMILES2IMG` (Excel XLL, Word COM DLL, PowerPoint COM DLL) in `%APPDATA%\Microsoft\AddIns\Smiles2Img`  
 > 3. Unblocks files (`Unblock-File`) to remove Windows security flags automatically  
 > 4. Registers Excel, Word, and PowerPoint add-ins in HKCU registry (no admin rights required, loads automatically on start)  
-> 💡 **Future Updates:** Running the installer again automatically upgrades to the latest release!  
-> 🗑️ **Uninstallation:** Run [`Uninstall-func_SMILES2IMG.cmd`](https://naramdash.github.io/func_SMILES2IMG/Uninstall-func_SMILES2IMG.cmd) or `irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex` anytime.
+> 💡 **Future Updates:** Running this exact command again in the future automatically upgrades to the latest release!  
+> 🗑️ **Uninstallation:** Run `irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex` anytime to cleanly remove all files and registry entries.
 
 ---
 
@@ -127,7 +121,7 @@ func_SMILES2IMG/
 │   │   ├── FloatingPictures.cs         # Cell-anchored floating shape manager
 │   │   ├── SmilesRibbon.cs             # [SMILES] ribbon tab & right-click context menu handlers (Copy Molecule Info submenu)
 │   │   ├── KetcherEditor.cs            # Ketcher commands, quick paste, molecule info & double-click hooks
-│   │   ├── KetcherEditor.ShapesAndCells.cs # KET canvas shape & formula cell extraction/insertion helpers
+│   │   └── KetcherEditor.ShapesAndCells.cs # KET canvas shape & formula cell extraction/insertion helpers
 │   │   └── ExcelMolstarManager.cs      # Mol* 3D viewer integration, floating GLB/PNG insertion & session re-editing
 │   ├── Smiles2Img.Word/                # Word COM add-in DLL (net48)
 │   │   ├── WordAddIn.cs                # IDTExtensibility2 + IRibbonExtensibility + context menu handlers

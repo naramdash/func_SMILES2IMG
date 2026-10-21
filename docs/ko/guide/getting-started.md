@@ -2,14 +2,6 @@
 
 단 10초 만에 **`func_SMILES2IMG`**를 설치하고, Excel · Word · PowerPoint 화면에 첫 번째 화학 구조식을 띄워보세요.
 
-<p align="center">
-  <img src="/hero-demo.gif" alt="func_SMILES2IMG 1분 빠른 시작 데모" width="100%" style="max-width: 760px; border-radius: 10px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);" />
-</p>
-
----
-
-## Step 1. 10초 원클릭 자동 설치
-
 <QuickInstallBox :hide-quickstart-btn="true" />
 
 ---
@@ -26,6 +18,10 @@
 ---
 
 ## Step 3. 첫 분자 구조식 띄워보기 (내 프로그램 선택)
+
+<p align="center">
+  <img src="/hero-demo.gif" alt="func_SMILES2IMG 1분 빠른 시작 데모" width="100%" style="max-width: 760px; border-radius: 10px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);" />
+</p>
 
 ### 📗 A. 엑셀(Excel) 사용자라면? — 수식 복사해 붙여넣기
 아무 빈 셀에나 아래 수식을 복사해 붙여넣고 <kbd>Enter</kbd>를 눌러보세요 (행 높이를 조금 넓히면 구조식이 더 크게 보입니다):
@@ -69,10 +65,10 @@ Word와 PowerPoint는 셀 수식을 치는 대신 **리본 버튼이나 단축�
 
 ## 🔄 업데이트 및 깔끔한 제거 방법
 
-* **최신 버전(`v1.7.1`)으로 업그레이드:**
-  - 오피스 상단 **`[SMILES]` ➔ `[About SMILES]` ➔ `[Check for Updates]`**를 누르거나, **<a href="/func_SMILES2IMG/Install-func_SMILES2IMG.cmd" download="Install-func_SMILES2IMG.cmd"><code>Install-func_SMILES2IMG.cmd</code></a>**를 다시 실행하면 최신 버전으로 자동 덮어쓰기됩니다.
+* **최신 버전으로 업그레이드:**
+  - 오피스 상단 **`[SMILES]` ➔ `[About SMILES]` ➔ `[Check for Updates]`**를 누르거나, 상단의 1줄 PowerShell 설치 명령어를 다시 실행하면 최신 버전으로 자동 덮어쓰기됩니다.
 * **깔끔하게 제거하기 (Uninstall):**
-  - **<a href="/func_SMILES2IMG/Uninstall-func_SMILES2IMG.cmd" download="Uninstall-func_SMILES2IMG.cmd"><code>Uninstall-func_SMILES2IMG.cmd</code></a>** 파일을 내려받아 더블클릭하거나, PowerShell에 아래 한 줄을 입력하세요:
+  - PowerShell에 아래 한 줄을 입력하면 추가 기능 등록 및 파일이 완전히 삭제됩니다:
     ```powershell
     irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex
     ```
@@ -84,7 +80,7 @@ Word와 PowerPoint는 셀 수식을 치는 대신 **리본 버튼이나 단축�
 ::: details 🏢 사내 방화벽으로 자동 다운로드가 막혀 있는 경우 (오프라인 ZIP 설치)
 1. [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest)에서 `func_SMILES2IMG-x64.zip` (32비트 오피스는 `func_SMILES2IMG-x86.zip`)을 다운로드합니다.
 2. 다운로드한 `.zip` 파일을 우클릭 ➔ **속성** ➔ 하단 **[차단 해제(Unblock)]** 체크 ➔ **[확인]**을 누릅니다.
-3. 압축을 풀고 폴더 안의 **`Install-func_SMILES2IMG.cmd`**를 더블클릭하면 인터넷 연결 없이 즉시 설치됩니다.
+3. 압축을 풀고 폴더 안에서 PowerShell을 열어 `powershell -ExecutionPolicy Bypass -File install.ps1`을 실행하면 오프라인으로 즉시 등록됩니다.
 :::
 
 ::: details 💻 지원 환경 및 시스템 요구사항

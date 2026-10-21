@@ -36,6 +36,8 @@ export default {
                 '🇰🇷 한국어 가이드 및 1분 설치 안내 바로가기 (Korean Guide) ➔'
               )
         ]),
+      'home-hero-actions-after': () =>
+        h(QuickInstallBox, { variant: 'hero' }),
       'home-features-before': () =>
         h('div', { class: 's2i-home-showcase-container' }, [h(OfficeAppTabs)])
     })

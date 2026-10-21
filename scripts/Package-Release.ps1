@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Packages dist output for GitHub Releases
 #>
@@ -27,7 +27,7 @@ foreach ($arch in @('x64', 'x86')) {
     }
 
     $repoRoot = Split-Path -Parent $PSScriptRoot
-    foreach ($helper in @('install.ps1', 'uninstall.ps1', 'Install-func_SMILES2IMG.cmd', 'Uninstall-func_SMILES2IMG.cmd')) {
+    foreach ($helper in @('install.ps1', 'uninstall.ps1')) {
         $helperPath = Join-Path $repoRoot $helper
         if (Test-Path $helperPath) { Copy-Item $helperPath -Destination $tempDir -Force }
     }
