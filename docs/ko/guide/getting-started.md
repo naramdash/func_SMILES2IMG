@@ -2,6 +2,10 @@
 
 단 10초 만에 **`func_SMILES2IMG`**를 설치하고, Excel · Word · PowerPoint 화면에 첫 번째 화학 구조식을 띄워보세요.
 
+---
+
+## Step 1. 10초 PowerShell 자동 설치
+
 <QuickInstallBox :hide-quickstart-btn="true" />
 
 ---

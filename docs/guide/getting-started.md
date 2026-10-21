@@ -2,6 +2,10 @@
 
 Install **`func_SMILES2IMG`** in 10 seconds and render your first 2D chemical structure or 3D protein inside Excel, Word, or PowerPoint.
 
+---
+
+## Step 1. 10-Second Auto-Install (PowerShell)
+
 <QuickInstallBox :hide-quickstart-btn="true" />
 
 ---
