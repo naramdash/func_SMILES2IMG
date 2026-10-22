@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     func_SMILES2IMG Automatic Installer (Excel, Word, PowerPoint)
 .DESCRIPTION
@@ -132,7 +132,7 @@ if (-not (Test-Path -LiteralPath $targetXllPath)) {
         Invoke-WebRequest -Uri $downloadUrl -OutFile $targetXllPath -UseBasicParsing
     }
     # Clean up legacy slow packed/unpacked XLLs from AddIns root directory if present
-    Get-ChildItem -Path $addInsDir -Filter 'Smiles2Img*.xll' -File -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
+    Get-ChildItem -Path $addInsDir -Filter 'Smiles2Img*.xll' -File -ErrorAction SilentlyContinue | Where-Object { $_.FullName -ne $targetXllPath } | Remove-Item -Force -ErrorAction SilentlyContinue
 }
 
 Unblock-File -LiteralPath $targetXllPath

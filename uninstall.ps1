@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     func_SMILES2IMG Uninstaller (Excel, Word, PowerPoint)
 .DESCRIPTION
