@@ -24,6 +24,21 @@ $ErrorActionPreference = 'Stop'
 
 Write-Host "=== func_SMILES2IMG Installer (Excel, Word, PowerPoint) ===" -ForegroundColor Cyan
 
+# Version extractor helper
+function Get-InstalledFileVersion($filePath) {
+    if (-not $filePath -or -not (Test-Path -LiteralPath $filePath)) { return $null }
+    try {
+        $info = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($filePath)
+        $rawVer = if ($info.ProductVersion) { $info.ProductVersion } elseif ($info.FileVersion) { $info.FileVersion } else { $null }
+        if ($rawVer -and $rawVer -match '^(\d+\.\d+\.\d+)') {
+            return "v$($matches[1])"
+        }
+        return $rawVer
+    } catch {
+        return $null
+    }
+}
+
 # 1. Check if Office applications are running
 $officeProcs = Get-Process -Name EXCEL, WINWORD, POWERPNT -ErrorAction SilentlyContinue
 if ($officeProcs) {
@@ -66,21 +81,57 @@ if ($c2r -and $c2r.Platform) {
 
 Write-Host "[+] Detected Office Architecture: $bitness (Office $officeVersion)" -ForegroundColor Green
 
-# 3. Target Directories
+# 3. Target Directories & Detect Previous Installation
 $addInsDir = Join-Path $env:APPDATA 'Microsoft\AddIns'
 $suiteDir = Join-Path $addInsDir 'Smiles2Img'
-if (-not (Test-Path $addInsDir)) { New-Item -ItemType Directory -Path $addInsDir -Force | Out-Null }
-if (-not (Test-Path $suiteDir))  { New-Item -ItemType Directory -Path $suiteDir -Force | Out-Null }
 
-$tag = if ($Version -eq 'latest' -or [string]::IsNullOrWhiteSpace($Version)) { 'latest' } else { if ($Version -notmatch '^v') { "v$Version" } else { $Version } }
-
-# -------------------------------------------------------------
-# 4. Deploy func_SMILES2IMG Files (%APPDATA%\Microsoft\AddIns\Smiles2Img)
-# -------------------------------------------------------------
 $unpackedXllName = if ($bitness -eq 'x64') { 'Smiles2Img-AddIn64.xll' } else { 'Smiles2Img-AddIn.xll' }
 $dnaName         = if ($bitness -eq 'x64') { 'Smiles2Img-AddIn64.dna' } else { 'Smiles2Img-AddIn.dna' }
 $packedXllName   = if ($bitness -eq 'x64') { 'Smiles2Img-AddIn64-packed.xll' } else { 'Smiles2Img-AddIn-packed.xll' }
 
+$previousVersion = $null
+$isUpgrade = $false
+
+$prevCandidateFiles = @(
+    (Join-Path $suiteDir 'Smiles2Img.Core.dll'),
+    (Join-Path $suiteDir 'Smiles2Img.dll'),
+    (Join-Path $suiteDir $unpackedXllName),
+    (Join-Path $addInsDir $packedXllName)
+)
+
+foreach ($candidate in $prevCandidateFiles) {
+    if (Test-Path -LiteralPath $candidate) {
+        $isUpgrade = $true
+        $prevVer = Get-InstalledFileVersion $candidate
+        if ($prevVer) {
+            $previousVersion = $prevVer
+            break
+        }
+    }
+}
+
+if (-not $isUpgrade) {
+    $excelRegPathCheck = "HKCU:\Software\Microsoft\Office\$officeVersion\Excel\Options"
+    if (Test-Path $excelRegPathCheck) {
+        $checkProps = Get-ItemProperty $excelRegPathCheck -ErrorAction SilentlyContinue
+        if ($checkProps) {
+            $hasExcelEntry = $checkProps.PSObject.Properties | Where-Object { $_.Name -match '^OPEN(\d+)?$' -and $_.Value -match 'Smiles2Img' }
+            if ($hasExcelEntry) {
+                $isUpgrade = $true
+            }
+        }
+    }
+}
+
+if (-not (Test-Path $addInsDir)) { New-Item -ItemType Directory -Path $addInsDir -Force | Out-Null }
+if (-not (Test-Path $suiteDir))  { New-Item -ItemType Directory -Path $suiteDir -Force | Out-Null }
+
+$tag = if ($Version -eq 'latest' -or [string]::IsNullOrWhiteSpace($Version)) { 'latest' } else { if ($Version -notmatch '^v') { "v$Version" } else { $Version } }
+$registeredApps = [System.Collections.Generic.List[string]]::new()
+
+# -------------------------------------------------------------
+# 4. Deploy func_SMILES2IMG Files (%APPDATA%\Microsoft\AddIns\Smiles2Img)
+# -------------------------------------------------------------
 $localWordDir = if ($PSScriptRoot) { Join-Path $PSScriptRoot "dist\$bitness\Word" } else { $null }
 $localPptDir  = if ($PSScriptRoot) { Join-Path $PSScriptRoot "dist\$bitness\PowerPoint" } else { $null }
 $localBinDir  = if ($PSScriptRoot) { Join-Path $PSScriptRoot "src\Smiles2Img.Excel\bin\Release\net48" } else { $null }
@@ -162,6 +213,7 @@ if (-not $openKeyToUse) {
 $regValue = "/R `"$targetXllPath`""
 Set-ItemProperty -Path $excelRegPath -Name $openKeyToUse -Value $regValue
 Write-Host "[+] Excel Add-in registered ($openKeyToUse): $regValue" -ForegroundColor Green
+$registeredApps.Add("Excel")
 
 # -------------------------------------------------------------
 # 6. Register Word & PowerPoint COM Add-ins (.dll)
@@ -233,6 +285,7 @@ function Register-OfficeComAddIn {
     Set-ItemProperty -Path $addInKey -Name "CommandLineSafe" -Value 0 -Type DWord
 
     Write-Host "[+] $OfficeApp COM Add-in registered: $FriendlyName" -ForegroundColor Green
+    $registeredApps.Add($OfficeApp)
 }
 
 # Register Word COM Add-in
@@ -272,17 +325,55 @@ try {
     Set-ItemProperty -Path $aumidKey -Name "DisplayName" -Value "func_SMILES2IMG"
 } catch { }
 
+# Detect installed version
+$installedCandidateFiles = @(
+    (Join-Path $suiteDir 'Smiles2Img.Core.dll'),
+    (Join-Path $suiteDir 'Smiles2Img.dll'),
+    (Join-Path $suiteDir $unpackedXllName),
+    (Join-Path $addInsDir $packedXllName)
+)
+$installedVersion = $null
+foreach ($candidate in $installedCandidateFiles) {
+    if (Test-Path -LiteralPath $candidate) {
+        $instVer = Get-InstalledFileVersion $candidate
+        if ($instVer) {
+            $installedVersion = $instVer
+            break
+        }
+    }
+}
+if (-not $installedVersion) {
+    $installedVersion = if ($tag -ne 'latest') { $tag } else { "v1.7.2" }
+}
+
 # -------------------------------------------------------------
-# 6. Success Output
+# 7. Installation Summary Output
 # -------------------------------------------------------------
-Write-Host "`n[SUCCESS] func_SMILES2IMG has been successfully installed!" -ForegroundColor Cyan
+$modeLabel = if ($isUpgrade) { "업그레이드 (Upgrade)" } else { "신규 설치 (Clean Install)" }
+$prevVerLabel = if ($previousVersion) { $previousVersion } elseif ($isUpgrade) { "기존 설치됨 (버전 정보 없음)" } else { "없음 (신규 설치)" }
+$currVerLabel = if ($installedVersion) { $installedVersion } else { "최신 버전" }
+$registeredAppsText = if ($registeredApps.Count -gt 0) { ($registeredApps -join ', ') } else { "없음" }
+
+Write-Host ""
+Write-Host "======================================================================" -ForegroundColor Cyan
+Write-Host " [SUMMARY] func_SMILES2IMG 설치 요약" -ForegroundColor Cyan
+Write-Host "----------------------------------------------------------------------" -ForegroundColor Cyan
+Write-Host "  * 설치 구분 (Mode):          $modeLabel" -ForegroundColor White
+Write-Host "  * 이전 설치 버전 (Previous):  $prevVerLabel" -ForegroundColor $(if ($isUpgrade) { "Yellow" } else { "Gray" })
+Write-Host "  * 현재 설치 버전 (Current):   $currVerLabel" -ForegroundColor Green
+Write-Host "  * Office 아키텍처 (Arch):    $bitness (Office $officeVersion)" -ForegroundColor White
+Write-Host "  * 등록된 Office 프로그램:    $registeredAppsText" -ForegroundColor White
+Write-Host "  * 설치 디렉터리:              $suiteDir" -ForegroundColor Gray
+Write-Host "======================================================================" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "[SUCCESS] func_SMILES2IMG 설정이 완료되었습니다!" -ForegroundColor Cyan
 Write-Host "  * Excel:      Type =SMILES2IMG(""CCO"") in any cell" -ForegroundColor White
 Write-Host "  * Word:       Click 'Insert Structure' in the [SMILES] ribbon tab" -ForegroundColor White
 Write-Host "  * PowerPoint: Click 'Insert Structure' in the [SMILES] ribbon tab" -ForegroundColor White
 Write-Host "  * All apps:   Double-click any molecule image to edit in Ketcher!" -ForegroundColor Yellow
 
 # -------------------------------------------------------------
-# 7. Check Windows 11 Smart App Control (SAC)
+# 8. Check Windows 11 Smart App Control (SAC)
 # -------------------------------------------------------------
 $sacPolicy = Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\CI\Policy" -ErrorAction SilentlyContinue
 if ($sacPolicy -and $sacPolicy.VerifiedAndReputablePolicyState -eq 1) {
