@@ -430,6 +430,106 @@ public static class Functions
         }
     }
 
+    [ExcelFunction(Name = "SMILES2HEAVY", Category = "SMILES",
+        Description = "Counts heavy (non-hydrogen) atoms for a SMILES, InChI, or KET structure.", IsMacroType = false)]
+    public static object SmilesHeavy(
+        [ExcelArgument(Name = "smiles", Description = "A SMILES string, InChI, KET string, or cell reference.")] string smiles)
+    {
+        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2HEAVY";
+        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
+        try
+        {
+            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
+            if (info != null && !info.IsReaction && info.HeavyAtomCount > 0)
+                return info.HeavyAtomCount;
+            return ExcelError.ExcelErrorNA;
+        }
+        catch
+        {
+            return ExcelError.ExcelErrorValue;
+        }
+    }
+
+    [ExcelFunction(Name = "SMILES2RINGS", Category = "SMILES",
+        Description = "Counts the number of rings (SSSR) for a SMILES, InChI, or KET structure.", IsMacroType = false)]
+    public static object SmilesRings(
+        [ExcelArgument(Name = "smiles", Description = "A SMILES string, InChI, KET string, or cell reference.")] string smiles)
+    {
+        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2RINGS";
+        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
+        try
+        {
+            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
+            if (info != null && !info.IsReaction)
+                return info.RingCount;
+            return ExcelError.ExcelErrorNA;
+        }
+        catch
+        {
+            return ExcelError.ExcelErrorValue;
+        }
+    }
+
+    [ExcelFunction(Name = "SMILES2AROMATIC", Category = "SMILES",
+        Description = "Counts the number of aromatic rings for a SMILES, InChI, or KET structure.", IsMacroType = false)]
+    public static object SmilesAromatic(
+        [ExcelArgument(Name = "smiles", Description = "A SMILES string, InChI, KET string, or cell reference.")] string smiles)
+    {
+        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2AROMATIC";
+        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
+        try
+        {
+            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
+            if (info != null && !info.IsReaction)
+                return info.AromaticRingCount;
+            return ExcelError.ExcelErrorNA;
+        }
+        catch
+        {
+            return ExcelError.ExcelErrorValue;
+        }
+    }
+
+    [ExcelFunction(Name = "SMILES2FSP3", Category = "SMILES",
+        Description = "Calculates the fraction of sp3 hybridized carbons (Fsp3, 0.00 to 1.00) for a SMILES, InChI, or KET structure.", IsMacroType = false)]
+    public static object SmilesFsp3(
+        [ExcelArgument(Name = "smiles", Description = "A SMILES string, InChI, KET string, or cell reference.")] string smiles)
+    {
+        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2FSP3";
+        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
+        try
+        {
+            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
+            if (info != null && !info.IsReaction)
+                return Math.Round(info.Fsp3, 2);
+            return ExcelError.ExcelErrorNA;
+        }
+        catch
+        {
+            return ExcelError.ExcelErrorValue;
+        }
+    }
+
+    [ExcelFunction(Name = "SMILES2CHIRAL", Category = "SMILES",
+        Description = "Counts defined tetrahedral chiral centers (stereocenters) for a SMILES, InChI, or KET structure.", IsMacroType = false)]
+    public static object SmilesChiral(
+        [ExcelArgument(Name = "smiles", Description = "A SMILES string, InChI, KET string, or cell reference.")] string smiles)
+    {
+        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2CHIRAL";
+        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
+        try
+        {
+            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
+            if (info != null && !info.IsReaction)
+                return info.ChiralCenters;
+            return ExcelError.ExcelErrorNA;
+        }
+        catch
+        {
+            return ExcelError.ExcelErrorValue;
+        }
+    }
+
     [ExcelFunction(Name = "SMILES.MATCH", Category = "SMILES",
         Description = "Checks if a target molecule contains a substructure query (SMILES or SMARTS). Returns TRUE or FALSE.", IsMacroType = false)]
     public static object SmilesMatch(

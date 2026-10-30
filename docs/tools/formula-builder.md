@@ -31,6 +31,8 @@ Pair your structure column with these zero-latency local calculation formulas (a
 | **Monoisotopic Exact Mass (Da)** | `=SMILES2EXACTMASS(A2)` | `180.0423` |
 | **Lipinski Rule of 5 Pass/Fail** | `=SMILES2LIPINSKI(A2)` | `PASS` |
 | **LogP / TPSA (Å²)** | `=SMILES2LOGP(A2)` / `=SMILES2TPSA(A2)` | `1.31` / `63.60` |
+| **Heavy Atoms / Rings / Aromatic Rings** | `=SMILES2HEAVY(A2)` / `=SMILES2RINGS(A2)` / `=SMILES2AROMATIC(A2)` | `13` / `1` / `1` |
+| **3D Complexity (Fsp³ / Chiral Centers)** | `=SMILES2FSP3(A2)` / `=SMILES2CHIRAL(A2)` | `0.11` / `0` |
 | **Substructure Match (e.g., Carboxylic Acid)** | `=SMILES.MATCH(A2, "[CX3](=O)[OX2H1]")` | `TRUE` |
 | **Tanimoto Similarity vs. Reference (`$D$1`)** | `=SMILES.SIMILARITY(A2, $D$1)` | `0.85` (0.0 – 1.0) |
 

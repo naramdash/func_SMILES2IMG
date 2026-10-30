@@ -191,6 +191,24 @@ try {
     }
     Write-Host "  -> PASS: Saved workbook successfully reopened with intact formulas & RichValue images!" -ForegroundColor Green
 
+    # Test Case 8: Structural Complexity Descriptors (SMILES2HEAVY, SMILES2RINGS, SMILES2AROMATIC, SMILES2FSP3, SMILES2CHIRAL)
+    Write-Host "`n[Test 8] Structural Complexity Descriptors: HEAVY, RINGS, AROMATIC, FSP3, CHIRAL" -ForegroundColor Yellow
+    Invoke-Excel { $sheet.Range('D2').Formula = '=SMILES2HEAVY(A2)' }
+    Invoke-Excel { $sheet.Range('E2').Formula = '=SMILES2RINGS(A4)' }
+    Invoke-Excel { $sheet.Range('F2').Formula = '=SMILES2AROMATIC(A4)' }
+    Invoke-Excel { $sheet.Range('G2').Formula = '=SMILES2FSP3(A2)' }
+    Invoke-Excel { $sheet.Range('H2').Formula = '=SMILES2CHIRAL(A3)' }
+    Invoke-Excel { $excel.Calculate() }
+    $vHeavy = Invoke-Excel { $sheet.Range('D2').Value2 }
+    $vRings = Invoke-Excel { $sheet.Range('E2').Value2 }
+    $vArom  = Invoke-Excel { $sheet.Range('F2').Value2 }
+    $vFsp3  = Invoke-Excel { $sheet.Range('G2').Value2 }
+    $vChiral = Invoke-Excel { $sheet.Range('H2').Value2 }
+    if ($vHeavy -ne 13 -or $vRings -ne 2 -or $vArom -ne 2 -or [Math]::Abs($vFsp3 - 0.11) -gt 0.01 -or $vChiral -ne 1) {
+        throw "Descriptor mismatch: Heavy=$vHeavy, Rings=$vRings, Arom=$vArom, Fsp3=$vFsp3, Chiral=$vChiral"
+    }
+    Write-Host "  -> PASS: Heavy=$vHeavy, Rings=$vRings, Arom=$vArom, Fsp3=$vFsp3, Chiral=$vChiral" -ForegroundColor Green
+
     Write-Host "`n=======================================================" -ForegroundColor Cyan
     Write-Host " ALL EXCEL DESKTOP 365 TESTS PASSED SUCCESSFULLY! " -ForegroundColor Green
     Write-Host "=======================================================" -ForegroundColor Cyan

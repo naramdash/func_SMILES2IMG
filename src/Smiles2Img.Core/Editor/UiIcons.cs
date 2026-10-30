@@ -360,6 +360,39 @@ public static class UiIcons
                 g.Restore(state);
                 break;
             }
+            case "Rings & Aromaticity":
+            {
+                // Royal Blue Bicyclic Aromatic Hexagon + Inner Ring
+                using var ringPen = new Pen(Color.FromArgb(37, 99, 235), 1.6f * s);
+                PointF[] hex =
+                {
+                    new(10 * s, 3 * s),
+                    new(16 * s, 6.5f * s),
+                    new(16 * s, 13.5f * s),
+                    new(10 * s, 17 * s),
+                    new(4 * s, 13.5f * s),
+                    new(4 * s, 6.5f * s)
+                };
+                g.DrawPolygon(ringPen, hex);
+                using var aromPen = new Pen(Color.FromArgb(59, 130, 246), 1.2f * s);
+                g.DrawEllipse(aromPen, 6.8f * s, 6.8f * s, 6.4f * s, 6.4f * s);
+                break;
+            }
+            case "3D Complexity (Fsp3)":
+            {
+                // Violet/Emerald Tetrahedral sp3 Stereocenter
+                using var bondPen = new Pen(Color.FromArgb(109, 40, 217), 1.5f * s);
+                g.DrawLine(bondPen, 10 * s, 10.5f * s, 10 * s, 3.5f * s);
+                g.DrawLine(bondPen, 10 * s, 10.5f * s, 4 * s, 15.5f * s);
+                g.DrawLine(bondPen, 10 * s, 10.5f * s, 16 * s, 15.5f * s);
+                using var centerBrush = new SolidBrush(Color.FromArgb(16, 185, 129));
+                using var nodeBrush = new SolidBrush(Color.FromArgb(139, 92, 246));
+                g.FillEllipse(nodeBrush, 8 * s, 2 * s, 4 * s, 4 * s);
+                g.FillEllipse(nodeBrush, 2.5f * s, 13.5f * s, 4 * s, 4 * s);
+                g.FillEllipse(nodeBrush, 13.5f * s, 13.5f * s, 4 * s, 4 * s);
+                g.FillEllipse(centerBrush, 7.5f * s, 8 * s, 5 * s, 5 * s);
+                break;
+            }
             case "Canonical SMILES":
             {
                 // Slate Chemical Chain (Benzene Ring + Double Bond)

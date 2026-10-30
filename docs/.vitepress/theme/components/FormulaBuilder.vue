@@ -18,10 +18,29 @@ const optAllC = ref(false)
 const optFlip = ref(false)
 const optFlipY = ref(false)
 const optRot90 = ref(false)
+const selectedPropFormula = ref<string>('')
+
+const propCatalog = [
+  { id: 'SMILES2MW', formula: '=SMILES2MW(A2)', labelKo: '분자량 (MW)', labelEn: 'MW (g/mol)', val: '180.16' },
+  { id: 'SMILES2EXACTMASS', formula: '=SMILES2EXACTMASS(A2)', labelKo: '정밀질량 (Exact)', labelEn: 'Exact Mass', val: '180.0423' },
+  { id: 'SMILES2LIPINSKI', formula: '=SMILES2LIPINSKI(A2)', labelKo: 'Lipinski Ro5', labelEn: 'Lipinski Ro5', val: '"PASS"' },
+  { id: 'SMILES2LOGP', formula: '=SMILES2LOGP(A2)', labelKo: 'LogP', labelEn: 'LogP', val: '1.31' },
+  { id: 'SMILES2TPSA', formula: '=SMILES2TPSA(A2)', labelKo: 'TPSA (Å²)', labelEn: 'TPSA (Å²)', val: '63.60' },
+  { id: 'SMILES2HEAVY', formula: '=SMILES2HEAVY(A2)', labelKo: '중원자 수 (Heavy)', labelEn: 'Heavy Atoms', val: '13' },
+  { id: 'SMILES2RINGS', formula: '=SMILES2RINGS(A2)', labelKo: '전체 고리 (Rings)', labelEn: 'Total Rings', val: '1' },
+  { id: 'SMILES2AROMATIC', formula: '=SMILES2AROMATIC(A2)', labelKo: '방향족 고리 (Arom)', labelEn: 'Aromatic Rings', val: '1' },
+  { id: 'SMILES2FSP3', formula: '=SMILES2FSP3(A2)', labelKo: '입체 탄소비 (Fsp³)', labelEn: 'Fraction Csp³', val: '0.11' },
+  { id: 'SMILES2CHIRAL', formula: '=SMILES2CHIRAL(A2)', labelKo: '키랄 중심 (Chiral)', labelEn: 'Chiral Centers', val: '0' },
+  { id: 'SMILES.MATCH', formula: '=SMILES.MATCH(A2, "c1ccccc1")', labelKo: '부분구조 매칭', labelEn: 'Substructure Match', val: 'TRUE' },
+  { id: 'SMILES.SIMILARITY', formula: '=SMILES.SIMILARITY(A2, $B$1)', labelKo: '유사도 (Tanimoto)', labelEn: '2D Similarity', val: '0.00–1.00' }
+]
+
+const activePropInfo = computed(() => propCatalog.find(p => p.id === selectedPropFormula.value) || null)
 
 const copied = ref(false)
 
 function resetGeometryAndLabels() {
+  selectedPropFormula.value = ''
   optNum.value = false
   optStereo.value = false
   optH.value = false
@@ -87,6 +106,7 @@ function resetAll() {
 }
 
 const activePreset = computed(() => {
+  if (selectedPropFormula.value) return ''
   if (bgMode.value === '#1e1e1e' && colorMode.value === 'white' && !highlightMode.value && !optNum.value && !optH.value) return 'dark'
   if (bgMode.value === '' && colorMode.value === 'bw' && !highlightMode.value && !optNum.value && !optH.value) return 'acs'
   if (bgMode.value === 'white' && colorMode.value === 'colored' && !highlightMode.value && !optNum.value && !optH.value) return 'whitebg'
@@ -137,6 +157,9 @@ const transformTokens = computed(() => {
 })
 
 const generatedFormula = computed(() => {
+  if (activePropInfo.value) {
+    return activePropInfo.value.formula
+  }
   const bg = bgMode.value
   const style = styleTokens.value.join(' ')
   const transform = transformTokens.value.join(' ')
@@ -254,21 +277,21 @@ async function copyFormula() {
         <div class="fb-group">
           <label class="fb-label">{{ isKo ? '1. 내 입력 데이터 종류' : '1. Input Data Type' }}</label>
           <div class="fb-btn-group">
-            <button type="button" :class="{ active: inputType === 'smiles' }" @click="inputType = 'smiles'">SMILES (A2)</button>
-            <button type="button" :class="{ active: inputType === 'name' }" @click="inputType = 'name'">{{ isKo ? '물질명 ("Aspirin")' : 'Name ("Aspirin")' }}</button>
-            <button type="button" :class="{ active: inputType === 'cas' }" @click="inputType = 'cas'">CAS ("50-78-2")</button>
-            <button type="button" :class="{ active: inputType === 'ket' }" @click="inputType = 'ket'">{{ isKo ? '반응식 KET (A2)' : 'Reaction KET' }}</button>
-            <button type="button" :class="{ active: inputType === 'inchi' }" @click="inputType = 'inchi'">InChI (A2)</button>
+            <button type="button" :class="{ active: inputType === 'smiles' }" @click="inputType = 'smiles'; selectedPropFormula = ''">SMILES (A2)</button>
+            <button type="button" :class="{ active: inputType === 'name' }" @click="inputType = 'name'; selectedPropFormula = ''">{{ isKo ? '물질명 ("Aspirin")' : 'Name ("Aspirin")' }}</button>
+            <button type="button" :class="{ active: inputType === 'cas' }" @click="inputType = 'cas'; selectedPropFormula = ''">CAS ("50-78-2")</button>
+            <button type="button" :class="{ active: inputType === 'ket' }" @click="inputType = 'ket'; selectedPropFormula = ''">{{ isKo ? '반응식 KET (A2)' : 'Reaction KET' }}</button>
+            <button type="button" :class="{ active: inputType === 'inchi' }" @click="inputType = 'inchi'; selectedPropFormula = ''">InChI (A2)</button>
           </div>
         </div>
 
         <div class="fb-group">
           <label class="fb-label">{{ isKo ? '2. 내 엑셀 버전' : '2. Excel Version' }}</label>
           <div class="fb-btn-group">
-            <button type="button" :class="{ active: !isFloat }" @click="isFloat = false">
+            <button type="button" :class="{ active: !isFloat }" @click="isFloat = false; selectedPropFormula = ''">
               {{ isKo ? 'Microsoft 365 / Excel 2024+ (인셀 이미지)' : 'Microsoft 365 / Excel 2024+ (In-Cell)' }}
             </button>
-            <button type="button" :class="{ active: isFloat }" @click="isFloat = true">
+            <button type="button" :class="{ active: isFloat }" @click="isFloat = true; selectedPropFormula = ''">
               {{ isKo ? 'Excel 2016 / 2019 / 2021 (.FLOAT 도형)' : 'Excel 2016–2021 (.FLOAT Shape)' }}
             </button>
           </div>
@@ -277,30 +300,30 @@ async function copyFormula() {
         <div class="fb-group">
           <label class="fb-label">{{ isKo ? '3. 배경색 및 선 색상 모드' : '3. Background & Color Mode' }}</label>
           <div class="fb-btn-group">
-            <button type="button" :class="{ active: bgMode === '' }" @click="bgMode = ''">{{ isKo ? '투명 배경 (기본)' : 'Transparent BG' }}</button>
-            <button type="button" :class="{ active: bgMode === 'white' }" @click="bgMode = 'white'">{{ isKo ? '흰색 배경 ("white")' : 'White BG ("white")' }}</button>
-            <button type="button" :class="{ active: bgMode === '#1e1e1e' }" @click="bgMode = '#1e1e1e'">{{ isKo ? '어두운 배경 ("#1e1e1e")' : 'Dark BG ("#1e1e1e")' }}</button>
-            <button type="button" :class="{ active: bgMode === '#fff9db' }" @click="bgMode = '#fff9db'">{{ isKo ? '노란색 ("#fff9db")' : 'Yellow ("#fff9db")' }}</button>
+            <button type="button" :class="{ active: bgMode === '' }" @click="bgMode = ''; selectedPropFormula = ''">{{ isKo ? '투명 배경 (기본)' : 'Transparent BG' }}</button>
+            <button type="button" :class="{ active: bgMode === 'white' }" @click="bgMode = 'white'; selectedPropFormula = ''">{{ isKo ? '흰색 배경 ("white")' : 'White BG ("white")' }}</button>
+            <button type="button" :class="{ active: bgMode === '#1e1e1e' }" @click="bgMode = '#1e1e1e'; selectedPropFormula = ''">{{ isKo ? '어두운 배경 ("#1e1e1e")' : 'Dark BG ("#1e1e1e")' }}</button>
+            <button type="button" :class="{ active: bgMode === '#fff9db' }" @click="bgMode = '#fff9db'; selectedPropFormula = ''">{{ isKo ? '노란색 ("#fff9db")' : 'Yellow ("#fff9db")' }}</button>
           </div>
           <div class="fb-btn-group" style="margin-top: 6px;">
-            <button type="button" :class="{ active: colorMode === 'colored' }" @click="colorMode = 'colored'">{{ isKo ? '🎨 표준 원소 컬러' : '🎨 Standard Color' }}</button>
-            <button type="button" :class="{ active: colorMode === 'bw' }" @click="colorMode = 'bw'">{{ isKo ? '✒️ 논문용 흑백 (bw)' : '✒️ Monochrome (bw)' }}</button>
-            <button type="button" :class="{ active: colorMode === 'white' }" @click="colorMode = 'white'">{{ isKo ? '🌙 흰색 결합선 (white)' : '🌙 White Ink (white)' }}</button>
-            <button type="button" :class="{ active: colorMode === 'ink=#1e40af' }" @click="colorMode = 'ink=#1e40af'">{{ isKo ? '💙 네이비 선 (ink=#1e40af)' : '💙 Navy Ink (ink=#1e40af)' }}</button>
+            <button type="button" :class="{ active: colorMode === 'colored' }" @click="colorMode = 'colored'; selectedPropFormula = ''">{{ isKo ? '🎨 표준 원소 컬러' : '🎨 Standard Color' }}</button>
+            <button type="button" :class="{ active: colorMode === 'bw' }" @click="colorMode = 'bw'; selectedPropFormula = ''">{{ isKo ? '✒️ 논문용 흑백 (bw)' : '✒️ Monochrome (bw)' }}</button>
+            <button type="button" :class="{ active: colorMode === 'white' }" @click="colorMode = 'white'; selectedPropFormula = ''">{{ isKo ? '🌙 흰색 결합선 (white)' : '🌙 White Ink (white)' }}</button>
+            <button type="button" :class="{ active: colorMode === 'ink=#1e40af' }" @click="colorMode = 'ink=#1e40af'; selectedPropFormula = ''">{{ isKo ? '💙 네이비 선 (ink=#1e40af)' : '💙 Navy Ink (ink=#1e40af)' }}</button>
           </div>
         </div>
 
         <div class="fb-group">
           <label class="fb-label">{{ isKo ? '4. 부분구조 하이라이트 (hl:)' : '4. Substructure Highlight (hl:)' }}</label>
           <div class="fb-btn-group">
-            <button type="button" :class="{ active: highlightMode === '' }" @click="highlightMode = ''">{{ isKo ? '없음' : 'None' }}</button>
-            <button type="button" :class="{ active: highlightMode === 'hl:c1ccccc1' }" @click="highlightMode = 'hl:c1ccccc1'">
+            <button type="button" :class="{ active: highlightMode === '' }" @click="highlightMode = ''; selectedPropFormula = ''">{{ isKo ? '없음' : 'None' }}</button>
+            <button type="button" :class="{ active: highlightMode === 'hl:c1ccccc1' }" @click="highlightMode = 'hl:c1ccccc1'; selectedPropFormula = ''">
               {{ isKo ? '벤젠 고리 (hl:c1ccccc1)' : 'Benzene Ring (hl:c1ccccc1)' }}
             </button>
-            <button type="button" :class="{ active: highlightMode === 'hl:C(=O)O' }" @click="highlightMode = 'hl:C(=O)O'">
+            <button type="button" :class="{ active: highlightMode === 'hl:C(=O)O' }" @click="highlightMode = 'hl:C(=O)O'; selectedPropFormula = ''">
               {{ isKo ? '카복실기 (hl:C(=O)O)' : 'Carboxyl Group (hl:C(=O)O)' }}
             </button>
-            <button type="button" :class="{ active: highlightMode === 'hl:C(=O)O[#6]' }" @click="highlightMode = 'hl:C(=O)O[#6]'">
+            <button type="button" :class="{ active: highlightMode === 'hl:C(=O)O[#6]' }" @click="highlightMode = 'hl:C(=O)O[#6]'; selectedPropFormula = ''">
               {{ isKo ? '에스터기 (hl:C(=O)O[#6])' : 'Ester Group (hl:C(=O)O[#6])' }}
             </button>
           </div>
@@ -309,13 +332,28 @@ async function copyFormula() {
         <div class="fb-group">
           <label class="fb-label">{{ isKo ? '5. 추가 라벨 & 회전/반전 (중복 선택 가능)' : '5. Labels & Geometry (Multi-select)' }}</label>
           <div class="fb-check-grid">
-            <label class="fb-check"><input type="checkbox" v-model="optNum" /> <span><code>num</code> ({{ isKo ? '원자 번호' : 'Atom #' }})</span></label>
-            <label class="fb-check"><input type="checkbox" v-model="optStereo" /> <span><code>stereo</code> ({{ isKo ? '입체 R/S' : 'Stereo R/S' }})</span></label>
-            <label class="fb-check"><input type="checkbox" v-model="optH" /> <span><code>h</code> ({{ isKo ? '수소 펼침' : 'Unfold H' }})</span></label>
-            <label class="fb-check"><input type="checkbox" v-model="optAllC" /> <span><code>all-c</code> ({{ isKo ? '탄소 기호 C' : 'Show all C' }})</span></label>
-            <label class="fb-check"><input type="checkbox" v-model="optFlip" /> <span><code>flip</code> ({{ isKo ? '좌우 반전' : 'Flip H' }})</span></label>
-            <label class="fb-check"><input type="checkbox" v-model="optFlipY" /> <span><code>flipy</code> ({{ isKo ? '상하 반전' : 'Flip V' }})</span></label>
-            <label class="fb-check"><input type="checkbox" v-model="optRot90" /> <span><code>rot90</code> ({{ isKo ? '90° 회전' : 'Rotate 90°' }})</span></label>
+            <label class="fb-check"><input type="checkbox" v-model="optNum" @change="selectedPropFormula = ''" /> <span><code>num</code> ({{ isKo ? '원자 번호' : 'Atom #' }})</span></label>
+            <label class="fb-check"><input type="checkbox" v-model="optStereo" @change="selectedPropFormula = ''" /> <span><code>stereo</code> ({{ isKo ? '입체 R/S' : 'Stereo R/S' }})</span></label>
+            <label class="fb-check"><input type="checkbox" v-model="optH" @change="selectedPropFormula = ''" /> <span><code>h</code> ({{ isKo ? '수소 펼침' : 'Unfold H' }})</span></label>
+            <label class="fb-check"><input type="checkbox" v-model="optAllC" @change="selectedPropFormula = ''" /> <span><code>all-c</code> ({{ isKo ? '탄소 기호 C' : 'Show all C' }})</span></label>
+            <label class="fb-check"><input type="checkbox" v-model="optFlip" @change="selectedPropFormula = ''" /> <span><code>flip</code> ({{ isKo ? '좌우 반전' : 'Flip H' }})</span></label>
+            <label class="fb-check"><input type="checkbox" v-model="optFlipY" @change="selectedPropFormula = ''" /> <span><code>flipy</code> ({{ isKo ? '상하 반전' : 'Flip V' }})</span></label>
+            <label class="fb-check"><input type="checkbox" v-model="optRot90" @change="selectedPropFormula = ''" /> <span><code>rot90</code> ({{ isKo ? '90° 회전' : 'Rotate 90°' }})</span></label>
+          </div>
+        </div>
+
+        <div class="fb-group">
+          <label class="fb-label">{{ isKo ? '6. 물성 · 3D 복잡도 · SAR 계산 수식 (클릭 시 상단 수식 전환)' : '6. Property, 3D Complexity & SAR Formulas (Click to Switch)' }}</label>
+          <div class="fb-btn-group">
+            <button
+              v-for="item in propCatalog"
+              :key="item.id"
+              type="button"
+              :class="{ active: selectedPropFormula === item.id }"
+              @click="selectedPropFormula = selectedPropFormula === item.id ? '' : item.id"
+            >
+              {{ isKo ? item.labelKo : item.labelEn }}
+            </button>
           </div>
         </div>
       </div>
@@ -441,7 +479,15 @@ async function copyFormula() {
           <span><strong>C₉H₈O₄</strong></span>
           <span>MW: <strong>180.16</strong></span>
           <span>Exact: <strong>180.0423</strong></span>
+          <span>Heavy: <strong>13</strong></span>
+          <span>Rings: <strong>1 (Arom: 1)</strong></span>
+          <span>Fsp³: <strong>0.11</strong></span>
+          <span>Chiral: <strong>0</strong></span>
           <span class="fb-pass">Lipinski: PASS</span>
+        </div>
+        <div v-if="activePropInfo" class="fb-prop-result">
+          {{ isKo ? `📊 아스피린(A2) 계산 결과: ` : `📊 Calculated Result for Aspirin (A2): ` }}
+          <code>{{ activePropInfo.formula }}</code> ➔ <strong>{{ activePropInfo.val }}</strong>
         </div>
         <div class="fb-caption">
           {{ isKo ? '💡 투명 배경(체크무늬)은 엑셀 셀에 들어갈 때 셀 배경색과 자연스럽게 합쳐집니다.' : '💡 Checkerboard indicates transparent background that blends with Excel cells.' }}
@@ -627,6 +673,16 @@ async function copyFormula() {
 .fb-mol-meta .fb-pass {
   color: #0d9488;
   font-weight: 700;
+}
+.fb-prop-result {
+  margin-top: 8px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: var(--vp-c-brand-soft);
+  border: 1px solid var(--vp-c-brand-1);
+  color: var(--vp-c-text-1);
+  font-size: 0.8rem;
+  text-align: center;
 }
 .fb-caption {
   font-size: 0.76rem;

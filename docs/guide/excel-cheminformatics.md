@@ -82,6 +82,11 @@ Evaluates the 4 classic Lipinski criteria and returns **`"PASS"`** or **`"FAIL"`
 | :--- | :--- | :---: | :--- |
 | **Topological Polar Surface Area** | `=SMILES2TPSA(A2)` | `63.60` (Å²) | • **≤ 140 Å²:** Good oral intestinal absorption<br>• **≤ 90 Å²:** Favorable for CNS Blood-Brain Barrier (BBB) penetration |
 | **Rotatable Bonds** | `=SMILES2ROTBONDS(A2)` | `3` | • **≤ 10 bonds (Veber's Rule):** Favorable conformational flexibility for oral bioavailability |
+| **Heavy Atom Count** | `=SMILES2HEAVY(A2)` | `13` | • **15–35 heavy atoms:** Typical lead-like / drug-like non-hydrogen atom count |
+| **Total Ring Count (SSSR)** | `=SMILES2RINGS(A2)` | `1` | • Counts smallest set of smallest rings (SSSR) in the molecular scaffold |
+| **Aromatic Ring Count** | `=SMILES2AROMATIC(A2)` | `1` | • **≤ 3 aromatic rings (Ritchie & Macdonald):** Lower aromatic ring count improves aqueous solubility and clinical developability |
+| **Fraction Csp³ (Fsp³)** | `=SMILES2FSP3(A2)` | `0.11` | • **≥ 0.25–0.42 ("Escape from Flatland"):** Higher sp³ carbon fraction correlates with improved 3D shape, solubility, and selectivity |
+| **Chiral Centers** | `=SMILES2CHIRAL(A2)` | `0` | • Counts defined tetrahedral stereocenters (`@` / `@@`) for stereochemical complexity tracking |
 
 ---
 
@@ -167,6 +172,7 @@ Because all chemical formulas return native Excel numbers (`double`), booleans (
 | :--- | :--- |
 | **Flag hits passing Lipinski Ro5 AND containing a pyridine ring** | `=IF(AND(SMILES2LIPINSKI(A2)="PASS", SMILES.MATCH(A2, "c1ccncc1")), "✅ Priority Hit", "Exclude")` |
 | **Flag CNS / BBB penetrant candidates (`TPSA ≤ 90` & `MW ≤ 450`)** | `=IF(AND(SMILES2TPSA(A2)<=90, SMILES2MW(A2)<=450), "🧠 CNS Candidate", "Standard")` |
+| **Flag 3D-rich, soluble leads (`Fsp³ ≥ 0.25` & `Aromatic Rings ≤ 3`)** | `=IF(AND(SMILES2FSP3(A2)>=0.25, SMILES2AROMATIC(A2)<=3), "✨ Escape Flatland", "Flat / Aromatic")` |
 | **Conditionally highlight halogens only when present** | `=IF(SMILES.MATCH(A2, "[F,Cl,Br,I]"), SMILES2IMG(A2, "", "hl:[F,Cl,Br,I]"), SMILES2IMG(A2))` |
 
 ### ② 10-Second Conditional Formatting (`PASS`/`FAIL` Badges & Similarity Data Bars)

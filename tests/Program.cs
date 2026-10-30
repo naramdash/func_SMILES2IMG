@@ -653,7 +653,7 @@ internal static class Program
             var dirtyInfo = new MoleculeInfo { CompoundName = "Special\tSubstance\r\nName", Formula = "C6\tH6", Smiles = "c1ccccc1" };
             string dirtyTsv = dirtyInfo.FormatExcelTsv(includeHeader: false);
             Check(!dirtyTsv.Contains("\r") && !dirtyTsv.Contains("\n"), "Dirty TSV row contains no line breaks");
-            Check(dirtyTsv.Split('\t').Length == 12, $"Dirty TSV row maintains exactly 12 columns, got: {dirtyTsv.Split('\t').Length}");
+            Check(dirtyTsv.Split('\t').Length == 17, $"Dirty TSV row maintains exactly 17 columns, got: {dirtyTsv.Split('\t').Length}");
 
             // Verify CopiedToast.Show runs safely in background STA thread without crashing
             Smiles2Img.Editor.CopiedToast.Show("Test Molecule", "CCO", isWarning: false);
@@ -689,6 +689,26 @@ internal static class Program
             Check(Functions.SmilesRotBonds("CC(=O)Oc1ccccc1C(=O)O") is int rb && rb >= 2, "SMILES2ROTBONDS for Aspirin >= 2");
             Check(Equals(Functions.SmilesLipinski("CC(=O)Oc1ccccc1C(=O)O"), "PASS"), "SMILES2LIPINSKI for Aspirin == PASS");
             Console.WriteLine("PASS v1.7.0 Exact Mass, LogP, TPSA, HBD, HBA, RotBonds, and Lipinski Rule of 5");
+
+            // v1.8.0 Tests: Structural Complexity Descriptors (Heavy, Rings, Aromatic, Fsp3, Chiral)
+            Check(aspirinInfo.HeavyAtomCount == 13, $"Aspirin HeavyAtomCount == 13, got: {aspirinInfo.HeavyAtomCount}");
+            Check(aspirinInfo.RingCount == 1, $"Aspirin RingCount == 1, got: {aspirinInfo.RingCount}");
+            Check(aspirinInfo.AromaticRingCount == 1, $"Aspirin AromaticRingCount == 1, got: {aspirinInfo.AromaticRingCount}");
+            Check(Math.Abs(aspirinInfo.Fsp3 - 0.11) < 0.01, $"Aspirin Fsp3 == 0.11, got: {aspirinInfo.Fsp3}");
+            Check(aspirinInfo.ChiralCenters == 0, $"Aspirin ChiralCenters == 0, got: {aspirinInfo.ChiralCenters}");
+
+            Check(Equals(Functions.SmilesHeavy("CC(=O)Oc1ccccc1C(=O)O"), 13), "SMILES2HEAVY for Aspirin == 13");
+            Check(Equals(Functions.SmilesRings("CN1C=NC2=C1C(=O)N(C(=O)N2C)C"), 2), "SMILES2RINGS for Caffeine == 2");
+            Check(Equals(Functions.SmilesAromatic("CN1C=NC2=C1C(=O)N(C(=O)N2C)C"), 2), "SMILES2AROMATIC for Caffeine == 2");
+            Check(Equals(Functions.SmilesRings("C1CCCCC1"), 1), "SMILES2RINGS for Cyclohexane == 1");
+            Check(Equals(Functions.SmilesAromatic("C1CCCCC1"), 0), "SMILES2AROMATIC for Cyclohexane == 0");
+            Check(Functions.SmilesFsp3("C1CCCCC1") is double fsp3Cyc && Math.Abs(fsp3Cyc - 1.0) < 0.01, "SMILES2FSP3 for Cyclohexane == 1.0");
+            Check(Functions.SmilesFsp3("CC(=O)Oc1ccccc1C(=O)O") is double fsp3Asp && Math.Abs(fsp3Asp - 0.11) < 0.01, "SMILES2FSP3 for Aspirin == 0.11");
+            Check(Equals(Functions.SmilesChiral("C[C@H](N)C(=O)O"), 1), "SMILES2CHIRAL for L-Alanine == 1");
+            Check(Equals(Functions.SmilesChiral("CCO"), 0), "SMILES2CHIRAL for Ethanol == 0");
+            Check(Smiles2Img.Editor.UiIcons.GetPropertyIcon("Rings & Aromaticity") != null, "UiIcons.GetPropertyIcon('Rings & Aromaticity') valid");
+            Check(Smiles2Img.Editor.UiIcons.GetPropertyIcon("3D Complexity (Fsp3)") != null, "UiIcons.GetPropertyIcon('3D Complexity (Fsp3)') valid");
+            Console.WriteLine("PASS v1.8.0 Structural Complexity Descriptors (SMILES2HEAVY, SMILES2RINGS, SMILES2AROMATIC, SMILES2FSP3, SMILES2CHIRAL)");
 
             // v1.7.0 Tests: Substructure Matching, Similarity, and Substructure Highlighting
             Check(Equals(Functions.SmilesMatch("CC(=O)Oc1ccccc1C(=O)O", "c1ccccc1"), true), "SMILES.MATCH finds benzene in Aspirin");

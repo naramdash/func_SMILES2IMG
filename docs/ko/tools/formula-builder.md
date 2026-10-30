@@ -31,6 +31,8 @@ Excel, Word, PowerPoint 상단 리본의 **`[SMILES]`** ➔ **`[Batch Style]`** 
 | **정밀 질량 (Exact Mass, Da)** | `=SMILES2EXACTMASS(A2)` | `180.0423` |
 | **Lipinski Rule of 5 판정** | `=SMILES2LIPINSKI(A2)` | `PASS` |
 | **지용성 (LogP) / 극성 표면적 (TPSA)** | `=SMILES2LOGP(A2)` / `=SMILES2TPSA(A2)` | `1.31` / `63.60` |
+| **중원자 수 / 전체 고리 / 방향족 고리** | `=SMILES2HEAVY(A2)` / `=SMILES2RINGS(A2)` / `=SMILES2AROMATIC(A2)` | `13` / `1` / `1` |
+| **3D 입체 복잡도 (Fsp³ / 키랄 중심)** | `=SMILES2FSP3(A2)` / `=SMILES2CHIRAL(A2)` | `0.11` / `0` |
 | **특정 작용기 포함 여부 (예: 카복실산)** | `=SMILES.MATCH(A2, "[CX3](=O)[OX2H1]")` | `TRUE` |
 | **기준 물질(`$D$1`)과의 구조 유사도** | `=SMILES.SIMILARITY(A2, $D$1)` | `0.85` (0.0 ~ 1.0) |
 

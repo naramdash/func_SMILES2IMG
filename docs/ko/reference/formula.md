@@ -76,6 +76,11 @@
 | **수소 결합 공여체 수 (HBD)** | `=SMILES2HBD(A2)` | `1` | `-OH`, `-NH` 등 수소 결합 공여체 개수 (≤ 5 권장) |
 | **수소 결합 수용체 수 (HBA)** | `=SMILES2HBA(A2)` | `4` | 질소(`N`), 산소(`O`) 등 수소 결합 수용체 개수 (≤ 10 권장) |
 | **회전 가능한 결합 수** | `=SMILES2ROTBONDS(A2)` | `3` | 단일 회전 가능 결합 개수 (≤ 10 권장) |
+| **중원자 수 (Heavy Atoms)** | `=SMILES2HEAVY(A2)` | `13` | 수소를 제외한 비수소 원자 개수 (`countHeavyAtoms`) |
+| **전체 고리 수 (SSSR)** | `=SMILES2RINGS(A2)` | `1` | 분자 내 최소 고리 집합(SSSR) 전체 개수 |
+| **방향족 고리 수 (Aromatic)** | `=SMILES2AROMATIC(A2)` | `1` | 방향족 고리 개수 (용해도 확보를 위해 ≤ 3 권장) |
+| **입체 탄소 비율 (Fsp³)** | `=SMILES2FSP3(A2)` | `0.11` | 전체 탄소 중 sp³ 혼성 탄소 비율 (`0.00` ~ `1.00`, ≥ 0.25 권장) |
+| **키랄 중심 수 (Chiral)** | `=SMILES2CHIRAL(A2)` | `0` | 정의된 사면체 입체 중심(`@` / `@@`) 개수 |
 
 ---
 
@@ -131,8 +136,8 @@
 ### 함수별 반환 데이터 타입 (수식 사칙연산 호환성)
 | 함수 그룹 | 엑셀 반환 타입 | 사칙연산·비교연산 호환 예시 |
 | :--- | :--- | :--- |
-| `=SMILES2MW`, `=SMILES2EXACTMASS`, `=SMILES2LOGP`, `=SMILES2TPSA`, `=SMILES.SIMILARITY` | **실수 (`Number / Double`)** | `=SMILES2MW(A2) * 5.0` (당량·무게 계산), `=SMILES2TPSA(A2) <= 90` |
-| `=SMILES2HBD`, `=SMILES2HBA`, `=SMILES2ROTBONDS` | **정수 (`Number / Integer`)** | `=SMILES2HBD(A2) + SMILES2HBA(A2)` |
+| `=SMILES2MW`, `=SMILES2EXACTMASS`, `=SMILES2LOGP`, `=SMILES2TPSA`, `=SMILES2FSP3`, `=SMILES.SIMILARITY` | **실수 (`Number / Double`)** | `=SMILES2MW(A2) * 5.0` (당량·무게 계산), `=SMILES2FSP3(A2) >= 0.25` |
+| `=SMILES2HBD`, `=SMILES2HBA`, `=SMILES2ROTBONDS`, `=SMILES2HEAVY`, `=SMILES2RINGS`, `=SMILES2AROMATIC`, `=SMILES2CHIRAL` | **정수 (`Number / Integer`)** | `=SMILES2HBD(A2) + SMILES2HBA(A2)`, `=SMILES2AROMATIC(A2) <= 3` |
 | `=SMILES.MATCH` | **논리값 (`Boolean: TRUE / FALSE`)** | `=IF(SMILES.MATCH(A2, "c1ccccc1"), "방향족", "비방향족")` |
 | `=SMILES2LIPINSKI`, `=SMILES2FORMULA`, `=SMILES2NAME`, `=NAME2SMILES`, `=SMILES2INCHI` | **문자열 (`Text / String`)** | `=IF(SMILES2LIPINSKI(A2)="PASS", "통과", "제외")` |
 | `=SMILES2IMG`, `=NAME2IMG`, `=KET2IMG`, `=INCHI2IMG` | **인셀 이미지 참조 (`.FLOAT`는 도형)** | 셀 크기에 맞춰 자동 스케일링 및 정렬·필터 연동 |

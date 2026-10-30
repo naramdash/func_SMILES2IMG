@@ -76,6 +76,11 @@ Evaluate oral bioavailability and physicochemical descriptors directly in your s
 | **H-Bond Donors (HBD)** | `=SMILES2HBD(A2)` | `1` | Count of `-OH` and `-NH` hydrogen bond donors (≤ 5) |
 | **H-Bond Acceptors (HBA)** | `=SMILES2HBA(A2)` | `4` | Count of nitrogen (`N`) and oxygen (`O`) acceptors (≤ 10) |
 | **Rotatable Bonds** | `=SMILES2ROTBONDS(A2)` | `3` | Count of rotatable single bonds (≤ 10 recommended) |
+| **Heavy Atom Count** | `=SMILES2HEAVY(A2)` | `13` | Count of non-hydrogen heavy atoms (`countHeavyAtoms`) |
+| **Ring Count (SSSR)** | `=SMILES2RINGS(A2)` | `1` | Total number of rings (Smallest Set of Smallest Rings) |
+| **Aromatic Ring Count** | `=SMILES2AROMATIC(A2)` | `1` | Count of aromatic rings (≤ 3 recommended for solubility) |
+| **Fraction Csp³ (Fsp³)** | `=SMILES2FSP3(A2)` | `0.11` | Fraction of sp³ hybridized carbons (`0.00` to `1.00`, ≥ 0.25 for 3D character) |
+| **Chiral Centers** | `=SMILES2CHIRAL(A2)` | `0` | Count of defined tetrahedral stereocenters (`@` / `@@`) |
 
 ---
 
@@ -131,8 +136,8 @@ Filter compound libraries by scaffold or rank analogs against a lead molecule. F
 ### Return Data Types (Formula Math & Logic Compatibility)
 | Function Group | Excel Return Type | Formula & Math Usage Example |
 | :--- | :--- | :--- |
-| `=SMILES2MW`, `=SMILES2EXACTMASS`, `=SMILES2LOGP`, `=SMILES2TPSA`, `=SMILES.SIMILARITY` | **Numeric (`Double`)** | `=SMILES2MW(A2) * 5.0` (stoichiometry mass), `=SMILES2TPSA(A2) <= 90` |
-| `=SMILES2HBD`, `=SMILES2HBA`, `=SMILES2ROTBONDS` | **Numeric (`Integer`)** | `=SMILES2HBD(A2) + SMILES2HBA(A2)` |
+| `=SMILES2MW`, `=SMILES2EXACTMASS`, `=SMILES2LOGP`, `=SMILES2TPSA`, `=SMILES2FSP3`, `=SMILES.SIMILARITY` | **Numeric (`Double`)** | `=SMILES2MW(A2) * 5.0` (stoichiometry mass), `=SMILES2FSP3(A2) >= 0.25` |
+| `=SMILES2HBD`, `=SMILES2HBA`, `=SMILES2ROTBONDS`, `=SMILES2HEAVY`, `=SMILES2RINGS`, `=SMILES2AROMATIC`, `=SMILES2CHIRAL` | **Numeric (`Integer`)** | `=SMILES2HBD(A2) + SMILES2HBA(A2)`, `=SMILES2AROMATIC(A2) <= 3` |
 | `=SMILES.MATCH` | **Boolean (`TRUE / FALSE`)** | `=IF(SMILES.MATCH(A2, "c1ccccc1"), "Aromatic", "Aliphatic")` |
 | `=SMILES2LIPINSKI`, `=SMILES2FORMULA`, `=SMILES2NAME`, `=NAME2SMILES`, `=SMILES2INCHI` | **Text (`String`)** | `=IF(SMILES2LIPINSKI(A2)="PASS", "Candidate", "Exclude")` |
 | `=SMILES2IMG`, `=NAME2IMG`, `=KET2IMG`, `=INCHI2IMG` | **In-Cell Picture (`.FLOAT` = Shape)** | Scales automatically with cell height/width and sorts with table rows |

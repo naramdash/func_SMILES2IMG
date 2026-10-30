@@ -443,6 +443,8 @@ public sealed class MoleculeInfoDialog : Form
             AddPropertyRow("LogP / TPSA", $"LogP: {_info.LogP:F2}   |   TPSA: {_info.Tpsa:F1} Å²", $"LogP: {_info.LogP:F2}, TPSA: {_info.Tpsa:F1}");
             var lipinskiStatus = _info.PassesLipinski ? "Pass" : "Violation";
             AddPropertyRow("Lipinski Rule of 5", $"{lipinskiStatus} (HBD: {_info.HBondDonors}, HBA: {_info.HBondAcceptors}, RotBonds: {_info.RotatableBonds})", $"{lipinskiStatus} (HBD={_info.HBondDonors}, HBA={_info.HBondAcceptors}, RotBonds={_info.RotatableBonds})");
+            AddPropertyRow("Rings & Aromaticity", $"Rings: {_info.RingCount} (Aromatic: {_info.AromaticRingCount})   |   Heavy Atoms: {_info.HeavyAtomCount}", $"Rings={_info.RingCount}, AromaticRings={_info.AromaticRingCount}, HeavyAtoms={_info.HeavyAtomCount}");
+            AddPropertyRow("3D Complexity (Fsp3)", $"Fsp3: {_info.Fsp3:F2}   |   Chiral Centers: {_info.ChiralCenters}", $"Fsp3={_info.Fsp3:F2}, ChiralCenters={_info.ChiralCenters}");
         }
 
         AddPropertyRow("Canonical SMILES", _info.Smiles, _info.Smiles, isCode: true);

@@ -31,6 +31,11 @@ public sealed class MoleculeInfo
     public int HBondDonors { get; set; }
     public int HBondAcceptors { get; set; }
     public int RotatableBonds { get; set; }
+    public int HeavyAtomCount { get; set; }
+    public int RingCount { get; set; }
+    public int AromaticRingCount { get; set; }
+    public double Fsp3 { get; set; }
+    public int ChiralCenters { get; set; }
     public bool PassesLipinski => MolecularWeight <= 500.0 && LogP <= 5.0 && HBondDonors <= 5 && HBondAcceptors <= 10;
     public string Smiles { get; set; } = "";
     public bool IsReaction { get; set; }
@@ -68,6 +73,8 @@ public sealed class MoleculeInfo
         parts.Add($"LogP: {LogP:F2}");
         parts.Add($"TPSA: {Tpsa:F1} Å²");
         parts.Add($"HBD/HBA/RotB: {HBondDonors}/{HBondAcceptors}/{RotatableBonds}");
+        if (HeavyAtomCount > 0)
+            parts.Add($"Heavy/Rings/Arom/Fsp3/Chiral: {HeavyAtomCount}/{RingCount}/{AromaticRingCount}/{Fsp3:F2}/{ChiralCenters}");
         parts.Add($"SMILES: {Smiles}");
         if (!string.IsNullOrWhiteSpace(InChI))
             parts.Add($"InChI: {InChI}");
@@ -96,6 +103,10 @@ public sealed class MoleculeInfo
         lines.Add($"H-Bond Donors: {HBondDonors}");
         lines.Add($"H-Bond Acceptors: {HBondAcceptors}");
         lines.Add($"Rotatable Bonds: {RotatableBonds}");
+        lines.Add($"Heavy Atoms: {HeavyAtomCount}");
+        lines.Add($"Rings (Total / Aromatic): {RingCount} / {AromaticRingCount}");
+        lines.Add($"Fraction Csp3 (Fsp3): {Fsp3:F2}");
+        lines.Add($"Chiral Centers: {ChiralCenters}");
         lines.Add($"Lipinski Rule of 5: {(PassesLipinski ? "Passed" : "Failed")}");
         lines.Add($"SMILES: {Smiles}");
         if (!string.IsNullOrWhiteSpace(InChI))
@@ -128,6 +139,11 @@ public sealed class MoleculeInfo
             HBondDonors.ToString(),
             HBondAcceptors.ToString(),
             RotatableBonds.ToString(),
+            HeavyAtomCount.ToString(),
+            RingCount.ToString(),
+            AromaticRingCount.ToString(),
+            Fsp3.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
+            ChiralCenters.ToString(),
             PassesLipinski ? "Pass" : "Fail",
             CleanTsvField(Smiles),
             CleanTsvField(InChIKey)
@@ -140,7 +156,7 @@ public sealed class MoleculeInfo
         var headerValues = new[]
         {
             "Name", "Formula", "MW (g/mol)", "Exact Mass", "LogP", "TPSA (Å²)",
-            "HBD", "HBA", "RotB", "Lipinski", "SMILES", "InChIKey"
+            "HBD", "HBA", "RotB", "Heavy Atoms", "Rings", "Aromatic Rings", "Fsp3", "Chiral Centers", "Lipinski", "SMILES", "InChIKey"
         };
         string header = string.Join("\t", headerValues);
         return header + "\r\n" + row;
@@ -165,6 +181,9 @@ public sealed class MoleculeInfo
         sb.AppendLine($"| **LogP** | {LogP:F2} |");
         sb.AppendLine($"| **TPSA** | {Tpsa:F1} Å² |");
         sb.AppendLine($"| **HBD / HBA / RotB** | {HBondDonors} / {HBondAcceptors} / {RotatableBonds} |");
+        sb.AppendLine($"| **Heavy Atoms / Chiral** | {HeavyAtomCount} / {ChiralCenters} |");
+        sb.AppendLine($"| **Rings (Total / Aromatic)** | {RingCount} / {AromaticRingCount} |");
+        sb.AppendLine($"| **Fraction Csp3 (Fsp3)** | {Fsp3:F2} |");
         sb.AppendLine($"| **Lipinski Rule of 5** | {(PassesLipinski ? "Passed" : "Failed")} |");
         sb.AppendLine($"| **SMILES** | `{Smiles}` |");
         if (!string.IsNullOrWhiteSpace(InChI))
@@ -194,6 +213,11 @@ public sealed class MoleculeInfo
         sb.AppendLine($"  \"hBondDonors\": {HBondDonors},");
         sb.AppendLine($"  \"hBondAcceptors\": {HBondAcceptors},");
         sb.AppendLine($"  \"rotatableBonds\": {RotatableBonds},");
+        sb.AppendLine($"  \"heavyAtomCount\": {HeavyAtomCount},");
+        sb.AppendLine($"  \"ringCount\": {RingCount},");
+        sb.AppendLine($"  \"aromaticRingCount\": {AromaticRingCount},");
+        sb.AppendLine($"  \"fsp3\": {Fsp3.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)},");
+        sb.AppendLine($"  \"chiralCenters\": {ChiralCenters},");
         sb.AppendLine($"  \"passesLipinski\": {(PassesLipinski ? "true" : "false")},");
         sb.AppendLine($"  \"smiles\": \"{EscapeJson(Smiles)}\",");
         if (!string.IsNullOrWhiteSpace(InChI))
@@ -221,6 +245,9 @@ public sealed class MoleculeInfo
         rows.Add(("LogP", $"{LogP:F2}"));
         rows.Add(("TPSA", $"{Tpsa:F1} Å²"));
         rows.Add(("HBD / HBA / RotB", $"{HBondDonors} / {HBondAcceptors} / {RotatableBonds}"));
+        rows.Add(("Heavy Atoms / Chiral", $"{HeavyAtomCount} / {ChiralCenters}"));
+        rows.Add(("Rings (Total / Aromatic)", $"{RingCount} / {AromaticRingCount}"));
+        rows.Add(("Fraction Csp3 (Fsp3)", $"{Fsp3:F2}"));
         rows.Add(("Lipinski Rule of 5", PassesLipinski ? "Passed" : "Failed"));
         rows.Add(("SMILES", Smiles));
         if (!string.IsNullOrWhiteSpace(InChIKey)) rows.Add(("InChIKey", InChIKey));
@@ -257,7 +284,7 @@ public sealed class MoleculeInfo
         var headerValues = new[]
         {
             "Name", "Formula", "MW (g/mol)", "Exact Mass", "LogP", "TPSA (Å²)",
-            "HBD", "HBA", "RotB", "Lipinski", "SMILES", "InChIKey"
+            "HBD", "HBA", "RotB", "Heavy Atoms", "Rings", "Aromatic Rings", "Fsp3", "Chiral Centers", "Lipinski", "SMILES", "InChIKey"
         };
         var rowValues = new[]
         {
@@ -270,6 +297,11 @@ public sealed class MoleculeInfo
             HBondDonors.ToString(),
             HBondAcceptors.ToString(),
             RotatableBonds.ToString(),
+            HeavyAtomCount.ToString(),
+            RingCount.ToString(),
+            AromaticRingCount.ToString(),
+            Fsp3.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
+            ChiralCenters.ToString(),
             PassesLipinski ? "Pass" : "Fail",
             CleanTsvField(Smiles),
             CleanTsvField(InChIKey)
@@ -323,6 +355,7 @@ public sealed class MoleculeInfo
             sb.AppendLine($"• Exact Mass: {ExactMass:F4}");
         sb.AppendLine($"• LogP (Crippen): {LogP:F2} | TPSA: {Tpsa:F1} Å²");
         sb.AppendLine($"• Lipinski Ro5: {(PassesLipinski ? "Pass" : "Violation")} (HBD: {HBondDonors}, HBA: {HBondAcceptors}, RotBonds: {RotatableBonds})");
+        sb.AppendLine($"• Complexity: Heavy={HeavyAtomCount}, Rings={RingCount} (Arom={AromaticRingCount}), Fsp3={Fsp3:F2}, Chiral={ChiralCenters}");
         sb.AppendLine($"• Canonical SMILES: {Smiles}");
         if (!string.IsNullOrWhiteSpace(InChI))
             sb.AppendLine($"• InChI: {InChI}");
@@ -931,6 +964,52 @@ public static class MoleculeRenderer
                         try { hba = mol.numHydrogenBondAcceptors(); } catch { }
                         int rotBonds = 0;
                         try { rotBonds = mol.numRotatableBonds(); } catch { }
+                        int heavyAtoms = 0;
+                        try { heavyAtoms = mol.countHeavyAtoms(); } catch { }
+                        int rings = 0;
+                        try { rings = mol.countSSSR(); } catch { }
+                        int chiralCenters = 0;
+                        try { chiralCenters = mol.countStereocenters(); } catch { }
+                        int aromaticRings = 0;
+                        double fsp3 = 0.0;
+                        try
+                        {
+                            indigo.setOption("aromaticity-model", "generic");
+                            using var aromMol = mol.clone();
+                            aromMol.aromatize();
+
+                            foreach (IndigoObject ring in aromMol.iterateSSSR())
+                            {
+                                bool allAromatic = true;
+                                int bondCount = 0;
+                                foreach (IndigoObject b in ring.iterateBonds())
+                                {
+                                    bondCount++;
+                                    if (b.bondOrder() != 4)
+                                    {
+                                        allAromatic = false;
+                                        break;
+                                    }
+                                }
+                                if (bondCount > 0 && allAromatic)
+                                    aromaticRings++;
+                            }
+
+                            int totalCarbons = 0;
+                            int sp3Carbons = 0;
+                            foreach (IndigoObject atom in aromMol.iterateAtoms())
+                            {
+                                if (atom.atomicNumber() == 6)
+                                {
+                                    totalCarbons++;
+                                    if (string.Equals(atom.getHybridizationStr(), "SP3", StringComparison.OrdinalIgnoreCase))
+                                        sp3Carbons++;
+                                }
+                            }
+                            if (totalCarbons > 0)
+                                fsp3 = Math.Round((double)sp3Carbons / totalCarbons, 2);
+                        }
+                        catch { }
                         var canSmiles = "";
                         try { canSmiles = mol.canonicalSmiles() ?? ""; } catch { try { canSmiles = mol.smiles() ?? ""; } catch { } }
 
@@ -979,6 +1058,11 @@ public static class MoleculeRenderer
                             HBondDonors = hbd,
                             HBondAcceptors = hba,
                             RotatableBonds = rotBonds,
+                            HeavyAtomCount = heavyAtoms,
+                            RingCount = rings,
+                            AromaticRingCount = aromaticRings,
+                            Fsp3 = fsp3,
+                            ChiralCenters = chiralCenters,
                             Smiles = canSmiles,
                             InChI = canInchi,
                             InChIKey = canInchiKey,
