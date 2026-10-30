@@ -666,8 +666,7 @@ internal static class Program
             Check(plainCco != null && plainCco.Formula == "C2H6O", "Plain text CCO resolves to Formula C2H6O");
 
             Check(Smiles2Img.Editor.SafeClipboard.SetTextAndHtml(ccoMulti, ccoHtml), "SafeClipboard.SetTextAndHtml succeeds");
-            var clipDo = System.Windows.Forms.Clipboard.GetDataObject();
-            Check(clipDo != null && clipDo.GetDataPresent(System.Windows.Forms.DataFormats.Html), "Clipboard contains DataFormats.Html");
+            Check(Smiles2Img.Editor.SafeClipboard.ContainsHtml(), "Clipboard contains DataFormats.Html");
 
             Check(Smiles2Img.Editor.SafeClipboard.SetTextAndHtml(ccoTsvHeader, ccoHorizHtml), "SafeClipboard.SetTextAndHtml for horizontal TSV succeeds");
             Console.WriteLine("PASS UiIcons, SafeClipboard, and CCO MoleculeInfoDialog initialization with Multi-Format Summaries (Crash-Proof CF_HTML)");

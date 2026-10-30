@@ -351,9 +351,9 @@ public static class WordStructureManager
         }
     }
 
-    private static void ApplyMolstarInsert(MSWord.Application app, MolstarForm form)
+    private static MolstarMetadata BuildAndPersistMolstarMeta(MSWord.Application app, MolstarForm form, string? existingSessionId = null)
     {
-        var sessionId = Guid.NewGuid().ToString("N");
+        var sessionId = string.IsNullOrEmpty(existingSessionId) ? Guid.NewGuid().ToString("N") : existingSessionId!;
         var meta = new MolstarMetadata
         {
             Id = sessionId,
@@ -371,11 +371,17 @@ public static class WordStructureManager
                 MolstarSessionManager.SaveToCustomXmlParts(app.ActiveDocument, sessionId, form.ResultPdbId, form.ResultSnapshotJson!);
             }
         }
+        return meta;
+    }
 
+    private static void ApplyMolstarInsert(MSWord.Application app, MolstarForm form)
+    {
+        var meta = BuildAndPersistMolstarMeta(app, form);
         dynamic? newShape = null;
+
         if (form.ResultMode == "3dmodel" && form.ResultGlbBytes != null && form.ResultGlbBytes.Length > 0)
         {
-            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.glb");
+            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.glb");
             try
             {
                 File.WriteAllBytes(tempGlb, form.ResultGlbBytes);
@@ -394,7 +400,7 @@ public static class WordStructureManager
 
         if (newShape == null && form.ResultImageBytes != null)
         {
-            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.png");
+            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.png");
             try
             {
                 File.WriteAllBytes(tempPng, form.ResultImageBytes);
@@ -424,27 +430,7 @@ public static class WordStructureManager
 
     private static void ApplyMolstarReplaceInline(MSWord.Application app, MSWord.InlineShape oldShape, MolstarForm form, MolstarMetadata oldMeta)
     {
-        var sessionId = oldMeta.Id;
-        if (string.IsNullOrEmpty(sessionId)) sessionId = Guid.NewGuid().ToString("N");
-
-        var meta = new MolstarMetadata
-        {
-            Id = sessionId,
-            Pdb = form.ResultPdbId,
-            Mode = form.ResultMode,
-            Embed = form.ResultEmbedInDoc,
-            Background = form.ResultBackground
-        };
-
-        if (!string.IsNullOrEmpty(form.ResultSnapshotJson))
-        {
-            MolstarSessionManager.SaveLocalCache(sessionId, form.ResultSnapshotJson!);
-            if (form.ResultEmbedInDoc && app.ActiveDocument != null)
-            {
-                MolstarSessionManager.SaveToCustomXmlParts(app.ActiveDocument, sessionId, form.ResultPdbId, form.ResultSnapshotJson!);
-            }
-        }
-
+        var meta = BuildAndPersistMolstarMeta(app, form, oldMeta.Id);
         var oldWidth = oldShape.Width;
         var range = oldShape.Range;
         oldShape.Delete();
@@ -452,7 +438,7 @@ public static class WordStructureManager
         dynamic? newShape = null;
         if (form.ResultMode == "3dmodel" && form.ResultGlbBytes != null && form.ResultGlbBytes.Length > 0)
         {
-            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.glb");
+            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.glb");
             try
             {
                 File.WriteAllBytes(tempGlb, form.ResultGlbBytes);
@@ -471,7 +457,7 @@ public static class WordStructureManager
 
         if (newShape == null && form.ResultImageBytes != null)
         {
-            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.png");
+            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.png");
             try
             {
                 File.WriteAllBytes(tempPng, form.ResultImageBytes);
@@ -501,27 +487,7 @@ public static class WordStructureManager
 
     private static void ApplyMolstarReplaceShape(MSWord.Application app, MSWord.Shape oldShape, MolstarForm form, MolstarMetadata oldMeta)
     {
-        var sessionId = oldMeta.Id;
-        if (string.IsNullOrEmpty(sessionId)) sessionId = Guid.NewGuid().ToString("N");
-
-        var meta = new MolstarMetadata
-        {
-            Id = sessionId,
-            Pdb = form.ResultPdbId,
-            Mode = form.ResultMode,
-            Embed = form.ResultEmbedInDoc,
-            Background = form.ResultBackground
-        };
-
-        if (!string.IsNullOrEmpty(form.ResultSnapshotJson))
-        {
-            MolstarSessionManager.SaveLocalCache(sessionId, form.ResultSnapshotJson!);
-            if (form.ResultEmbedInDoc && app.ActiveDocument != null)
-            {
-                MolstarSessionManager.SaveToCustomXmlParts(app.ActiveDocument, sessionId, form.ResultPdbId, form.ResultSnapshotJson!);
-            }
-        }
-
+        var meta = BuildAndPersistMolstarMeta(app, form, oldMeta.Id);
         var doc = (MSWord.Document)oldShape.Parent;
         float oldLeft = oldShape.Left;
         float oldTop = oldShape.Top;
@@ -532,7 +498,7 @@ public static class WordStructureManager
         dynamic? newShape = null;
         if (form.ResultMode == "3dmodel" && form.ResultGlbBytes != null && form.ResultGlbBytes.Length > 0)
         {
-            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.glb");
+            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.glb");
             try
             {
                 File.WriteAllBytes(tempGlb, form.ResultGlbBytes);
@@ -551,7 +517,7 @@ public static class WordStructureManager
 
         if (newShape == null && form.ResultImageBytes != null)
         {
-            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.png");
+            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.png");
             try
             {
                 File.WriteAllBytes(tempPng, form.ResultImageBytes);
@@ -585,112 +551,60 @@ public static class WordStructureManager
     public static string? ExtractSmiles(params string?[] texts) =>
         StructureMetadata.ExtractSmiles(texts);
 
-    public static void CopySelectedMoleculeSmiles(MSWord.Application app)
+    private static void GetSelectionTexts(MSWord.Application app, out string? altText, out string? title, out string? selectedText)
     {
+        altText = null;
+        title = null;
+        selectedText = null;
+
         try
         {
             var sel = app.Selection;
-            string? smiles = null;
+            if (sel == null) return;
 
             if (sel.InlineShapes.Count > 0)
             {
-                var targetInline = sel.InlineShapes[1];
-                smiles = ExtractSmiles(targetInline.Title, targetInline.AlternativeText);
+                var inlineShape = sel.InlineShapes[1];
+                altText = inlineShape.AlternativeText;
+                title = inlineShape.Title;
             }
             else if (sel.ShapeRange.Count > 0)
             {
-                var targetShape = sel.ShapeRange[1];
-                smiles = ExtractSmiles(targetShape.Title, targetShape.AlternativeText);
+                var shape = sel.ShapeRange[1];
+                altText = shape.AlternativeText;
+                title = shape.Title;
             }
-
-            if (string.IsNullOrEmpty(smiles))
+            else if (sel.Start != sel.End && !string.IsNullOrWhiteSpace(sel.Text))
             {
-                MoleculeNotification.NotifyWarning("SMILES", "Could not find SMILES structure from the selected image.");
-                return;
+                selectedText = sel.Text.Trim();
             }
+        }
+        catch { }
+    }
 
-            SafeClipboard.SetText(smiles!);
-            MoleculeNotification.NotifyCopied("SMILES", smiles!);
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("SMILES", "Error extracting SMILES: " + ex.Message);
-        }
+    public static void CopySelectedMoleculeSmiles(MSWord.Application app)
+    {
+        GetSelectionTexts(app, out var altText, out var title, out _);
+        MoleculeActionHelper.CopySmiles(
+            ExtractSmiles(title, altText),
+            "Could not find SMILES structure from the selected image.");
     }
 
     public static void CopySelectedMoleculeInchi(MSWord.Application app)
     {
-        try
-        {
-            var sel = app.Selection;
-            string? targetData = null;
-
-            if (sel.InlineShapes.Count > 0)
-            {
-                var targetInline = sel.InlineShapes[1];
-                targetData = ExtractSmiles(targetInline.Title, targetInline.AlternativeText)
-                             ?? ExtractStructure(targetInline.AlternativeText, targetInline.Title);
-            }
-            else if (sel.ShapeRange.Count > 0)
-            {
-                var targetShape = sel.ShapeRange[1];
-                targetData = ExtractSmiles(targetShape.Title, targetShape.AlternativeText)
-                             ?? ExtractStructure(targetShape.AlternativeText, targetShape.Title);
-            }
-            else if (sel != null && sel.Start != sel.End && !string.IsNullOrWhiteSpace(sel.Text))
-            {
-                targetData = sel.Text.Trim();
-            }
-
-            var inchi = MoleculeRenderer.TryConvertToInchi(targetData);
-            if (string.IsNullOrEmpty(inchi))
-            {
-                MoleculeNotification.NotifyWarning("InChI", "Could not generate InChI from the selected structure or text.");
-                return;
-            }
-
-            SafeClipboard.SetText(inchi!);
-            MoleculeNotification.NotifyCopied("InChI", inchi!);
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("InChI", "Error generating InChI: " + ex.Message);
-        }
+        GetSelectionTexts(app, out var altText, out var title, out var selectedText);
+        var targetData = ExtractSmiles(title, altText) ?? ExtractStructure(altText, title) ?? selectedText;
+        MoleculeActionHelper.CopyInchi(
+            targetData,
+            "Could not generate InChI from the selected structure or text.");
     }
 
     public static void CopySelectedMoleculeKet(MSWord.Application app)
     {
-        try
-        {
-            var sel = app.Selection;
-            string? ket = null;
-
-            if (sel.InlineShapes.Count > 0)
-            {
-                var targetInline = sel.InlineShapes[1];
-                var raw = ExtractStructure(targetInline.AlternativeText, targetInline.Title);
-                ket = MoleculeRenderer.TryConvertToKet(raw);
-            }
-            else if (sel.ShapeRange.Count > 0)
-            {
-                var targetShape = sel.ShapeRange[1];
-                var raw = ExtractStructure(targetShape.AlternativeText, targetShape.Title);
-                ket = MoleculeRenderer.TryConvertToKet(raw);
-            }
-
-            if (string.IsNullOrEmpty(ket))
-            {
-                MoleculeNotification.NotifyWarning("Canvas Data (KET)", "Could not find canvas structure (KET) from the selected image.");
-                return;
-            }
-
-            SafeClipboard.SetText(ket!);
-            MoleculeNotification.NotifyCopied("Canvas Data (KET)", ket!);
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Canvas Data (KET)", "Error copying canvas data: " + ex.Message);
-        }
+        GetSelectionTexts(app, out var altText, out var title, out _);
+        MoleculeActionHelper.CopyKet(
+            ExtractStructure(altText, title),
+            "Could not find canvas structure (KET) from the selected image.");
     }
 
     public static void QuickInsertFromSelectionOrClipboard(MSWord.Application app)
@@ -714,9 +628,9 @@ public static class WordStructureManager
                 }
             }
 
-            if (Clipboard.ContainsText())
+            if (SafeClipboard.ContainsText())
             {
-                var clipText = Clipboard.GetText()?.Trim();
+                var clipText = SafeClipboard.GetText()?.Trim();
                 if (MoleculeRenderer.TryRenderStructure(clipText, RenderOptions.Default, out var clipPng, out var clipKet, out var clipSmiles) && clipPng != null)
                 {
                     InsertMoleculeAsPicture(app, clipKet, clipSmiles ?? "", clipPng);
@@ -744,300 +658,56 @@ public static class WordStructureManager
 
     public static MoleculeInfo? GetSelectedMoleculeInfo(MSWord.Application app, bool resolvePubChem = false)
     {
-        var sel = app.Selection;
-        if (sel == null) return null;
-
-        string? targetData = null;
-
-        if (sel.InlineShapes.Count > 0)
+        GetSelectionTexts(app, out var altText, out var title, out var selectedText);
+        if (altText != null || title != null)
         {
-            var targetInline = sel.InlineShapes[1];
-            if (StructureMetadata.IsMolstar(targetInline.AlternativeText, targetInline.Title))
-            {
-                var meta = MolstarSessionManager.ParseAltText(targetInline.AlternativeText, targetInline.Title);
-                if (meta != null && !string.IsNullOrWhiteSpace(meta.Pdb))
-                {
-                    (string Title, double? WeightKDa) pdbInfo = resolvePubChem ? PubChemResolver.ResolvePdb(meta.Pdb) : ("", (double?)null);
-                    return new MoleculeInfo
-                    {
-                        CompoundName = !string.IsNullOrEmpty(pdbInfo.Title) ? pdbInfo.Title : $"PDB {meta.Pdb}",
-                        IupacName = $"PDB Entry: {meta.Pdb}",
-                        Formula = "Macromolecular Complex",
-                        MolecularWeight = pdbInfo.WeightKDa.HasValue ? pdbInfo.WeightKDa.Value * 1000.0 : 0.0,
-                        ExactMass = 0,
-                        Smiles = $"PDB:{meta.Pdb}",
-                        IsReaction = false
-                    };
-                }
-            }
-            targetData = ExtractSmiles(targetInline.Title, targetInline.AlternativeText)
-                         ?? ExtractStructure(targetInline.AlternativeText, targetInline.Title);
-        }
-        else if (sel.ShapeRange.Count > 0)
-        {
-            var targetShape = sel.ShapeRange[1];
-            if (StructureMetadata.IsMolstar(targetShape.AlternativeText, targetShape.Title))
-            {
-                var meta = MolstarSessionManager.ParseAltText(targetShape.AlternativeText, targetShape.Title);
-                if (meta != null && !string.IsNullOrWhiteSpace(meta.Pdb))
-                {
-                    (string Title, double? WeightKDa) pdbInfo = resolvePubChem ? PubChemResolver.ResolvePdb(meta.Pdb) : ("", (double?)null);
-                    return new MoleculeInfo
-                    {
-                        CompoundName = !string.IsNullOrEmpty(pdbInfo.Title) ? pdbInfo.Title : $"PDB {meta.Pdb}",
-                        IupacName = $"PDB Entry: {meta.Pdb}",
-                        Formula = "Macromolecular Complex",
-                        MolecularWeight = pdbInfo.WeightKDa.HasValue ? pdbInfo.WeightKDa.Value * 1000.0 : 0.0,
-                        ExactMass = 0,
-                        Smiles = $"PDB:{meta.Pdb}",
-                        IsReaction = false
-                    };
-                }
-            }
-            targetData = ExtractSmiles(targetShape.Title, targetShape.AlternativeText)
-                         ?? ExtractStructure(targetShape.AlternativeText, targetShape.Title);
-        }
-        else if (sel.Start != sel.End && !string.IsNullOrWhiteSpace(sel.Text))
-        {
-            targetData = sel.Text.Trim();
+            var molstarInfo = MoleculeActionHelper.TryResolveMolstarInfo(altText, title, resolvePubChem);
+            if (molstarInfo != null) return molstarInfo;
         }
 
-        if (string.IsNullOrEmpty(targetData)) return null;
-        return MoleculeRenderer.TryGetMoleculeInfo(targetData, resolvePubChem);
+        var targetData = ExtractSmiles(title, altText) ?? ExtractStructure(altText, title) ?? selectedText;
+        return string.IsNullOrEmpty(targetData) ? null : MoleculeRenderer.TryGetMoleculeInfo(targetData, resolvePubChem);
     }
 
-    public static void CopySelectedSubstanceName(MSWord.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null || string.IsNullOrWhiteSpace(info.CompoundName))
-            {
-                MoleculeNotification.NotifyWarning("Substance Name", "Could not resolve substance name from the selected structure.");
-                return;
-            }
-            SafeClipboard.SetText(info.CompoundName);
-            MoleculeNotification.NotifyCopied("Substance Name", info.CompoundName);
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Substance Name", "Error copying substance name: " + ex.Message);
-        }
-    }
+    public static void CopySelectedSubstanceName(MSWord.Application app) =>
+        MoleculeActionHelper.CopySubstanceName(r => GetSelectedMoleculeInfo(app, r), "Could not resolve substance name from the selected structure.");
 
-    public static void CopySelectedFormula(MSWord.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: false);
-            if (info == null || string.IsNullOrWhiteSpace(info.Formula))
-            {
-                MoleculeNotification.NotifyWarning("Formula", "Could not compute formula from the selected structure.");
-                return;
-            }
-            SafeClipboard.SetText(info.Formula);
-            MoleculeNotification.NotifyCopied("Chemical Formula", info.Formula);
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Formula", "Error copying formula: " + ex.Message);
-        }
-    }
+    public static void CopySelectedFormula(MSWord.Application app) =>
+        MoleculeActionHelper.CopyFormula(r => GetSelectedMoleculeInfo(app, r), "Could not compute formula from the selected structure.");
 
-    public static void CopySelectedMolecularWeight(MSWord.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: false);
-            if (info == null || info.MolecularWeight <= 0)
-            {
-                MoleculeNotification.NotifyWarning("Molecular Weight", "Could not compute molecular weight from the selected structure.");
-                return;
-            }
-            string mw = info.MolecularWeight.ToString("F2");
-            SafeClipboard.SetText(mw);
-            MoleculeNotification.NotifyCopied("Molecular Weight", $"{mw} g/mol");
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Molecular Weight", "Error copying molecular weight: " + ex.Message);
-        }
-    }
+    public static void CopySelectedMolecularWeight(MSWord.Application app) =>
+        MoleculeActionHelper.CopyMolecularWeight(r => GetSelectedMoleculeInfo(app, r), "Could not compute molecular weight from the selected structure.");
 
-    public static void CopySelectedInchiKey(MSWord.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: false);
-            if (info == null || string.IsNullOrWhiteSpace(info.InChIKey))
-            {
-                MoleculeNotification.NotifyWarning("InChIKey", "Could not generate InChIKey from the selected structure.");
-                return;
-            }
-            SafeClipboard.SetText(info.InChIKey);
-            MoleculeNotification.NotifyCopied("InChIKey", info.InChIKey);
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("InChIKey", "Error copying InChIKey: " + ex.Message);
-        }
-    }
+    public static void CopySelectedInchiKey(MSWord.Application app) =>
+        MoleculeActionHelper.CopyInchiKey(r => GetSelectedMoleculeInfo(app, r), "Could not generate InChIKey from the selected structure.");
 
-    public static void CopySelectedAllSummary(MSWord.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null)
-            {
-                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from the selected structure.");
-                return;
-            }
-            string summary = info.FormatClipboardSummary(MoleculeSummaryFormat.MultiLine);
-            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.MultiLine);
-            SafeClipboard.SetTextAndHtml(summary, html);
-            MoleculeNotification.NotifyCopied("Molecule Info", info.SubstanceName ?? info.Formula ?? "Copied summary");
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying molecule summary: " + ex.Message);
-        }
-    }
+    public static void CopySelectedAllSummary(MSWord.Application app) =>
+        MoleculeActionHelper.CopySummary(r => GetSelectedMoleculeInfo(app, r), MoleculeSummaryFormat.MultiLine, "Molecule Info", "Copied summary", "Could not retrieve molecule info from the selected structure.", "molecule summary");
 
-    public static void CopySelectedTsvRow(MSWord.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null)
-            {
-                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from the selected structure.");
-                return;
-            }
-            string tsv = info.FormatClipboardSummary(MoleculeSummaryFormat.ExcelTsvRow);
-            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.ExcelTsvRow);
-            SafeClipboard.SetTextAndHtml(tsv, html);
-            MoleculeNotification.NotifyCopied("Excel Row (TSV)", info.SubstanceName ?? info.Formula ?? "Copied row");
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying TSV row: " + ex.Message);
-        }
-    }
+    public static void CopySelectedTsvRow(MSWord.Application app) =>
+        MoleculeActionHelper.CopySummary(r => GetSelectedMoleculeInfo(app, r), MoleculeSummaryFormat.ExcelTsvRow, "Excel Row (TSV)", "Copied row", "Could not retrieve molecule info from the selected structure.", "TSV row");
 
-    public static void CopySelectedMultiLine(MSWord.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null)
-            {
-                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from the selected structure.");
-                return;
-            }
-            string multi = info.FormatClipboardSummary(MoleculeSummaryFormat.MultiLine);
-            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.MultiLine);
-            SafeClipboard.SetTextAndHtml(multi, html);
-            MoleculeNotification.NotifyCopied("Multi-Line List", info.SubstanceName ?? info.Formula ?? "Copied list");
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying multi-line list: " + ex.Message);
-        }
-    }
+    public static void CopySelectedMultiLine(MSWord.Application app) =>
+        MoleculeActionHelper.CopySummary(r => GetSelectedMoleculeInfo(app, r), MoleculeSummaryFormat.MultiLine, "Multi-Line List", "Copied list", "Could not retrieve molecule info from the selected structure.", "multi-line list");
 
-    public static void CopySelectedMarkdown(MSWord.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null)
-            {
-                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from the selected structure.");
-                return;
-            }
-            string md = info.FormatClipboardSummary(MoleculeSummaryFormat.MarkdownTable);
-            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.MarkdownTable);
-            SafeClipboard.SetTextAndHtml(md, html);
-            MoleculeNotification.NotifyCopied("Markdown Table", info.SubstanceName ?? info.Formula ?? "Copied table");
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying markdown table: " + ex.Message);
-        }
-    }
+    public static void CopySelectedMarkdown(MSWord.Application app) =>
+        MoleculeActionHelper.CopySummary(r => GetSelectedMoleculeInfo(app, r), MoleculeSummaryFormat.MarkdownTable, "Markdown Table", "Copied table", "Could not retrieve molecule info from the selected structure.", "markdown table");
 
-    public static void ShowSelectedMoleculeInfo(MSWord.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null)
-            {
-                MessageBox.Show(
-                    "Could not retrieve molecule properties from the selected structure.\nPlease select a molecular structure picture or text first.",
-                    "func_SMILES2IMG",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-                return;
-            }
-
-            var hwnd = GetHwnd(app);
-            if (hwnd != IntPtr.Zero)
-                MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties", new Win32Window(hwnd));
-            else
-                MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties");
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(
-                "An error occurred while calculating molecule info:\n" + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
-        }
-    }
+    public static void ShowSelectedMoleculeInfo(MSWord.Application app) =>
+        MoleculeActionHelper.ShowMoleculeInfoDialog(
+            r => GetSelectedMoleculeInfo(app, r),
+            GetHwnd(app),
+            "Could not retrieve molecule properties from the selected structure.\nPlease select a molecular structure picture or text first.");
 
     public static void CopySelectedMoleculeSvg(MSWord.Application app)
     {
-        try
-        {
-            var sel = app.Selection;
-            string? targetData = null;
-
-            if (sel != null)
-            {
-                if (sel.InlineShapes.Count > 0)
-                {
-                    var targetInline = sel.InlineShapes[1];
-                    targetData = ExtractStructure(targetInline.AlternativeText, targetInline.Title)
-                                 ?? ExtractSmiles(targetInline.Title, targetInline.AlternativeText);
-                }
-                else if (sel.ShapeRange.Count > 0)
-                {
-                    var targetShape = sel.ShapeRange[1];
-                    targetData = ExtractStructure(targetShape.AlternativeText, targetShape.Title)
-                                 ?? ExtractSmiles(targetShape.Title, targetShape.AlternativeText);
-                }
-                else if (sel.Start != sel.End && !string.IsNullOrWhiteSpace(sel.Text))
-                {
-                    targetData = sel.Text.Trim();
-                }
-            }
-
-            var svg = MoleculeRenderer.RenderSvg(targetData);
-            if (string.IsNullOrEmpty(svg) || !SvgClipboardHelper.CopySvgToClipboard(svg))
-            {
-                MoleculeNotification.NotifyWarning("Copy SVG", "Could not render SVG from the selected structure or text.");
-                return;
-            }
-
-            MoleculeNotification.NotifyCopied("Vector SVG", "Scalable SVG copied to clipboard");
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Copy SVG", "Error copying SVG: " + ex.Message);
-        }
+        GetSelectionTexts(app, out var altText, out var title, out var selectedText);
+        var targetData = ExtractStructure(altText, title) ?? ExtractSmiles(title, altText) ?? selectedText;
+        MoleculeActionHelper.CopySvg(
+            targetData,
+            "Could not render SVG from the selected structure or text.",
+            title: "Vector SVG",
+            successMessage: "Scalable SVG copied to clipboard");
     }
 
     public static int ApplyBatchStyle(MSWord.Application app, string background, string style, string presetLabel = "Preset")

@@ -136,10 +136,7 @@ public static class PowerPointStructureManager
                 return;
             }
 
-            // Restore snapshot:
-            // 1. Try local cache
             string? snapshotJson = MolstarSessionManager.LoadLocalCache(meta.Id);
-            // 2. Try CustomXMLParts
             if (string.IsNullOrEmpty(snapshotJson))
             {
                 try
@@ -323,9 +320,9 @@ public static class PowerPointStructureManager
         }
     }
 
-    private static void ApplyMolstarInsert(MSPowerPoint.Application app, MSPowerPoint.Slide slide, MolstarForm form)
+    private static MolstarMetadata BuildAndPersistMolstarMeta(MSPowerPoint.Application app, MolstarForm form, string? existingSessionId = null)
     {
-        var sessionId = Guid.NewGuid().ToString("N");
+        var sessionId = string.IsNullOrEmpty(existingSessionId) ? Guid.NewGuid().ToString("N") : existingSessionId!;
         var meta = new MolstarMetadata
         {
             Id = sessionId,
@@ -343,6 +340,12 @@ public static class PowerPointStructureManager
                 MolstarSessionManager.SaveToCustomXmlParts(app.ActivePresentation, sessionId, form.ResultPdbId, form.ResultSnapshotJson!);
             }
         }
+        return meta;
+    }
+
+    private static void ApplyMolstarInsert(MSPowerPoint.Application app, MSPowerPoint.Slide slide, MolstarForm form)
+    {
+        var meta = BuildAndPersistMolstarMeta(app, form);
 
         float slideWidth = 960f, slideHeight = 540f;
         try
@@ -355,7 +358,7 @@ public static class PowerPointStructureManager
         MSPowerPoint.Shape? newShape = null;
         if (form.ResultMode == "3dmodel" && form.ResultGlbBytes != null && form.ResultGlbBytes.Length > 0)
         {
-            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.glb");
+            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.glb");
             try
             {
                 File.WriteAllBytes(tempGlb, form.ResultGlbBytes);
@@ -367,7 +370,6 @@ public static class PowerPointStructureManager
             }
             catch
             {
-                // If 3D Model insertion fails or is unsupported, fallback to 2D image
                 meta.Mode = "image";
             }
             finally
@@ -378,7 +380,7 @@ public static class PowerPointStructureManager
 
         if (newShape == null)
         {
-            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.png");
+            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.png");
             try
             {
                 File.WriteAllBytes(tempPng, form.ResultImageBytes!);
@@ -407,26 +409,7 @@ public static class PowerPointStructureManager
 
     private static void ApplyMolstarReplace(MSPowerPoint.Application app, MSPowerPoint.Shape oldShape, MolstarForm form, MolstarMetadata oldMeta)
     {
-        var sessionId = oldMeta.Id;
-        if (string.IsNullOrEmpty(sessionId)) sessionId = Guid.NewGuid().ToString("N");
-
-        var meta = new MolstarMetadata
-        {
-            Id = sessionId,
-            Pdb = form.ResultPdbId,
-            Mode = form.ResultMode,
-            Embed = form.ResultEmbedInDoc,
-            Background = form.ResultBackground
-        };
-
-        if (!string.IsNullOrEmpty(form.ResultSnapshotJson))
-        {
-            MolstarSessionManager.SaveLocalCache(sessionId, form.ResultSnapshotJson!);
-            if (form.ResultEmbedInDoc)
-            {
-                MolstarSessionManager.SaveToCustomXmlParts(app.ActivePresentation, sessionId, form.ResultPdbId, form.ResultSnapshotJson!);
-            }
-        }
+        var meta = BuildAndPersistMolstarMeta(app, form, oldMeta.Id);
 
         var slide = (MSPowerPoint.Slide)oldShape.Parent;
         float oldLeft = oldShape.Left;
@@ -438,7 +421,7 @@ public static class PowerPointStructureManager
         MSPowerPoint.Shape? newShape = null;
         if (form.ResultMode == "3dmodel" && form.ResultGlbBytes != null && form.ResultGlbBytes.Length > 0)
         {
-            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.glb");
+            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.glb");
             try
             {
                 File.WriteAllBytes(tempGlb, form.ResultGlbBytes);
@@ -457,7 +440,7 @@ public static class PowerPointStructureManager
 
         if (newShape == null)
         {
-            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.png");
+            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.png");
             try
             {
                 File.WriteAllBytes(tempPng, form.ResultImageBytes!);
@@ -551,131 +534,74 @@ public static class PowerPointStructureManager
         return StructureMetadata.ExtractSmiles(shape.Title, shape.AlternativeText);
     }
 
-    public static void CopySelectedMoleculeSmiles(MSPowerPoint.Application app)
+    private static void GetSelectedShapeOrText(MSPowerPoint.Application app, out MSPowerPoint.Shape? shape, out string? selectedText)
     {
+        shape = null;
+        selectedText = null;
         try
         {
             var sel = app.ActiveWindow?.Selection;
-            if (sel == null || sel.Type != MSPowerPoint.PpSelectionType.ppSelectionShapes || sel.ShapeRange.Count == 0)
-            {
-                MoleculeNotification.NotifyWarning("SMILES", "Please select a molecular structure picture first.");
-                return;
-            }
+            if (sel == null) return;
 
-            var smiles = ExtractSmiles(sel.ShapeRange[1]);
-            if (string.IsNullOrEmpty(smiles))
+            if (sel.Type == MSPowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 0)
             {
-                MoleculeNotification.NotifyWarning("SMILES", "Could not find SMILES structure from the selected image.");
-                return;
+                shape = sel.ShapeRange[1];
             }
-
-            SafeClipboard.SetText(smiles!);
-            MoleculeNotification.NotifyCopied("SMILES", smiles!);
+            else if (sel.Type == MSPowerPoint.PpSelectionType.ppSelectionText && sel.TextRange != null)
+            {
+                selectedText = sel.TextRange.Text?.Trim();
+            }
         }
-        catch (Exception ex)
+        catch { }
+    }
+
+    public static void CopySelectedMoleculeSmiles(MSPowerPoint.Application app)
+    {
+        GetSelectedShapeOrText(app, out var shape, out _);
+        if (shape == null)
         {
-            MoleculeNotification.NotifyWarning("SMILES", "Error extracting SMILES: " + ex.Message);
+            MoleculeNotification.NotifyWarning("SMILES", "Please select a molecular structure picture first.");
+            return;
         }
+        MoleculeActionHelper.CopySmiles(
+            ExtractSmiles(shape),
+            "Could not find SMILES structure from the selected image.");
     }
 
     public static void CopySelectedMoleculeInchi(MSPowerPoint.Application app)
     {
-        try
-        {
-            var sel = app.ActiveWindow?.Selection;
-            string? targetData = null;
-
-            if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 0)
-            {
-                var shape = sel.ShapeRange[1];
-                targetData = ExtractSmiles(shape) ?? ExtractStructure(shape);
-            }
-            else if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionText && sel.TextRange != null)
-            {
-                targetData = sel.TextRange.Text?.Trim();
-            }
-
-            var inchi = MoleculeRenderer.TryConvertToInchi(targetData);
-            if (string.IsNullOrEmpty(inchi))
-            {
-                MoleculeNotification.NotifyWarning("InChI", "Could not generate InChI from the selected structure or text.");
-                return;
-            }
-
-            SafeClipboard.SetText(inchi!);
-            MoleculeNotification.NotifyCopied("InChI", inchi!);
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("InChI", "Error generating InChI: " + ex.Message);
-        }
+        GetSelectedShapeOrText(app, out var shape, out var selectedText);
+        var targetData = shape != null ? (ExtractSmiles(shape) ?? ExtractStructure(shape)) : selectedText;
+        MoleculeActionHelper.CopyInchi(
+            targetData,
+            "Could not generate InChI from the selected structure or text.");
     }
 
     public static void CopySelectedMoleculeKet(MSPowerPoint.Application app)
     {
-        try
+        GetSelectedShapeOrText(app, out var shape, out _);
+        if (shape == null)
         {
-            var sel = app.ActiveWindow?.Selection;
-            if (sel == null || sel.Type != MSPowerPoint.PpSelectionType.ppSelectionShapes || sel.ShapeRange.Count == 0)
-            {
-                MoleculeNotification.NotifyWarning("Canvas Data (KET)", "Please select a molecular structure picture first.");
-                return;
-            }
-
-            var raw = ExtractStructure(sel.ShapeRange[1]);
-            var ket = MoleculeRenderer.TryConvertToKet(raw);
-            if (string.IsNullOrEmpty(ket))
-            {
-                MoleculeNotification.NotifyWarning("Canvas Data (KET)", "Could not find canvas structure (KET) from the selected image.");
-                return;
-            }
-
-            SafeClipboard.SetText(ket!);
-            MoleculeNotification.NotifyCopied("Canvas Data (KET)", ket!);
+            MoleculeNotification.NotifyWarning("Canvas Data (KET)", "Please select a molecular structure picture first.");
+            return;
         }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Canvas Data (KET)", "Error copying canvas data: " + ex.Message);
-        }
+        MoleculeActionHelper.CopyKet(
+            ExtractStructure(shape),
+            "Could not find canvas structure (KET) from the selected image.");
     }
 
     public static void CopySelectedMoleculeSvg(MSPowerPoint.Application app)
     {
-        try
+        GetSelectedShapeOrText(app, out var shape, out var selectedText);
+        var targetData = shape != null ? (ExtractStructure(shape) ?? ExtractSmiles(shape)) : selectedText;
+        if (string.IsNullOrEmpty(targetData))
         {
-            var sel = app.ActiveWindow?.Selection;
-            string? targetData = null;
-
-            if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 0)
-            {
-                var shape = sel.ShapeRange[1];
-                targetData = ExtractStructure(shape) ?? ExtractSmiles(shape);
-            }
-            else if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionText && sel.TextRange != null)
-            {
-                targetData = sel.TextRange.Text?.Trim();
-            }
-
-            if (string.IsNullOrEmpty(targetData))
-            {
-                MoleculeNotification.NotifyWarning("SVG Vector", "Please select a molecular structure picture or text first.");
-                return;
-            }
-
-            var svg = MoleculeRenderer.RenderSvg(targetData, RenderOptions.Default);
-            if (string.IsNullOrEmpty(svg))
-            {
-                MoleculeNotification.NotifyWarning("SVG Vector", "Could not generate SVG vector image from the selected structure.");
-                return;
-            }
-
-            SvgClipboardHelper.CopySvgToClipboard(svg);
-            MoleculeNotification.NotifyCopied("SVG Vector", "Vector graphic copied to clipboard");
+            MoleculeNotification.NotifyWarning("SVG Vector", "Please select a molecular structure picture or text first.");
+            return;
         }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("SVG Vector", "Error copying SVG: " + ex.Message);
-        }
+        MoleculeActionHelper.CopySvg(
+            targetData,
+            "Could not generate SVG vector image from the selected structure.");
     }
 
     public static void ApplyBatchStyle(MSPowerPoint.Application app, string background, string style, string presetLabel)
@@ -738,25 +664,15 @@ public static class PowerPointStructureManager
                 return;
             }
 
-            // 1. Check if text is selected inside a slide text frame
-            try
+            GetSelectedShapeOrText(app, out _, out var selectedText);
+            if (!string.IsNullOrWhiteSpace(selectedText) &&
+                MoleculeRenderer.TryRenderStructure(selectedText, RenderOptions.Default, out var selPng, out var selKet, out var selSmiles) &&
+                selPng != null)
             {
-                var sel = app.ActiveWindow?.Selection;
-                if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionText && sel.TextRange != null)
-                {
-                    var selectedText = sel.TextRange.Text?.Trim();
-                    if (!string.IsNullOrWhiteSpace(selectedText) &&
-                        MoleculeRenderer.TryRenderStructure(selectedText, RenderOptions.Default, out var selPng, out var selKet, out var selSmiles) &&
-                        selPng != null)
-                    {
-                        InsertMoleculeAsPicture(app, slide, selKet, selSmiles ?? "", selPng);
-                        return;
-                    }
-                }
+                InsertMoleculeAsPicture(app, slide, selKet, selSmiles ?? "", selPng);
+                return;
             }
-            catch { }
 
-            // 2. Check Windows Clipboard
             if (SafeClipboard.ContainsText())
             {
                 var clipText = SafeClipboard.GetText()?.Trim();
@@ -787,234 +703,46 @@ public static class PowerPointStructureManager
 
     public static MoleculeInfo? GetSelectedMoleculeInfo(MSPowerPoint.Application app, bool resolvePubChem = false)
     {
-        var sel = app.ActiveWindow?.Selection;
-        if (sel == null) return null;
-
-        string? targetData = null;
-
-        if (sel.Type == MSPowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 0)
+        GetSelectedShapeOrText(app, out var shape, out var selectedText);
+        if (shape != null)
         {
-            var shape = sel.ShapeRange[1];
-            if (StructureMetadata.IsMolstar(shape.AlternativeText, shape.Title))
-            {
-                var meta = MolstarSessionManager.ParseAltText(shape.AlternativeText, shape.Title);
-                if (meta != null && !string.IsNullOrWhiteSpace(meta.Pdb))
-                {
-                    (string Title, double? WeightKDa) pdbInfo = resolvePubChem ? PubChemResolver.ResolvePdb(meta.Pdb) : ("", (double?)null);
-                    return new MoleculeInfo
-                    {
-                        CompoundName = !string.IsNullOrEmpty(pdbInfo.Title) ? pdbInfo.Title : $"PDB {meta.Pdb}",
-                        IupacName = $"PDB Entry: {meta.Pdb}",
-                        Formula = "Macromolecular Complex",
-                        MolecularWeight = pdbInfo.WeightKDa.HasValue ? pdbInfo.WeightKDa.Value * 1000.0 : 0.0,
-                        ExactMass = 0,
-                        Smiles = $"PDB:{meta.Pdb}",
-                        IsReaction = false
-                    };
-                }
-            }
-            targetData = ExtractSmiles(shape) ?? ExtractStructure(shape);
-        }
-        else if (sel.Type == MSPowerPoint.PpSelectionType.ppSelectionText && sel.TextRange != null)
-        {
-            targetData = sel.TextRange.Text?.Trim();
+            var molstarInfo = MoleculeActionHelper.TryResolveMolstarInfo(shape.AlternativeText, shape.Title, resolvePubChem);
+            if (molstarInfo != null) return molstarInfo;
         }
 
-        if (string.IsNullOrEmpty(targetData)) return null;
-        return MoleculeRenderer.TryGetMoleculeInfo(targetData, resolvePubChem);
+        var targetData = shape != null ? (ExtractSmiles(shape) ?? ExtractStructure(shape)) : selectedText;
+        return string.IsNullOrEmpty(targetData) ? null : MoleculeRenderer.TryGetMoleculeInfo(targetData, resolvePubChem);
     }
 
-    public static void CopySelectedSubstanceName(MSPowerPoint.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null || string.IsNullOrWhiteSpace(info.CompoundName))
-            {
-                MoleculeNotification.NotifyWarning("Substance Name", "Could not resolve substance name from the selected structure.");
-                return;
-            }
-            SafeClipboard.SetText(info.CompoundName);
-            MoleculeNotification.NotifyCopied("Substance Name", info.CompoundName);
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Substance Name", "Error copying substance name: " + ex.Message);
-        }
-    }
+    public static void CopySelectedSubstanceName(MSPowerPoint.Application app) =>
+        MoleculeActionHelper.CopySubstanceName(r => GetSelectedMoleculeInfo(app, r), "Could not resolve substance name from the selected structure.");
 
-    public static void CopySelectedFormula(MSPowerPoint.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: false);
-            if (info == null || string.IsNullOrWhiteSpace(info.Formula))
-            {
-                MoleculeNotification.NotifyWarning("Formula", "Could not compute formula from the selected structure.");
-                return;
-            }
-            SafeClipboard.SetText(info.Formula);
-            MoleculeNotification.NotifyCopied("Chemical Formula", info.Formula);
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Formula", "Error copying formula: " + ex.Message);
-        }
-    }
+    public static void CopySelectedFormula(MSPowerPoint.Application app) =>
+        MoleculeActionHelper.CopyFormula(r => GetSelectedMoleculeInfo(app, r), "Could not compute formula from the selected structure.");
 
-    public static void CopySelectedMolecularWeight(MSPowerPoint.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: false);
-            if (info == null || info.MolecularWeight <= 0)
-            {
-                MoleculeNotification.NotifyWarning("Molecular Weight", "Could not compute molecular weight from the selected structure.");
-                return;
-            }
-            string mw = info.MolecularWeight.ToString("F2");
-            SafeClipboard.SetText(mw);
-            MoleculeNotification.NotifyCopied("Molecular Weight", $"{mw} g/mol");
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Molecular Weight", "Error copying molecular weight: " + ex.Message);
-        }
-    }
+    public static void CopySelectedMolecularWeight(MSPowerPoint.Application app) =>
+        MoleculeActionHelper.CopyMolecularWeight(r => GetSelectedMoleculeInfo(app, r), "Could not compute molecular weight from the selected structure.");
 
-    public static void CopySelectedInchiKey(MSPowerPoint.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: false);
-            if (info == null || string.IsNullOrWhiteSpace(info.InChIKey))
-            {
-                MoleculeNotification.NotifyWarning("InChIKey", "Could not generate InChIKey from the selected structure.");
-                return;
-            }
-            SafeClipboard.SetText(info.InChIKey);
-            MoleculeNotification.NotifyCopied("InChIKey", info.InChIKey);
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("InChIKey", "Error copying InChIKey: " + ex.Message);
-        }
-    }
+    public static void CopySelectedInchiKey(MSPowerPoint.Application app) =>
+        MoleculeActionHelper.CopyInchiKey(r => GetSelectedMoleculeInfo(app, r), "Could not generate InChIKey from the selected structure.");
 
-    public static void CopySelectedAllSummary(MSPowerPoint.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null)
-            {
-                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from the selected structure.");
-                return;
-            }
-            string summary = info.FormatClipboardSummary(MoleculeSummaryFormat.MultiLine);
-            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.MultiLine);
-            SafeClipboard.SetTextAndHtml(summary, html);
-            MoleculeNotification.NotifyCopied("Molecule Info", info.SubstanceName ?? info.Formula ?? "Copied summary");
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying molecule summary: " + ex.Message);
-        }
-    }
+    public static void CopySelectedAllSummary(MSPowerPoint.Application app) =>
+        MoleculeActionHelper.CopySummary(r => GetSelectedMoleculeInfo(app, r), MoleculeSummaryFormat.MultiLine, "Molecule Info", "Copied summary", "Could not retrieve molecule info from the selected structure.", "molecule summary");
 
-    public static void CopySelectedTsvRow(MSPowerPoint.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null)
-            {
-                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from the selected structure.");
-                return;
-            }
-            string tsv = info.FormatClipboardSummary(MoleculeSummaryFormat.ExcelTsvRow);
-            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.ExcelTsvRow);
-            SafeClipboard.SetTextAndHtml(tsv, html);
-            MoleculeNotification.NotifyCopied("Excel Row (TSV)", info.SubstanceName ?? info.Formula ?? "Copied row");
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying TSV row: " + ex.Message);
-        }
-    }
+    public static void CopySelectedTsvRow(MSPowerPoint.Application app) =>
+        MoleculeActionHelper.CopySummary(r => GetSelectedMoleculeInfo(app, r), MoleculeSummaryFormat.ExcelTsvRow, "Excel Row (TSV)", "Copied row", "Could not retrieve molecule info from the selected structure.", "TSV row");
 
-    public static void CopySelectedMultiLine(MSPowerPoint.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null)
-            {
-                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from the selected structure.");
-                return;
-            }
-            string multi = info.FormatClipboardSummary(MoleculeSummaryFormat.MultiLine);
-            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.MultiLine);
-            SafeClipboard.SetTextAndHtml(multi, html);
-            MoleculeNotification.NotifyCopied("Multi-Line List", info.SubstanceName ?? info.Formula ?? "Copied list");
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying multi-line list: " + ex.Message);
-        }
-    }
+    public static void CopySelectedMultiLine(MSPowerPoint.Application app) =>
+        MoleculeActionHelper.CopySummary(r => GetSelectedMoleculeInfo(app, r), MoleculeSummaryFormat.MultiLine, "Multi-Line List", "Copied list", "Could not retrieve molecule info from the selected structure.", "multi-line list");
 
-    public static void CopySelectedMarkdown(MSPowerPoint.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null)
-            {
-                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from the selected structure.");
-                return;
-            }
-            string md = info.FormatClipboardSummary(MoleculeSummaryFormat.MarkdownTable);
-            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.MarkdownTable);
-            SafeClipboard.SetTextAndHtml(md, html);
-            MoleculeNotification.NotifyCopied("Markdown Table", info.SubstanceName ?? info.Formula ?? "Copied table");
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying markdown table: " + ex.Message);
-        }
-    }
+    public static void CopySelectedMarkdown(MSPowerPoint.Application app) =>
+        MoleculeActionHelper.CopySummary(r => GetSelectedMoleculeInfo(app, r), MoleculeSummaryFormat.MarkdownTable, "Markdown Table", "Copied table", "Could not retrieve molecule info from the selected structure.", "markdown table");
 
-    public static void ShowSelectedMoleculeInfo(MSPowerPoint.Application app)
-    {
-        try
-        {
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null)
-            {
-                MessageBox.Show(
-                    "Could not retrieve molecule properties from the selected structure.\nPlease select a molecular structure picture or text on the slide first.",
-                    "func_SMILES2IMG",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-                return;
-            }
-
-            var hwnd = GetHwnd(app);
-            if (hwnd != IntPtr.Zero)
-                MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties", new Win32Window(hwnd));
-            else
-                MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties");
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(
-                "An error occurred while calculating molecule info:\n" + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
-        }
-    }
+    public static void ShowSelectedMoleculeInfo(MSPowerPoint.Application app) =>
+        MoleculeActionHelper.ShowMoleculeInfoDialog(
+            r => GetSelectedMoleculeInfo(app, r),
+            GetHwnd(app),
+            "Could not retrieve molecule properties from the selected structure.\nPlease select a molecular structure picture or text on the slide first.");
 
     private static MSPowerPoint.Slide? EnsureActiveSlide(MSPowerPoint.Application app)
     {

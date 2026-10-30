@@ -229,7 +229,7 @@ public sealed class AboutDialog : Form
         {
             try
             {
-                Clipboard.SetText(BuildFullNoticesText());
+                SafeClipboard.SetText(BuildFullNoticesText());
                 btnCopyAll.Text = "✓ Copied!";
                 btnCopyAll.BackColor = Color.FromArgb(236, 253, 245);
                 btnCopyAll.ForeColor = Color.FromArgb(16, 149, 102);
@@ -309,7 +309,7 @@ public sealed class AboutDialog : Form
 
                     if (dr == DialogResult.Yes)
                     {
-                        try { Clipboard.SetText(updateCmd); } catch { }
+                        try { SafeClipboard.SetText(updateCmd); } catch { }
                         OpenBrowser("https://github.com/naramdash/func_SMILES2IMG/releases/latest");
                     }
                 }

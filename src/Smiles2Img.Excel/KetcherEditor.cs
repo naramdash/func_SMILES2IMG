@@ -3,10 +3,9 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ExcelDna.Integration;
 using ExcelDna.Logging;
-using Microsoft.Office.Core;
 using Smiles2Img.Editor;
-using Smiles2Img.Rendering;
 using Smiles2Img.Notifications;
+using Smiles2Img.Rendering;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Smiles2Img;
@@ -104,31 +103,22 @@ public static partial class KetcherEditor
         return CallNextHookEx(hMouseHook, nCode, wParam, lParam);
     }
 
-public enum StructureFormatPreference
-{
-    Auto = 0,
-    Smiles = 1,
-    InChI = 2,
-    Ket = 3
-}
+    public enum StructureFormatPreference
+    {
+        Auto = 0,
+        Smiles = 1,
+        InChI = 2,
+        Ket = 3
+    }
 
     [ExcelCommand(ShortCut = "^+K", MenuName = "SMILES2IMG", MenuText = "Insert/Edit Structure (SMILES2IMG) (Ctrl+Shift+K)")]
-    public static void OpenKetcherCommand()
-    {
-        OpenKetcherWithPreference(StructureFormatPreference.Smiles);
-    }
+    public static void OpenKetcherCommand() => OpenKetcherWithPreference(StructureFormatPreference.Smiles);
 
     [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Insert/Edit Structure (INCHI2IMG)")]
-    public static void OpenKetcherInchiCommand()
-    {
-        OpenKetcherWithPreference(StructureFormatPreference.InChI);
-    }
+    public static void OpenKetcherInchiCommand() => OpenKetcherWithPreference(StructureFormatPreference.InChI);
 
     [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Insert/Edit Structure (KET2IMG)")]
-    public static void OpenKetcherKetCommand()
-    {
-        OpenKetcherWithPreference(StructureFormatPreference.Ket);
-    }
+    public static void OpenKetcherKetCommand() => OpenKetcherWithPreference(StructureFormatPreference.Ket);
 
     private static void OpenKetcherWithPreference(StructureFormatPreference preference)
     {
@@ -187,21 +177,11 @@ public enum StructureFormatPreference
         {
             var app = (Excel.Application)ExcelDnaUtil.Application;
             var targetShape = GetSelectedShape(app);
-            string? smiles = null;
+            string? smiles = targetShape != null
+                ? ExtractSmiles(targetShape)
+                : (app.ActiveCell is Excel.Range cell ? ExtractSmilesFromCell(cell) : null);
 
-            if (targetShape != null)
-                smiles = ExtractSmiles(targetShape);
-            else if (app.ActiveCell is Excel.Range cell)
-                smiles = ExtractSmilesFromCell(cell);
-
-            if (string.IsNullOrEmpty(smiles))
-            {
-                MoleculeNotification.NotifyWarning("SMILES", "No SMILES structure found in selected cell or object.");
-                return;
-            }
-
-            SafeClipboard.SetText(smiles!);
-            MoleculeNotification.NotifyCopied("SMILES", smiles!);
+            MoleculeActionHelper.CopySmiles(smiles, "No SMILES structure found in selected cell or object.");
         }
         catch (Exception ex)
         {
@@ -216,22 +196,11 @@ public enum StructureFormatPreference
         {
             var app = (Excel.Application)ExcelDnaUtil.Application;
             var targetShape = GetSelectedShape(app);
-            string? targetData = null;
+            string? targetData = targetShape != null
+                ? (ExtractSmiles(targetShape) ?? ExtractStructure(targetShape))
+                : (app.ActiveCell is Excel.Range cell ? (ExtractSmilesFromCell(cell) ?? ExtractKetFromCell(cell)) : null);
 
-            if (targetShape != null)
-                targetData = ExtractSmiles(targetShape) ?? ExtractStructure(targetShape);
-            else if (app.ActiveCell is Excel.Range cell)
-                targetData = ExtractSmilesFromCell(cell) ?? ExtractKetFromCell(cell);
-
-            var inchi = MoleculeRenderer.TryConvertToInchi(targetData);
-            if (string.IsNullOrEmpty(inchi))
-            {
-                MoleculeNotification.NotifyWarning("InChI", "Could not generate InChI from selected cell or object.");
-                return;
-            }
-
-            SafeClipboard.SetText(inchi!);
-            MoleculeNotification.NotifyCopied("InChI", inchi!);
+            MoleculeActionHelper.CopyInchi(targetData, "Could not generate InChI from selected cell or object.");
         }
         catch (Exception ex)
         {
@@ -246,26 +215,18 @@ public enum StructureFormatPreference
         {
             var app = (Excel.Application)ExcelDnaUtil.Application;
             var targetShape = GetSelectedShape(app);
-            string? ket = null;
-
             if (targetShape != null)
             {
-                var structStr = ExtractStructure(targetShape);
-                ket = MoleculeRenderer.TryConvertToKet(structStr);
+                MoleculeActionHelper.CopyKet(ExtractStructure(targetShape), "No canvas structure found in selected cell or object.");
             }
             else if (app.ActiveCell is Excel.Range cell)
             {
-                ket = ExtractKetFromCell(cell);
+                MoleculeActionHelper.CopyKet(ExtractKetFromCell(cell), "No canvas structure found in selected cell or object.", alreadyKet: true);
             }
-
-            if (string.IsNullOrEmpty(ket))
+            else
             {
                 MoleculeNotification.NotifyWarning("Canvas Data (KET)", "No canvas structure found in selected cell or object.");
-                return;
             }
-
-            SafeClipboard.SetText(ket!);
-            MoleculeNotification.NotifyCopied("Canvas Data (KET)", ket!);
         }
         catch (Exception ex)
         {
@@ -280,24 +241,8 @@ public enum StructureFormatPreference
 
         if (targetShape != null)
         {
-            if (StructureMetadata.IsMolstar(targetShape.AlternativeText, targetShape.Title))
-            {
-                var meta = MolstarSessionManager.ParseAltText(targetShape.AlternativeText, targetShape.Title);
-                if (meta != null && !string.IsNullOrWhiteSpace(meta.Pdb))
-                {
-                    (string Title, double? WeightKDa) pdbInfo = resolvePubChem ? PubChemResolver.ResolvePdb(meta.Pdb) : ("", (double?)null);
-                    return new MoleculeInfo
-                    {
-                        CompoundName = !string.IsNullOrEmpty(pdbInfo.Title) ? pdbInfo.Title : $"PDB {meta.Pdb}",
-                        IupacName = $"PDB Entry: {meta.Pdb}",
-                        Formula = "Macromolecular Complex",
-                        MolecularWeight = pdbInfo.WeightKDa.HasValue ? pdbInfo.WeightKDa.Value * 1000.0 : 0.0,
-                        ExactMass = 0,
-                        Smiles = $"PDB:{meta.Pdb}",
-                        IsReaction = false
-                    };
-                }
-            }
+            var molstarInfo = MoleculeActionHelper.TryResolveMolstarInfo(targetShape.AlternativeText, targetShape.Title, resolvePubChem);
+            if (molstarInfo != null) return molstarInfo;
             targetData = ExtractSmiles(targetShape) ?? ExtractStructure(targetShape);
         }
         else
@@ -318,220 +263,50 @@ public enum StructureFormatPreference
             }
         }
 
-        if (string.IsNullOrEmpty(targetData)) return null;
-        return MoleculeRenderer.TryGetMoleculeInfo(targetData, resolvePubChem);
+        return string.IsNullOrEmpty(targetData) ? null : MoleculeRenderer.TryGetMoleculeInfo(targetData, resolvePubChem);
     }
+
+    private static MoleculeInfo? GetExcelMoleculeInfo(bool resolvePubChem) =>
+        GetSelectedMoleculeInfo((Excel.Application)ExcelDnaUtil.Application, resolvePubChem);
 
     [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy Substance Name")]
-    public static void CopySelectedSubstanceNameCommand()
-    {
-        try
-        {
-            var app = (Excel.Application)ExcelDnaUtil.Application;
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null || string.IsNullOrWhiteSpace(info.CompoundName))
-            {
-                MoleculeNotification.NotifyWarning("Substance Name", "Could not resolve substance name from selected cell or object.");
-                return;
-            }
-            SafeClipboard.SetText(info.CompoundName);
-            MoleculeNotification.NotifyCopied("Substance Name", info.CompoundName);
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Substance Name", "Error copying substance name: " + ex.Message);
-        }
-    }
+    public static void CopySelectedSubstanceNameCommand() =>
+        MoleculeActionHelper.CopySubstanceName(GetExcelMoleculeInfo, "Could not resolve substance name from selected cell or object.");
 
     [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy Chemical Formula")]
-    public static void CopySelectedFormulaCommand()
-    {
-        try
-        {
-            var app = (Excel.Application)ExcelDnaUtil.Application;
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: false);
-            if (info == null || string.IsNullOrWhiteSpace(info.Formula))
-            {
-                MoleculeNotification.NotifyWarning("Formula", "Could not compute chemical formula from selected cell or object.");
-                return;
-            }
-            SafeClipboard.SetText(info.Formula);
-            MoleculeNotification.NotifyCopied("Formula", info.Formula);
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Formula", "Error copying chemical formula: " + ex.Message);
-        }
-    }
+    public static void CopySelectedFormulaCommand() =>
+        MoleculeActionHelper.CopyFormula(GetExcelMoleculeInfo, "Could not compute chemical formula from selected cell or object.", copiedTitle: "Formula");
 
     [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy Molecular Weight")]
-    public static void CopySelectedMolecularWeightCommand()
-    {
-        try
-        {
-            var app = (Excel.Application)ExcelDnaUtil.Application;
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: false);
-            if (info == null || info.MolecularWeight <= 0)
-            {
-                MoleculeNotification.NotifyWarning("Molecular Weight", "Could not compute molecular weight from selected cell or object.");
-                return;
-            }
-            string mw = info.MolecularWeight.ToString("F2");
-            SafeClipboard.SetText(mw);
-            MoleculeNotification.NotifyCopied("Molecular Weight", $"{mw} g/mol");
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Molecular Weight", "Error copying molecular weight: " + ex.Message);
-        }
-    }
+    public static void CopySelectedMolecularWeightCommand() =>
+        MoleculeActionHelper.CopyMolecularWeight(GetExcelMoleculeInfo, "Could not compute molecular weight from selected cell or object.");
 
     [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Copy InChIKey")]
-    public static void CopySelectedInchiKeyCommand()
-    {
-        try
-        {
-            var app = (Excel.Application)ExcelDnaUtil.Application;
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: false);
-            if (info == null || string.IsNullOrWhiteSpace(info.InChIKey))
-            {
-                MoleculeNotification.NotifyWarning("InChIKey", "Could not generate InChIKey from selected cell or object.");
-                return;
-            }
-            SafeClipboard.SetText(info.InChIKey);
-            MoleculeNotification.NotifyCopied("InChIKey", info.InChIKey);
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("InChIKey", "Error copying InChIKey: " + ex.Message);
-        }
-    }
+    public static void CopySelectedInchiKeyCommand() =>
+        MoleculeActionHelper.CopyInchiKey(GetExcelMoleculeInfo, "Could not generate InChIKey from selected cell or object.");
 
     [ExcelCommand(Name = "CopySelectedAllSummaryCommand", MenuName = "SMILES2IMG", MenuText = "Copy All Summary")]
-    public static void CopySelectedAllSummaryCommand()
-    {
-        try
-        {
-            var app = (Excel.Application)ExcelDnaUtil.Application;
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null)
-            {
-                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from selected cell or object.");
-                return;
-            }
-            string summary = info.FormatClipboardSummary(MoleculeSummaryFormat.ExcelTsvWithHeader);
-            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.ExcelTsvWithHeader);
-            SafeClipboard.SetTextAndHtml(summary, html);
-            MoleculeNotification.NotifyCopied("Molecule Info", info.SubstanceName ?? info.Formula ?? "Copied summary");
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying molecule summary: " + ex.Message);
-        }
-    }
+    public static void CopySelectedAllSummaryCommand() =>
+        MoleculeActionHelper.CopySummary(GetExcelMoleculeInfo, MoleculeSummaryFormat.ExcelTsvWithHeader, "Molecule Info", "Copied summary", "Could not retrieve molecule info from selected cell or object.", "molecule summary");
 
     [ExcelCommand(Name = "CopySelectedTsvRowCommand", MenuName = "SMILES2IMG", MenuText = "Copy as Excel Row (TSV Columns)")]
-    public static void CopySelectedTsvRowCommand()
-    {
-        try
-        {
-            var app = (Excel.Application)ExcelDnaUtil.Application;
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null)
-            {
-                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from selected cell or object.");
-                return;
-            }
-            string tsv = info.FormatClipboardSummary(MoleculeSummaryFormat.ExcelTsvRow);
-            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.ExcelTsvRow);
-            SafeClipboard.SetTextAndHtml(tsv, html);
-            MoleculeNotification.NotifyCopied("Excel Row (TSV)", info.SubstanceName ?? info.Formula ?? "Copied row");
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying TSV row: " + ex.Message);
-        }
-    }
+    public static void CopySelectedTsvRowCommand() =>
+        MoleculeActionHelper.CopySummary(GetExcelMoleculeInfo, MoleculeSummaryFormat.ExcelTsvRow, "Excel Row (TSV)", "Copied row", "Could not retrieve molecule info from selected cell or object.", "TSV row");
 
     [ExcelCommand(Name = "CopySelectedMultiLineCommand", MenuName = "SMILES2IMG", MenuText = "Copy as Multi-Line List")]
-    public static void CopySelectedMultiLineCommand()
-    {
-        try
-        {
-            var app = (Excel.Application)ExcelDnaUtil.Application;
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null)
-            {
-                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from selected cell or object.");
-                return;
-            }
-            string multi = info.FormatClipboardSummary(MoleculeSummaryFormat.MultiLine);
-            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.MultiLine);
-            SafeClipboard.SetTextAndHtml(multi, html);
-            MoleculeNotification.NotifyCopied("Multi-Line List", info.SubstanceName ?? info.Formula ?? "Copied list");
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying multi-line list: " + ex.Message);
-        }
-    }
+    public static void CopySelectedMultiLineCommand() =>
+        MoleculeActionHelper.CopySummary(GetExcelMoleculeInfo, MoleculeSummaryFormat.MultiLine, "Multi-Line List", "Copied list", "Could not retrieve molecule info from selected cell or object.", "multi-line list");
 
     [ExcelCommand(Name = "CopySelectedMarkdownCommand", MenuName = "SMILES2IMG", MenuText = "Copy as Markdown Table")]
-    public static void CopySelectedMarkdownCommand()
-    {
-        try
-        {
-            var app = (Excel.Application)ExcelDnaUtil.Application;
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null)
-            {
-                MoleculeNotification.NotifyWarning("Molecule Info", "Could not retrieve molecule info from selected cell or object.");
-                return;
-            }
-            string md = info.FormatClipboardSummary(MoleculeSummaryFormat.MarkdownTable);
-            string? html = info.FormatHtmlForSummary(MoleculeSummaryFormat.MarkdownTable);
-            SafeClipboard.SetTextAndHtml(md, html);
-            MoleculeNotification.NotifyCopied("Markdown Table", info.SubstanceName ?? info.Formula ?? "Copied table");
-        }
-        catch (Exception ex)
-        {
-            MoleculeNotification.NotifyWarning("Molecule Info", "Error copying markdown table: " + ex.Message);
-        }
-    }
+    public static void CopySelectedMarkdownCommand() =>
+        MoleculeActionHelper.CopySummary(GetExcelMoleculeInfo, MoleculeSummaryFormat.MarkdownTable, "Markdown Table", "Copied table", "Could not retrieve molecule info from selected cell or object.", "markdown table");
 
     [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Molecule Info (Name, MW & Formula)...")]
-    public static void CopySelectedMoleculeInfoCommand()
-    {
-        try
-        {
-            var app = (Excel.Application)ExcelDnaUtil.Application;
-            var info = GetSelectedMoleculeInfo(app, resolvePubChem: true);
-            if (info == null)
-            {
-                MessageBox.Show(
-                    "Cannot retrieve formula/molecular weight for the selected cell or image.\nPlease select a molecular structure cell or image.",
-                    "func_SMILES2IMG",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-                return;
-            }
-
-            var hwnd = ExcelDnaUtil.WindowHandle;
-            IWin32Window? owner = hwnd != IntPtr.Zero ? new Win32Window(hwnd) : null;
-            if (owner != null)
-                MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties", owner);
-            else
-                MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties");
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(
-                "An error occurred while calculating molecule info: " + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
-        }
-    }
+    public static void CopySelectedMoleculeInfoCommand() =>
+        MoleculeActionHelper.ShowMoleculeInfoDialog(
+            GetExcelMoleculeInfo,
+            ExcelDnaUtil.WindowHandle,
+            "Cannot retrieve formula/molecular weight for the selected cell or image.\nPlease select a molecular structure cell or image.");
 
     [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Paste Structure")]
     public static void QuickInsertCommand()
@@ -541,7 +316,7 @@ public enum StructureFormatPreference
             var app = (Excel.Application)ExcelDnaUtil.Application;
             if (app.ActiveSheet is not Excel.Worksheet sheet) return;
 
-            string? rawInput = Clipboard.ContainsText() ? Clipboard.GetText()?.Trim() : null;
+            string? rawInput = SafeClipboard.ContainsText() ? SafeClipboard.GetText()?.Trim() : null;
 
             // Fallback to current cell plain text if clipboard doesn't have valid structure
             if (app.ActiveCell is Excel.Range activeCell)
@@ -639,21 +414,15 @@ public enum StructureFormatPreference
         {
             var app = (Excel.Application)ExcelDnaUtil.Application;
             var targetShape = GetSelectedShape(app);
-            string? targetData = null;
+            string? targetData = targetShape != null
+                ? (ExtractStructure(targetShape) ?? ExtractSmiles(targetShape))
+                : (app.ActiveCell is Excel.Range cell ? (ExtractKetFromCell(cell) ?? ExtractSmilesFromCell(cell)) : null);
 
-            if (targetShape != null)
-                targetData = ExtractStructure(targetShape) ?? ExtractSmiles(targetShape);
-            else if (app.ActiveCell is Excel.Range cell)
-                targetData = ExtractKetFromCell(cell) ?? ExtractSmilesFromCell(cell);
-
-            var svg = MoleculeRenderer.RenderSvg(targetData);
-            if (string.IsNullOrEmpty(svg) || !SvgClipboardHelper.CopySvgToClipboard(svg))
-            {
-                MoleculeNotification.NotifyWarning("Copy SVG", "Could not render SVG from the selected cell or object.");
-                return;
-            }
-
-            MoleculeNotification.NotifyCopied("Vector SVG", "Scalable SVG copied to clipboard");
+            MoleculeActionHelper.CopySvg(
+                targetData,
+                "Could not render SVG from the selected cell or object.",
+                title: "Vector SVG",
+                successMessage: "Scalable SVG copied to clipboard");
         }
         catch (Exception ex)
         {
@@ -720,7 +489,6 @@ public enum StructureFormatPreference
                 }
             }
 
-            // Also update standalone canvas shapes (not managed by FloatingPictures)
             try
             {
                 var shapesToUpdate = new System.Collections.Generic.List<Excel.Shape>();
@@ -729,7 +497,7 @@ public enum StructureFormatPreference
                     string? title = null;
                     try { title = s.Title; } catch { }
                     if (!string.IsNullOrEmpty(title) && FloatingPictures.TryParseTitle(title, out _, out _))
-                        continue; // Managed by formula
+                        continue;
 
                     if (StructureMetadata.IsMolstar(s.AlternativeText, title))
                         continue;
@@ -817,7 +585,6 @@ public enum StructureFormatPreference
             }
             catch { }
 
-            // Header row
             string[] headers = ["Name", "Structure", "SMILES", "Formula", "MW (g/mol)", "Exact Mass", "LogP", "Lipinski"];
             for (int c = 0; c < headers.Length; c++)
             {
