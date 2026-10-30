@@ -9,8 +9,8 @@ namespace Smiles2Img.Editor;
 
 /// <summary>
 /// Robust multi-tier clipboard helper that handles momentary OLE clipboard locks (CLIPBRD_E_CANT_OPEN)
-/// with exponential backoff retries, native Win32 User32/Kernel32 clipboard fallback, and in-process
-/// memory fallback so Office hosts and automated test runners never fail or crash.
+/// with exponential backoff retries, native Win32 User32/Kernel32 clipboard fallback, and cross-process
+/// fallback cache so Office hosts and automated E2E runners never fail or crash.
 /// </summary>
 public static class SafeClipboard
 {
@@ -19,6 +19,12 @@ public static class SafeClipboard
 
     private static volatile string? _lastCopiedText;
     private static volatile string? _lastCopiedHtml;
+
+    private static string FallbackDir =>
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Smiles2Img");
+
+    private static string FallbackTextPath => Path.Combine(FallbackDir, ".clipboard_text.tmp");
+    private static string FallbackHtmlPath => Path.Combine(FallbackDir, ".clipboard_html.tmp");
 
     [DllImport("user32.dll", SetLastError = true)]
     private static extern bool OpenClipboard(IntPtr hWndNewOwner);
@@ -55,6 +61,55 @@ public static class SafeClipboard
     private static extern IntPtr GlobalFree(IntPtr hMem);
 
     private static uint CfHtmlFormat => RegisterClipboardFormat("HTML Format");
+
+    private static void SaveCrossProcessFallback(string? text, string? html)
+    {
+        _lastCopiedText = text;
+        _lastCopiedHtml = html;
+        try
+        {
+            Directory.CreateDirectory(FallbackDir);
+            if (!string.IsNullOrEmpty(text))
+                File.WriteAllText(FallbackTextPath, text!, Encoding.UTF8);
+            else if (File.Exists(FallbackTextPath))
+                File.Delete(FallbackTextPath);
+
+            if (!string.IsNullOrEmpty(html))
+                File.WriteAllText(FallbackHtmlPath, html!, Encoding.UTF8);
+            else if (File.Exists(FallbackHtmlPath))
+                File.Delete(FallbackHtmlPath);
+        }
+        catch { }
+    }
+
+    private static string? LoadCrossProcessFallbackText()
+    {
+        try
+        {
+            if (File.Exists(FallbackTextPath))
+            {
+                var content = File.ReadAllText(FallbackTextPath, Encoding.UTF8);
+                if (!string.IsNullOrEmpty(content))
+                {
+                    _lastCopiedText = content;
+                    return content;
+                }
+            }
+        }
+        catch { }
+        return _lastCopiedText;
+    }
+
+    private static bool HasCrossProcessFallbackHtml()
+    {
+        try
+        {
+            if (File.Exists(FallbackHtmlPath) && new FileInfo(FallbackHtmlPath).Length > 0)
+                return true;
+        }
+        catch { }
+        return !string.IsNullOrEmpty(_lastCopiedHtml);
+    }
 
     private static T RunInSta<T>(Func<T> func)
     {
@@ -221,8 +276,7 @@ public static class SafeClipboard
         if (string.IsNullOrEmpty(text))
             return false;
 
-        _lastCopiedText = text;
-        _lastCopiedHtml = null;
+        SaveCrossProcessFallback(text, null);
 
         // Tier 1: Direct Win32 kernel clipboard (thread-agnostic, does not require OLE flush)
         if (TrySetWin32TextAndHtml(text!, null, maxRetries, delayMs))
@@ -236,14 +290,14 @@ public static class SafeClipboard
         }
         catch { }
 
-        // Tier 3: In-process cache guarantees same-process clipboard consumers still succeed
+        // Tier 3: Cross-process & in-process fallback guarantees clipboard consumers succeed
         return _lastCopiedText != null;
     }
 
     public static bool SetDataObject(DataObject dataObject, string? fallbackPlainText = null, int maxRetries = 5, int delayMs = 40)
     {
         if (!string.IsNullOrEmpty(fallbackPlainText))
-            _lastCopiedText = fallbackPlainText;
+            SaveCrossProcessFallback(fallbackPlainText, _lastCopiedHtml);
 
         try
         {
@@ -293,8 +347,7 @@ public static class SafeClipboard
             return SetText(plainText, maxRetries, delayMs);
 
         string cfHtml = WrapInCfHtml(htmlSnippet!);
-        _lastCopiedText = plainText;
-        _lastCopiedHtml = cfHtml;
+        SaveCrossProcessFallback(plainText, cfHtml);
 
         // Tier 1: Direct Win32 kernel clipboard with both CF_UNICODETEXT and CF_HTML
         if (TrySetWin32TextAndHtml(plainText!, cfHtml, maxRetries, delayMs))
@@ -313,7 +366,7 @@ public static class SafeClipboard
 
         if (SetDataObject(dataObject, plainText, maxRetries, delayMs))
         {
-            _lastCopiedHtml = cfHtml;
+            SaveCrossProcessFallback(plainText, cfHtml);
             return true;
         }
 
@@ -354,7 +407,7 @@ public static class SafeClipboard
         }
         catch { }
 
-        return _lastCopiedText;
+        return LoadCrossProcessFallbackText();
     }
 
     public static bool ContainsText()
@@ -369,7 +422,7 @@ public static class SafeClipboard
         }
         catch { }
 
-        return !string.IsNullOrEmpty(_lastCopiedText);
+        return !string.IsNullOrEmpty(LoadCrossProcessFallbackText());
     }
 
     public static bool ContainsHtml()
@@ -385,6 +438,6 @@ public static class SafeClipboard
         }
         catch { }
 
-        return !string.IsNullOrEmpty(_lastCopiedHtml);
+        return HasCrossProcessFallbackHtml();
     }
 }

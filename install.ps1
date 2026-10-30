@@ -300,7 +300,7 @@ if (Test-Path $wordDllPath) {
         -DllPath $wordDllPath `
         -OfficeApp "Word" `
         -FriendlyName "func_SMILES2IMG" `
-        -Description "func_SMILES2IMG 화학 구조식 렌더러 및 Ketcher 에디터"
+        -Description "func_SMILES2IMG $([char]0xD654)$([char]0xD559) $([char]0xAD6C)$([char]0xC870)$([char]0xC2DD) $([char]0xB80C)$([char]0xB354)$([char]0xB7EC) $([char]0xBC0F) Ketcher $([char]0xC5D0)$([char]0xB514)$([char]0xD130)"
 }
 
 # Register PowerPoint COM Add-in
@@ -315,7 +315,7 @@ if (Test-Path $pptDllPath) {
         -DllPath $pptDllPath `
         -OfficeApp "PowerPoint" `
         -FriendlyName "func_SMILES2IMG" `
-        -Description "func_SMILES2IMG 화학 구조식 렌더러 및 Ketcher 에디터"
+        -Description "func_SMILES2IMG $([char]0xD654)$([char]0xD559) $([char]0xAD6C)$([char]0xC870)$([char]0xC2DD) $([char]0xB80C)$([char]0xB354)$([char]0xB7EC) $([char]0xBC0F) Ketcher $([char]0xC5D0)$([char]0xB514)$([char]0xD130)"
 }
 
 # Register Windows Toast Notification AUMID
@@ -349,24 +349,24 @@ if (-not $installedVersion) {
 # -------------------------------------------------------------
 # 7. Installation Summary Output
 # -------------------------------------------------------------
-$modeLabel = if ($isUpgrade) { "업그레이드 (Upgrade)" } else { "신규 설치 (Clean Install)" }
-$prevVerLabel = if ($previousVersion) { $previousVersion } elseif ($isUpgrade) { "기존 설치됨 (버전 정보 없음)" } else { "없음 (신규 설치)" }
-$currVerLabel = if ($installedVersion) { $installedVersion } else { "최신 버전" }
-$registeredAppsText = if ($registeredApps.Count -gt 0) { ($registeredApps -join ', ') } else { "없음" }
+$modeLabel = if ($isUpgrade) { "$([char]0xC5C5)$([char]0xADF8)$([char]0xB808)$([char]0xC774)$([char]0xB4DC) (Upgrade)" } else { "$([char]0xC2E0)$([char]0xADDC) $([char]0xC124)$([char]0xCE58) (Clean Install)" }
+$prevVerLabel = if ($previousVersion) { $previousVersion } elseif ($isUpgrade) { "$([char]0xAE30)$([char]0xC874) $([char]0xC124)$([char]0xCE58)$([char]0xB428) ($([char]0xBC84)$([char]0xC804) $([char]0xC815)$([char]0xBCF4) $([char]0xC5C6)$([char]0xC74C))" } else { "$([char]0xC5C6)$([char]0xC74C) ($([char]0xC2E0)$([char]0xADDC) $([char]0xC124)$([char]0xCE58))" }
+$currVerLabel = if ($installedVersion) { $installedVersion } else { "$([char]0xCD5C)$([char]0xC2E0) $([char]0xBC84)$([char]0xC804)" }
+$registeredAppsText = if ($registeredApps.Count -gt 0) { ($registeredApps -join ', ') } else { "$([char]0xC5C6)$([char]0xC74C)" }
 
 Write-Host ""
 Write-Host "======================================================================" -ForegroundColor Cyan
-Write-Host " [SUMMARY] func_SMILES2IMG 설치 요약" -ForegroundColor Cyan
+Write-Host " [SUMMARY] func_SMILES2IMG $([char]0xC124)$([char]0xCE58) $([char]0xC694)$([char]0xC57D)" -ForegroundColor Cyan
 Write-Host "----------------------------------------------------------------------" -ForegroundColor Cyan
-Write-Host "  * 설치 구분 (Mode):          $modeLabel" -ForegroundColor White
-Write-Host "  * 이전 설치 버전 (Previous):  $prevVerLabel" -ForegroundColor $(if ($isUpgrade) { "Yellow" } else { "Gray" })
-Write-Host "  * 현재 설치 버전 (Current):   $currVerLabel" -ForegroundColor Green
-Write-Host "  * Office 아키텍처 (Arch):    $bitness (Office $officeVersion)" -ForegroundColor White
-Write-Host "  * 등록된 Office 프로그램:    $registeredAppsText" -ForegroundColor White
-Write-Host "  * 설치 디렉터리:              $suiteDir" -ForegroundColor Gray
+Write-Host "  * $([char]0xC124)$([char]0xCE58) $([char]0xAD6C)$([char]0xBD84) (Mode):          $modeLabel" -ForegroundColor White
+Write-Host "  * $([char]0xC774)$([char]0xC804) $([char]0xC124)$([char]0xCE58) $([char]0xBC84)$([char]0xC804) (Previous):  $prevVerLabel" -ForegroundColor $(if ($isUpgrade) { "Yellow" } else { "Gray" })
+Write-Host "  * $([char]0xD604)$([char]0xC7AC) $([char]0xC124)$([char]0xCE58) $([char]0xBC84)$([char]0xC804) (Current):   $currVerLabel" -ForegroundColor Green
+Write-Host "  * Office $([char]0xC544)$([char]0xD0A4)$([char]0xD14D)$([char]0xCC98) (Arch):    $bitness (Office $officeVersion)" -ForegroundColor White
+Write-Host "  * $([char]0xB4F1)$([char]0xB85D)$([char]0xB41C) Office $([char]0xD504)$([char]0xB85C)$([char]0xADF8)$([char]0xB7A8):    $registeredAppsText" -ForegroundColor White
+Write-Host "  * $([char]0xC124)$([char]0xCE58) $([char]0xB514)$([char]0xB809)$([char]0xD130)$([char]0xB9AC):              $suiteDir" -ForegroundColor Gray
 Write-Host "======================================================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "[SUCCESS] func_SMILES2IMG 설정이 완료되었습니다!" -ForegroundColor Cyan
+Write-Host "[SUCCESS] func_SMILES2IMG $([char]0xC124)$([char]0xC815)$([char]0xC774) $([char]0xC644)$([char]0xB8CC)$([char]0xB418)$([char]0xC5C8)$([char]0xC2B5)$([char]0xB2C8)$([char]0xB2E4)!" -ForegroundColor Cyan
 Write-Host "  * Excel:      Type =SMILES2IMG(""CCO"") in any cell" -ForegroundColor White
 Write-Host "  * Word:       Click 'Insert Structure' in the [SMILES] ribbon tab" -ForegroundColor White
 Write-Host "  * PowerPoint: Click 'Insert Structure' in the [SMILES] ribbon tab" -ForegroundColor White

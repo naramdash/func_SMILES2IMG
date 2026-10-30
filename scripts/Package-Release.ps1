@@ -4,6 +4,11 @@
 #>
 $ErrorActionPreference = 'Stop'
 
+$slnPath = Join-Path $PSScriptRoot "..\Smiles2Img.sln"
+Write-Host "[+] Building solution in Release configuration..." -ForegroundColor Cyan
+dotnet build $slnPath -c Release --nologo -v quiet
+if ($LASTEXITCODE -ne 0) { throw "dotnet build failed with exit code $LASTEXITCODE" }
+
 foreach ($arch in @('x64', 'x86')) {
     $distArch = Join-Path $PSScriptRoot "..\dist\$arch"
     if (-not (Test-Path $distArch)) { continue }

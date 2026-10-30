@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     End-to-End (E2E) Automated Verification for func_SMILES2IMG (Word, PowerPoint, Excel)
 #>
@@ -56,7 +56,7 @@ try {
 
     # Test 1B: KET Canvas via Clipboard -> QuickInsertFromSelectionOrClipboard
     $word.Selection.Collapse(0) # wdCollapseEnd
-    [System.Windows.Forms.Clipboard]::SetText("KET:$sampleKet")
+    [Smiles2Img.Editor.SafeClipboard]::SetText("KET:$sampleKet")
     [Smiles2Img.Word.WordStructureManager]::QuickInsertFromSelectionOrClipboard($word)
 
     if ($doc.InlineShapes.Count -lt 2) { throw "Word QuickInsert from KET clipboard failed to create 2nd InlineShape!" }
@@ -101,7 +101,7 @@ try {
     $slide = $pres.Slides.Add(1, 12) # ppLayoutBlank = 12
 
     # Test 2A: QuickInsert SMILES onto PowerPoint slide
-    [System.Windows.Forms.Clipboard]::SetText($aspirinSmiles)
+    [Smiles2Img.Editor.SafeClipboard]::SetText($aspirinSmiles)
     [Smiles2Img.PowerPoint.PowerPointStructureManager]::QuickInsertFromClipboard($ppt)
 
     if ($slide.Shapes.Count -lt 1) { throw "PowerPoint QuickInsert failed to insert shape!" }
@@ -113,7 +113,7 @@ try {
     Write-Host "  [PASS] PowerPoint QuickInsert (SMILES -> Slide Shape): $([math]::Round($pptShape1.Width,1))x$([math]::Round($pptShape1.Height,1)) pt, Formula=$($pptInfo1.Formula), MW=$($pptInfo1.MolecularWeight.ToString('F2'))" -ForegroundColor Green
 
     # Test 2B: QuickInsert KET onto PowerPoint slide & verify KET Tag + AlternativeText round-trip
-    [System.Windows.Forms.Clipboard]::SetText("KET:$sampleKet")
+    [Smiles2Img.Editor.SafeClipboard]::SetText("KET:$sampleKet")
     [Smiles2Img.PowerPoint.PowerPointStructureManager]::QuickInsertFromClipboard($ppt)
 
     if ($slide.Shapes.Count -lt 2) { throw "PowerPoint QuickInsert KET failed to insert 2nd shape!" }
@@ -229,7 +229,7 @@ try {
     if ([math]::Abs($ccoMw - 46.07) -gt 0.1) { throw "Excel CCO MW mismatch! Expected ~46.07, got $ccoMw" }
     Write-Host "  [PASS] Excel CCO (Ethanol) Formula=$ccoFormula, MW=$ccoMw" -ForegroundColor Green
 
-    [System.Windows.Forms.Clipboard]::Clear()
+    try { [System.Windows.Forms.Clipboard]::Clear() } catch {}
     $ws.Activate()
     $ws.Range("A2").Select() | Out-Null
     Start-Sleep -Milliseconds 300

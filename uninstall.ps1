@@ -180,21 +180,21 @@ if (Test-Path -LiteralPath $cacheDir) {
 }
 
 # 7. Uninstallation Summary Output
-$statusLabel = if ($wasInstalled) { "제거 완료 (Uninstalled)" } else { "설치 내역 없음 (Already Clean)" }
-$removedVerLabel = if ($removedVersion) { $removedVersion } elseif ($wasInstalled) { "설치됨 (버전 정보 없음)" } else { "없음" }
-$unregisteredAppsText = if ($unregisteredApps.Count -gt 0) { ($unregisteredApps -join ', ') } else { "없음" }
-$suiteStatusText = if ($suiteRemoved) { "삭제 완료 ($suiteDir)" } else { "해당 없음" }
-$cacheStatusText = if ($cacheRemoved) { "정리 완료 ($cacheDir)" } else { "해당 없음" }
+$statusLabel = if ($wasInstalled) { "$([char]0xC81C)$([char]0xAC70) $([char]0xC644)$([char]0xB8CC) (Uninstalled)" } else { "$([char]0xC124)$([char]0xCE58) $([char]0xB0B4)$([char]0xC5ED) $([char]0xC5C6)$([char]0xC74C) (Already Clean)" }
+$removedVerLabel = if ($removedVersion) { $removedVersion } elseif ($wasInstalled) { "$([char]0xC124)$([char]0xCE58)$([char]0xB428) ($([char]0xBC84)$([char]0xC804) $([char]0xC815)$([char]0xBCF4) $([char]0xC5C6)$([char]0xC74C))" } else { "$([char]0xC5C6)$([char]0xC74C)" }
+$unregisteredAppsText = if ($unregisteredApps.Count -gt 0) { ($unregisteredApps -join ', ') } else { "$([char]0xC5C6)$([char]0xC74C)" }
+$suiteStatusText = if ($suiteRemoved) { "$([char]0xC0AD)$([char]0xC81C) $([char]0xC644)$([char]0xB8CC) ($suiteDir)" } else { "$([char]0xD574)$([char]0xB2F9) $([char]0xC5C6)$([char]0xC74C)" }
+$cacheStatusText = if ($cacheRemoved) { "$([char]0xC815)$([char]0xB9AC) $([char]0xC644)$([char]0xB8CC) ($cacheDir)" } else { "$([char]0xD574)$([char]0xB2F9) $([char]0xC5C6)$([char]0xC74C)" }
 
 Write-Host ""
 Write-Host "======================================================================" -ForegroundColor Cyan
-Write-Host " [SUMMARY] func_SMILES2IMG 제거 요약" -ForegroundColor Cyan
+Write-Host " [SUMMARY] func_SMILES2IMG $([char]0xC81C)$([char]0xAC70) $([char]0xC694)$([char]0xC57D)" -ForegroundColor Cyan
 Write-Host "----------------------------------------------------------------------" -ForegroundColor Cyan
-Write-Host "  * 제거 상태 (Status):        $statusLabel" -ForegroundColor $(if ($wasInstalled) { "Green" } else { "Yellow" })
-Write-Host "  * 제거된 버전 (Removed Ver): $removedVerLabel" -ForegroundColor White
-Write-Host "  * 등록 해제된 프로그램:      $unregisteredAppsText" -ForegroundColor White
-Write-Host "  * 추가 기능 파일 정리:       $suiteStatusText" -ForegroundColor Gray
-Write-Host "  * 로컬 캐시 폴더 정리:       $cacheStatusText" -ForegroundColor Gray
+Write-Host "  * $([char]0xC81C)$([char]0xAC70) $([char]0xC0C1)$([char]0xD0DC) (Status):        $statusLabel" -ForegroundColor $(if ($wasInstalled) { "Green" } else { "Yellow" })
+Write-Host "  * $([char]0xC81C)$([char]0xAC70)$([char]0xB41C) $([char]0xBC84)$([char]0xC804) (Removed Ver): $removedVerLabel" -ForegroundColor White
+Write-Host "  * $([char]0xB4F1)$([char]0xB85D) $([char]0xD574)$([char]0xC81C)$([char]0xB41C) $([char]0xD504)$([char]0xB85C)$([char]0xADF8)$([char]0xB7A8):      $unregisteredAppsText" -ForegroundColor White
+Write-Host "  * $([char]0xCD94)$([char]0xAC00) $([char]0xAE30)$([char]0xB2A5) $([char]0xD30C)$([char]0xC77C) $([char]0xC815)$([char]0xB9AC):       $suiteStatusText" -ForegroundColor Gray
+Write-Host "  * $([char]0xB85C)$([char]0xCEEC) $([char]0xCE90)$([char]0xC2DC) $([char]0xD3F4)$([char]0xB354) $([char]0xC815)$([char]0xB9AC):       $cacheStatusText" -ForegroundColor Gray
 Write-Host "======================================================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "[SUCCESS] func_SMILES2IMG 제거가 완료되었습니다." -ForegroundColor Cyan
+Write-Host "[SUCCESS] func_SMILES2IMG $([char]0xC81C)$([char]0xAC70)$([char]0xAC00) $([char]0xC644)$([char]0xB8CC)$([char]0xB418)$([char]0xC5C8)$([char]0xC2B5)$([char]0xB2C8)$([char]0xB2E4)." -ForegroundColor Cyan
