@@ -9,7 +9,7 @@ const inputType = ref<'smiles' | 'name' | 'cas' | 'ket' | 'inchi'>('smiles')
 const isFloat = ref(false)
 const bgMode = ref<'' | 'white' | '#1e1e1e' | '#fff9db'>('')
 const colorMode = ref<'colored' | 'bw' | 'white' | 'ink=#1e40af'>('colored')
-const highlightMode = ref<'' | 'hl:c1ccccc1' | 'hl:C(=O)O'>('')
+const highlightMode = ref<'' | 'hl:c1ccccc1' | 'hl:C(=O)O' | 'hl:C(=O)O[#6]'>('')
 
 const optNum = ref(false)
 const optStereo = ref(false)
@@ -21,36 +21,7 @@ const optRot90 = ref(false)
 
 const copied = ref(false)
 
-function selectDarkPreset() {
-  bgMode.value = '#1e1e1e'
-  colorMode.value = 'white'
-}
-
-function selectAcsPreset() {
-  bgMode.value = ''
-  colorMode.value = 'bw'
-  highlightMode.value = ''
-}
-
-function selectHighlightPreset() {
-  bgMode.value = ''
-  colorMode.value = 'colored'
-  highlightMode.value = 'hl:c1ccccc1'
-}
-
-function selectNmrPreset() {
-  bgMode.value = ''
-  colorMode.value = 'colored'
-  optNum.value = true
-  optStereo.value = true
-}
-
-function resetAll() {
-  inputType.value = 'smiles'
-  isFloat.value = false
-  bgMode.value = ''
-  colorMode.value = 'colored'
-  highlightMode.value = ''
+function resetGeometryAndLabels() {
   optNum.value = false
   optStereo.value = false
   optH.value = false
@@ -59,6 +30,72 @@ function resetAll() {
   optFlipY.value = false
   optRot90.value = false
 }
+
+function selectDarkPreset() {
+  resetGeometryAndLabels()
+  bgMode.value = '#1e1e1e'
+  colorMode.value = 'white'
+  highlightMode.value = ''
+}
+
+function selectAcsPreset() {
+  resetGeometryAndLabels()
+  bgMode.value = ''
+  colorMode.value = 'bw'
+  highlightMode.value = ''
+}
+
+function selectWhiteBgPreset() {
+  resetGeometryAndLabels()
+  bgMode.value = 'white'
+  colorMode.value = 'colored'
+  highlightMode.value = ''
+}
+
+function selectHighlightPreset() {
+  resetGeometryAndLabels()
+  bgMode.value = ''
+  colorMode.value = 'colored'
+  highlightMode.value = 'hl:c1ccccc1'
+}
+
+function selectNmrPreset() {
+  resetGeometryAndLabels()
+  bgMode.value = ''
+  colorMode.value = 'colored'
+  highlightMode.value = ''
+  optNum.value = true
+  optStereo.value = true
+}
+
+function selectTextbookPreset() {
+  resetGeometryAndLabels()
+  bgMode.value = ''
+  colorMode.value = 'colored'
+  highlightMode.value = ''
+  optH.value = true
+  optAllC.value = true
+}
+
+function resetAll() {
+  inputType.value = 'smiles'
+  isFloat.value = false
+  bgMode.value = ''
+  colorMode.value = 'colored'
+  highlightMode.value = ''
+  resetGeometryAndLabels()
+}
+
+const activePreset = computed(() => {
+  if (bgMode.value === '#1e1e1e' && colorMode.value === 'white' && !highlightMode.value && !optNum.value && !optH.value) return 'dark'
+  if (bgMode.value === '' && colorMode.value === 'bw' && !highlightMode.value && !optNum.value && !optH.value) return 'acs'
+  if (bgMode.value === 'white' && colorMode.value === 'colored' && !highlightMode.value && !optNum.value && !optH.value) return 'whitebg'
+  if (bgMode.value === '' && colorMode.value === 'colored' && highlightMode.value === 'hl:c1ccccc1' && !optNum.value && !optH.value) return 'highlight'
+  if (bgMode.value === '' && colorMode.value === 'colored' && !highlightMode.value && optNum.value && optStereo.value && !optH.value) return 'nmr'
+  if (bgMode.value === '' && colorMode.value === 'colored' && !highlightMode.value && optH.value && optAllC.value && !optNum.value) return 'textbook'
+  if (bgMode.value === '' && colorMode.value === 'colored' && !highlightMode.value && !optNum.value && !optStereo.value && !optH.value && !optAllC.value && !optFlip.value && !optFlipY.value && !optRot90.value) return 'default'
+  return ''
+})
 
 const funcName = computed(() => {
   const base =
@@ -191,11 +228,13 @@ async function copyFormula() {
       </div>
       <div class="fb-presets">
         <span class="fb-preset-label">{{ isKo ? '빠른 프리셋:' : 'Quick Presets:' }}</span>
-        <button type="button" class="fb-chip" @click="resetAll">{{ isKo ? '기본값' : 'Default' }}</button>
-        <button type="button" class="fb-chip" @click="selectAcsPreset">{{ isKo ? '📄 ACS 논문 흑백' : '📄 ACS B&W' }}</button>
-        <button type="button" class="fb-chip" @click="selectHighlightPreset">{{ isKo ? '🔍 벤젠 하이라이트' : '🔍 Highlight Ring' }}</button>
-        <button type="button" class="fb-chip" @click="selectNmrPreset">{{ isKo ? '🔢 NMR 원자번호' : '🔢 NMR Numbers' }}</button>
-        <button type="button" class="fb-chip" @click="selectDarkPreset">{{ isKo ? '🌙 다크 모드' : '🌙 Dark Mode' }}</button>
+        <button type="button" class="fb-chip" :class="{ active: activePreset === 'default' }" @click="resetAll">{{ isKo ? '기본값' : 'Default' }}</button>
+        <button type="button" class="fb-chip" :class="{ active: activePreset === 'acs' }" @click="selectAcsPreset">{{ isKo ? '📄 ACS 논문 흑백' : '📄 ACS B&W' }}</button>
+        <button type="button" class="fb-chip" :class="{ active: activePreset === 'whitebg' }" @click="selectWhiteBgPreset">{{ isKo ? '🖨️ 흰색 배경 표' : '🖨️ White BG' }}</button>
+        <button type="button" class="fb-chip" :class="{ active: activePreset === 'highlight' }" @click="selectHighlightPreset">{{ isKo ? '🔍 벤젠 하이라이트' : '🔍 Highlight Ring' }}</button>
+        <button type="button" class="fb-chip" :class="{ active: activePreset === 'nmr' }" @click="selectNmrPreset">{{ isKo ? '🔢 NMR 원자번호' : '🔢 NMR Numbers' }}</button>
+        <button type="button" class="fb-chip" :class="{ active: activePreset === 'textbook' }" @click="selectTextbookPreset">{{ isKo ? '🧬 교육용 C/H 표시' : '🧬 Textbook C/H' }}</button>
+        <button type="button" class="fb-chip" :class="{ active: activePreset === 'dark' }" @click="selectDarkPreset">{{ isKo ? '🌙 다크 모드' : '🌙 Dark Mode' }}</button>
       </div>
     </div>
 
@@ -256,10 +295,13 @@ async function copyFormula() {
           <div class="fb-btn-group">
             <button type="button" :class="{ active: highlightMode === '' }" @click="highlightMode = ''">{{ isKo ? '없음' : 'None' }}</button>
             <button type="button" :class="{ active: highlightMode === 'hl:c1ccccc1' }" @click="highlightMode = 'hl:c1ccccc1'">
-              {{ isKo ? '벤젠 고리 강조 (hl:c1ccccc1)' : 'Benzene Ring (hl:c1ccccc1)' }}
+              {{ isKo ? '벤젠 고리 (hl:c1ccccc1)' : 'Benzene Ring (hl:c1ccccc1)' }}
             </button>
             <button type="button" :class="{ active: highlightMode === 'hl:C(=O)O' }" @click="highlightMode = 'hl:C(=O)O'">
-              {{ isKo ? '카복실기 강조 (hl:C(=O)O)' : 'Carboxyl Group (hl:C(=O)O)' }}
+              {{ isKo ? '카복실기 (hl:C(=O)O)' : 'Carboxyl Group (hl:C(=O)O)' }}
+            </button>
+            <button type="button" :class="{ active: highlightMode === 'hl:C(=O)O[#6]' }" @click="highlightMode = 'hl:C(=O)O[#6]'">
+              {{ isKo ? '에스터기 (hl:C(=O)O[#6])' : 'Ester Group (hl:C(=O)O[#6])' }}
             </button>
           </div>
         </div>
@@ -295,6 +337,15 @@ async function copyFormula() {
               <line x1="167" y1="79" x2="195" y2="95" />
               <circle cx="167" cy="36" r="11" fill="rgba(236, 72, 153, 0.25)" stroke="none" />
               <circle cx="206" cy="100" r="13" fill="rgba(236, 72, 153, 0.25)" stroke="none" />
+            </g>
+            <!-- Highlight: Ester group (-O-C(=O)CH3) -->
+            <g v-if="highlightMode === 'hl:C(=O)O[#6]'" stroke="#10b981" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <line x1="136" y1="133" x2="167" y2="151" />
+              <line x1="167" y1="151" x2="198" y2="133" />
+              <line x1="198" y1="133" x2="198" y2="166" />
+              <line x1="198" y1="133" x2="229" y2="115" />
+              <circle cx="167" cy="151" r="11" fill="rgba(16, 185, 129, 0.25)" stroke="none" />
+              <circle cx="198" cy="174" r="11" fill="rgba(16, 185, 129, 0.25)" stroke="none" />
             </g>
 
             <!-- Core Molecular Bonds (120-degree geometry, zero label overlap) -->
@@ -425,6 +476,12 @@ async function copyFormula() {
 .fb-chip:hover {
   border-color: var(--vp-c-brand-1);
   color: var(--vp-c-brand-1);
+}
+.fb-chip.active {
+  background: var(--vp-c-brand-soft);
+  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
+  font-weight: 600;
 }
 .fb-formula-bar {
   display: flex;

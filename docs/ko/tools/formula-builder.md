@@ -42,18 +42,42 @@ Excel, Word, PowerPoint 상단 리본의 **`[SMILES]`** ➔ **`[Batch Style]`** 
 
 | 찾을 작용기 / 고리 골격 | 포함 여부 판정 (`TRUE` / `FALSE`) | 해당 작용기 컬러 하이라이트 구조식 |
 | :--- | :--- | :--- |
-| **벤젠 고리 (방향족)** | `=SMILES.MATCH(A2, "c1ccccc1")` | `=SMILES2IMG(A2, "", "hl:c1ccccc1")` |
-| **피리딘 고리 (헤테로방향족)** | `=SMILES.MATCH(A2, "c1ccncc1")` | `=SMILES2IMG(A2, "", "hl:c1ccncc1")` |
-| **카복실산 (`-COOH`)** | `=SMILES.MATCH(A2, "C(=O)[OH]")` | `=SMILES2IMG(A2, "", "hl:C(=O)[OH]")` |
-| **에스터 (`-COO-`)** | `=SMILES.MATCH(A2, "C(=O)O[#6]")` | `=SMILES2IMG(A2, "", "hl:C(=O)O[#6]")` |
-| **아마이드 (`-CONH-`)** | `=SMILES.MATCH(A2, "C(=O)N")` | `=SMILES2IMG(A2, "", "hl:C(=O)N")` |
-| **설폰아마이드 (`-SO₂NH-`)** | `=SMILES.MATCH(A2, "S(=O)(=O)N")` | `=SMILES2IMG(A2, "", "hl:S(=O)(=O)N")` |
-| **케톤 (`-C(=O)-`)** | `=SMILES.MATCH(A2, "[#6]C(=O)[#6]")` | `=SMILES2IMG(A2, "", "hl:[#6]C(=O)[#6]")` |
-| **알데하이드 (`-CHO`)** | `=SMILES.MATCH(A2, "[CX3H1](=O)")` | `=SMILES2IMG(A2, "", "hl:[CX3H1](=O)")` |
-| **페놀 (방향족 `-OH`)** | `=SMILES.MATCH(A2, "c1ccccc1[OH]")` | `=SMILES2IMG(A2, "", "hl:c1ccccc1[OH]")` |
-| **나이트로기 (`-NO₂`)** | `=SMILES.MATCH(A2, "[N+](=O)[O-]")` | `=SMILES2IMG(A2, "", "hl:[N+](=O)[O-]")` |
-| **할로겐 원소 (`F, Cl, Br, I`)** | `=SMILES.MATCH(A2, "[F,Cl,Br,I]")` | `=SMILES2IMG(A2, "", "hl:[F,Cl,Br,I]")` |
-| **트라이플루오로메틸 (`-CF₃`)** | `=SMILES.MATCH(A2, "C(F)(F)F")` | `=SMILES2IMG(A2, "", "hl:C(F)(F)F")` |
+| **벤젠 고리 (방향족)** | `=SMILES.MATCH(A2, "c1ccccc1")` | `=SMILES2IMG(A2, , "hl:c1ccccc1")` |
+| **피리딘 고리 (헤테로방향족)** | `=SMILES.MATCH(A2, "c1ccncc1")` | `=SMILES2IMG(A2, , "hl:c1ccncc1")` |
+| **카복실산 (`-COOH`)** | `=SMILES.MATCH(A2, "C(=O)[OH]")` | `=SMILES2IMG(A2, , "hl:C(=O)[OH]")` |
+| **에스터 (`-COO-`)** | `=SMILES.MATCH(A2, "C(=O)O[#6]")` | `=SMILES2IMG(A2, , "hl:C(=O)O[#6]")` |
+| **아마이드 (`-CONH-`)** | `=SMILES.MATCH(A2, "C(=O)N")` | `=SMILES2IMG(A2, , "hl:C(=O)N")` |
+| **설폰아마이드 (`-SO₂NH-`)** | `=SMILES.MATCH(A2, "S(=O)(=O)N")` | `=SMILES2IMG(A2, , "hl:S(=O)(=O)N")` |
+| **케톤 (`-C(=O)-`)** | `=SMILES.MATCH(A2, "[#6]C(=O)[#6]")` | `=SMILES2IMG(A2, , "hl:[#6]C(=O)[#6]")` |
+| **알데하이드 (`-CHO`)** | `=SMILES.MATCH(A2, "[CX3H1](=O)")` | `=SMILES2IMG(A2, , "hl:[CX3H1](=O)")` |
+| **페놀 (방향족 `-OH`)** | `=SMILES.MATCH(A2, "c1ccccc1[OH]")` | `=SMILES2IMG(A2, , "hl:c1ccccc1[OH]")` |
+| **나이트로기 (`-NO₂`)** | `=SMILES.MATCH(A2, "[N+](=O)[O-]")` | `=SMILES2IMG(A2, , "hl:[N+](=O)[O-]")` |
+| **할로겐 원소 (`F, Cl, Br, I`)** | `=SMILES.MATCH(A2, "[F,Cl,Br,I]")` | `=SMILES2IMG(A2, , "hl:[F,Cl,Br,I]")` |
+| **트라이플루오로메틸 (`-CF₃`)** | `=SMILES.MATCH(A2, "C(F)(F)F")` | `=SMILES2IMG(A2, , "hl:C(F)(F)F")` |
+
+---
+
+## 5. 📊 8개 탭 마스터 쇼케이스 엑셀 파일 (`SMILES2IMG_Comprehensive_Showcase.xlsx`) 시트별 활용 가이드
+
+위 수식들을 직접 입력할 필요 없이, 실제 작동하는 인셀 구조식과 예제 수식이 모두 채워진 **8개 탭 마스터 쇼케이스 엑셀 파일**을 다운로드해 바로 실습하고 복사해 쓸 수 있습니다:
+
+<div class="s2i-card-grid" style="margin: 14px 0 18px 0;">
+  <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
+    <div class="s2i-card-title">📥 8개 탭 마스터 쇼케이스 엑셀 파일 다운로드 (.xlsx)</div>
+    <p class="s2i-card-desc">실제 동작하는 인셀 화학 구조식, Lipinski 약물성 스크리닝, 부분구조 매칭, 스타일 매트릭스, KET 반응식이 모두 수록된 통합 실습 문서 (수식 오류 0건 검증 완료)</p>
+  </a>
+</div>
+
+| 시트 탭 이름 | 수록된 핵심 실습 내용 및 활용법 | 대표 시연 수식 |
+| :--- | :--- | :--- |
+| **`0. Quick Guide`** | 단축키(`Ctrl+Shift+K`), 더블클릭 편집 워크플로우, 8개 시트 전체 목차 안내 | 전체 시작 가이드 및 사용 팁 |
+| **`1. Structure to Image`** | SMILES, 시약 영문명, CAS 번호, InChI 문자열로부터 2D 구조식 즉시 렌더링 | `=SMILES2IMG`, `=NAME2IMG`, `=INCHI2IMG`, `=NAME2SMILES` |
+| **`2. Molecular Properties`** | 신약 개발 SAR 테이블 구성 및 Lipinski Rule of 5 자동 약물성 판정 | `=SMILES2FORMULA`, `=SMILES2MW`, `=SMILES2LOGP`, `=SMILES2TPSA`, `=SMILES2LIPINSKI` |
+| **`3. Substructure & Similarity`** | 작용기 포함 여부(`SMARTS`) 필터링, 골격 컬러 하이라이트, Tanimoto 유사도 계산 | `=SMILES.MATCH`, `=SMILES.SIMILARITY`, `=SMILES2IMG(..., "hl:...")` |
+| **`4. Drawing Styles & Options`** | ACS 논문용 흑백, 다크 모드, 커스텀 선 색상, 원자 번호, 회전/반전 옵션 비교 매트릭스 | `"bw"`, `"white"`, `"ink=#1e40af"`, `"num stereo"`, `"flip rot90"` |
+| **`5. Reactions & KET Canvas`** | 다단계 화학 합성 반응식 및 무손실 KET JSON 구조식 렌더링·더블클릭 편집 | `=KET2IMG`, 더블클릭 Ketcher 반응식 편집 |
+| **`6. Legacy Excel (.FLOAT)`** | Excel 2016, 2019, 2021 환경을 위한 부동 그림(`.FLOAT`) 호환 수식 시연 | `=SMILES2IMG.FLOAT`, `=NAME2IMG.FLOAT`, `=KET2IMG.FLOAT` |
+| **`7. 3D & Ribbon Tools`** | Mol\* 3D 단백질 뷰어(`1CRN`, `4HHB`), `Copy SVG`, `Batch Style`, `.sdf` 입출력 안내 | `[SMILES]` 리본 메뉴 및 우클릭 컨텍스트 메뉴 가이드 |
 
 ---
 
