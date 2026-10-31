@@ -56,7 +56,7 @@ Yes! Select any molecule cell or picture and click **`[SMILES]`** ➔ **`[Copy S
 
 ### Q. Can I open or save `.sdf` chemical database files in Excel?
 Yes! Click **`[SMILES]`** ➔ **`[SDF File]`** on the Excel ribbon:
-* **`Import SDF File (.sdf)...`:** Reads any multi-compound `.sdf` file and generates an 8-column medicinal chemistry worksheet (`Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `Lipinski`) powered by live Excel formulas.
+* **`Import SDF File (.sdf)...`:** Reads any multi-compound `.sdf` file and generates a 12-column medicinal chemistry worksheet (`Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`, `Lipinski`) powered by live Excel formulas.
 * **`Export Worksheet to SDF...`:** Exports your worksheet compounds back to a standard V2000 `.sdf` file.
 
 ### Q. How do I copy Molecular Weight, Formula, LogP, and Lipinski info into a table at once?

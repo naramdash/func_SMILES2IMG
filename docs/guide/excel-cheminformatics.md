@@ -9,7 +9,7 @@ Automatically calculate **Molecular Weight, Exact Mass, LogP, and Lipinski Rule 
 <div class="s2i-card-grid" style="margin-top: 12px;">
   <a href="/func_SMILES2IMG/sample_compounds.sdf" download="sample_compounds.sdf" class="s2i-card">
     <div class="s2i-card-title">📥 Download Sample Chemical DB (.sdf)</div>
-    <p class="s2i-card-desc">Test [SMILES] ➔ [SDF File] ➔ [Import SDF] in Excel to generate an 8-column SAR table in 1 click</p>
+    <p class="s2i-card-desc">Test [SMILES] ➔ [SDF File] ➔ [Import SDF] in Excel to generate a 12-column SAR & 3D complexity table in 1 click</p>
   </a>
   <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
     <div class="s2i-card-title">📥 Download 8-Tab Master Excel Showcase (.xlsx)</div>
@@ -142,9 +142,9 @@ Compare every compound in your sheet (`A2`, `A3`...) against a reference lead co
 
 Open and save multi-compound **`.sdf` (Structure-Data File)** and **`.mol`** libraries directly in Excel without external conversion scripts.
 
-### 📥 Import an `.sdf` File into an 8-Column Medicinal Chemistry Table (`Import SDF File (.sdf)...`)
+### 📥 Import an `.sdf` File into a 12-Column SAR & Complexity Table (`Import SDF File (.sdf)...`)
 1. Click **`[SMILES] ➔ [SDF File] ➔ [Import SDF File (.sdf)...]`** on the Excel ribbon.
-2. Select any `.sdf` or `.mol` file on your PC. A formatted **8-column medicinal chemistry table** (with auto-adjusted row heights and column widths) is generated automatically:
+2. Select any `.sdf` or `.mol` file on your PC. A formatted **12-column medicinal chemistry & 3D complexity table** (with auto-adjusted row heights and column widths) is generated automatically:
 
 | Column | Header | Auto-Generated Content (Row 2 Example) |
 | :---: | :--- | :--- |
@@ -155,7 +155,11 @@ Open and save multi-compound **`.sdf` (Structure-Data File)** and **`.mol`** lib
 | **Col E** | **MW (g/mol)** | `=SMILES2MW(C2)` (Average molecular weight) |
 | **Col F** | **Exact Mass** | `=SMILES2EXACTMASS(C2)` (HRMS monoisotopic mass) |
 | **Col G** | **LogP** | `=SMILES2LOGP(C2)` (Crippen octanol/water LogP) |
-| **Col H** | **Lipinski** | `=SMILES2LIPINSKI(C2)` (`"PASS"` / `"FAIL"` Rule of 5 check) |
+| **Col H** | **Rings** | `=SMILES2RINGS(C2)` (Total ring count / SSSR) |
+| **Col I** | **Aromatic Rings** | `=SMILES2AROMATIC(C2)` (Aromatic ring count) |
+| **Col J** | **Fsp3** | `=SMILES2FSP3(C2)` (Fraction of sp3 carbons, Escape from Flatland) |
+| **Col K** | **Chiral Centers** | `=SMILES2CHIRAL(C2)` (Tetrahedral stereocenter count) |
+| **Col L** | **Lipinski** | `=SMILES2LIPINSKI(C2)` (`"PASS"` / `"FAIL"` Rule of 5 check) |
 
 ### 📤 Export a Worksheet Back to `.sdf` (`Export Worksheet to SDF...`)
 1. Click **`[SMILES]`** ➔ **`[SDF File]`** ➔ **`[Export Worksheet to SDF...]`** and choose a destination file name.

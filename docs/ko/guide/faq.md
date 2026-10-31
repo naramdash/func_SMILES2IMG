@@ -56,7 +56,7 @@
 
 ### Q. 엑셀에서 `.sdf` 화학 데이터 파일을 열거나 저장할 수 있나요?
 네! 엑셀 상단 **`[SMILES]`** ➔ **`[SDF File]`** 메뉴를 누르세요:
-* **`Import SDF File (.sdf)...`:** `.sdf` 파일을 읽어 새 시트에 8개 핵심 의약화학 열(`Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `Lipinski`)을 갖춘 라이브 수식 표를 자동으로 만들어 줍니다.
+* **`Import SDF File (.sdf)...`:** `.sdf` 파일을 읽어 새 시트에 12개 핵심 의약화학·3D 복잡도 열(`Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`, `Lipinski`)을 갖춘 라이브 수식 표를 자동으로 만들어 줍니다.
 * **`Export Worksheet to SDF...`:** 시트의 화합물 목록을 표준 V2000 `.sdf` 파일로 내보냅니다.
 
 ### Q. 분자량, 화학식, LogP, Lipinski 정보를 표로 한 번에 복사하려면 어떻게 하나요?

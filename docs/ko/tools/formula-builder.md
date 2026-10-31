@@ -74,7 +74,7 @@ Excel, Word, PowerPoint 상단 리본의 **`[SMILES]`** ➔ **`[Batch Style]`** 
 | :--- | :--- | :--- |
 | **`0. Quick Guide`** | 단축키(`Ctrl+Shift+K`), 더블클릭 편집 워크플로우, 8개 시트 전체 목차 안내 | 전체 시작 가이드 및 사용 팁 |
 | **`1. Structure to Image`** | SMILES, 시약 영문명, CAS 번호, InChI 문자열로부터 2D 구조식 즉시 렌더링 | `=SMILES2IMG`, `=NAME2IMG`, `=INCHI2IMG`, `=NAME2SMILES` |
-| **`2. Molecular Properties`** | 신약 개발 SAR 테이블 구성 및 Lipinski Rule of 5 자동 약물성 판정 | `=SMILES2FORMULA`, `=SMILES2MW`, `=SMILES2LOGP`, `=SMILES2TPSA`, `=SMILES2LIPINSKI` |
+| **`2. Molecular Properties`** | 신약 개발 SAR & 3D 복잡도 스크리닝 (Lipinski Ro5, 고리 수, Fsp3, 키랄 중심) | `=SMILES2FORMULA`, `=SMILES2MW`, `=SMILES2LOGP`, `=SMILES2RINGS`, `=SMILES2FSP3`, `=SMILES2CHIRAL`, `=SMILES2LIPINSKI` |
 | **`3. Substructure & Similarity`** | 작용기 포함 여부(`SMARTS`) 필터링, 골격 컬러 하이라이트, Tanimoto 유사도 계산 | `=SMILES.MATCH`, `=SMILES.SIMILARITY`, `=SMILES2IMG(..., "hl:...")` |
 | **`4. Drawing Styles & Options`** | ACS 논문용 흑백, 다크 모드, 커스텀 선 색상, 원자 번호, 회전/반전 옵션 비교 매트릭스 | `"bw"`, `"white"`, `"ink=#1e40af"`, `"num stereo"`, `"flip rot90"` |
 | **`5. Reactions & KET Canvas`** | 다단계 화학 합성 반응식 및 무손실 KET JSON 구조식 렌더링·더블클릭 편집 | `=KET2IMG`, 더블클릭 Ketcher 반응식 편집 |

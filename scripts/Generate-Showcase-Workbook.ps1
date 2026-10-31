@@ -316,36 +316,66 @@ try {
     # TAB 3: Drug Discovery & Lipinski Ro5
     # =========================================================================
     Write-Host "Populating Tab 3: Drug Discovery & Lipinski Ro5..." -ForegroundColor Yellow
-    $t3Headers = @("No.", "Drug Name", "SMILES String", "2D Structure", "Formula", "MW (g/mol)", "Exact Mass", "LogP", "TPSA (Å²)", "HBD", "HBA", "RotBonds", "Lipinski Ro5 Assessment", "Pharmacology & Significance")
-    $t3ColWidths = @(5, 16, 26, 24, 14, 12, 13, 9, 11, 8, 8, 10, 24, 38)
-
-    $t3Rows = @(
-        @(1, "Aspirin", "CC(=O)Oc1ccccc1C(=O)O", "", "", "", "", "", "", "", "", "", "", "Oral NSAID analgesic; 0 Ro5 violations"),
-        @(2, "Ibuprofen", "CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O", "", "", "", "", "", "", "", "", "", "", "Anti-inflammatory blockbuster; 0 Ro5 violations"),
-        @(3, "Caffeine", "Cn1cnc2c1c(=O)n(C)c(=O)n2C", "", "", "", "", "", "", "", "", "", "", "Purine alkaloid stimulant; 0 Ro5 violations"),
-        @(4, "Paracetamol", "CC(=O)Nc1ccc(O)cc1", "", "", "", "", "", "", "", "", "", "", "Over-the-counter analgesic; 0 Ro5 violations"),
-        @(5, "Penicillin G", "CC1(C(N2C(S1)C(C2=O)NC(=O)Cc3ccccc3)C(=O)O)C", "", "", "", "", "", "", "", "", "", "", "Beta-lactam antibiotic; 0 Ro5 violations"),
-        @(6, "Morphine", "CN1CC[C@]23[C@@H]4Oc5c3c(CC1[C@@H]2C=C[C@@H]4O)ccc5O", "", "", "", "", "", "", "", "", "", "", "Potent central opioid alkaloid; 0 Ro5 violations"),
-        @(7, "Dopamine", "NCCc1ccc(O)c(O)c1", "", "", "", "", "", "", "", "", "", "", "Essential reward neurotransmitter; 0 Ro5 violations"),
-        @(8, "Nicotine", "CN1CCC[C@H]1c2cccnc2", "", "", "", "", "", "", "", "", "", "", "Potent cholinergic stimulant; 0 Ro5 violations"),
-        @(9, "Artemisinin", "CC1CC2CC3(C)OO4C(O2)(C1C(=O)O3)C(C)CC4", "", "", "", "", "", "", "", "", "", "", "Nobel Prize antimalarial natural product; 0 Ro5 violations"),
-        @(10, "Cholesterol", "CC(C)CCCC(C)C1CCC2C1(CCC3C2CC=C4C3(CCC(C4)O)C)C", "", "", "", "", "", "", "", "", "", "", "Lipid sterol; violates Ro5 due to high LogP (>5)"),
-        @(11, "Atorvastatin", "CC(C)c1c(c(c(c1NC(=O)c2ccccc2)c3ccc(cc3)F)c4ccccc4)CC(O)CC(O)CC(=O)O", "", "", "", "", "", "", "", "", "", "", "Lipitor statin; violates Ro5 due to MW (>500)"),
-        @(12, "Paclitaxel", "CC1=C2C(C(=O)C3(C(CC4C(C3C(C(C2(C)C)(CC1OC(=O)C(C(c5ccccc5)NC(=O)c6ccccc6)O)O)OC(=O)c7ccccc7)(CO4)OC(=O)C)O)C)OC(=O)C", "", "", "", "", "", "", "", "", "", "", "Chemotherapy blockbuster (Taxol); violates multiple Ro5 criteria")
+    # Column layout (single source of truth): header, width, worksheet function applied to the SMILES in column C.
+    # Columns without a function hold plain values (No., Drug Name, SMILES, Pharmacology note).
+    $t3Columns = @(
+        @{ Header = "No.";                          Width = 5;  Func = $null },
+        @{ Header = "Drug Name";                    Width = 16; Func = $null },
+        @{ Header = "SMILES String";                Width = 26; Func = $null },
+        @{ Header = "2D Structure";                 Width = 24; Func = "SMILES2IMG" },
+        @{ Header = "Formula";                      Width = 14; Func = "SMILES2FORMULA" },
+        @{ Header = "MW (g/mol)";                   Width = 12; Func = "SMILES2MW" },
+        @{ Header = "Exact Mass";                   Width = 13; Func = "SMILES2EXACTMASS" },
+        @{ Header = "LogP";                         Width = 9;  Func = "SMILES2LOGP" },
+        @{ Header = "TPSA (Å²)";                    Width = 11; Func = "SMILES2TPSA" },
+        @{ Header = "HBD";                          Width = 8;  Func = "SMILES2HBD" },
+        @{ Header = "HBA";                          Width = 8;  Func = "SMILES2HBA" },
+        @{ Header = "RotBonds";                     Width = 10; Func = "SMILES2ROTBONDS" },
+        @{ Header = "Rings";                        Width = 8;  Func = "SMILES2RINGS" },
+        @{ Header = "Aromatic Rings";               Width = 10; Func = "SMILES2AROMATIC" },
+        @{ Header = "Fsp3";                         Width = 8;  Func = "SMILES2FSP3" },
+        @{ Header = "Chiral Centers";               Width = 10; Func = "SMILES2CHIRAL" },
+        @{ Header = "Lipinski Ro5 Assessment";      Width = 24; Func = "SMILES2LIPINSKI" },
+        @{ Header = "Pharmacology & Significance";  Width = 38; Func = $null }
     )
-    $t3Formulas = @{
-        "D" = @(4..15 | ForEach-Object { "=SMILES2IMG(C$_)" });
-        "E" = @(4..15 | ForEach-Object { "=SMILES2FORMULA(C$_)" });
-        "F" = @(4..15 | ForEach-Object { "=SMILES2MW(C$_)" });
-        "G" = @(4..15 | ForEach-Object { "=SMILES2EXACTMASS(C$_)" });
-        "H" = @(4..15 | ForEach-Object { "=SMILES2LOGP(C$_)" });
-        "I" = @(4..15 | ForEach-Object { "=SMILES2TPSA(C$_)" });
-        "J" = @(4..15 | ForEach-Object { "=SMILES2HBD(C$_)" });
-        "K" = @(4..15 | ForEach-Object { "=SMILES2HBA(C$_)" });
-        "L" = @(4..15 | ForEach-Object { "=SMILES2ROTBONDS(C$_)" });
-        "M" = @(4..15 | ForEach-Object { "=SMILES2LIPINSKI(C$_)" })
+    $t3Drugs = @(
+        @("Aspirin", "CC(=O)Oc1ccccc1C(=O)O", "Oral NSAID analgesic; 0 Ro5 violations; flat aromatic scaffold (low Fsp3)"),
+        @("Ibuprofen", "CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O", "Anti-inflammatory blockbuster; 0 Ro5 violations; 1 chiral center"),
+        @("Caffeine", "Cn1cnc2c1c(=O)n(C)c(=O)n2C", "Purine alkaloid stimulant; 0 Ro5 violations; fused bicyclic aromatic"),
+        @("Paracetamol", "CC(=O)Nc1ccc(O)cc1", "Over-the-counter analgesic; 0 Ro5 violations"),
+        @("Penicillin G", "CC1(C(N2C(S1)C(C2=O)NC(=O)Cc3ccccc3)C(=O)O)C", "Beta-lactam antibiotic; 0 Ro5 violations; strained bicyclic core"),
+        @("Morphine", "CN1CC[C@]23[C@@H]4Oc5c3c(CC1[C@@H]2C=C[C@@H]4O)ccc5O", "Potent central opioid alkaloid; 0 Ro5 violations; rigid 3D pentacyclic"),
+        @("Dopamine", "NCCc1ccc(O)c(O)c1", "Essential reward neurotransmitter; 0 Ro5 violations"),
+        @("Nicotine", "CN1CCC[C@H]1c2cccnc2", "Potent cholinergic stimulant; 0 Ro5 violations; 1 chiral center"),
+        @("Artemisinin", "CC1CC2CC3(C)OO4C(O2)(C1C(=O)O3)C(C)CC4", "Nobel Prize antimalarial natural product; 0 Ro5 violations; sp3-rich (high Fsp3)"),
+        @("Cholesterol", "CC(C)CCCC(C)C1CCC2C1(CCC3C2CC=C4C3(CCC(C4)O)C)C", "Lipid sterol; violates Ro5 due to high LogP (>5); sp3-rich steroid"),
+        @("Atorvastatin", "CC(C)c1c(c(c(c1NC(=O)c2ccccc2)c3ccc(cc3)F)c4ccccc4)CC(O)CC(O)CC(=O)O", "Lipitor statin; violates Ro5 due to MW (>500); 4 aromatic rings"),
+        @("Paclitaxel", "CC1=C2C(C(=O)C3(C(CC4C(C3C(C(C2(C)C)(CC1OC(=O)C(C(c5ccccc5)NC(=O)c6ccccc6)O)O)OC(=O)c7ccccc7)(CO4)OC(=O)C)O)C)OC(=O)C", "Chemotherapy blockbuster (Taxol); violates multiple Ro5 criteria")
+    )
+
+    $t3StartRow = 4
+    $t3EndRow = $t3StartRow + $t3Drugs.Length - 1
+    $t3Headers = @($t3Columns | ForEach-Object { $_.Header })
+    $t3ColWidths = @($t3Columns | ForEach-Object { $_.Width })
+    $t3Rows = @()
+    for ($i = 0; $i -lt $t3Drugs.Length; $i++) {
+        $row = New-Object object[] $t3Columns.Length
+        for ($c = 0; $c -lt $row.Length; $c++) { $row[$c] = "" }
+        $row[0] = $i + 1
+        $row[1] = $t3Drugs[$i][0]
+        $row[2] = $t3Drugs[$i][1]
+        $row[$row.Length - 1] = $t3Drugs[$i][2]
+        $t3Rows += , $row
     }
-    Create-TableSheet $sheet3 "2. Physicochemical Properties & Lipinski Rule of 5 SAR Screening" "💡 Lipinski Rule of 5 Criteria: MW <= 500 Da | LogP <= 5.0 | HBD <= 5 | HBA <= 10 | RotBonds <= 10. All calculated instantly (0ms) in Excel." $t3Headers $t3Rows $t3Formulas 0x1B4D1B 0x228B22 $t3ColWidths 85 4
+    $t3Formulas = @{}
+    for ($c = 0; $c -lt $t3Columns.Length; $c++) {
+        $func = $t3Columns[$c].Func
+        if ($func) {
+            $colLetter = [string][char](65 + $c)
+            $t3Formulas[$colLetter] = @($t3StartRow..$t3EndRow | ForEach-Object { "=$func(C$_)" })
+        }
+    }
+    Create-TableSheet $sheet3 "2. Physicochemical Properties, Lipinski Ro5 & 3D Complexity Screening" "💡 Lipinski Ro5: MW <= 500 | LogP <= 5 | HBD <= 5 | HBA <= 10  ·  3D Complexity: Fsp3 >= 0.25 and Aromatic Rings <= 3 favor solubility (Escape from Flatland). All calculated offline in Excel." $t3Headers $t3Rows $t3Formulas 0x1B4D1B 0x228B22 $t3ColWidths 85 $t3StartRow
 
     # =========================================================================
     # TAB 4: Substructure & Similarity
@@ -538,7 +568,7 @@ try {
         @(3, "KET Reaction Canvas", "Insert KET Molecule", "Ribbon -> [SMILES]", "Excel · Word · PPT", "Inserts complete reaction schemes with reaction arrows, plus signs, and text annotations"),
         @(4, "3D Protein Viewer", "Insert 3D Mol* Model", "Ribbon -> [SMILES]", "Excel · Word · PPT", "Fetch PDB structures by 4-letter code (e.g. 1CRN); embed rotatable 3D GLB models or 2D views"),
         @(5, "Quick Paste", "Quick Insert Structure", "Ctrl + Shift + V", "Excel · Word · PPT", "Instantly parses clipboard SMILES/InChI/KET and renders image in under 0.1s"),
-        @(6, "Molecule Info Window", "Copy Molecule Info", "Right-Click Context", "Excel · Word · PPT", "Opens rich DataGridView showing MW, Formula, Exact Mass, InChIKey, LogP, TPSA, Lipinski"),
+        @(6, "Molecule Info Window", "Copy Molecule Info", "Right-Click Context", "Excel · Word · PPT", "Opens rich DataGridView showing MW, Formula, Exact Mass, LogP, TPSA, Lipinski, Rings, Fsp3, Chiral, InChIKey"),
         @(7, "Lossless SVG Export", "Copy SVG (Vector)", "Right-Click Context", "Excel · Word · PPT", "Copies crisp vector SVG image to clipboard for Adobe Illustrator and publication layout"),
         @(8, "1-Click Batch Style", "Batch Style Presets", "Ribbon -> Batch Style", "Excel · Word · PPT", "Normalizes every structure in workbook/slide deck into Standard, ACS B&W, or Dark Mode"),
         @(9, "Chemical Database I/O", "SDF File Import / Export", "Ribbon -> SDF File", "Excel (Standalone XLL)", "Imports multi-compound .sdf chemical tables into spreadsheet rows or exports sheet to .sdf"),

@@ -135,7 +135,7 @@ When you want to sketch a structure from scratch or draw a multi-step organic re
 * **🖼️ `Copy SMILES` / `Copy InChI` / `Copy KET` / `Copy SVG`:** Copy chemical identifiers or a lossless SVG vector for Illustrator / ChemDraw
 * **🔬 `Molecule Info`:** Inspect and copy Substance Name, Formula, MW, LogP, Lipinski Ro5, or formatted TSV/Markdown tables
 * **🎨 `Batch Style`:** Convert all structures in the sheet to Color, Publication B&W, White Background, or Dark Mode
-* **📂 `SDF File`:** Import `.sdf` / `.mol` files into an 8-column Excel table or export the active sheet back to `.sdf`
+* **📂 `SDF File`:** Import `.sdf` / `.mol` files into a 12-column Excel table or export the active sheet back to `.sdf`
 
 <p align="center">
   <img src="/excel-context-menu-guide.png" alt="Chemical Structure Context Menu in Excel" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />

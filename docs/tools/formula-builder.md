@@ -74,7 +74,7 @@ Want to explore all formulas above inside a live Excel workbook without typing? 
 | :--- | :--- | :--- |
 | **`0. Quick Guide`** | Keyboard shortcuts (`Ctrl+Shift+K`), double-click editing workflow, and navigation index | Overview & workflow tips |
 | **`1. Structure to Image`** | Rendering 2D structures from SMILES, chemical names, CAS numbers, and InChI strings | `=SMILES2IMG`, `=NAME2IMG`, `=INCHI2IMG`, `=NAME2SMILES` |
-| **`2. Molecular Properties`** | Drug discovery SAR table with automatic Lipinski Rule of 5 screening | `=SMILES2FORMULA`, `=SMILES2MW`, `=SMILES2LOGP`, `=SMILES2TPSA`, `=SMILES2LIPINSKI` |
+| **`2. Molecular Properties`** | Drug discovery SAR & 3D complexity screening (Lipinski Ro5, Rings, Fsp3, Chiral) | `=SMILES2FORMULA`, `=SMILES2MW`, `=SMILES2LOGP`, `=SMILES2RINGS`, `=SMILES2FSP3`, `=SMILES2CHIRAL`, `=SMILES2LIPINSKI` |
 | **`3. Substructure & Similarity`** | Functional group filtering (`SMARTS`), scaffold highlighting, and Tanimoto similarity | `=SMILES.MATCH`, `=SMILES.SIMILARITY`, `=SMILES2IMG(..., "hl:...")` |
 | **`4. Drawing Styles & Options`** | Side-by-side matrix of ACS monochrome, dark mode, custom ink colors, atom numbering, and flips | `"bw"`, `"white"`, `"ink=#1e40af"`, `"num stereo"`, `"flip rot90"` |
 | **`5. Reactions & KET Canvas`** | Multi-step synthesis schemes and lossless KET JSON structure rendering | `=KET2IMG`, double-click reaction canvas editing |

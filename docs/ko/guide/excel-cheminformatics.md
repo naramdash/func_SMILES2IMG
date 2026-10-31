@@ -9,7 +9,7 @@
 <div class="s2i-card-grid" style="margin-top: 12px;">
   <a href="/func_SMILES2IMG/sample_compounds.sdf" download="sample_compounds.sdf" class="s2i-card">
     <div class="s2i-card-title">📥 실습용 화합물 DB 다운로드 (.sdf)</div>
-    <p class="s2i-card-desc">엑셀 리본 [SMILES] ➔ [SDF File] ➔ [Import SDF]로 열어 8열 약물성 시트가 자동 생성되는 것을 바로 체험하세요</p>
+    <p class="s2i-card-desc">엑셀 리본 [SMILES] ➔ [SDF File] ➔ [Import SDF]로 열어 12열 약물성·3D 복잡도 시트가 자동 생성되는 것을 바로 체험하세요</p>
   </a>
   <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
     <div class="s2i-card-title">📥 8개 탭 마스터 쇼케이스 엑셀 파일 (.xlsx)</div>
@@ -144,9 +144,9 @@ SMARTS 문법을 외울 필요 없이 아래 표에서 원하는 작용기 코�
 
 외부 화학 데이터베이스(PubChem, ChEMBL, 사내 화합물 라이브러리 등)에서 받은 **`.sdf` 또는 `.mol` 파일**을 변환 프로그램 없이 엑셀에서 바로 열고 저장할 수 있습니다.
 
-### 📥 `.sdf` 파일을 8열 약물화학 대시보드 표로 불러오기 (`Import SDF File (.sdf)...`)
+### 📥 `.sdf` 파일을 12열 약물화학·3D 복잡도 대시보드 표로 불러오기 (`Import SDF File (.sdf)...`)
 1. 엑셀 상단 **`[SMILES]`** 리본 탭에서 **`[SDF File]` ➔ `[Import SDF File (.sdf)...]`** 메뉴를 클릭합니다.
-2. 내 PC에서 `.sdf` 또는 `.mol` 파일을 선택하면 현재 시트에 아래와 같은 **8열 표준 약물화학 분석 표**가 행 높이·열 너비까지 맞춰져 자동으로 생성됩니다:
+2. 내 PC에서 `.sdf` 또는 `.mol` 파일을 선택하면 현재 시트에 아래와 같은 **12열 표준 약물화학·3D 복잡도 분석 표**가 행 높이·열 너비까지 맞춰져 자동으로 생성됩니다:
 
 | 열 (Column) | 헤더 이름 | 자동으로 채워지는 내용 (`2행` 기준) |
 | :---: | :--- | :--- |
@@ -157,7 +157,11 @@ SMARTS 문법을 외울 필요 없이 아래 표에서 원하는 작용기 코�
 | **E열** | **MW (g/mol)** | `=SMILES2MW(C2)` (평균 분자량) |
 | **F열** | **Exact Mass** | `=SMILES2EXACTMASS(C2)` (HRMS 정밀 질량) |
 | **G열** | **LogP** | `=SMILES2LOGP(C2)` (지용성 분배계수) |
-| **H열** | **Lipinski** | `=SMILES2LIPINSKI(C2)` (`"PASS"` / `"FAIL"` 약물성 판정) |
+| **H열** | **Rings** | `=SMILES2RINGS(C2)` (전체 고리 수 / SSSR) |
+| **I열** | **Aromatic Rings** | `=SMILES2AROMATIC(C2)` (방향족 고리 수) |
+| **J열** | **Fsp3** | `=SMILES2FSP3(C2)` (sp3 입체 탄소 비율, Escape from Flatland) |
+| **K열** | **Chiral Centers** | `=SMILES2CHIRAL(C2)` (정의된 사면체 키랄 중심 수) |
+| **L열** | **Lipinski** | `=SMILES2LIPINSKI(C2)` (`"PASS"` / `"FAIL"` 약물성 판정) |
 
 ### 📤 엑셀 시트를 `.sdf` 파일로 내보내기 (`Export Worksheet to SDF...`)
 1. 상단 **`[SMILES]`** ➔ **`[SDF File]`** ➔ **`[Export Worksheet to SDF...]`** 메뉴를 클릭하고 저장할 파일 이름을 지정합니다.
