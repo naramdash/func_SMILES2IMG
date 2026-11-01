@@ -45,7 +45,7 @@ Explore all capabilities without manual typing! Download the official **8-tab ma
 <div style="margin: 10px 0 4px 0;">
   <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card" style="display: block; padding: 12px 16px; border: 1.5px solid var(--vp-c-brand-1); border-radius: 8px; text-decoration: none;">
     <div style="font-weight: 700; color: var(--vp-c-brand-1); font-size: 1rem;">📥 Download func_SMILES2IMG Master Showcase Workbook (.xlsx)</div>
-    <div style="color: var(--vp-c-text-2); font-size: 0.88rem; margin-top: 4px;">• 0. Quick Guide & Shortcuts • 1. Name/CAS/SMILES • 2. Drug Properties & Lipinski • 3. Substructure & Similarity • 4. Drawing Styles & Options • 5. Reactions & KET Canvas • 6. Legacy Excel (.FLOAT) • 7. 3D & Ribbon Tools</div>
+    <div style="color: var(--vp-c-text-2); font-size: 0.88rem; margin-top: 4px;">• 0. Quick Guide & Shortcuts • 1. Name/CAS/SMILES • 2. Drug Properties, Lipinski & 3D Complexity • 3. Substructure & Similarity • 4. Drawing Styles & Options • 5. Reactions & KET Canvas • 6. Legacy Excel (.FLOAT) • 7. 3D & Ribbon Tools</div>
   </a>
 </div>
 :::

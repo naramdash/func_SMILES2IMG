@@ -23,7 +23,7 @@
 
 * 🇰🇷 **[한국어 공식 가이드 및 1분 시작하기](https://naramdash.github.io/func_SMILES2IMG/ko/)** · **[🛠️ 웹 수식 생성기 체험](https://naramdash.github.io/func_SMILES2IMG/ko/tools/formula-builder)**
 * 🇺🇸 **[English Documentation & 1-Min Quickstart](https://naramdash.github.io/func_SMILES2IMG/)** · **[🛠️ Interactive Formula Generator](https://naramdash.github.io/func_SMILES2IMG/tools/formula-builder)**
-* 📊 **[📥 Download 8-Tab Master Interactive Excel Showcase (.xlsx)](https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/SMILES2IMG_Comprehensive_Showcase.xlsx)** — 8 category tabs featuring live in-cell structures, Lipinski Ro5 drug screening, substructure matching, styling matrix, and reaction canvases.
+* 📊 **[📥 Download 8-Tab Master Interactive Excel Showcase (.xlsx)](https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/SMILES2IMG_Comprehensive_Showcase.xlsx)** — 8 category tabs featuring live in-cell structures, 18-column Lipinski Ro5 & 3D complexity descriptor matrix (MW, LogP, TPSA, Rings, Fsp3, Chiral), substructure matching, styling matrix, and reaction canvases.
 
 ---
 
@@ -48,8 +48,8 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 ## ✨ Key Features
 
 * ⚡ **Real-Time In-Cell Chemical Rendering:** `=SMILES2IMG(A2)`, `=KET2IMG(A2)`, `=INCHI2IMG(A2)`, and `=NAME2IMG(A2)` render native cell pictures in Microsoft Excel that scale with row/column sizing and recalculate dynamically, with substructure highlighting (`"hl:c1ccccc1"`).
-* 🔬 **Comprehensive Cheminformatics & Drug-Likeness Formulas:** Direct cell formulas `=SMILES2NAME`, `=NAME2SMILES`, `=SMILES2MW`, `=SMILES2EXACTMASS`, `=SMILES2FORMULA`, `=SMILES2INCHI`, `=SMILES2INCHIKEY`, `=SMILES2LOGP`, `=SMILES2TPSA`, `=SMILES2HBD`, `=SMILES2HBA`, `=SMILES2ROTBONDS`, `=SMILES2LIPINSKI`, `=SMILES.MATCH`, and `=SMILES.SIMILARITY`.
-* 📋 **One-Click Molecule Info, Vector SVG Copy & Batch Style:** Right-click context submenu and Ribbon tools across Excel, Word, and PowerPoint to copy Substance Name, Formula, MW, SMILES, InChI, InChIKey, or crisp **Vector SVG (`Copy SVG`)**, normalize all structures in one click (**`Batch Style`**), and import/export `.sdf` files in Excel (**`SDF File`**).
+* 🔬 **Comprehensive Cheminformatics & Drug-Likeness Formulas:** Direct cell formulas `=SMILES2NAME`, `=NAME2SMILES`, `=SMILES2MW`, `=SMILES2EXACTMASS`, `=SMILES2FORMULA`, `=SMILES2INCHI`, `=SMILES2INCHIKEY`, `=SMILES2LOGP`, `=SMILES2TPSA`, `=SMILES2HBD`, `=SMILES2HBA`, `=SMILES2ROTBONDS`, `=SMILES2LIPINSKI`, `=SMILES2HEAVY`, `=SMILES2RINGS`, `=SMILES2AROMATIC`, `=SMILES2FSP3`, `=SMILES2CHIRAL`, `=SMILES.MATCH`, and `=SMILES.SIMILARITY`.
+* 📋 **One-Click Molecule Info, Vector SVG Copy & Batch Style:** Right-click context submenu and Ribbon tools across Excel, Word, and PowerPoint to copy Substance Name, Formula, MW, SMILES, InChI, InChIKey, or crisp **Vector SVG (`Copy SVG`)**, normalize all structures in one click (**`Batch Style`**), and import/export 12-column `.sdf` chemical database tables in Excel (**`SDF File`**).
 * ✏️ **Embedded Ketcher 2D Visual Sketcher:** 100% offline molecular editor with warm WebView2 instance pooling (`<0.05s` instant reopen) supporting atoms, bonds, rings, charges, and multi-step reaction schemes.
 * 🧬 **Embedded Mol\* 3D Macromolecular Viewer:** Visualize proteins, nucleic acids, and complexes directly across Excel, PowerPoint, and Word. Download PDB structures by ID, insert rotatable 3D GLB models or 2D publication images, and re-edit anytime with double-click.
 * 🔄 **Lossless Document Persistence:** KET coordinates, chemical annotations, and Mol* 3D session recipes (`.molj`) are stored losslessly inside document XML metadata (`CustomXMLParts`), allowing seamless re-editing when sharing files with collaborators.
@@ -199,7 +199,7 @@ npm run docs:preview
 ## 🧪 Automated Testing & Verification
 
 ### 1. Core Unit Tests + Live WebView2 Ketcher E2E Tests (Office not required)
-Verifies molecule rendering, chiral hydrogen retention, transforms, alpha transparency, molecule properties (`Formula`, `MW`, `Exact Mass`), Office Ribbon XML reflection, and live WebView2 + EPAM Ketcher v3.18.0 round-trip (`SMILES` $\leftrightarrow$ `KET` + Transparent/White PNG export):
+Verifies molecule rendering, chiral hydrogen retention, transforms, alpha transparency, molecule properties and complexity descriptors (`Formula`, `MW`, `Exact Mass`, `LogP`, `TPSA`, `Lipinski`, `Heavy Atoms`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`), Office Ribbon XML reflection, and live WebView2 + EPAM Ketcher v3.18.0 round-trip (`SMILES` $\leftrightarrow$ `KET` + Transparent/White PNG export):
 
 ```powershell
 dotnet build tests/Smiles2Img.Tests.csproj -c Release --no-restore --tl:off

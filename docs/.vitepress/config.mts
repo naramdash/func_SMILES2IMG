@@ -26,11 +26,11 @@ export default defineConfig({
         },
         nav: [
           {
-            text: 'v1.7.2',
+            text: 'v1.8.0',
             items: [
               {
-                text: 'Release Notes (v1.7.2)',
-                link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.7.2'
+                text: 'Release Notes (v1.8.0)',
+                link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.8.0'
               },
               {
                 text: 'All Releases',
@@ -108,11 +108,11 @@ export default defineConfig({
         },
         nav: [
           {
-            text: 'v1.7.2',
+            text: 'v1.8.0',
             items: [
               {
-                text: '최신 릴리스 노트 (v1.7.2)',
-                link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.7.2'
+                text: '최신 릴리스 노트 (v1.8.0)',
+                link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.8.0'
               },
               {
                 text: '전체 버전 릴리스 목록',

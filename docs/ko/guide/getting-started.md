@@ -45,7 +45,7 @@
 <div style="margin: 10px 0 4px 0;">
   <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card" style="display: block; padding: 12px 16px; border: 1.5px solid var(--vp-c-brand-1); border-radius: 8px; text-decoration: none;">
     <div style="font-weight: 700; color: var(--vp-c-brand-1); font-size: 1rem;">📥 func_SMILES2IMG 마스터 쇼케이스 엑셀 파일 다운로드 (.xlsx)</div>
-    <div style="color: var(--vp-c-text-2); font-size: 0.88rem; margin-top: 4px;">• 0. Quick Guide & 단축키 • 1. 이름/CAS/SMILES 변환 • 2. 의약화학 & Lipinski Ro5 • 3. 부분구조 검색 & 유사도 • 4. 학술 흑백/다크모드 스타일 • 5. KET 반응식 • 6. 구형 엑셀 (.FLOAT) • 7. 3D & 리본 도구</div>
+    <div style="color: var(--vp-c-text-2); font-size: 0.88rem; margin-top: 4px;">• 0. Quick Guide & 단축키 • 1. 이름/CAS/SMILES 변환 • 2. 의약화학 & Lipinski Ro5·3D 복잡도 • 3. 부분구조 검색 & 유사도 • 4. 학술 흑백/다크모드 스타일 • 5. KET 반응식 • 6. 구형 엑셀 (.FLOAT) • 7. 3D & 리본 도구</div>
   </a>
 </div>
 :::

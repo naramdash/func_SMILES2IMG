@@ -50,6 +50,6 @@ features:
 <div class="s2i-card-grid" style="margin-top: 16px;">
   <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
     <div class="s2i-card-title">📥 func_SMILES2IMG_Comprehensive_Showcase.xlsx 다운로드 (.xlsx)</div>
-    <p class="s2i-card-desc">0. 빠른 시작 & 단축키 · 1. 이름/CAS/SMILES 변환 · 2. 의약화학 & Lipinski Ro5 · 3. 부분구조 검색 & 유사도 · 4. 학술 흑백/다크모드 스타일 · 5. KET 반응식 · 6. 구형 엑셀 (.FLOAT) · 7. 3D & 리본 도구 총 8개 시트 수록 (수식 오류 0건 검증 완료)</p>
+    <p class="s2i-card-desc">0. 빠른 시작 & 단축키 · 1. 이름/CAS/SMILES 변환 · 2. 의약화학 & Lipinski Ro5·3D 복잡도 · 3. 부분구조 검색 & 유사도 · 4. 학술 흑백/다크모드 스타일 · 5. KET 반응식 · 6. 구형 엑셀 (.FLOAT) · 7. 3D & 리본 도구 총 8개 시트 수록 (수식 오류 0건 검증 완료)</p>
   </a>
 </div>
