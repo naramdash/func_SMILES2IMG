@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Smiles2Img.COM;
+using Smiles2Img.Editor;
 using Smiles2Img.Rendering;
 using MSPowerPoint = Microsoft.Office.Interop.PowerPoint;
 
@@ -44,6 +45,12 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
         try
         {
             pptApp = (MSPowerPoint.Application)Application;
+            try
+            {
+                if (AddInInst != null)
+                    ((dynamic)AddInInst).Object = this;
+            }
+            catch { }
             var asmDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "";
             NativeIndigo.Initialize(asmDir);
 
@@ -128,9 +135,17 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
     public void OnStartupComplete(ref Array custom) { }
     public void OnBeginShutdown(ref Array custom) { }
 
+    public bool ExecuteRibbonAction(string actionName)
+    {
+        var method = GetType().GetMethod(actionName, BindingFlags.Public | BindingFlags.Instance);
+        if (method == null) return false;
+        method.Invoke(this, new object?[] { null });
+        return true;
+    }
+
     public string GetCustomUI(string RibbonID)
     {
-        return @"<customUI xmlns=""http://schemas.microsoft.com/office/2009/07/customui"" onLoad=""OnRibbonLoad"">
+        return $@"<customUI xmlns=""http://schemas.microsoft.com/office/2009/07/customui"" onLoad=""OnRibbonLoad"">
   <ribbon>
     <tabs>
       <tab id=""tabSmiles"" label=""SMILES"">
@@ -186,81 +201,15 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   imageMso=""CopyPicture""
                   size=""large""
                   onAction=""OnCopySvg"" />
-          <menu id=""menuRibbonPptMoleculeInfo""
-                label=""Molecule Info""
-                screentip=""Copy Molecule Info &amp; Substance Properties""
-                supertip=""Directly copy substance name, formula, MW, InChI, or open the detailed molecule properties window.""
-                imageMso=""FileProperties""
-                size=""large"">
-            <button id=""btnRibbonPptCopyName""
-                    label=""Copy Substance Name""
-                    imageMso=""FontSize""
-                    onAction=""OnCopySubstanceName"" />
-            <button id=""btnRibbonPptCopyFormula""
-                    label=""Copy Chemical Formula""
-                    imageMso=""Subscript""
-                    onAction=""OnCopyFormula"" />
-            <button id=""btnRibbonPptCopyMW""
-                    label=""Copy Molecular Weight (MW)""
-                    imageMso=""Calculator""
-                    onAction=""OnCopyMolecularWeight"" />
-            <button id=""btnRibbonPptSubCopySmiles""
-                    label=""Copy SMILES""
-                    imageMso=""Copy""
-                    onAction=""OnCopySmiles"" />
-            <button id=""btnRibbonPptSubCopyInchi""
-                    label=""Copy InChI""
-                    imageMso=""SignatureLineInsert""
-                    onAction=""OnCopyInchi"" />
-            <button id=""btnRibbonPptSubCopyInchiKey""
-                    label=""Copy InChIKey""
-                    imageMso=""FilePermission""
-                    onAction=""OnCopyInchiKey"" />
-            <button id=""btnRibbonPptCopyAllSummary""
-                    label=""Copy All Summary (Text)""
-                    imageMso=""FileDocumentInspect""
-                    onAction=""OnCopyAllSummary"" />
-            <button id=""btnRibbonPptCopyMultiLine""
-                    label=""Copy as Multi-Line List""
-                    imageMso=""Bullets""
-                    onAction=""OnCopyMultiLine"" />
-            <button id=""btnRibbonPptCopyTsvRow""
-                    label=""Copy as Excel Row (TSV Columns)""
-                    imageMso=""TableInsert""
-                    onAction=""OnCopyTsvRow"" />
-            <button id=""btnRibbonPptCopyMarkdown""
-                    label=""Copy as Markdown Table""
-                    imageMso=""TableOfContentsGallery""
-                    onAction=""OnCopyMarkdown"" />
-            <menuSeparator id=""sepRibbonPptSubDialog"" />
-            <button id=""btnRibbonPptShowDialog""
-                    label=""Detailed Molecule Info Window...""
-                    imageMso=""FileProperties""
-                    onAction=""OnCopyMoleculeInfo"" />
-          </menu>
-          <menu id=""menuRibbonPptBatchStyle""
-                label=""Batch Style""
-                screentip=""Batch Style Normalizer""
-                supertip=""Convert all molecule images in the active presentation to a unified publication style (Color, B&amp;W, White BG, or Dark Mode).""
-                imageMso=""PictureRecolorGallery""
-                size=""large"">
-            <button id=""btnPptBatchColorTrans""
-                    label=""Standard Color (Transparent)""
-                    imageMso=""ColorMenu""
-                    onAction=""OnBatchStyleColorTrans"" />
-            <button id=""btnPptBatchBw""
-                    label=""Publication B&amp;W (ACS Monochrome)""
-                    imageMso=""BlackAndWhiteGrayscale""
-                    onAction=""OnBatchStyleBw"" />
-            <button id=""btnPptBatchWhiteBg""
-                    label=""White Background (Color)""
-                    imageMso=""BlackAndWhiteLightGrayscale""
-                    onAction=""OnBatchStyleWhiteBg"" />
-            <button id=""btnPptBatchDark""
-                    label=""Dark Mode (White Ink)""
-                    imageMso=""BlackAndWhiteBlack""
-                    onAction=""OnBatchStyleDark"" />
-          </menu>
+{RibbonXmlBuilder.BuildRibbonMoleculeInfoMenu("Ppt")}
+{RibbonXmlBuilder.BuildRibbonBatchStyleMenu(
+    "menuRibbonPptBatchStyle",
+    "Batch Style Normalizer",
+    "Convert all molecule images in the active presentation to a unified publication style (Color, B&amp;W, White BG, or Dark Mode).",
+    "btnPptBatchColorTrans",
+    "btnPptBatchBw",
+    "btnPptBatchWhiteBg",
+    "btnPptBatchDark")}
         </group>
         <group id=""grpPptAbout"" label=""About"">
           <button id=""btnPptAbout""
@@ -275,156 +224,20 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
     </tabs>
   </ribbon>
   <contextMenus>
-    <contextMenu idMso=""ContextMenuPicture"">
-      <button id=""btnContextPptPictureEdit""
-              label=""Edit Structure (Ketcher)...""
-              imageMso=""DesignMode""
-              onAction=""OnEditMolecule""
-              insertBeforeMso=""Cut"" />
-      <button id=""btnContextPptPictureEditMolstar""
-              label=""Edit 3D Structure (Mol*)...""
-              imageMso=""Insert3DModelFromFile""
-              onAction=""OnEditMolstar""
-              insertBeforeMso=""Cut"" />
-      <button id=""btnContextPptPictureCopySmiles""
-              label=""Copy SMILES""
-              imageMso=""Copy""
-              onAction=""OnCopySmiles""
-              insertBeforeMso=""Cut"" />
-      <button id=""btnContextPptPictureCopyInchi""
-              label=""Copy InChI""
-              imageMso=""Copy""
-              onAction=""OnCopyInchi""
-              insertBeforeMso=""Cut"" />
-      <button id=""btnContextPptPictureCopyKet""
-              label=""Copy Canvas Data (KET)""
-              imageMso=""Copy""
-              onAction=""OnCopyKet""
-              insertBeforeMso=""Cut"" />
-      <button id=""btnContextPptPictureCopySvg""
-              label=""Copy Vector Graphic (SVG)""
-              imageMso=""CopyPicture""
-              onAction=""OnCopySvg""
-              insertBeforeMso=""Cut"" />
-      <menu id=""menuContextPptPictureMoleculeInfo""
-            label=""Copy Molecule Info""
-            imageMso=""GroupTaskProperties""
-            insertBeforeMso=""Cut"">
-        <button id=""btnContextPptPictureCopyName""
-                label=""Copy Substance Name""
-                imageMso=""PropertySheet""
-                onAction=""OnCopySubstanceName"" />
-        <button id=""btnContextPptPictureCopyFormula""
-                label=""Copy Chemical Formula""
-                imageMso=""EquationInsertNew""
-                onAction=""OnCopyFormula"" />
-        <button id=""btnContextPptPictureCopyMW""
-                label=""Copy Molecular Weight (MW)""
-                imageMso=""Calculator""
-                onAction=""OnCopyMolecularWeight"" />
-        <button id=""btnContextPptPictureSubCopySmiles""
-                label=""Copy SMILES""
-                imageMso=""Copy""
-                onAction=""OnCopySmiles"" />
-        <button id=""btnContextPptPictureSubCopyInchi""
-                label=""Copy InChI""
-                imageMso=""Copy""
-                onAction=""OnCopyInchi"" />
-        <button id=""btnContextPptPictureSubCopyInchiKey""
-                label=""Copy InChIKey""
-                imageMso=""SignatureLineInsert""
-                onAction=""OnCopyInchiKey"" />
-        <button id=""btnContextPptPictureCopyAllSummary""
-                label=""Copy All Summary (Text)""
-                imageMso=""FileDocumentInspect""
-                onAction=""OnCopyAllSummary"" />
-        <button id=""btnContextPptPictureCopyMultiLine""
-                label=""Copy as Multi-Line List""
-                imageMso=""Bullets""
-                onAction=""OnCopyMultiLine"" />
-        <menuSeparator id=""sepContextPptPictureSubDialog"" />
-        <button id=""btnContextPptPictureShowDialog""
-                label=""Detailed Molecule Info Window...""
-                imageMso=""GroupTaskProperties""
-                onAction=""OnCopyMoleculeInfo"" />
-      </menu>
-      <menuSeparator id=""sepContextPptPicture"" insertBeforeMso=""Cut"" />
-    </contextMenu>
-    <contextMenu idMso=""ContextMenuShape"">
-      <button id=""btnContextPptShapeEdit""
-              label=""Edit Structure (Ketcher)...""
-              imageMso=""DesignMode""
-              onAction=""OnEditMolecule""
-              insertBeforeMso=""Cut"" />
-      <button id=""btnContextPptShapeEditMolstar""
-              label=""Edit 3D Structure (Mol*)...""
-              imageMso=""Insert3DModelFromFile""
-              onAction=""OnEditMolstar""
-              insertBeforeMso=""Cut"" />
-      <button id=""btnContextPptShapeCopySmiles""
-              label=""Copy SMILES""
-              imageMso=""Copy""
-              onAction=""OnCopySmiles""
-              insertBeforeMso=""Cut"" />
-      <button id=""btnContextPptShapeCopyInchi""
-              label=""Copy InChI""
-              imageMso=""Copy""
-              onAction=""OnCopyInchi""
-              insertBeforeMso=""Cut"" />
-      <button id=""btnContextPptShapeCopyKet""
-              label=""Copy Canvas Data (KET)""
-              imageMso=""Copy""
-              onAction=""OnCopyKet""
-              insertBeforeMso=""Cut"" />
-      <button id=""btnContextPptShapeCopySvg""
-              label=""Copy Vector Graphic (SVG)""
-              imageMso=""CopyPicture""
-              onAction=""OnCopySvg""
-              insertBeforeMso=""Cut"" />
-      <menu id=""menuContextPptShapeMoleculeInfo""
-            label=""Copy Molecule Info""
-            imageMso=""GroupTaskProperties""
-            insertBeforeMso=""Cut"">
-        <button id=""btnContextPptShapeCopyName""
-                label=""Copy Substance Name""
-                imageMso=""PropertySheet""
-                onAction=""OnCopySubstanceName"" />
-        <button id=""btnContextPptShapeCopyFormula""
-                label=""Copy Chemical Formula""
-                imageMso=""EquationInsertNew""
-                onAction=""OnCopyFormula"" />
-        <button id=""btnContextPptShapeCopyMW""
-                label=""Copy Molecular Weight (MW)""
-                imageMso=""Calculator""
-                onAction=""OnCopyMolecularWeight"" />
-        <button id=""btnContextPptShapeSubCopySmiles""
-                label=""Copy SMILES""
-                imageMso=""Copy""
-                onAction=""OnCopySmiles"" />
-        <button id=""btnContextPptShapeSubCopyInchi""
-                label=""Copy InChI""
-                imageMso=""Copy""
-                onAction=""OnCopyInchi"" />
-        <button id=""btnContextPptShapeSubCopyInchiKey""
-                label=""Copy InChIKey""
-                imageMso=""SignatureLineInsert""
-                onAction=""OnCopyInchiKey"" />
-        <button id=""btnContextPptShapeCopyAllSummary""
-                label=""Copy All Summary (Text)""
-                imageMso=""FileDocumentInspect""
-                onAction=""OnCopyAllSummary"" />
-        <button id=""btnContextPptShapeCopyMultiLine""
-                label=""Copy as Multi-Line List""
-                imageMso=""Bullets""
-                onAction=""OnCopyMultiLine"" />
-        <menuSeparator id=""sepContextPptShapeSubDialog"" />
-        <button id=""btnContextPptShapeShowDialog""
-                label=""Detailed Molecule Info Window...""
-                imageMso=""GroupTaskProperties""
-                onAction=""OnCopyMoleculeInfo"" />
-      </menu>
-      <menuSeparator id=""sepContextPptShape"" insertBeforeMso=""Cut"" />
-    </contextMenu>
+{RibbonXmlBuilder.BuildObjectContextMenu(
+    "ContextMenuPicture",
+    "btnContextPptPicture",
+    editSuffixMolecule: false,
+    "menuContextPptPictureMoleculeInfo",
+    "PptPicture",
+    "sepContextPptPicture")}
+{RibbonXmlBuilder.BuildObjectContextMenu(
+    "ContextMenuShape",
+    "btnContextPptShape",
+    editSuffixMolecule: false,
+    "menuContextPptShapeMoleculeInfo",
+    "PptShape",
+    "sepContextPptShape")}
     <contextMenu idMso=""ContextMenuFrame"">
       <menu id=""menuContextPptFrame""
             label=""Chemical Structure""
@@ -445,164 +258,22 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
       </menu>
       <menuSeparator id=""sepContextPptFrame"" insertAfterMso=""PasteGalleryMini"" />
     </contextMenu>
-    <contextMenu idMso=""ContextMenuText"">
-      <menu id=""menuContextPptText""
-            label=""Chemical Structure""
-            imageMso=""EquationInsertNew""
-            insertAfterMso=""PasteGalleryMini"">
-        <button id=""btnContextPptTextInsert""
-                label=""Insert / Edit Structure...""
-                imageMso=""EquationInsertNew""
-                onAction=""OnInsertMolecule"" />
-        <button id=""btnContextPptTextInsertMolstar""
-                label=""3D Structure (Mol*)...""
-                imageMso=""Insert3DModelFromFile""
-                onAction=""OnInsertMolstar"" />
-        <button id=""btnContextPptTextQuickInsert""
-                label=""Paste Structure""
-                imageMso=""Paste""
-                onAction=""OnQuickInsert"" />
-        <menuSeparator id=""sepContextPptTextSubCopy"" />
-        <button id=""btnContextPptTextCopySmiles""
-                label=""Copy SMILES""
-                imageMso=""Copy""
-                onAction=""OnCopySmiles"" />
-        <button id=""btnContextPptTextCopyInchi""
-                label=""Copy InChI""
-                imageMso=""Copy""
-                onAction=""OnCopyInchi"" />
-        <button id=""btnContextPptTextCopyKet""
-                label=""Copy Canvas Data (KET)""
-                imageMso=""Copy""
-                onAction=""OnCopyKet"" />
-        <button id=""btnContextPptTextCopySvg""
-                label=""Copy Vector Graphic (SVG)""
-                imageMso=""CopyPicture""
-                onAction=""OnCopySvg"" />
-        <menuSeparator id=""sepContextPptTextSubInfo"" />
-        <menu id=""menuContextPptTextMoleculeInfo""
-              label=""Copy Molecule Info""
-              imageMso=""GroupTaskProperties"">
-          <button id=""btnContextPptTextCopyName""
-                  label=""Copy Substance Name""
-                  imageMso=""PropertySheet""
-                  onAction=""OnCopySubstanceName"" />
-          <button id=""btnContextPptTextCopyFormula""
-                  label=""Copy Chemical Formula""
-                  imageMso=""EquationInsertNew""
-                  onAction=""OnCopyFormula"" />
-          <button id=""btnContextPptTextCopyMW""
-                  label=""Copy Molecular Weight (MW)""
-                  imageMso=""Calculator""
-                  onAction=""OnCopyMolecularWeight"" />
-          <button id=""btnContextPptTextSubCopySmiles""
-                  label=""Copy SMILES""
-                  imageMso=""Copy""
-                  onAction=""OnCopySmiles"" />
-          <button id=""btnContextPptTextSubCopyInchi""
-                  label=""Copy InChI""
-                  imageMso=""Copy""
-                  onAction=""OnCopyInchi"" />
-          <button id=""btnContextPptTextSubCopyInchiKey""
-                  label=""Copy InChIKey""
-                  imageMso=""SignatureLineInsert""
-                  onAction=""OnCopyInchiKey"" />
-          <button id=""btnContextPptTextCopyAllSummary""
-                  label=""Copy All Summary (Text)""
-                  imageMso=""FileDocumentInspect""
-                  onAction=""OnCopyAllSummary"" />
-          <button id=""btnContextPptTextCopyMultiLine""
-                  label=""Copy as Multi-Line List""
-                  imageMso=""Bullets""
-                  onAction=""OnCopyMultiLine"" />
-          <menuSeparator id=""sepContextPptTextSubDialog"" />
-          <button id=""btnContextPptTextShowDialog""
-                  label=""Detailed Molecule Info Window...""
-                  imageMso=""GroupTaskProperties""
-                  onAction=""OnCopyMoleculeInfo"" />
-        </menu>
-      </menu>
-      <menuSeparator id=""sepContextPptText"" insertAfterMso=""PasteGalleryMini"" />
-    </contextMenu>
-    <contextMenu idMso=""ContextMenuTable"">
-      <menu id=""menuContextPptTable""
-            label=""Chemical Structure""
-            imageMso=""EquationInsertNew""
-            insertAfterMso=""PasteGalleryMini"">
-        <button id=""btnContextPptTableInsert""
-                label=""Insert / Edit Structure...""
-                imageMso=""EquationInsertNew""
-                onAction=""OnInsertMolecule"" />
-        <button id=""btnContextPptTableInsertMolstar""
-                label=""3D Structure (Mol*)...""
-                imageMso=""Insert3DModelFromFile""
-                onAction=""OnInsertMolstar"" />
-        <button id=""btnContextPptTableQuickInsert""
-                label=""Paste Structure""
-                imageMso=""Paste""
-                onAction=""OnQuickInsert"" />
-        <menuSeparator id=""sepContextPptTableSubCopy"" />
-        <button id=""btnContextPptTableCopySmiles""
-                label=""Copy SMILES""
-                imageMso=""Copy""
-                onAction=""OnCopySmiles"" />
-        <button id=""btnContextPptTableCopyInchi""
-                label=""Copy InChI""
-                imageMso=""Copy""
-                onAction=""OnCopyInchi"" />
-        <button id=""btnContextPptTableCopyKet""
-                label=""Copy Canvas Data (KET)""
-                imageMso=""Copy""
-                onAction=""OnCopyKet"" />
-        <button id=""btnContextPptTableCopySvg""
-                label=""Copy Vector Graphic (SVG)""
-                imageMso=""CopyPicture""
-                onAction=""OnCopySvg"" />
-        <menuSeparator id=""sepContextPptTableSubInfo"" />
-        <menu id=""menuContextPptTableMoleculeInfo""
-              label=""Copy Molecule Info""
-              imageMso=""GroupTaskProperties"">
-          <button id=""btnContextPptTableCopyName""
-                  label=""Copy Substance Name""
-                  imageMso=""PropertySheet""
-                  onAction=""OnCopySubstanceName"" />
-          <button id=""btnContextPptTableCopyFormula""
-                  label=""Copy Chemical Formula""
-                  imageMso=""EquationInsertNew""
-                  onAction=""OnCopyFormula"" />
-          <button id=""btnContextPptTableCopyMW""
-                  label=""Copy Molecular Weight (MW)""
-                  imageMso=""Calculator""
-                  onAction=""OnCopyMolecularWeight"" />
-          <button id=""btnContextPptTableSubCopySmiles""
-                  label=""Copy SMILES""
-                  imageMso=""Copy""
-                  onAction=""OnCopySmiles"" />
-          <button id=""btnContextPptTableSubCopyInchi""
-                  label=""Copy InChI""
-                  imageMso=""Copy""
-                  onAction=""OnCopyInchi"" />
-          <button id=""btnContextPptTableSubCopyInchiKey""
-                  label=""Copy InChIKey""
-                  imageMso=""SignatureLineInsert""
-                  onAction=""OnCopyInchiKey"" />
-          <button id=""btnContextPptTableCopyAllSummary""
-                  label=""Copy All Summary (Text)""
-                  imageMso=""FileDocumentInspect""
-                  onAction=""OnCopyAllSummary"" />
-          <button id=""btnContextPptTableCopyMultiLine""
-                  label=""Copy as Multi-Line List""
-                  imageMso=""Bullets""
-                  onAction=""OnCopyMultiLine"" />
-          <menuSeparator id=""sepContextPptTableSubDialog"" />
-          <button id=""btnContextPptTableShowDialog""
-                  label=""Detailed Molecule Info Window...""
-                  imageMso=""GroupTaskProperties""
-                  onAction=""OnCopyMoleculeInfo"" />
-        </menu>
-      </menu>
-      <menuSeparator id=""sepContextPptTable"" insertAfterMso=""PasteGalleryMini"" />
-    </contextMenu>
+{RibbonXmlBuilder.BuildTextOrTableContextMenu(
+    "ContextMenuText",
+    "menuContextPptText",
+    "btnContextPptText",
+    "sepContextPptText",
+    "menuContextPptTextMoleculeInfo",
+    "PptText",
+    "sepContextPptText")}
+{RibbonXmlBuilder.BuildTextOrTableContextMenu(
+    "ContextMenuTable",
+    "menuContextPptTable",
+    "btnContextPptTable",
+    "sepContextPptTable",
+    "menuContextPptTableMoleculeInfo",
+    "PptTable",
+    "sepContextPptTable")}
   </contextMenus>
 </customUI>";
     }

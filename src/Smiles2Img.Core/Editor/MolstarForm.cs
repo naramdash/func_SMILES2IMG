@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using Smiles2Img.Editor;
-using Smiles2Img.Rendering;
 
 namespace Smiles2Img;
 
@@ -29,10 +27,12 @@ public sealed class MolstarForm : Form
     public string ResultMode { get; private set; } = "image"; // "image" or "3dmodel"
     public string ResultPdbId { get; private set; } = "4HHB";
     public byte[]? ResultImageBytes { get; private set; }
+    public byte[]? ResultUiViewportPngBytes { get; private set; }
     public byte[]? ResultGlbBytes { get; private set; }
     public string? ResultSnapshotJson { get; private set; }
     public bool ResultEmbedInDoc { get; private set; } = true;
-    public string ResultBackground { get; private set; } = "transparent";
+    public string ResultBackground { get; set; } = "transparent";
+    public bool AutoApplyAfterLoadForTest { get; set; }
 
     public static MolstarForm Rent(string contextTitle, string initialStructure, string? initialSnapshotJson = null)
     {
@@ -56,21 +56,7 @@ public sealed class MolstarForm : Form
         this.initialSnapshotJson = initialSnapshotJson;
 
         Text = $"Mol* 3D Molecular Viewer - {this.contextTitle}";
-
-        float dpiScale = 1.0f;
-        try
-        {
-            using var g = CreateGraphics();
-            dpiScale = Math.Max(1.0f, g.DpiX / 96.0f);
-        }
-        catch { }
-
-        var screen = Screen.FromControl(this) ?? Screen.PrimaryScreen;
-        int targetW = Math.Min((int)(1340 * dpiScale), (int)(screen.WorkingArea.Width * 0.94));
-        int targetH = Math.Min((int)(880 * dpiScale), (int)(screen.WorkingArea.Height * 0.94));
-        ClientSize = new Size(Math.Max(targetW, 1060), Math.Max(targetH, 720));
-        MinimumSize = new Size(Math.Min(880, screen.WorkingArea.Width), Math.Min(600, screen.WorkingArea.Height));
-        StartPosition = FormStartPosition.CenterScreen;
+        WebView2HostHelper.ApplyDpiScaledWindowBounds(this, 1340, 880, 1060, 720);
         BackColor = Color.FromArgb(15, 23, 42);
 
         if (UiIcons.Molstar3DIcon != null)
@@ -108,6 +94,7 @@ public sealed class MolstarForm : Form
         ResultMode = "image";
         ResultPdbId = "4HHB";
         ResultImageBytes = null;
+        ResultUiViewportPngBytes = null;
         ResultGlbBytes = null;
         ResultSnapshotJson = null;
         ResultEmbedInDoc = true;
@@ -121,41 +108,16 @@ public sealed class MolstarForm : Form
     {
         try
         {
-            NativeIndigo.EnsureWebView2Loader();
             var molstarFolder = MolstarAssetManager.EnsureMolstarFolder();
-
-            var baseUserDataFolder = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Smiles2Img", "WebView2UserData");
-            Directory.CreateDirectory(baseUserDataFolder);
-
-            string procName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-            var procUserDataFolder = Path.Combine(baseUserDataFolder, procName + "_Molstar");
-            Directory.CreateDirectory(procUserDataFolder);
-
-            try
-            {
-                _sharedEnvironment ??= await CoreWebView2Environment.CreateAsync(null, procUserDataFolder, null);
-                await webView.EnsureCoreWebView2Async(_sharedEnvironment);
-            }
-            catch (Exception ex) when (ex.HResult == unchecked((int)0x800700AA) || ex.Message.Contains("0x800700AA") || ex.Message.IndexOf("in use", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                string fallbackFolder = Path.Combine(Path.GetTempPath(), "Smiles2Img_WV2_Mol_" + procName + "_" + Guid.NewGuid().ToString("N"));
-                Directory.CreateDirectory(fallbackFolder);
-                _sharedEnvironment = await CoreWebView2Environment.CreateAsync(null, fallbackFolder, null);
-                await webView.EnsureCoreWebView2Async(_sharedEnvironment);
-            }
-
-            webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
-            webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
-
-            webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
-                "molstar.local",
-                molstarFolder,
-                CoreWebView2HostResourceAccessKind.Allow);
+            _sharedEnvironment = await WebView2HostHelper.InitializeWebViewCoreAsync(
+                webView,
+                _sharedEnvironment,
+                procFolderSuffix: "_Molstar",
+                tempPrefix: "Smiles2Img_WV2_Mol_",
+                virtualHostName: "molstar.local",
+                assetFolder: molstarFolder);
 
             webView.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
-
             webView.CoreWebView2.Navigate("https://molstar.local/index.html");
         }
         catch (Exception ex)
@@ -170,7 +132,7 @@ public sealed class MolstarForm : Form
             MessageBox.Show(
                 this,
                 "An error occurred while initializing Mol* 3D viewer:\n" + msg,
-                "Mol* 3D Viewer Error",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
             Close();
@@ -180,9 +142,9 @@ public sealed class MolstarForm : Form
     private void SendInitScriptToWebView()
     {
         if (webView.CoreWebView2 == null) return;
-        var escapedContext = EscapeJs(contextTitle);
-        var escapedInitial = EscapeJs(initialStructure);
-        var escapedSnapshot = EscapeJs(initialSnapshotJson);
+        var escapedContext = WebView2HostHelper.EscapeJs(contextTitle);
+        var escapedInitial = WebView2HostHelper.EscapeJs(initialStructure);
+        var escapedSnapshot = WebView2HostHelper.EscapeJs(initialSnapshotJson);
 
         var script = $@"
             (async function() {{
@@ -192,14 +154,15 @@ public sealed class MolstarForm : Form
                     }}
                 }} catch (e) {{}}
                 if (window.initMolstar) {{
-                    window.initMolstar('{escapedContext}', '{escapedInitial}', '{escapedSnapshot}');
+                    await window.initMolstar('{escapedContext}', '{escapedInitial}', '{escapedSnapshot}');
+                    {(AutoApplyAfterLoadForTest ? @"try { if (viewer && viewer.plugin && (!viewer.plugin.managers.structure.hierarchy.current.structures || viewer.plugin.managers.structure.hierarchy.current.structures.length === 0)) { await viewer.loadStructureFromData('HEADER    WATER\nHETATM    1  O   HOH A   1       0.000   0.000   0.000  1.00  0.00           O\nEND\n', 'pdb', false); } } catch (e) {} setTimeout(async function() { if (typeof handleApply === 'function') await handleApply(); }, 600);" : "")}
                 }}
             }})();
         ";
         webView.ExecuteScriptAsync(script);
     }
 
-    private void OnWebMessageReceived(object? sender, CoreWebView2WebMessageReceivedEventArgs e)
+    private async void OnWebMessageReceived(object? sender, CoreWebView2WebMessageReceivedEventArgs e)
     {
         try
         {
@@ -245,6 +208,10 @@ public sealed class MolstarForm : Form
                         if (dict.TryGetValue("bgMode", out var bg) && bg is string bgStr)
                             ResultBackground = bgStr;
                     }
+                    if (AutoApplyAfterLoadForTest)
+                    {
+                        ResultUiViewportPngBytes = await WebView2HostHelper.TryCaptureViewportPngAsync(webView);
+                    }
                     DialogResult = DialogResult.OK;
                     Close();
                 }
@@ -261,16 +228,6 @@ public sealed class MolstarForm : Form
             }
         }
         catch { }
-    }
-
-    private static string EscapeJs(string? s)
-    {
-        if (string.IsNullOrEmpty(s)) return "";
-        return s!.Replace("\\", "\\\\")
-                .Replace("'", "\\'")
-                .Replace("\"", "\\\"")
-                .Replace("\r", "")
-                .Replace("\n", "\\n");
     }
 
     protected override void Dispose(bool disposing)

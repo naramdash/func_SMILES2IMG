@@ -18,7 +18,7 @@ namespace Smiles2Img;
 public static partial class KetcherEditor
 {
     private static readonly Regex FormulaRefPattern = new(
-        @"(?:SMILES[A-Z0-9_.]*|KET2IMG(?:\.FLOAT)?|INCHI[A-Z0-9_.]*|NAME2IMG(?:\.FLOAT)?)\s*\(\s*(?:""(?<literal>(?:""""|[^""])*)""|(?<ref>(?:'[^']+'!)?[^,)\s]+))",
+        @"(?:SMILES[A-Z0-9_.]*|KET[A-Z0-9_.]*|INCHI[A-Z0-9_.]*|NAME2(?:IMG(?:\.FLOAT)?|SMILES))\s*\(\s*(?:""(?<literal>(?:""""|[^""])*)""|(?<ref>(?:'[^']+'!)?[^,)\s]+))",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     public static void EditSelectedMolecule(Excel.Application app)
@@ -250,7 +250,7 @@ public static partial class KetcherEditor
         return null;
     }
 
-    public static string? ExtractSmilesFromCell(Excel.Range cell)
+    public static string? ExtractSmilesFromCell(Excel.Range cell, bool allowPlainTextNameLookup = true)
     {
         try
         {
@@ -265,9 +265,9 @@ public static partial class KetcherEditor
 
             if (!string.IsNullOrEmpty(formula) &&
                 (formula.IndexOf("SMILES", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 formula.IndexOf("KET", StringComparison.OrdinalIgnoreCase) >= 0 ||
                  formula.IndexOf("INCHI", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("NAME2IMG", StringComparison.OrdinalIgnoreCase) >= 0))
+                 formula.IndexOf("NAME2", StringComparison.OrdinalIgnoreCase) >= 0))
             {
                 var match = FormulaRefPattern.Match(formula);
                 if (match.Success)
@@ -282,8 +282,8 @@ public static partial class KetcherEditor
                         {
                             var sheet = (Excel.Worksheet)cell.Parent;
                             var app = (Excel.Application)sheet.Application;
-                            Excel.Range refCell = refAddr.Contains("!") ? (Excel.Range)app.Range[refAddr] : (Excel.Range)sheet.Range[refAddr];
-                            if (refCell.Count > 1) refCell = (Excel.Range)refCell.Cells[1, 1];
+                            Excel.Range refCell = ResolveSingleRefCell(app, sheet, refAddr);
+
                             rawData = (Convert.ToString(refCell.Value2) ?? "").Trim();
                         }
                         catch { }
@@ -291,7 +291,7 @@ public static partial class KetcherEditor
 
                     if (!string.IsNullOrEmpty(rawData))
                     {
-                        if (formula.IndexOf("NAME2IMG", StringComparison.OrdinalIgnoreCase) >= 0)
+                        if (formula.IndexOf("NAME2", StringComparison.OrdinalIgnoreCase) >= 0)
                             rawData = PubChemResolver.ResolveNameToSmiles(rawData) ?? rawData;
 
                         var smiles = MoleculeRenderer.TryConvertToSmiles(rawData);
@@ -319,7 +319,7 @@ public static partial class KetcherEditor
                 }
 
                 // Check common drug / substance name (e.g. "Aspirin", "Ethanol")
-                var resolvedSmiles = PubChemResolver.ResolveNameToSmiles(val);
+                var resolvedSmiles = allowPlainTextNameLookup ? PubChemResolver.ResolveNameToSmiles(val) : null;
                 if (!string.IsNullOrEmpty(resolvedSmiles))
                     return resolvedSmiles;
             }
@@ -337,10 +337,10 @@ public static partial class KetcherEditor
             string val = Convert.ToString((object?)cell.Value2) ?? "";
 
             if (!string.IsNullOrEmpty(formula) &&
-                (formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("NAME2IMG", StringComparison.OrdinalIgnoreCase) >= 0))
+                (formula.IndexOf("SMILES", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 formula.IndexOf("KET", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 formula.IndexOf("INCHI", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 formula.IndexOf("NAME2", StringComparison.OrdinalIgnoreCase) >= 0))
             {
                 var match = FormulaRefPattern.Match(formula);
                 if (match.Success)
@@ -355,7 +355,7 @@ public static partial class KetcherEditor
                         {
                             var sheet = (Excel.Worksheet)cell.Parent;
                             var app = (Excel.Application)sheet.Application;
-                            Excel.Range refCell = refAddr.Contains("!") ? (Excel.Range)app.Range[refAddr] : (Excel.Range)sheet.Range[refAddr];
+                            Excel.Range refCell = ResolveSingleRefCell(app, sheet, refAddr);
                             rawData = (Convert.ToString(refCell.Value2) ?? "").Trim();
                         }
                         catch { }
@@ -363,7 +363,7 @@ public static partial class KetcherEditor
 
                     if (!string.IsNullOrEmpty(rawData))
                     {
-                        if (formula.IndexOf("NAME2IMG", StringComparison.OrdinalIgnoreCase) >= 0)
+                        if (formula.IndexOf("NAME2", StringComparison.OrdinalIgnoreCase) >= 0)
                             rawData = PubChemResolver.ResolveNameToSmiles(rawData) ?? rawData;
 
                         var ket = MoleculeRenderer.TryConvertToKet(rawData);
@@ -422,10 +422,10 @@ public static partial class KetcherEditor
             var cell = (Excel.Range)target.Cells[1, 1];
             string formula = Convert.ToString((object?)cell.Formula) ?? "";
 
-            bool isStructureCell = !string.IsNullOrEmpty(formula) &&
-                                   (formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            bool isStructureCell = !string.IsNullOrEmpty(formula) && IsImageFormulaName(formula) &&
+                                   (formula.IndexOf("SMILES", StringComparison.OrdinalIgnoreCase) >= 0 ||
                                     formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                    formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                    formula.IndexOf("INCHI", StringComparison.OrdinalIgnoreCase) >= 0 ||
                                     formula.IndexOf("NAME2IMG", StringComparison.OrdinalIgnoreCase) >= 0);
 
             if (isStructureCell)
@@ -459,10 +459,10 @@ public static partial class KetcherEditor
                 (preference == StructureFormatPreference.Auto && formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0);
 
             if (!string.IsNullOrEmpty(formula) &&
-                (formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("NAME2IMG", StringComparison.OrdinalIgnoreCase) >= 0))
+                (formula.IndexOf("SMILES", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 formula.IndexOf("KET", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 formula.IndexOf("INCHI", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 formula.IndexOf("NAME2", StringComparison.OrdinalIgnoreCase) >= 0))
             {
                 var match = FormulaRefPattern.Match(formula);
                 if (match.Success)
@@ -545,7 +545,12 @@ public static partial class KetcherEditor
                 if (targetCellToWrite != cell)
                 {
                     targetCellToWrite.Value2 = dataToWrite;
-                    cell.Formula = $"={funcName}({targetCellToWrite.Address})";
+                    var updatedFormula = FormulaRefPattern.Replace(formula, m =>
+                    {
+                        var refText = m.Groups["ref"].Success ? m.Groups["ref"].Value : targetCellToWrite.Address;
+                        return $"{funcName}({refText}";
+                    }, 1);
+                    if (formula.IndexOf("2IMG", StringComparison.OrdinalIgnoreCase) >= 0) cell.Formula = updatedFormula;
                 }
                 else if (isFormulaLiteral)
                 {
@@ -563,7 +568,7 @@ public static partial class KetcherEditor
                     {
                         return $"{funcName}(\"{escaped}\"";
                     }, 1);
-                    cell.Formula = updatedFormula;
+                    if (formula.IndexOf("2IMG", StringComparison.OrdinalIgnoreCase) >= 0) cell.Formula = updatedFormula;
                 }
                 else
                 {
@@ -596,10 +601,22 @@ public static partial class KetcherEditor
         {
             MessageBox.Show(
                 "An error occurred while launching editor: " + ex.Message,
-                "SMILES2IMG Ketcher",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
+    }
+
+    private static bool IsImageFormulaName(string formula) =>
+        formula.IndexOf("SMILES2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+        formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+        formula.IndexOf("INCHI2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
+        formula.IndexOf("NAME2IMG", StringComparison.OrdinalIgnoreCase) >= 0;
+
+    private static Excel.Range ResolveSingleRefCell(Excel.Application app, Excel.Worksheet sheet, string refAddr)
+    {
+        var refCell = refAddr.Contains("!") ? (Excel.Range)app.Range[refAddr] : (Excel.Range)sheet.Range[refAddr];
+        return refCell.Count > 1 ? (Excel.Range)refCell.Cells[1, 1] : refCell;
     }
 
     internal static bool IsLikelySmiles(string text)

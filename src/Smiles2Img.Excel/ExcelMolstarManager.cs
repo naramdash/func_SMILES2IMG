@@ -33,7 +33,7 @@ public static class ExcelMolstarManager
             {
                 MessageBox.Show(
                     "No active worksheet found.\nPlease open a worksheet to insert the 3D structure first.",
-                    "Mol* 3D for Excel",
+                    "func_SMILES2IMG",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
@@ -78,7 +78,7 @@ public static class ExcelMolstarManager
         {
             MessageBox.Show(
                 "An error occurred while opening Mol* 3D Viewer:\n" + ex.Message,
-                "Mol* 3D for Excel",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -95,7 +95,7 @@ public static class ExcelMolstarManager
                 {
                     MessageBox.Show(
                         "No 3D molecular structure selected.\nPlease select a Mol* structure shape or 3D model first.",
-                        "Mol* 3D for Excel",
+                        "func_SMILES2IMG",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
                     return;
@@ -107,7 +107,7 @@ public static class ExcelMolstarManager
             {
                 MessageBox.Show(
                     "The selected object is not a Mol* 3D structure object.",
-                    "Mol* 3D for Excel",
+                    "func_SMILES2IMG",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
@@ -138,7 +138,7 @@ public static class ExcelMolstarManager
         {
             MessageBox.Show(
                 "An error occurred while editing Mol* 3D structure:\n" + ex.Message,
-                "Mol* 3D for Excel",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -146,24 +146,8 @@ public static class ExcelMolstarManager
 
     private static void ApplyMolstarInsert(Excel.Application app, Excel.Worksheet sheet, MolstarForm form)
     {
-        var sessionId = Guid.NewGuid().ToString("N");
-        var meta = new MolstarMetadata
-        {
-            Id = sessionId,
-            Pdb = form.ResultPdbId,
-            Mode = form.ResultMode,
-            Embed = form.ResultEmbedInDoc,
-            Background = form.ResultBackground
-        };
-
-        if (!string.IsNullOrEmpty(form.ResultSnapshotJson))
-        {
-            MolstarSessionManager.SaveLocalCache(sessionId, form.ResultSnapshotJson!);
-            if (form.ResultEmbedInDoc)
-            {
-                MolstarSessionManager.SaveToCustomXmlParts(app.ActiveWorkbook, sessionId, form.ResultPdbId, form.ResultSnapshotJson!);
-            }
-        }
+        var meta = MolstarSessionManager.BuildAndPersistMetadata(app.ActiveWorkbook, form);
+        var sessionId = meta.Id;
 
         // Target placement: near ActiveCell or (100, 100)
         float left = 100f, top = 100f;
@@ -202,6 +186,7 @@ public static class ExcelMolstarManager
 
         if (newShape == null && form.ResultImageBytes != null && form.ResultImageBytes.Length > 0)
         {
+            var (imgW, imgH) = StructureMetadata.GetScaledDimensions(form.ResultImageBytes!, 320f, 240f, scale: 0.85f);
             var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.png");
             try
             {
@@ -212,8 +197,8 @@ public static class ExcelMolstarManager
                     SaveWithDocument: MsoTriState.msoTrue,
                     Left: left,
                     Top: top,
-                    Width: w,
-                    Height: h);
+                    Width: imgW,
+                    Height: imgH);
             }
             finally
             {
@@ -228,21 +213,9 @@ public static class ExcelMolstarManager
         }
     }
 
-    private static void ApplyMolstarReplace(Excel.Application app, Excel.Shape oldShape, MolstarForm form, MolstarMetadata meta)
+    private static void ApplyMolstarReplace(Excel.Application app, Excel.Shape oldShape, MolstarForm form, MolstarMetadata oldMeta)
     {
-        meta.Pdb = form.ResultPdbId;
-        meta.Mode = form.ResultMode;
-        meta.Embed = form.ResultEmbedInDoc;
-        meta.Background = form.ResultBackground;
-
-        if (!string.IsNullOrEmpty(form.ResultSnapshotJson))
-        {
-            MolstarSessionManager.SaveLocalCache(meta.Id, form.ResultSnapshotJson!);
-            if (form.ResultEmbedInDoc)
-            {
-                MolstarSessionManager.SaveToCustomXmlParts(app.ActiveWorkbook, meta.Id, form.ResultPdbId, form.ResultSnapshotJson!);
-            }
-        }
+        var meta = MolstarSessionManager.BuildAndPersistMetadata(app.ActiveWorkbook, form, oldMeta.Id);
 
         var sheet = (Excel.Worksheet)oldShape.Parent;
         float left = Convert.ToSingle(oldShape.Left);
@@ -276,6 +249,7 @@ public static class ExcelMolstarManager
 
         if (newShape == null && form.ResultImageBytes != null && form.ResultImageBytes.Length > 0)
         {
+            (left, top, width, height) = StructureMetadata.FitReplacementBounds(left, top, width, height, form.ResultImageBytes!);
             var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.png");
             try
             {

@@ -9,7 +9,7 @@ using MSPowerPoint = Microsoft.Office.Interop.PowerPoint;
 
 namespace Smiles2Img.PowerPoint;
 
-public static class PowerPointStructureManager
+public static partial class PowerPointStructureManager
 {
     public static void InsertMolecule(MSPowerPoint.Application app)
     {
@@ -55,111 +55,6 @@ public static class PowerPointStructureManager
             MessageBox.Show(
                 "An error occurred while inserting molecule:\n" + ex.Message,
                 "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
-        }
-    }
-
-    public static void InsertMolstarStructure(MSPowerPoint.Application app)
-    {
-        try
-        {
-            var sel = app.ActiveWindow?.Selection;
-            if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 0)
-            {
-                var targetShape = sel.ShapeRange[1];
-                if (StructureMetadata.IsMolstar(targetShape.AlternativeText, targetShape.Title))
-                {
-                    EditSelectedMolstar(app, targetShape);
-                    return;
-                }
-            }
-
-            var slide = EnsureActiveSlide(app);
-            if (slide == null)
-            {
-                MessageBox.Show(
-                    "No active slide found.\nPlease select a slide to insert the 3D structure first.",
-                    "Mol* 3D for PowerPoint",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-                return;
-            }
-
-            var hwnd = GetHwnd(app);
-            using var form = MolstarForm.Rent("PowerPoint", "");
-            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
-
-            if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))
-            {
-                ApplyMolstarInsert(app, slide, form);
-            }
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(
-                "An error occurred while opening Mol* 3D Viewer:\n" + ex.Message,
-                "Mol* 3D for PowerPoint",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
-        }
-    }
-
-    public static void EditSelectedMolstar(MSPowerPoint.Application app, MSPowerPoint.Shape? targetShape = null)
-    {
-        try
-        {
-            if (targetShape == null)
-            {
-                var sel = app.ActiveWindow?.Selection;
-                if (sel == null || sel.Type != MSPowerPoint.PpSelectionType.ppSelectionShapes || sel.ShapeRange.Count == 0)
-                {
-                    MessageBox.Show(
-                        "No 3D molecular structure selected.\nPlease select a Mol* structure shape or 3D model first.",
-                        "Mol* 3D for PowerPoint",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-                    return;
-                }
-
-                targetShape = sel.ShapeRange[1];
-            }
-
-            var meta = MolstarSessionManager.ParseAltText(targetShape.AlternativeText, targetShape.Title);
-            if (meta == null)
-            {
-                MessageBox.Show(
-                    "The selected object is not a Mol* 3D structure object.",
-                    "Mol* 3D for PowerPoint",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-                return;
-            }
-
-            string? snapshotJson = MolstarSessionManager.LoadLocalCache(meta.Id);
-            if (string.IsNullOrEmpty(snapshotJson))
-            {
-                try
-                {
-                    snapshotJson = MolstarSessionManager.LoadFromCustomXmlParts(app.ActivePresentation, meta.Id);
-                }
-                catch { }
-            }
-
-            var hwnd = GetHwnd(app);
-            using var form = MolstarForm.Rent("PowerPoint", meta.Pdb, snapshotJson);
-            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
-
-            if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))
-            {
-                ApplyMolstarReplace(app, targetShape, form, meta);
-            }
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(
-                "An error occurred while editing Mol* 3D structure:\n" + ex.Message,
-                "Mol* 3D for PowerPoint",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -320,160 +215,6 @@ public static class PowerPointStructureManager
         }
     }
 
-    private static MolstarMetadata BuildAndPersistMolstarMeta(MSPowerPoint.Application app, MolstarForm form, string? existingSessionId = null)
-    {
-        var sessionId = string.IsNullOrEmpty(existingSessionId) ? Guid.NewGuid().ToString("N") : existingSessionId!;
-        var meta = new MolstarMetadata
-        {
-            Id = sessionId,
-            Pdb = form.ResultPdbId,
-            Mode = form.ResultMode,
-            Embed = form.ResultEmbedInDoc,
-            Background = form.ResultBackground
-        };
-
-        if (!string.IsNullOrEmpty(form.ResultSnapshotJson))
-        {
-            MolstarSessionManager.SaveLocalCache(sessionId, form.ResultSnapshotJson!);
-            if (form.ResultEmbedInDoc)
-            {
-                MolstarSessionManager.SaveToCustomXmlParts(app.ActivePresentation, sessionId, form.ResultPdbId, form.ResultSnapshotJson!);
-            }
-        }
-        return meta;
-    }
-
-    private static void ApplyMolstarInsert(MSPowerPoint.Application app, MSPowerPoint.Slide slide, MolstarForm form)
-    {
-        var meta = BuildAndPersistMolstarMeta(app, form);
-
-        float slideWidth = 960f, slideHeight = 540f;
-        try
-        {
-            slideWidth = app.ActivePresentation.PageSetup.SlideWidth;
-            slideHeight = app.ActivePresentation.PageSetup.SlideHeight;
-        }
-        catch { }
-
-        MSPowerPoint.Shape? newShape = null;
-        if (form.ResultMode == "3dmodel" && form.ResultGlbBytes != null && form.ResultGlbBytes.Length > 0)
-        {
-            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.glb");
-            try
-            {
-                File.WriteAllBytes(tempGlb, form.ResultGlbBytes);
-                float w = 320f, h = 320f;
-                float left = Math.Max(50f, (slideWidth - w) / 2f);
-                float top = Math.Max(50f, (slideHeight - h) / 2f);
-                dynamic shapes = slide.Shapes;
-                newShape = shapes.Add3DModel(tempGlb, MsoTriState.msoFalse, MsoTriState.msoTrue, left, top, w, h);
-            }
-            catch
-            {
-                meta.Mode = "image";
-            }
-            finally
-            {
-                try { if (File.Exists(tempGlb)) File.Delete(tempGlb); } catch { }
-            }
-        }
-
-        if (newShape == null)
-        {
-            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.png");
-            try
-            {
-                File.WriteAllBytes(tempPng, form.ResultImageBytes!);
-                var (width, height) = StructureMetadata.GetScaledDimensions(form.ResultImageBytes!, 320f, 240f, scale: 0.85f);
-                float left = Math.Max(50f, (slideWidth - width) / 2f);
-                float top = Math.Max(50f, (slideHeight - height) / 2f);
-
-                newShape = slide.Shapes.AddPicture(
-                    FileName: tempPng,
-                    LinkToFile: MsoTriState.msoFalse,
-                    SaveWithDocument: MsoTriState.msoTrue,
-                    Left: left,
-                    Top: top,
-                    Width: width,
-                    Height: height);
-            }
-            finally
-            {
-                try { if (File.Exists(tempPng)) File.Delete(tempPng); } catch { }
-            }
-        }
-
-        ApplyMolstarShapeMetadata(newShape, meta);
-        newShape.Select();
-    }
-
-    private static void ApplyMolstarReplace(MSPowerPoint.Application app, MSPowerPoint.Shape oldShape, MolstarForm form, MolstarMetadata oldMeta)
-    {
-        var meta = BuildAndPersistMolstarMeta(app, form, oldMeta.Id);
-
-        var slide = (MSPowerPoint.Slide)oldShape.Parent;
-        float oldLeft = oldShape.Left;
-        float oldTop = oldShape.Top;
-        float oldWidth = oldShape.Width;
-        float oldHeight = oldShape.Height;
-        oldShape.Delete();
-
-        MSPowerPoint.Shape? newShape = null;
-        if (form.ResultMode == "3dmodel" && form.ResultGlbBytes != null && form.ResultGlbBytes.Length > 0)
-        {
-            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.glb");
-            try
-            {
-                File.WriteAllBytes(tempGlb, form.ResultGlbBytes);
-                dynamic shapes = slide.Shapes;
-                newShape = shapes.Add3DModel(tempGlb, MsoTriState.msoFalse, MsoTriState.msoTrue, oldLeft, oldTop, oldWidth, oldHeight);
-            }
-            catch
-            {
-                meta.Mode = "image";
-            }
-            finally
-            {
-                try { if (File.Exists(tempGlb)) File.Delete(tempGlb); } catch { }
-            }
-        }
-
-        if (newShape == null)
-        {
-            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.png");
-            try
-            {
-                File.WriteAllBytes(tempPng, form.ResultImageBytes!);
-                var (left, top, newWidth, newHeight) = StructureMetadata.FitReplacementBounds(
-                    oldLeft, oldTop, oldWidth, oldHeight, form.ResultImageBytes!);
-
-                newShape = slide.Shapes.AddPicture(
-                    FileName: tempPng,
-                    LinkToFile: MsoTriState.msoFalse,
-                    SaveWithDocument: MsoTriState.msoTrue,
-                    Left: left,
-                    Top: top,
-                    Width: newWidth,
-                    Height: newHeight);
-            }
-            finally
-            {
-                try { if (File.Exists(tempPng)) File.Delete(tempPng); } catch { }
-            }
-        }
-
-        ApplyMolstarShapeMetadata(newShape, meta);
-        newShape.Select();
-    }
-
-    private static void ApplyMolstarShapeMetadata(MSPowerPoint.Shape shape, MolstarMetadata meta)
-    {
-        shape.AlternativeText = MolstarSessionManager.FormatAltText(meta);
-        shape.Title = $"Mol* 3D [{meta.Pdb}]";
-        try { shape.Tags.Add("MOLSTAR", meta.Id); } catch { }
-        try { shape.Tags.Add("PDB", meta.Pdb); } catch { }
-    }
-
     private static void ApplyShapeMetadata(MSPowerPoint.Shape shape, string? ket, string? smiles)
     {
         shape.AlternativeText = StructureMetadata.FormatAlternativeText(ket, smiles);
@@ -557,15 +298,15 @@ public static class PowerPointStructureManager
 
     public static void CopySelectedMoleculeSmiles(MSPowerPoint.Application app)
     {
-        GetSelectedShapeOrText(app, out var shape, out _);
-        if (shape == null)
+        GetSelectedShapeOrText(app, out var shape, out var selectedText);
+        if (shape == null && string.IsNullOrWhiteSpace(selectedText))
         {
-            MoleculeNotification.NotifyWarning("SMILES", "Please select a molecular structure picture first.");
+            MoleculeNotification.NotifyWarning("SMILES", "Please select a molecular structure picture or text first.");
             return;
         }
         MoleculeActionHelper.CopySmiles(
-            ExtractSmiles(shape),
-            "Could not find SMILES structure from the selected image.");
+            MoleculeActionHelper.ResolveSmilesWithTextFallback(shape != null ? ExtractSmiles(shape) : null, selectedText),
+            "Could not find SMILES structure from the selected image or text.");
     }
 
     public static void CopySelectedMoleculeInchi(MSPowerPoint.Application app)
@@ -579,15 +320,15 @@ public static class PowerPointStructureManager
 
     public static void CopySelectedMoleculeKet(MSPowerPoint.Application app)
     {
-        GetSelectedShapeOrText(app, out var shape, out _);
-        if (shape == null)
+        GetSelectedShapeOrText(app, out var shape, out var selectedText);
+        if (shape == null && string.IsNullOrWhiteSpace(selectedText))
         {
-            MoleculeNotification.NotifyWarning("Canvas Data (KET)", "Please select a molecular structure picture first.");
+            MoleculeNotification.NotifyWarning("Canvas Data (KET)", "Please select a molecular structure picture or text first.");
             return;
         }
         MoleculeActionHelper.CopyKet(
-            ExtractStructure(shape),
-            "Could not find canvas structure (KET) from the selected image.");
+            MoleculeActionHelper.ResolveKetWithTextFallback(shape != null ? ExtractStructure(shape) : null, selectedText),
+            "Could not find canvas structure (KET) from the selected image or text.");
     }
 
     public static void CopySelectedMoleculeSvg(MSPowerPoint.Application app)
@@ -617,6 +358,20 @@ public static class PowerPointStructureManager
             var opts = RenderOptions.Parse(background, style, null);
             var shapesToUpdate = new System.Collections.Generic.List<MSPowerPoint.Shape>();
 
+            try
+            {
+                var sel = app.ActiveWindow?.Selection;
+                if (sel != null && sel.Type == MSPowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 0)
+                {
+                    foreach (MSPowerPoint.Shape s in sel.ShapeRange)
+                    {
+                        if (!StructureMetadata.IsMolstar(s.AlternativeText, s.Title) && !string.IsNullOrEmpty(ExtractStructure(s)))
+                            shapesToUpdate.Add(s);
+                    }
+                }
+            }
+            catch { }
+            if (shapesToUpdate.Count == 0)
             foreach (MSPowerPoint.Slide slide in app.ActivePresentation.Slides)
             {
                 foreach (MSPowerPoint.Shape s in slide.Shapes)
@@ -727,7 +482,7 @@ public static class PowerPointStructureManager
         MoleculeActionHelper.CopyInchiKey(r => GetSelectedMoleculeInfo(app, r), "Could not generate InChIKey from the selected structure.");
 
     public static void CopySelectedAllSummary(MSPowerPoint.Application app) =>
-        MoleculeActionHelper.CopySummary(r => GetSelectedMoleculeInfo(app, r), MoleculeSummaryFormat.MultiLine, "Molecule Info", "Copied summary", "Could not retrieve molecule info from the selected structure.", "molecule summary");
+        MoleculeActionHelper.CopySummary(r => GetSelectedMoleculeInfo(app, r), MoleculeSummaryFormat.ExcelTsvWithHeader, "Molecule Info", "Copied summary", "Could not retrieve molecule info from the selected structure.", "molecule summary");
 
     public static void CopySelectedTsvRow(MSPowerPoint.Application app) =>
         MoleculeActionHelper.CopySummary(r => GetSelectedMoleculeInfo(app, r), MoleculeSummaryFormat.ExcelTsvRow, "Excel Row (TSV)", "Copied row", "Could not retrieve molecule info from the selected structure.", "TSV row");

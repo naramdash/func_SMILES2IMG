@@ -33,6 +33,29 @@ public static class MolstarSessionManager
         return dir;
     }
 
+    public static MolstarMetadata BuildAndPersistMetadata(object? hostDocument, MolstarForm form, string? existingSessionId = null)
+    {
+        var sessionId = string.IsNullOrEmpty(existingSessionId) ? Guid.NewGuid().ToString("N") : existingSessionId!;
+        var meta = new MolstarMetadata
+        {
+            Id = sessionId,
+            Pdb = form.ResultPdbId,
+            Mode = form.ResultMode,
+            Embed = form.ResultEmbedInDoc,
+            Background = form.ResultBackground
+        };
+
+        if (!string.IsNullOrEmpty(form.ResultSnapshotJson))
+        {
+            SaveLocalCache(sessionId, form.ResultSnapshotJson!);
+            if (form.ResultEmbedInDoc && hostDocument != null)
+            {
+                SaveToCustomXmlParts(hostDocument, sessionId, form.ResultPdbId, form.ResultSnapshotJson!);
+            }
+        }
+        return meta;
+    }
+
     public static string FormatAltText(MolstarMetadata meta)
     {
         return AltTextPrefix + Serializer.Serialize(new Dictionary<string, object>

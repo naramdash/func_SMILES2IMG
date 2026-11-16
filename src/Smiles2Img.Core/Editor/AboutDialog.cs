@@ -237,9 +237,9 @@ public sealed class AboutDialog : Form
                 var timer = new Timer { Interval = 1800 };
                 timer.Tick += (ts, te) =>
                 {
-                    btnCopyAll.Text = "Copy Notices";
-                    btnCopyAll.BackColor = Color.White;
-                    btnCopyAll.ForeColor = Color.FromArgb(30, 41, 59);
+                    if (!btnCopyAll.IsDisposed) btnCopyAll.Text = "Copy Notices";
+                    if (!btnCopyAll.IsDisposed) btnCopyAll.BackColor = Color.White;
+                    if (!btnCopyAll.IsDisposed) btnCopyAll.ForeColor = Color.FromArgb(30, 41, 59);
                     timer.Stop();
                     timer.Dispose();
                 };
@@ -279,7 +279,7 @@ public sealed class AboutDialog : Form
                     MessageBox.Show(
                         this,
                         "Could not reach GitHub Releases API. Opening releases page in browser instead.",
-                        "Update Check",
+                        "func_SMILES2IMG",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
                     OpenBrowser("https://github.com/naramdash/func_SMILES2IMG/releases");
@@ -303,7 +303,7 @@ public sealed class AboutDialog : Form
                         this,
                         $"A new version (v{cleanLatest}) is available! (Current: v{cleanCurrent})\n\n" +
                         "Click [Yes] to copy the 1-line PowerShell update command to your clipboard and open the release page.",
-                        "New Update Available",
+                        "func_SMILES2IMG",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Information);
 
@@ -461,6 +461,7 @@ public sealed class AboutDialog : Form
         AddRow("Project License:", new Label
         {
             Text = "MIT License (Free & Open Source)",
+            UseMnemonic = false,
             Font = new Font("Segoe UI", 9.5f, FontStyle.Regular),
             ForeColor = Color.FromArgb(16, 149, 102),
             AutoSize = true
@@ -474,12 +475,12 @@ public sealed class AboutDialog : Form
             BackColor = Color.White,
             ForeColor = Color.FromArgb(75, 85, 99),
             Font = new Font("Segoe UI", 9.25f, FontStyle.Regular),
-            Text = "func_SMILES2IMG seamlessly integrates chemical structure sketching, formula calculation, and 3D macromolecular visualization into Excel, Word, and PowerPoint.\r\n\r\n" +
-                   "• Microsoft Excel: In-cell (=SMILES2IMG, =INCHI2IMG, =KET2IMG), floating (.FLOAT), and property formulas (=SMILES2NAME, =SMILES2MW, =SMILES2FORMULA, =SMILES2INCHI, =SMILES2INCHIKEY).\r\n" +
-                   "• Microsoft Word: Inline and floating high-resolution molecular images with 100% 2D KET canvas preservation and live round-trip editing.\r\n" +
-                   "• Microsoft PowerPoint: Slide shapes with KET metadata, 3D macromolecular Mol* integration, and instant formula conversion.\r\n" +
+            Text = "func_SMILES2IMG seamlessly integrates chemical structure sketching, 26+ formula calculations, and 3D macromolecular visualization into Excel, Word, and PowerPoint.\r\n\r\n" +
+                   "• Microsoft Excel: In-cell (=SMILES2IMG, =INCHI2IMG, =KET2IMG, =NAME2IMG), floating (.FLOAT), and 20+ property/complexity/matching UDFs (=SMILES2MW, =SMILES2LOGP, =SMILES2LIPINSKI, =SMILES2FSP3, =SMILES.MATCH) plus SDF import/export.\r\n" +
+                   "• Microsoft Word: Inline and floating high-resolution molecular images, lossless SVG vector copy, 1-click Batch Style normalization, and live KET round-trip editing.\r\n" +
+                   "• Microsoft PowerPoint: Slide shapes with KET metadata, 3D macromolecular Mol* (.glb / 2D) integration, Batch Style presets, and instant property export.\r\n" +
                    "• Built-in Engines: EPAM Ketcher, EPAM Indigo C++ Toolkit, Mol* 3D Viewer, and IUPAC InChI Library running purely locally and offline.",
-            Height = (int)(140 * dpiScale)
+            Height = (int)(195 * dpiScale)
         };
         AddRow("Description:", txtDesc);
 
@@ -532,6 +533,7 @@ public sealed class AboutDialog : Form
             Dock = DockStyle.Top,
             Font = new Font("Segoe UI", 10.5f, FontStyle.Bold),
             ForeColor = Color.FromArgb(17, 24, 39),
+            UseMnemonic = false,
             Height = (int)(26 * dpiScale)
         };
 
@@ -677,11 +679,11 @@ public sealed class AboutDialog : Form
                 return "v" + v;
             }
             var ver = asm.GetName().Version;
-            return ver != null ? $"v{ver.Major}.{ver.Minor}.{ver.Build}" : "v1.6.0";
+            return ver != null ? $"v{ver.Major}.{ver.Minor}.{ver.Build}" : "v1.8.0";
         }
         catch
         {
-            return "v1.6.0";
+            return "v1.8.0";
         }
     }
 
@@ -807,36 +809,4 @@ public sealed class AboutDialog : Form
         return 0;
     }
 
-    internal static int ComparePrerelease(string preA, string preB)
-    {
-        var partsA = preA.Split('.');
-        var partsB = preB.Split('.');
-        int len = Math.Max(partsA.Length, partsB.Length);
-        for (int i = 0; i < len; i++)
-        {
-            if (i >= partsA.Length) return -1;
-            if (i >= partsB.Length) return 1;
-
-            var a = partsA[i];
-            var b = partsB[i];
-            bool aIsNum = int.TryParse(a, out int aNum);
-            bool bIsNum = int.TryParse(b, out int bNum);
-
-            if (aIsNum && bIsNum)
-            {
-                if (aNum != bNum) return aNum.CompareTo(bNum);
-            }
-            else if (aIsNum != bIsNum)
-            {
-                return aIsNum ? -1 : 1;
-            }
-            else
-            {
-                int cmp = string.Compare(a, b, StringComparison.OrdinalIgnoreCase);
-                if (cmp != 0) return cmp;
-            }
-        }
-        return 0;
-    }
 }
-

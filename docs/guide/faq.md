@@ -52,7 +52,7 @@ Yes! Here is how files behave across platforms:
   - Custom bond/atom ink color: `=SMILES2IMG(A2, "", "ink=#1e40af")`
 
 ### Q. Can I copy lossless vector graphics (`.svg`) for Adobe Illustrator or ChemDraw?
-Yes! Select any molecule cell or picture and click **`[SMILES]`** ➔ **`[Copy SVG]`** on the ribbon (or right-click ➔ **`Chemical Structure`** ➔ **`Copy Vector Graphic (SVG)`**). Paste directly into Adobe Illustrator, Inkscape, or vector editors with zero loss of quality.
+Yes! Select any molecule cell or picture and click **`[SMILES]`** ➔ **`[Copy SVG]`** on the ribbon (or right-click ➔ **`Chemical Structure`** ➔ **`Copy Vector SVG`**). Paste directly into Adobe Illustrator, Inkscape, or vector editors with zero loss of quality.
 
 ### Q. Can I open or save `.sdf` chemical database files in Excel?
 Yes! Click **`[SMILES]`** ➔ **`[SDF File]`** on the Excel ribbon:
@@ -62,7 +62,7 @@ Yes! Click **`[SMILES]`** ➔ **`[SDF File]`** on the Excel ribbon:
 ### Q. How do I copy Molecular Weight, Formula, LogP, and Lipinski info into a table at once?
 **Right-click** any molecule ➔ **`Chemical Structure`** ➔ **`Copy Molecule Info`** and choose your format:
 * **`Copy All Summary (Text)`:** Copies a **2-row table (Headers + Data)**—ideal for starting a new table in Excel or Word.
-* **`Copy as Excel Row (TSV Columns)`:** Copies **only the 12 data columns (no header)**—ideal for appending rows into an existing table.
+* **`Copy as Excel Row (TSV Columns)`:** Copies **only the 17 data columns (no header)**—ideal for appending rows into an existing table.
 * **`Copy as Multi-Line List`:** Ready to paste as bullet points into PowerPoint slide text boxes.
 * **`Copy as Markdown Table` / JSON:** Great for Notion, GitHub, and electronic lab notebooks (also available inside the **Detailed Molecule Info Window**).
 

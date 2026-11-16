@@ -9,6 +9,18 @@ Write-Host "[+] Building solution in Release configuration..." -ForegroundColor 
 dotnet build $slnPath -c Release --nologo -v quiet
 if ($LASTEXITCODE -ne 0) { throw "dotnet build failed with exit code $LASTEXITCODE" }
 
+$repoRoot = Split-Path -Parent $PSScriptRoot
+foreach ($helper in @('install.ps1', 'uninstall.ps1')) {
+    $helperPath = Join-Path $repoRoot $helper
+    if (Test-Path $helperPath) {
+        $bytes = [System.IO.File]::ReadAllBytes($helperPath)
+        if ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF) {
+            [System.IO.File]::WriteAllBytes($helperPath, $bytes[3..($bytes.Length - 1)])
+            Write-Host "[!] Stripped UTF-8 BOM from $helper" -ForegroundColor Yellow
+        }
+    }
+}
+
 foreach ($arch in @('x64', 'x86')) {
     $distArch = Join-Path $PSScriptRoot "..\dist\$arch"
     if (-not (Test-Path $distArch)) { continue }
@@ -31,7 +43,6 @@ foreach ($arch in @('x64', 'x86')) {
         Copy-Item -Path "$excelDir\*.dll" -Destination $tempDir -Force
     }
 
-    $repoRoot = Split-Path -Parent $PSScriptRoot
     foreach ($helper in @('install.ps1', 'uninstall.ps1')) {
         $helperPath = Join-Path $repoRoot $helper
         if (Test-Path $helperPath) { Copy-Item $helperPath -Destination $tempDir -Force }

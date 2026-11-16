@@ -149,7 +149,8 @@ public sealed class MoleculeInfoDialog : Form
 
         _lblStatus = new Label
         {
-            Text = "💡 Double-click any row, click 'Copy', or press Ctrl+C to copy. Use 'Copy All' for spreadsheets.",
+            Text = "Tip: Double-click any row, click 'Copy', or press Ctrl+C to copy. Use 'Copy All' for spreadsheets.",
+            UseMnemonic = false,
             Font = new Font("Segoe UI", 9f, FontStyle.Regular),
             ForeColor = Color.FromArgb(75, 85, 99),
             Dock = DockStyle.Fill,
@@ -436,15 +437,15 @@ public sealed class MoleculeInfoDialog : Form
 
         if (!_info.IsReaction)
         {
-            AddPropertyRow("Molecular Weight", $"{_info.MolecularWeight:F2} g/mol", _info.MolecularWeight.ToString("F2"));
+            if (_info.MolecularWeight > 0 || !_info.IsMacromolecule) AddPropertyRow("Molecular Weight", $"{_info.MolecularWeight:F2} g/mol", _info.MolecularWeight.ToString("F2"));
             AddPropertyRow("Chemical Formula", _info.Formula, _info.Formula);
-            if (_info.ExactMass > 0)
+            if (!_info.IsMacromolecule && _info.ExactMass > 0)
                 AddPropertyRow("Monoisotopic Mass", $"{_info.ExactMass:F4}", _info.ExactMass.ToString("F4"));
-            AddPropertyRow("LogP / TPSA", $"LogP: {_info.LogP:F2}   |   TPSA: {_info.Tpsa:F1} Å²", $"LogP: {_info.LogP:F2}, TPSA: {_info.Tpsa:F1}");
+            if (!_info.IsMacromolecule) AddPropertyRow("LogP / TPSA", $"LogP: {_info.LogP:F2}   |   TPSA: {_info.Tpsa:F1} Å²", $"LogP: {_info.LogP:F2}, TPSA: {_info.Tpsa:F1}");
             var lipinskiStatus = _info.PassesLipinski ? "Pass" : "Violation";
-            AddPropertyRow("Lipinski Rule of 5", $"{lipinskiStatus} (HBD: {_info.HBondDonors}, HBA: {_info.HBondAcceptors}, RotBonds: {_info.RotatableBonds})", $"{lipinskiStatus} (HBD={_info.HBondDonors}, HBA={_info.HBondAcceptors}, RotBonds={_info.RotatableBonds})");
-            AddPropertyRow("Rings & Aromaticity", $"Rings: {_info.RingCount} (Aromatic: {_info.AromaticRingCount})   |   Heavy Atoms: {_info.HeavyAtomCount}", $"Rings={_info.RingCount}, AromaticRings={_info.AromaticRingCount}, HeavyAtoms={_info.HeavyAtomCount}");
-            AddPropertyRow("3D Complexity (Fsp3)", $"Fsp3: {_info.Fsp3:F2}   |   Chiral Centers: {_info.ChiralCenters}", $"Fsp3={_info.Fsp3:F2}, ChiralCenters={_info.ChiralCenters}");
+            if (!_info.IsMacromolecule) AddPropertyRow("Lipinski Rule of 5", $"{lipinskiStatus} (HBD: {_info.HBondDonors}, HBA: {_info.HBondAcceptors}, RotBonds: {_info.RotatableBonds})", $"{lipinskiStatus} (HBD={_info.HBondDonors}, HBA={_info.HBondAcceptors}, RotBonds={_info.RotatableBonds})");
+            if (!_info.IsMacromolecule) AddPropertyRow("Rings & Aromaticity", $"Rings: {_info.RingCount} (Aromatic: {_info.AromaticRingCount})   |   Heavy Atoms: {_info.HeavyAtomCount}", $"Rings={_info.RingCount}, AromaticRings={_info.AromaticRingCount}, HeavyAtoms={_info.HeavyAtomCount}");
+            if (!_info.IsMacromolecule) AddPropertyRow("3D Complexity (Fsp3)", $"Fsp3: {_info.Fsp3:F2}   |   Chiral Centers: {_info.ChiralCenters}", $"Fsp3={_info.Fsp3:F2}, ChiralCenters={_info.ChiralCenters}");
         }
 
         AddPropertyRow("Canonical SMILES", _info.Smiles, _info.Smiles, isCode: true);
@@ -523,7 +524,7 @@ public sealed class MoleculeInfoDialog : Form
 
         dgv.CellPainting += (s, e) =>
         {
-            if (e.RowIndex >= 0 && e.ColumnIndex == 2)
+            if (e.RowIndex >= 0 && e.ColumnIndex == colAction.Index)
             {
                 e.PaintBackground(e.CellBounds, true);
                 string btnText = e.Value?.ToString() ?? "Copy";
@@ -565,7 +566,7 @@ public sealed class MoleculeInfoDialog : Form
 
         dgv.CellMouseEnter += (s, e) =>
         {
-            if (e.RowIndex >= 0 && e.ColumnIndex == 2)
+            if (e.RowIndex >= 0 && e.ColumnIndex == colAction.Index)
             {
                 dgv.Cursor = Cursors.Hand;
             }

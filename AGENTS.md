@@ -119,6 +119,8 @@ Office Fluent UI (RibbonX XML)에서 아이콘(`imageMso`)을 변경할 때 아�
   - Monoisotopic Mass: 초록색 질량 스펙트럼 피크
   - LogP / TPSA: 파란색 수용성 물방울
   - Lipinski Rule of 5: 빨간색/주황색 알약(캡슐)
+  - Rings & Aromaticity: 청록색 벤젠 방향족 육각 고리
+  - 3D Complexity (Fsp3): 보라색 3D 사면체 입체 결합
   - Canonical SMILES: 연두색 화학 결합 노드
   - InChI / InChIKey: 황금색 열쇠 & 보안 자물쇠
 
@@ -134,6 +136,7 @@ Office Fluent UI (RibbonX XML)에서 아이콘(`imageMso`)을 변경할 때 아�
 4. `docs/.vitepress/config.mts`: 최신 버전 뱃지
 5. `docs/index.md` & `docs/ko/index.md`
 6. `docs/guide/getting-started.md` & `docs/ko/guide/getting-started.md`
+7. `install.ps1`: `$TargetReleaseTag` 및 어셈블리 폴백 버전 번호
 
 ### 검증 및 배포 커맨드:
 ```powershell

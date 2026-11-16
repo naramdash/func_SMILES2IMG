@@ -455,68 +455,93 @@ public static partial class KetcherEditor
             if (app.ActiveSheet is not Excel.Worksheet sheet) return 0;
 
             var options = RenderOptions.Parse(background, style, null);
-            var formulaRegex = new System.Text.RegularExpressions.Regex(
-                @"^=\s*(?<fn>(?:SMILES2IMG|KET2IMG|INCHI2IMG|NAME2IMG)(?:\.FLOAT)?)\s*\(\s*(?<arg1>""(?:""""|[^""])*""|[^,)]+)(?:\s*,\s*[^,)]*)*\s*\)\s*$",
-                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            var selectedShape = GetSelectedShape(app);
+            bool hasMultiCellSelection = false;
 
-            var used = sheet.UsedRange;
-            if (used != null)
+            if (selectedShape == null)
             {
-                int rows = Math.Min(used.Rows.Count, 500);
-                int cols = Math.Min(used.Columns.Count, 50);
-                for (int r = 1; r <= rows; r++)
+                var formulaRegex = new System.Text.RegularExpressions.Regex(
+                    @"^=\s*(?<fn>(?:SMILES2IMG|KET2IMG|INCHI2IMG|NAME2IMG)(?:\.FLOAT)?)\s*\(\s*(?<arg1>""(?:""""|[^""])*""|[^,)]+)(?:\s*,\s*[^,)]*)*\s*\)\s*$",
+                    System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+                var used = sheet.UsedRange;
+                try
                 {
-                    for (int c = 1; c <= cols; c++)
+                    if (app.Selection is Excel.Range selRange && selRange.Count > 1 && used != null)
                     {
-                        try
+                        hasMultiCellSelection = true;
+                        var intersected = app.Intersect(selRange, used);
+                        used = intersected;
+                    }
+                }
+                catch { }
+                if (used != null)
+                {
+                    int rows = Math.Min(used.Rows.Count, 500);
+                    int cols = Math.Min(used.Columns.Count, 50);
+                    for (int r = 1; r <= rows; r++)
+                    {
+                        for (int c = 1; c <= cols; c++)
                         {
-                            var cell = (Excel.Range)used.Cells[r, c];
-                            string formula = Convert.ToString((object?)cell.Formula) ?? "";
-                            if (string.IsNullOrEmpty(formula) || !formula.StartsWith("=", StringComparison.Ordinal))
-                                continue;
-
-                            var m = formulaRegex.Match(formula);
-                            if (m.Success)
+                            try
                             {
-                                var fn = m.Groups["fn"].Value;
-                                var arg1 = m.Groups["arg1"].Value.Trim();
-                                cell.Formula = $"={fn}({arg1}, \"{background}\", \"{style}\")";
-                                updated++;
+                                var cell = (Excel.Range)used.Cells[r, c];
+                                string formula = Convert.ToString((object?)cell.Formula) ?? "";
+                                if (string.IsNullOrEmpty(formula) || !formula.StartsWith("=", StringComparison.Ordinal))
+                                    continue;
+
+                                var m = formulaRegex.Match(formula);
+                                if (m.Success)
+                                {
+                                    var fn = m.Groups["fn"].Value;
+                                    var arg1 = m.Groups["arg1"].Value.Trim();
+                                    cell.Formula = $"={fn}({arg1}, \"{background}\", \"{style}\")";
+                                    updated++;
+                                }
                             }
+                            catch { }
                         }
-                        catch { }
                     }
                 }
             }
 
-            try
+            if (selectedShape != null || !hasMultiCellSelection)
             {
-                var shapesToUpdate = new System.Collections.Generic.List<Excel.Shape>();
-                foreach (Excel.Shape s in sheet.Shapes)
+                try
                 {
-                    string? title = null;
-                    try { title = s.Title; } catch { }
-                    if (!string.IsNullOrEmpty(title) && FloatingPictures.TryParseTitle(title, out _, out _))
-                        continue;
+                    var shapesToUpdate = new System.Collections.Generic.List<Excel.Shape>();
+                    var candidates = new System.Collections.Generic.List<Excel.Shape>();
+                    if (selectedShape != null)
+                        candidates.Add(selectedShape);
+                    else
+                        foreach (Excel.Shape shapeItem in sheet.Shapes) candidates.Add(shapeItem);
 
-                    if (StructureMetadata.IsMolstar(s.AlternativeText, title))
-                        continue;
-
-                    if (!string.IsNullOrEmpty(ExtractStructure(s)))
-                        shapesToUpdate.Add(s);
-                }
-
-                foreach (var s in shapesToUpdate)
-                {
-                    var raw = ExtractStructure(s);
-                    if (MoleculeRenderer.TryRenderStructure(raw, options, out var pngBytes, out var ket, out var smiles) && pngBytes != null)
+                    foreach (var s in candidates)
                     {
-                        ReplaceShape(s, ket, smiles, pngBytes);
-                        updated++;
+                        string? title = null;
+                        try { title = s.Title; } catch { }
+                        if (!string.IsNullOrEmpty(title) && FloatingPictures.TryParseTitle(title, out _, out _))
+                            continue;
+
+                        if (StructureMetadata.IsMolstar(s.AlternativeText, title))
+                            continue;
+
+                        if (!string.IsNullOrEmpty(ExtractStructure(s)))
+                            shapesToUpdate.Add(s);
+                    }
+
+                    foreach (var s in shapesToUpdate)
+                    {
+                        var raw = ExtractStructure(s);
+                        if (MoleculeRenderer.TryRenderStructure(raw, options, out var pngBytes, out var ket, out var smiles) && pngBytes != null)
+                        {
+                            ReplaceShape(s, ket, smiles, pngBytes);
+                            updated++;
+                        }
                     }
                 }
+                catch { }
             }
-            catch { }
 
             if (updated > 0)
                 MoleculeNotification.NotifyCopied("Batch Style", $"Updated {updated} structure(s) to {presetLabel}");
@@ -700,7 +725,7 @@ public static partial class KetcherEditor
                     try
                     {
                         var cell = (Excel.Range)used.Cells[r, c];
-                        string? extracted = ExtractSmilesFromCell(cell);
+                        string? extracted = ExtractSmilesFromCell(cell, allowPlainTextNameLookup: false);
                         if (!string.IsNullOrWhiteSpace(extracted) && string.IsNullOrEmpty(rowSmiles))
                         {
                             rowSmiles = extracted;

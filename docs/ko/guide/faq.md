@@ -52,7 +52,7 @@
   - 원하는 브랜드/테마 선 색상 지정: `=SMILES2IMG(A2, "", "ink=#1e40af")`
 
 ### Q. Adobe Illustrator나 ChemDraw에 붙여넣을 수 있게 벡터(`.svg`)로 복사할 수 있나요?
-네! 분자 셀이나 그림을 선택하고 상단 리본 **`[SMILES]`** ➔ **`[Copy SVG]`** (또는 우클릭 ➔ **`Chemical Structure`** ➔ **`Copy Vector Graphic (SVG)`**) 메뉴를 클릭하세요. 아무리 확대해도 깨지지 않는 벡터 그래픽으로 복사되어 Illustrator, Inkscape 등에 바로 붙여넣을 수 있습니다.
+네! 분자 셀이나 그림을 선택하고 상단 리본 **`[SMILES]`** ➔ **`[Copy SVG]`** (또는 우클릭 ➔ **`Chemical Structure`** ➔ **`Copy Vector SVG`**) 메뉴를 클릭하세요. 아무리 확대해도 깨지지 않는 벡터 그래픽으로 복사되어 Illustrator, Inkscape 등에 바로 붙여넣을 수 있습니다.
 
 ### Q. 엑셀에서 `.sdf` 화학 데이터 파일을 열거나 저장할 수 있나요?
 네! 엑셀 상단 **`[SMILES]`** ➔ **`[SDF File]`** 메뉴를 누르세요:
@@ -62,7 +62,7 @@
 ### Q. 분자량, 화학식, LogP, Lipinski 정보를 표로 한 번에 복사하려면 어떻게 하나요?
 분자 셀이나 그림을 **우클릭** ➔ **`Chemical Structure`** ➔ **`Copy Molecule Info`** 메뉴에서 원하는 서식을 고르세요:
 * **`Copy All Summary (Text)`:** **머리글(Header) + 데이터** 2줄 표로 복사되어 빈 시트나 워드에 새 표를 만들 때 씁니다.
-* **`Copy as Excel Row (TSV Columns)`:** **데이터 행만** 12개 칸으로 복사되어 기존 엑셀/워드 표의 아래 행에 이어 붙일 때 씁니다.
+* **`Copy as Excel Row (TSV Columns)`:** **데이터 행만** 17개 칸으로 복사되어 기존 엑셀/워드 표의 아래 행에 이어 붙일 때 씁니다.
 * **`Copy as Multi-Line List`:** 파워포인트 슬라이드 텍스트 상자에 글머리 기호(불릿)로 붙여넣기 좋습니다.
 * **`Copy as Markdown Table` / JSON:** 노션(Notion), GitHub, 연구노트 등에 바로 붙여넣을 수 있습니다 (`Detailed Molecule Info Window...`에서도 지원).
 

@@ -56,7 +56,8 @@ public sealed class CopiedToast : Form
         var lbl = new Label
         {
             Text = $"{prefix}{title}:\n{Truncate(value, 55)}",
-            Font = new Font("Segoe UI", 9.5f * _dpiScale, FontStyle.Bold),
+            UseMnemonic = false,
+            Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
             ForeColor = Color.White,
             AutoSize = true,
             Dock = DockStyle.Fill,
@@ -96,7 +97,9 @@ public sealed class CopiedToast : Form
             IntPtr hRgn = CreateRoundRectRgn(0, 0, Width, Height, radius, radius);
             if (hRgn != IntPtr.Zero)
             {
+                var oldRegion = Region;
                 Region = Region.FromHrgn(hRgn);
+                oldRegion?.Dispose();
                 DeleteObject(hRgn);
             }
         }

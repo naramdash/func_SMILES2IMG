@@ -1,374 +1,17 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using com.epam.indigo;
 
 namespace Smiles2Img.Rendering;
-
-[Serializable]
-public sealed class InvalidSmilesException(string message) : Exception(message);
-
-public enum MoleculeSummaryFormat
-{
-    CompactOneLine,
-    MultiLine,
-    ExcelTsvRow,
-    ExcelTsvWithHeader,
-    MarkdownTable,
-    Json
-}
-
-public sealed class MoleculeInfo
-{
-    public string CompoundName { get; set; } = "";
-    public string IupacName { get; set; } = "";
-    public string SubstanceName => !string.IsNullOrWhiteSpace(CompoundName) ? CompoundName : IupacName;
-    public string Formula { get; set; } = "";
-    public double MolecularWeight { get; set; }
-    public double ExactMass { get; set; }
-    public double LogP { get; set; }
-    public double Tpsa { get; set; }
-    public int HBondDonors { get; set; }
-    public int HBondAcceptors { get; set; }
-    public int RotatableBonds { get; set; }
-    public int HeavyAtomCount { get; set; }
-    public int RingCount { get; set; }
-    public int AromaticRingCount { get; set; }
-    public double Fsp3 { get; set; }
-    public int ChiralCenters { get; set; }
-    public bool PassesLipinski => MolecularWeight <= 500.0 && LogP <= 5.0 && HBondDonors <= 5 && HBondAcceptors <= 10;
-    public string Smiles { get; set; } = "";
-    public bool IsReaction { get; set; }
-
-    public string InChI { get; set; } = "";
-    public string InChIKey { get; set; } = "";
-
-    public string FormatClipboardSummary(MoleculeSummaryFormat format = MoleculeSummaryFormat.CompactOneLine)
-    {
-        return format switch
-        {
-            MoleculeSummaryFormat.MultiLine => FormatMultiLine(),
-            MoleculeSummaryFormat.ExcelTsvRow => FormatExcelTsv(includeHeader: false),
-            MoleculeSummaryFormat.ExcelTsvWithHeader => FormatExcelTsv(includeHeader: true),
-            MoleculeSummaryFormat.MarkdownTable => FormatMarkdownTable(),
-            MoleculeSummaryFormat.Json => FormatJson(),
-            _ => FormatCompactOneLine()
-        };
-    }
-
-    public string FormatCompactOneLine()
-    {
-        if (IsReaction)
-            return $"Reaction SMILES: {Smiles}";
-
-        var parts = new List<string>();
-        if (!string.IsNullOrWhiteSpace(CompoundName))
-            parts.Add($"Name: {CompoundName}");
-        if (!string.IsNullOrWhiteSpace(IupacName) && !string.Equals(IupacName, CompoundName, StringComparison.OrdinalIgnoreCase))
-            parts.Add($"IUPAC: {IupacName}");
-        parts.Add($"Formula: {Formula}");
-        parts.Add($"MW: {MolecularWeight:F2} g/mol");
-        if (ExactMass > 0)
-            parts.Add($"Exact Mass: {ExactMass:F4}");
-        parts.Add($"LogP: {LogP:F2}");
-        parts.Add($"TPSA: {Tpsa:F1} Å²");
-        parts.Add($"HBD/HBA/RotB: {HBondDonors}/{HBondAcceptors}/{RotatableBonds}");
-        if (HeavyAtomCount > 0)
-            parts.Add($"Heavy/Rings/Arom/Fsp3/Chiral: {HeavyAtomCount}/{RingCount}/{AromaticRingCount}/{Fsp3:F2}/{ChiralCenters}");
-        parts.Add($"SMILES: {Smiles}");
-        if (!string.IsNullOrWhiteSpace(InChI))
-            parts.Add($"InChI: {InChI}");
-        if (!string.IsNullOrWhiteSpace(InChIKey))
-            parts.Add($"InChIKey: {InChIKey}");
-
-        return string.Join(" | ", parts);
-    }
-
-    public string FormatMultiLine()
-    {
-        if (IsReaction)
-            return $"Reaction SMILES:\r\n{Smiles}";
-
-        var lines = new List<string>();
-        if (!string.IsNullOrWhiteSpace(CompoundName))
-            lines.Add($"Substance Name: {CompoundName}");
-        if (!string.IsNullOrWhiteSpace(IupacName) && !string.Equals(IupacName, CompoundName, StringComparison.OrdinalIgnoreCase))
-            lines.Add($"IUPAC Name: {IupacName}");
-        lines.Add($"Formula: {Formula}");
-        lines.Add($"Molecular Weight: {MolecularWeight:F2} g/mol");
-        if (ExactMass > 0)
-            lines.Add($"Exact Mass: {ExactMass:F4}");
-        lines.Add($"LogP: {LogP:F2}");
-        lines.Add($"TPSA: {Tpsa:F1} Å²");
-        lines.Add($"H-Bond Donors: {HBondDonors}");
-        lines.Add($"H-Bond Acceptors: {HBondAcceptors}");
-        lines.Add($"Rotatable Bonds: {RotatableBonds}");
-        lines.Add($"Heavy Atoms: {HeavyAtomCount}");
-        lines.Add($"Rings (Total / Aromatic): {RingCount} / {AromaticRingCount}");
-        lines.Add($"Fraction Csp3 (Fsp3): {Fsp3:F2}");
-        lines.Add($"Chiral Centers: {ChiralCenters}");
-        lines.Add($"Lipinski Rule of 5: {(PassesLipinski ? "Passed" : "Failed")}");
-        lines.Add($"SMILES: {Smiles}");
-        if (!string.IsNullOrWhiteSpace(InChI))
-            lines.Add($"InChI: {InChI}");
-        if (!string.IsNullOrWhiteSpace(InChIKey))
-            lines.Add($"InChIKey: {InChIKey}");
-
-        return string.Join("\r\n", lines);
-    }
-
-    private static string CleanTsvField(string? s)
-    {
-        if (string.IsNullOrEmpty(s)) return "";
-        return s!.Replace("\t", " ").Replace("\r", "").Replace("\n", " ").Trim();
-    }
-
-    public string FormatExcelTsv(bool includeHeader = false)
-    {
-        if (IsReaction)
-            return includeHeader ? "Type\tSMILES\r\nReaction\t" + Smiles : "Reaction\t" + Smiles;
-
-        var rowValues = new List<string>
-        {
-            CleanTsvField(SubstanceName),
-            CleanTsvField(Formula),
-            MolecularWeight.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
-            ExactMass > 0 ? ExactMass.ToString("F4", System.Globalization.CultureInfo.InvariantCulture) : "",
-            LogP.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
-            Tpsa.ToString("F1", System.Globalization.CultureInfo.InvariantCulture),
-            HBondDonors.ToString(),
-            HBondAcceptors.ToString(),
-            RotatableBonds.ToString(),
-            HeavyAtomCount.ToString(),
-            RingCount.ToString(),
-            AromaticRingCount.ToString(),
-            Fsp3.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
-            ChiralCenters.ToString(),
-            PassesLipinski ? "Pass" : "Fail",
-            CleanTsvField(Smiles),
-            CleanTsvField(InChIKey)
-        };
-        string row = string.Join("\t", rowValues);
-
-        if (!includeHeader)
-            return row;
-
-        var headerValues = new[]
-        {
-            "Name", "Formula", "MW (g/mol)", "Exact Mass", "LogP", "TPSA (Å²)",
-            "HBD", "HBA", "RotB", "Heavy Atoms", "Rings", "Aromatic Rings", "Fsp3", "Chiral Centers", "Lipinski", "SMILES", "InChIKey"
-        };
-        string header = string.Join("\t", headerValues);
-        return header + "\r\n" + row;
-    }
-
-    public string FormatMarkdownTable()
-    {
-        if (IsReaction)
-            return "| Property | Value |\r\n| :--- | :--- |\r\n| **Type** | Chemical Reaction |\r\n| **SMILES** | `" + Smiles + "` |\r\n";
-
-        var sb = new System.Text.StringBuilder();
-        sb.AppendLine("| Property | Value |");
-        sb.AppendLine("| :--- | :--- |");
-        if (!string.IsNullOrWhiteSpace(SubstanceName))
-            sb.AppendLine($"| **Substance Name** | {SubstanceName} |");
-        if (!string.IsNullOrWhiteSpace(IupacName) && !string.Equals(IupacName, CompoundName, StringComparison.OrdinalIgnoreCase))
-            sb.AppendLine($"| **IUPAC Name** | {IupacName} |");
-        sb.AppendLine($"| **Formula** | {Formula} |");
-        sb.AppendLine($"| **Molecular Weight** | {MolecularWeight:F2} g/mol |");
-        if (ExactMass > 0)
-            sb.AppendLine($"| **Exact Mass** | {ExactMass:F4} |");
-        sb.AppendLine($"| **LogP** | {LogP:F2} |");
-        sb.AppendLine($"| **TPSA** | {Tpsa:F1} Å² |");
-        sb.AppendLine($"| **HBD / HBA / RotB** | {HBondDonors} / {HBondAcceptors} / {RotatableBonds} |");
-        sb.AppendLine($"| **Heavy Atoms / Chiral** | {HeavyAtomCount} / {ChiralCenters} |");
-        sb.AppendLine($"| **Rings (Total / Aromatic)** | {RingCount} / {AromaticRingCount} |");
-        sb.AppendLine($"| **Fraction Csp3 (Fsp3)** | {Fsp3:F2} |");
-        sb.AppendLine($"| **Lipinski Rule of 5** | {(PassesLipinski ? "Passed" : "Failed")} |");
-        sb.AppendLine($"| **SMILES** | `{Smiles}` |");
-        if (!string.IsNullOrWhiteSpace(InChI))
-            sb.AppendLine($"| **InChI** | `{InChI}` |");
-        if (!string.IsNullOrWhiteSpace(InChIKey))
-            sb.AppendLine($"| **InChIKey** | `{InChIKey}` |");
-
-        return sb.ToString().TrimEnd();
-    }
-
-    public string FormatJson()
-    {
-        if (IsReaction)
-            return "{\r\n  \"type\": \"reaction\",\r\n  \"smiles\": \"" + EscapeJson(Smiles) + "\"\r\n}";
-
-        var sb = new System.Text.StringBuilder();
-        sb.AppendLine("{");
-        sb.AppendLine($"  \"name\": \"{EscapeJson(SubstanceName)}\",");
-        if (!string.IsNullOrWhiteSpace(IupacName) && !string.Equals(IupacName, CompoundName, StringComparison.OrdinalIgnoreCase))
-            sb.AppendLine($"  \"iupacName\": \"{EscapeJson(IupacName)}\",");
-        sb.AppendLine($"  \"formula\": \"{EscapeJson(Formula)}\",");
-        sb.AppendLine($"  \"molecularWeight\": {MolecularWeight.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)},");
-        if (ExactMass > 0)
-            sb.AppendLine($"  \"exactMass\": {ExactMass.ToString("F4", System.Globalization.CultureInfo.InvariantCulture)},");
-        sb.AppendLine($"  \"logP\": {LogP.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)},");
-        sb.AppendLine($"  \"tpsa\": {Tpsa.ToString("F1", System.Globalization.CultureInfo.InvariantCulture)},");
-        sb.AppendLine($"  \"hBondDonors\": {HBondDonors},");
-        sb.AppendLine($"  \"hBondAcceptors\": {HBondAcceptors},");
-        sb.AppendLine($"  \"rotatableBonds\": {RotatableBonds},");
-        sb.AppendLine($"  \"heavyAtomCount\": {HeavyAtomCount},");
-        sb.AppendLine($"  \"ringCount\": {RingCount},");
-        sb.AppendLine($"  \"aromaticRingCount\": {AromaticRingCount},");
-        sb.AppendLine($"  \"fsp3\": {Fsp3.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)},");
-        sb.AppendLine($"  \"chiralCenters\": {ChiralCenters},");
-        sb.AppendLine($"  \"passesLipinski\": {(PassesLipinski ? "true" : "false")},");
-        sb.AppendLine($"  \"smiles\": \"{EscapeJson(Smiles)}\",");
-        if (!string.IsNullOrWhiteSpace(InChI))
-            sb.AppendLine($"  \"inchi\": \"{EscapeJson(InChI)}\",");
-        sb.AppendLine($"  \"inchiKey\": \"{EscapeJson(InChIKey)}\"");
-        sb.Append("}");
-        return sb.ToString();
-    }
-
-    private static string EscapeJson(string? s)
-    {
-        if (string.IsNullOrEmpty(s)) return "";
-        return s!.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\r", "\\r").Replace("\n", "\\n").Replace("\t", "\\t");
-    }
-
-    public string FormatHtmlTable()
-    {
-        var rows = new List<(string Key, string Val)>();
-        if (!string.IsNullOrWhiteSpace(SubstanceName)) rows.Add(("Substance Name", SubstanceName));
-        if (!string.IsNullOrWhiteSpace(IupacName) && !string.Equals(IupacName, CompoundName, StringComparison.OrdinalIgnoreCase))
-            rows.Add(("IUPAC Name", IupacName));
-        rows.Add(("Formula", Formula));
-        rows.Add(("Molecular Weight", $"{MolecularWeight:F2} g/mol"));
-        if (ExactMass > 0) rows.Add(("Exact Mass", $"{ExactMass:F4}"));
-        rows.Add(("LogP", $"{LogP:F2}"));
-        rows.Add(("TPSA", $"{Tpsa:F1} Å²"));
-        rows.Add(("HBD / HBA / RotB", $"{HBondDonors} / {HBondAcceptors} / {RotatableBonds}"));
-        rows.Add(("Heavy Atoms / Chiral", $"{HeavyAtomCount} / {ChiralCenters}"));
-        rows.Add(("Rings (Total / Aromatic)", $"{RingCount} / {AromaticRingCount}"));
-        rows.Add(("Fraction Csp3 (Fsp3)", $"{Fsp3:F2}"));
-        rows.Add(("Lipinski Rule of 5", PassesLipinski ? "Passed" : "Failed"));
-        rows.Add(("SMILES", Smiles));
-        if (!string.IsNullOrWhiteSpace(InChIKey)) rows.Add(("InChIKey", InChIKey));
-
-        var sb = new System.Text.StringBuilder();
-        sb.Append("<table style=\"border-collapse:collapse;font-family:'Segoe UI',Arial,sans-serif;font-size:10pt;border:1px solid #d1d5db;\">");
-        sb.Append("<thead><tr style=\"background-color:#184c78;color:#ffffff;\">");
-        sb.Append("<th style=\"padding:6px 14px;border:1px solid #d1d5db;text-align:left;\">Property</th>");
-        sb.Append("<th style=\"padding:6px 14px;border:1px solid #d1d5db;text-align:left;\">Value</th>");
-        sb.Append("</tr></thead><tbody>");
-        bool alt = false;
-        foreach (var (k, v) in rows)
-        {
-            string bg = alt ? "#f9fafb" : "#ffffff";
-            sb.Append($"<tr style=\"background-color:{bg};\">");
-            sb.Append($"<td style=\"padding:5px 12px;border:1px solid #e5e7eb;font-weight:600;color:#374151;\">{System.Net.WebUtility.HtmlEncode(k)}</td>");
-            sb.Append($"<td style=\"padding:5px 12px;border:1px solid #e5e7eb;color:#111827;\">{System.Net.WebUtility.HtmlEncode(v)}</td>");
-            sb.Append("</tr>");
-            alt = !alt;
-        }
-        sb.Append("</tbody></table>");
-        return sb.ToString();
-    }
-
-    public string FormatHtmlHorizontalTable(bool includeHeader = true)
-    {
-        if (IsReaction)
-        {
-            return "<table style=\"border-collapse:collapse;font-family:'Segoe UI',Arial,sans-serif;font-size:10pt;border:1px solid #d1d5db;\">" +
-                   "<thead><tr style=\"background-color:#184c78;color:#ffffff;\"><th style=\"padding:6px 14px;border:1px solid #d1d5db;text-align:left;\">Type</th><th style=\"padding:6px 14px;border:1px solid #d1d5db;text-align:left;\">SMILES</th></tr></thead>" +
-                   $"<tbody><tr><td style=\"padding:5px 12px;border:1px solid #e5e7eb;\">Reaction</td><td style=\"padding:5px 12px;border:1px solid #e5e7eb;\">{System.Net.WebUtility.HtmlEncode(Smiles)}</td></tr></tbody></table>";
-        }
-
-        var headerValues = new[]
-        {
-            "Name", "Formula", "MW (g/mol)", "Exact Mass", "LogP", "TPSA (Å²)",
-            "HBD", "HBA", "RotB", "Heavy Atoms", "Rings", "Aromatic Rings", "Fsp3", "Chiral Centers", "Lipinski", "SMILES", "InChIKey"
-        };
-        var rowValues = new[]
-        {
-            CleanTsvField(SubstanceName),
-            CleanTsvField(Formula),
-            MolecularWeight.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
-            ExactMass > 0 ? ExactMass.ToString("F4", System.Globalization.CultureInfo.InvariantCulture) : "",
-            LogP.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
-            Tpsa.ToString("F1", System.Globalization.CultureInfo.InvariantCulture),
-            HBondDonors.ToString(),
-            HBondAcceptors.ToString(),
-            RotatableBonds.ToString(),
-            HeavyAtomCount.ToString(),
-            RingCount.ToString(),
-            AromaticRingCount.ToString(),
-            Fsp3.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
-            ChiralCenters.ToString(),
-            PassesLipinski ? "Pass" : "Fail",
-            CleanTsvField(Smiles),
-            CleanTsvField(InChIKey)
-        };
-
-        var sb = new System.Text.StringBuilder();
-        sb.Append("<table style=\"border-collapse:collapse;font-family:'Segoe UI',Arial,sans-serif;font-size:10pt;border:1px solid #d1d5db;\">");
-        if (includeHeader)
-        {
-            sb.Append("<thead><tr style=\"background-color:#184c78;color:#ffffff;\">");
-            foreach (var h in headerValues)
-            {
-                sb.Append($"<th style=\"padding:6px 12px;border:1px solid #d1d5db;text-align:left;\">{System.Net.WebUtility.HtmlEncode(h)}</th>");
-            }
-            sb.Append("</tr></thead>");
-        }
-        sb.Append("<tbody><tr>");
-        foreach (var v in rowValues)
-        {
-            sb.Append($"<td style=\"padding:5px 12px;border:1px solid #e5e7eb;color:#111827;\">{System.Net.WebUtility.HtmlEncode(v)}</td>");
-        }
-        sb.Append("</tr></tbody></table>");
-        return sb.ToString();
-    }
-
-    public string? FormatHtmlForSummary(MoleculeSummaryFormat format)
-    {
-        return format switch
-        {
-            MoleculeSummaryFormat.MultiLine => FormatHtmlTable(),
-            MoleculeSummaryFormat.ExcelTsvRow => FormatHtmlHorizontalTable(includeHeader: false),
-            MoleculeSummaryFormat.ExcelTsvWithHeader => FormatHtmlHorizontalTable(includeHeader: true),
-            MoleculeSummaryFormat.MarkdownTable => FormatHtmlTable(),
-            _ => null
-        };
-    }
-
-    public string FormatDisplayMessage()
-    {
-        if (IsReaction)
-            return $"[Reaction]\n\n• Reaction SMILES: {Smiles}";
-
-        var sb = new System.Text.StringBuilder();
-        if (!string.IsNullOrWhiteSpace(CompoundName))
-            sb.AppendLine($"• Substance Name: {CompoundName}");
-        if (!string.IsNullOrWhiteSpace(IupacName) && !string.Equals(IupacName, CompoundName, StringComparison.OrdinalIgnoreCase))
-            sb.AppendLine($"• IUPAC Name: {IupacName}");
-        sb.AppendLine($"• Formula: {Formula}");
-        sb.AppendLine($"• Molecular Weight (MW): {MolecularWeight:F2} g/mol");
-        if (ExactMass > 0)
-            sb.AppendLine($"• Exact Mass: {ExactMass:F4}");
-        sb.AppendLine($"• LogP (Crippen): {LogP:F2} | TPSA: {Tpsa:F1} Å²");
-        sb.AppendLine($"• Lipinski Ro5: {(PassesLipinski ? "Pass" : "Violation")} (HBD: {HBondDonors}, HBA: {HBondAcceptors}, RotBonds: {RotatableBonds})");
-        sb.AppendLine($"• Complexity: Heavy={HeavyAtomCount}, Rings={RingCount} (Arom={AromaticRingCount}), Fsp3={Fsp3:F2}, Chiral={ChiralCenters}");
-        sb.AppendLine($"• Canonical SMILES: {Smiles}");
-        if (!string.IsNullOrWhiteSpace(InChI))
-            sb.AppendLine($"• InChI: {InChI}");
-        if (!string.IsNullOrWhiteSpace(InChIKey))
-            sb.Append($"• InChIKey: {InChIKey}");
-        return sb.ToString().TrimEnd();
-    }
-}
 
 public static class MoleculeRenderer
 {
     private const int RingTopology = 10;
     private static readonly char[] TransformSeparators = [' ', ',', '|', ';'];
+    private static readonly ConcurrentDictionary<string, MoleculeInfo?> _infoCache = new(StringComparer.Ordinal);
 
     public static bool IsInchi(string? text)
     {
@@ -420,6 +63,42 @@ public static class MoleculeRenderer
     public static byte[] Render(string smiles, RenderOptions options)
         => RenderCore(smiles, options, "png");
 
+    private static void ConfigureBaseRendererOptions(Indigo indigo, RenderOptions options, string outputFormat)
+    {
+        indigo.setOption("render-output-format", outputFormat);
+        indigo.setOption("render-bond-length", 80.0);
+        indigo.setOption("render-margins", 30, 30);
+        indigo.setOption("render-relative-thickness", 1.5);
+        indigo.setOption("aromaticity-model", "generic");
+        indigo.setOption("render-coloring", options.Color);
+
+        ApplyBackground(indigo, options.Background);
+
+        if (!string.IsNullOrWhiteSpace(options.BaseColor))
+            ApplyBaseColor(indigo, options.BaseColor);
+    }
+
+    private static string StripStructurePrefixes(string? rawInput, out string? embeddedSmiles)
+    {
+        embeddedSmiles = null;
+        if (string.IsNullOrWhiteSpace(rawInput)) return "";
+
+        var input = rawInput!.Trim();
+        var smilesIdx = input.IndexOf("\nSMILES:", StringComparison.OrdinalIgnoreCase);
+        if (smilesIdx >= 0)
+        {
+            embeddedSmiles = input.Substring(smilesIdx + 8).Trim();
+            input = input.Substring(0, smilesIdx).Trim();
+        }
+
+        if (input.StartsWith("KET:", StringComparison.OrdinalIgnoreCase))
+            input = input.Substring(4).Trim();
+        else if (input.StartsWith("SMILES:", StringComparison.OrdinalIgnoreCase))
+            input = input.Substring(7).Trim();
+
+        return input;
+    }
+
     private static byte[] RenderCore(string smiles, RenderOptions options, string outputFormat)
     {
         NativeIndigo.EnsureInitialized();
@@ -427,19 +106,9 @@ public static class MoleculeRenderer
         using var indigo = new Indigo();
         using var renderer = new IndigoRenderer(indigo);
 
-        indigo.setOption("render-output-format", outputFormat);
-        indigo.setOption("render-bond-length", 80.0);
-        indigo.setOption("render-margins", 30, 30);
-        indigo.setOption("render-relative-thickness", 1.5);
-        indigo.setOption("aromaticity-model", "generic");
+        ConfigureBaseRendererOptions(indigo, options, outputFormat);
         indigo.setOption("smart-layout", "true");
         indigo.setOption("layout-orientation", "horizontal");
-        indigo.setOption("render-coloring", options.Color);
-
-        ApplyBackground(indigo, options.Background);
-
-        if (!string.IsNullOrWhiteSpace(options.BaseColor))
-            ApplyBaseColor(indigo, options.BaseColor);
 
         if (options.AtomNumbers)
         {
@@ -646,17 +315,7 @@ public static class MoleculeRenderer
         using var indigo = new Indigo();
         using var renderer = new IndigoRenderer(indigo);
 
-        indigo.setOption("render-output-format", outputFormat);
-        indigo.setOption("render-bond-length", 80.0);
-        indigo.setOption("render-margins", 30, 30);
-        indigo.setOption("render-relative-thickness", 1.5);
-        indigo.setOption("aromaticity-model", "generic");
-        indigo.setOption("render-coloring", options.Color);
-
-        ApplyBackground(indigo, options.Background);
-
-        if (!string.IsNullOrWhiteSpace(options.BaseColor))
-            ApplyBaseColor(indigo, options.BaseColor);
+        ConfigureBaseRendererOptions(indigo, options, outputFormat);
 
         IndigoObject? obj = null;
         var isReaction = false;
@@ -694,17 +353,7 @@ public static class MoleculeRenderer
 
     public static string? RenderSvg(string? rawInput, RenderOptions? options = null)
     {
-        if (string.IsNullOrWhiteSpace(rawInput)) return null;
-        var input = rawInput!.Trim();
-        var smilesIdx = input.IndexOf("\nSMILES:", StringComparison.OrdinalIgnoreCase);
-        if (smilesIdx >= 0)
-            input = input.Substring(0, smilesIdx).Trim();
-
-        if (input.StartsWith("KET:", StringComparison.OrdinalIgnoreCase))
-            input = input.Substring(4).Trim();
-        else if (input.StartsWith("SMILES:", StringComparison.OrdinalIgnoreCase))
-            input = input.Substring(7).Trim();
-
+        var input = StripStructurePrefixes(rawInput, out _);
         if (string.IsNullOrWhiteSpace(input)) return null;
         options ??= RenderOptions.Default;
 
@@ -714,7 +363,7 @@ public static class MoleculeRenderer
             {
                 var bytes = RenderKetCore(input, options, "svg");
                 if (bytes != null && bytes.Length > 0)
-                    return System.Text.Encoding.UTF8.GetString(bytes);
+                    return Encoding.UTF8.GetString(bytes);
             }
             catch { }
         }
@@ -723,7 +372,7 @@ public static class MoleculeRenderer
         {
             var bytes = RenderCore(input, options, "svg");
             if (bytes != null && bytes.Length > 0)
-                return System.Text.Encoding.UTF8.GetString(bytes);
+                return Encoding.UTF8.GetString(bytes);
         }
         catch { }
 
@@ -731,7 +380,7 @@ public static class MoleculeRenderer
         {
             var bytes = RenderKetCore(input, options, "svg");
             if (bytes != null && bytes.Length > 0)
-                return System.Text.Encoding.UTF8.GetString(bytes);
+                return Encoding.UTF8.GetString(bytes);
         }
         catch { }
 
@@ -802,16 +451,7 @@ public static class MoleculeRenderer
 
     private static IndigoObject? TryLoadMoleculeForAnalysis(Indigo indigo, string rawInput)
     {
-        var input = rawInput.Trim();
-        var smilesIdx = input.IndexOf("\nSMILES:", StringComparison.OrdinalIgnoreCase);
-        if (smilesIdx >= 0)
-            input = input.Substring(0, smilesIdx).Trim();
-
-        if (input.StartsWith("KET:", StringComparison.OrdinalIgnoreCase))
-            input = input.Substring(4).Trim();
-        else if (input.StartsWith("SMILES:", StringComparison.OrdinalIgnoreCase))
-            input = input.Substring(7).Trim();
-
+        var input = StripStructurePrefixes(rawInput, out _);
         if (string.IsNullOrWhiteSpace(input)) return null;
 
         try
@@ -893,22 +533,7 @@ public static class MoleculeRenderer
 
     public static MoleculeInfo? TryGetMoleculeInfo(string? structureOrSmiles, bool resolvePubChem = false)
     {
-        if (string.IsNullOrWhiteSpace(structureOrSmiles)) return null;
-        var input = structureOrSmiles!.Trim();
-        string? fallbackSmiles = null;
-
-        var smilesIdx = input.IndexOf("\nSMILES:", StringComparison.OrdinalIgnoreCase);
-        if (smilesIdx >= 0)
-        {
-            fallbackSmiles = input.Substring(smilesIdx + 8).Trim();
-            input = input.Substring(0, smilesIdx).Trim();
-        }
-
-        if (input.StartsWith("KET:", StringComparison.OrdinalIgnoreCase))
-            input = input.Substring(4).Trim();
-        else if (input.StartsWith("SMILES:", StringComparison.OrdinalIgnoreCase))
-            input = input.Substring(7).Trim();
-
+        var input = StripStructurePrefixes(structureOrSmiles, out var fallbackSmiles);
         if (string.IsNullOrWhiteSpace(input))
             input = fallbackSmiles ?? "";
 
@@ -921,6 +546,20 @@ public static class MoleculeRenderer
     }
 
     private static MoleculeInfo? TryGetMoleculeInfoCore(string input, bool resolvePubChem)
+    {
+        if (!resolvePubChem && _infoCache.TryGetValue(input, out var cached))
+            return cached;
+
+        var computed = ComputeMoleculeInfoCore(input, resolvePubChem);
+        if (!resolvePubChem)
+        {
+            if (_infoCache.Count > 2048) _infoCache.Clear();
+            _infoCache[input] = computed;
+        }
+        return computed;
+    }
+
+    private static MoleculeInfo? ComputeMoleculeInfoCore(string input, bool resolvePubChem)
     {
         NativeIndigo.EnsureInitialized();
         try
@@ -944,7 +583,14 @@ public static class MoleculeRenderer
                 }
                 catch { }
 
-                if (mol != null && mol.countAtoms() > 0)
+                bool hasAtoms = false;
+                try { hasAtoms = mol != null && mol.countAtoms() > 0; } catch { }
+                if (!hasAtoms)
+                {
+                    try { mol?.Dispose(); } catch { }
+                    try { inchi?.Dispose(); } catch { }
+                }
+                else if (mol != null)
                 {
                     using (mol)
                     {
@@ -980,30 +626,39 @@ public static class MoleculeRenderer
 
                             foreach (IndigoObject ring in aromMol.iterateSSSR())
                             {
-                                bool allAromatic = true;
-                                int bondCount = 0;
-                                foreach (IndigoObject b in ring.iterateBonds())
+                                using (ring)
                                 {
-                                    bondCount++;
-                                    if (b.bondOrder() != 4)
+                                    bool allAromatic = true;
+                                    int bondCount = 0;
+                                    foreach (IndigoObject b in ring.iterateBonds())
                                     {
-                                        allAromatic = false;
-                                        break;
+                                        using (b)
+                                        {
+                                            bondCount++;
+                                            if (b.bondOrder() != 4)
+                                            {
+                                                allAromatic = false;
+                                                break;
+                                            }
+                                        }
                                     }
+                                    if (bondCount > 0 && allAromatic)
+                                        aromaticRings++;
                                 }
-                                if (bondCount > 0 && allAromatic)
-                                    aromaticRings++;
                             }
 
                             int totalCarbons = 0;
                             int sp3Carbons = 0;
                             foreach (IndigoObject atom in aromMol.iterateAtoms())
                             {
-                                if (atom.atomicNumber() == 6)
+                                using (atom)
                                 {
-                                    totalCarbons++;
-                                    if (string.Equals(atom.getHybridizationStr(), "SP3", StringComparison.OrdinalIgnoreCase))
-                                        sp3Carbons++;
+                                    if (atom.atomicNumber() == 6)
+                                    {
+                                        totalCarbons++;
+                                        if (string.Equals(atom.getHybridizationStr(), "SP3", StringComparison.OrdinalIgnoreCase))
+                                            sp3Carbons++;
+                                    }
                                 }
                             }
                             if (totalCarbons > 0)
@@ -1100,22 +755,7 @@ public static class MoleculeRenderer
         ket = null;
         smiles = null;
 
-        if (string.IsNullOrWhiteSpace(rawInput)) return false;
-        var input = rawInput!.Trim();
-        string? embeddedSmiles = null;
-
-        var smilesIdx = input.IndexOf("\nSMILES:", StringComparison.OrdinalIgnoreCase);
-        if (smilesIdx >= 0)
-        {
-            embeddedSmiles = input.Substring(smilesIdx + 8).Trim();
-            input = input.Substring(0, smilesIdx).Trim();
-        }
-
-        if (input.StartsWith("KET:", StringComparison.OrdinalIgnoreCase))
-            input = input.Substring(4).Trim();
-        else if (input.StartsWith("SMILES:", StringComparison.OrdinalIgnoreCase))
-            input = input.Substring(7).Trim();
-
+        var input = StripStructurePrefixes(rawInput, out var embeddedSmiles);
         if (string.IsNullOrWhiteSpace(input)) return false;
 
         options ??= RenderOptions.Default;

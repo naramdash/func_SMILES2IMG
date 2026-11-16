@@ -11,6 +11,21 @@ namespace Smiles2Img.Editor;
 /// </summary>
 public static class MoleculeActionHelper
 {
+    public static string? ResolveSmilesWithTextFallback(string? extractedSmiles, string? selectedText)
+    {
+        if (!string.IsNullOrWhiteSpace(extractedSmiles) || string.IsNullOrWhiteSpace(selectedText))
+            return extractedSmiles;
+        return MoleculeRenderer.TryConvertToSmiles(selectedText) ?? PubChemResolver.ResolveNameToSmiles(selectedText);
+    }
+
+    public static string? ResolveKetWithTextFallback(string? extractedStructure, string? selectedText)
+    {
+        if (!string.IsNullOrWhiteSpace(extractedStructure) || string.IsNullOrWhiteSpace(selectedText))
+            return extractedStructure;
+        return MoleculeRenderer.TryConvertToKet(selectedText)
+            ?? MoleculeRenderer.TryConvertToKet(PubChemResolver.ResolveNameToSmiles(selectedText));
+    }
+
     public static MoleculeInfo? TryResolveMolstarInfo(string? altText, string? title, bool resolvePubChem)
     {
         if (!StructureMetadata.IsMolstar(altText, title))
@@ -29,7 +44,8 @@ public static class MoleculeActionHelper
             MolecularWeight = pdbInfo.WeightKDa.HasValue ? pdbInfo.WeightKDa.Value * 1000.0 : 0.0,
             ExactMass = 0,
             Smiles = $"PDB:{meta.Pdb}",
-            IsReaction = false
+            IsReaction = false,
+            IsMacromolecule = true
         };
     }
 
@@ -227,7 +243,7 @@ public static class MoleculeActionHelper
             }
 
             if (ownerHwnd != IntPtr.Zero)
-                MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties", new NativeWindowHandle(ownerHwnd));
+                MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties", new Win32Window(ownerHwnd));
             else
                 MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties");
         }
@@ -239,10 +255,5 @@ public static class MoleculeActionHelper
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
-    }
-
-    private sealed class NativeWindowHandle(IntPtr handle) : IWin32Window
-    {
-        public IntPtr Handle { get; } = handle;
     }
 }

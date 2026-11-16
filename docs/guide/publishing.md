@@ -27,7 +27,7 @@ When submitting a paper to a print journal or switching a presentation to a dark
 ## 2. 🖼️ Copy Lossless Vector Graphics for Illustrator & Posters (`Copy SVG`)
 
 Standard screenshots (PNG/JPG bitmaps) blur or pixelate when zoomed in on large conference posters or high-DPI journal proofs.  
-Clicking **`[SMILES] ➔ [Copy SVG]`** (or right-clicking ➔ **`Chemical Structure ➔ Copy Vector Graphic (SVG)`**) places a **mathematically sharp scalable vector graphic (`SVG`)** onto your clipboard.
+Clicking **`[SMILES] ➔ [Copy SVG]`** (or right-clicking ➔ **`Chemical Structure ➔ Copy Vector SVG`**) places a **mathematically sharp scalable vector graphic (`SVG`)** onto your clipboard.
 
 | Target Application | How It Works & Why It's Better |
 | :--- | :--- |
@@ -48,21 +48,22 @@ Clicking **`[SMILES] ➔ [Copy SVG]`** (or right-clicking ➔ **`Chemical Struct
 4. **Monoisotopic Exact Mass:** High-resolution MS mass (`180.0423 Da`)
 5. **LogP & TPSA:** Octanol/water partition (`1.31`) & polar surface area (`63.60 Å²`)
 6. **Lipinski Rule of 5:** Oral bioavailability status (`PASS`/`FAIL`) plus HBD (`1`), HBA (`4`), and Rotatable Bonds (`3`)
-7. **Standard Identifiers:** Canonical SMILES, IUPAC InChI, and 27-character InChIKey
+7. **Rings, Aromaticity & 3D Complexity:** Heavy Atoms (`13`), Total Rings (`1`), Aromatic Rings (`1`), Fraction Csp3 (`Fsp3: 0.11`), and Chiral Centers (`0`)
+8. **Standard Identifiers:** Canonical SMILES, IUPAC InChI, and 27-character InChIKey
 
 ### 📋 5 Copy Formats Tailored to Where You're Pasting
 
-#### ① Start a New Table — 12-Column Header + Data Row (`Copy All Summary (Text)`)
-Copies a **2-row table (12 headers on Row 1 + 12 values on Row 2)** as both TSV text and a formatted HTML table. Paste into an empty Excel range or Word page to create a complete 12-column table in one step:
+#### ① Start a New Table — 17-Column Header + Data Row (`Copy All Summary (Text)`)
+Copies a **2-row table (17 headers on Row 1 + 17 values on Row 2)** as both TSV text and a formatted HTML table. Paste into an empty Excel range or Word page to create a complete 17-column table in one step:
 ```text
-Name	Formula	MW (g/mol)	Exact Mass	LogP	TPSA (Å²)	HBD	HBA	RotB	Lipinski	SMILES	InChIKey
-Aspirin	C9H8O4	180.16	180.0423	1.31	63.6	1	4	3	Pass	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
+Name	Formula	MW (g/mol)	Exact Mass	LogP	TPSA (Å²)	HBD	HBA	RotB	Heavy Atoms	Rings	Aromatic Rings	Fsp3	Chiral Centers	Lipinski	SMILES	InChIKey
+Aspirin	C9H8O4	180.16	180.0423	1.31	63.6	1	4	3	13	1	1	0.11	0	Pass	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 ```
 
-#### ② Append to an Existing Table — 12-Column Data Row Only (`Copy as Excel Row (TSV Columns)`)
-Copies **only the 12 tab-separated values without headers**. **Pressing <kbd>Ctrl</kbd> + <kbd>V</kbd> in the next empty row of an Excel sheet or Word/PowerPoint table automatically splits each property into its own adjacent cell!**
+#### ② Append to an Existing Table — 17-Column Data Row Only (`Copy as Excel Row (TSV Columns)`)
+Copies **only the 17 tab-separated values without headers**. **Pressing <kbd>Ctrl</kbd> + <kbd>V</kbd> in the next empty row of an Excel sheet or Word/PowerPoint table automatically splits each property into its own adjacent cell!**
 ```text
-Aspirin	C9H8O4	180.16	180.0423	1.31	63.6	1	4	3	Pass	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
+Aspirin	C9H8O4	180.16	180.0423	1.31	63.6	1	4	3	13	1	1	0.11	0	Pass	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 ```
 
 #### ③ PowerPoint Slides & Experimental Summaries (`Copy as Multi-Line List`)
@@ -78,6 +79,10 @@ TPSA: 63.6 Å²
 H-Bond Donors: 1
 H-Bond Acceptors: 4
 Rotatable Bonds: 3
+Heavy Atoms: 13
+Rings (Total / Aromatic): 1 / 1
+Fraction Csp3 (Fsp3): 0.11
+Chiral Centers: 0
 Lipinski Rule of 5: Passed
 SMILES: CC(=O)Oc1ccccc1C(=O)O
 InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
@@ -95,6 +100,9 @@ InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 | **LogP** | 1.31 |
 | **TPSA** | 63.6 Å² |
 | **HBD / HBA / RotB** | 1 / 4 / 3 |
+| **Heavy Atoms / Chiral** | 13 / 0 |
+| **Rings (Total / Aromatic)** | 1 / 1 |
+| **Fraction Csp3 (Fsp3)** | 0.11 |
 | **Lipinski Rule of 5** | Passed |
 | **SMILES** | `CC(=O)Oc1ccccc1C(=O)O` |
 | **InChIKey** | `BSYNRYMUTXBXSQ-UHFFFAOYSA-N` |
@@ -114,6 +122,11 @@ Inside the **Detailed Molecule Info Window**, choose **JSON** from the export bu
   "hBondDonors": 1,
   "hBondAcceptors": 4,
   "rotatableBonds": 3,
+  "heavyAtomCount": 13,
+  "ringCount": 1,
+  "aromaticRingCount": 1,
+  "fsp3": 0.11,
+  "chiralCenters": 0,
   "passesLipinski": true,
   "smiles": "CC(=O)Oc1ccccc1C(=O)O",
   "inchiKey": "BSYNRYMUTXBXSQ-UHFFFAOYSA-N"

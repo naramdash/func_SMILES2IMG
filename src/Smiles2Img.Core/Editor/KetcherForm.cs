@@ -1,14 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using Smiles2Img.Editor;
-using Smiles2Img.Rendering;
 
 namespace Smiles2Img;
 
@@ -36,6 +33,7 @@ public sealed class KetcherForm : Form
     public string? ResultKet { get; private set; }
     public string? ResultMolfile { get; private set; }
     public byte[]? ResultPngBytes { get; private set; }
+    public byte[]? ResultUiViewportPngBytes { get; private set; }
     public string ResultBackground { get; private set; } = "transparent";
     public bool AutoApplyAfterLoadForTest { get; set; }
     public bool ToggleWhiteBackgroundForTest { get; set; }
@@ -65,21 +63,7 @@ public sealed class KetcherForm : Form
         this.initialStructure = initialStructure ?? "";
 
         UpdateWindowTitle();
-
-        float dpiScale = 1.0f;
-        try
-        {
-            using var g = CreateGraphics();
-            dpiScale = Math.Max(1.0f, g.DpiX / 96.0f);
-        }
-        catch { }
-
-        var screen = Screen.FromControl(this) ?? Screen.PrimaryScreen;
-        int targetW = Math.Min((int)(1320 * dpiScale), (int)(screen.WorkingArea.Width * 0.94));
-        int targetH = Math.Min((int)(860 * dpiScale), (int)(screen.WorkingArea.Height * 0.94));
-        ClientSize = new Size(Math.Max(targetW, 1040), Math.Max(targetH, 700));
-        MinimumSize = new Size(Math.Min(880, screen.WorkingArea.Width), Math.Min(600, screen.WorkingArea.Height));
-        StartPosition = FormStartPosition.CenterScreen;
+        WebView2HostHelper.ApplyDpiScaledWindowBounds(this, 1320, 860, 1040, 700);
         BackColor = Color.FromArgb(30, 41, 59);
 
         if (AppIcon != null)
@@ -117,6 +101,7 @@ public sealed class KetcherForm : Form
         ResultKet = null;
         ResultMolfile = null;
         ResultPngBytes = null;
+        ResultUiViewportPngBytes = null;
         ResultBackground = "transparent";
         DialogResult = DialogResult.None;
         UpdateWindowTitle();
@@ -139,43 +124,16 @@ public sealed class KetcherForm : Form
     {
         try
         {
-            NativeIndigo.EnsureWebView2Loader();
             var ketcherFolder = KetcherAssetManager.EnsureKetcherFolder();
-
-            var baseUserDataFolder = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Smiles2Img", "WebView2UserData");
-            Directory.CreateDirectory(baseUserDataFolder);
-
-            // Isolate per process (Excel / Word / PowerPoint) to prevent lock contention
-            string procName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-            var procUserDataFolder = Path.Combine(baseUserDataFolder, procName);
-            Directory.CreateDirectory(procUserDataFolder);
-
-            try
-            {
-                _sharedEnvironment ??= await CoreWebView2Environment.CreateAsync(null, procUserDataFolder, null);
-                await webView.EnsureCoreWebView2Async(_sharedEnvironment);
-            }
-            catch (Exception ex) when (ex.HResult == unchecked((int)0x800700AA) || ex.Message.Contains("0x800700AA") || ex.Message.IndexOf("in use", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                // Fallback to a dedicated unique session directory if locked by an orphaned browser process
-                string fallbackFolder = Path.Combine(Path.GetTempPath(), "Smiles2Img_WV2_" + procName + "_" + Guid.NewGuid().ToString("N"));
-                Directory.CreateDirectory(fallbackFolder);
-                _sharedEnvironment = await CoreWebView2Environment.CreateAsync(null, fallbackFolder, null);
-                await webView.EnsureCoreWebView2Async(_sharedEnvironment);
-            }
-
-            webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
-            webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
-
-            webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
-                "ketcher.local",
-                ketcherFolder,
-                CoreWebView2HostResourceAccessKind.Allow);
+            _sharedEnvironment = await WebView2HostHelper.InitializeWebViewCoreAsync(
+                webView,
+                _sharedEnvironment,
+                procFolderSuffix: "",
+                tempPrefix: "Smiles2Img_WV2_",
+                virtualHostName: "ketcher.local",
+                assetFolder: ketcherFolder);
 
             webView.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
-
             webView.CoreWebView2.Navigate("https://ketcher.local/index.html");
         }
         catch (Exception ex)
@@ -190,7 +148,7 @@ public sealed class KetcherForm : Form
             MessageBox.Show(
                 this,
                 "An error occurred while initializing Ketcher web editor:\n" + msg,
-                "SMILES2IMG Editor Error",
+                "func_SMILES2IMG",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
             Close();
@@ -225,13 +183,13 @@ public sealed class KetcherForm : Form
             var dot = document.getElementById('bg-dot'); if (dot) dot.className = 'bg-dot transparent';
             var lbl = document.getElementById('bg-label'); if (lbl) lbl.innerText = 'Background: Transparent';
             if (window.initEditor) {{
-                window.initEditor('{EscapeJs(cellAddress)}', '{EscapeJs(initialStructure)}');
+                window.initEditor('{WebView2HostHelper.EscapeJs(cellAddress)}', '{WebView2HostHelper.EscapeJs(initialStructure)}');
             }}
             {clearOrLoadJs}
             var b = document.getElementById('btn-apply');
-            if (b) b.innerText = '{EscapeJs(buttonText)}';
+            if (b) b.innerText = '{WebView2HostHelper.EscapeJs(buttonText)}';
             var ind = document.getElementById('cell-indicator');
-            if (ind) ind.innerText = '{EscapeJs(badgeText)}';
+            if (ind) ind.innerText = '{WebView2HostHelper.EscapeJs(badgeText)}';
         ";
         if (AutoApplyAfterLoadForTest)
         {
@@ -258,7 +216,7 @@ public sealed class KetcherForm : Form
         webView.ExecuteScriptAsync(script);
     }
 
-    private void OnWebMessageReceived(object? sender, CoreWebView2WebMessageReceivedEventArgs e)
+    private async void OnWebMessageReceived(object? sender, CoreWebView2WebMessageReceivedEventArgs e)
     {
         try
         {
@@ -292,6 +250,10 @@ public sealed class KetcherForm : Form
                             try { ResultPngBytes = Convert.FromBase64String(imgBase64); } catch { }
                         }
                     }
+                    if (AutoApplyAfterLoadForTest)
+                    {
+                        ResultUiViewportPngBytes = await WebView2HostHelper.TryCaptureViewportPngAsync(webView);
+                    }
                     DialogResult = DialogResult.OK;
                     Close();
                 }
@@ -315,18 +277,6 @@ public sealed class KetcherForm : Form
         }
         catch { }
     }
-
-    private static string EscapeJs(string? s)
-    {
-        if (string.IsNullOrEmpty(s)) return "";
-        return s!.Replace("\\", "\\\\")
-                .Replace("'", "\\'")
-                .Replace("\"", "\\\"")
-                .Replace("\r", "")
-                .Replace("\n", "\\n");
-    }
-
-
 
     protected override void Dispose(bool disposing)
     {

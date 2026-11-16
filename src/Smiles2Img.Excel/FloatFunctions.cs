@@ -70,7 +70,7 @@ public static class FloatFunctions
 
         try
         {
-            if (string.IsNullOrWhiteSpace(ket)) return ExcelError.ExcelErrorValue;
+            if (string.IsNullOrWhiteSpace(ket)) { FloatingPictureUpdates.Remove(caller); return ExcelError.ExcelErrorValue; }
             var options = Functions.ParseOptions(background, style, transform);
             var cleanKet = MoleculeRenderer.CleanKet(ket);
             var key = CellImages.Key(cleanKet, options);
@@ -104,9 +104,17 @@ public static class FloatFunctions
         [ExcelArgument(Name = "transform", Description = "Optional: orientation (flip, flipy, rot90, rot180, rot270).")] object? transform = null)
     {
         if (ExcelDnaUtil.IsInFunctionWizard()) return "NAME2IMG.FLOAT";
-        if (string.IsNullOrWhiteSpace(name)) return ExcelError.ExcelErrorValue;
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            if (XlCall.Excel(XlCall.xlfCaller) is ExcelReference c1) FloatingPictureUpdates.Remove(c1);
+            return ExcelError.ExcelErrorValue;
+        }
         var smiles = PubChemResolver.ResolveNameToSmiles(name);
-        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorNA;
+        if (string.IsNullOrWhiteSpace(smiles))
+        {
+            if (XlCall.Excel(XlCall.xlfCaller) is ExcelReference c2) FloatingPictureUpdates.Remove(c2);
+            return ExcelError.ExcelErrorNA;
+        }
         return ImgFloat(smiles!, background, style, transform);
     }
 

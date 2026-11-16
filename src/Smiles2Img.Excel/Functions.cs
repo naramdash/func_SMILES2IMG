@@ -95,18 +95,23 @@ public static class Functions
         }
     }
 
-    [ExcelFunction(Name = "SMILES2NAME", Category = "SMILES",
-        Description = "Resolves chemical substance name from PubChem for a SMILES string, KET, or cell reference.", IsMacroType = false)]
-    public static object SmilesName(
-        [ExcelArgument(Name = "smiles", Description = "A SMILES string, KET string, or cell reference.")] string smiles)
+    private static object EvaluateMoleculeProperty(
+        string smiles,
+        string wizardLabel,
+        Func<MoleculeInfo, object?> selector,
+        bool resolvePubChem = false,
+        bool allowReaction = false)
     {
-        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2NAME";
+        if (ExcelDnaUtil.IsInFunctionWizard()) return wizardLabel;
         if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
         try
         {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: true);
-            if (info != null && !string.IsNullOrWhiteSpace(info.CompoundName))
-                return info.CompoundName;
+            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem);
+            if (info != null && (allowReaction || !info.IsReaction))
+            {
+                var val = selector(info);
+                if (val != null) return val;
+            }
             return ExcelError.ExcelErrorNA;
         }
         catch
@@ -114,46 +119,28 @@ public static class Functions
             return ExcelError.ExcelErrorValue;
         }
     }
+
+    [ExcelFunction(Name = "SMILES2NAME", Category = "SMILES",
+        Description = "Resolves chemical substance name from PubChem for a SMILES string, KET, or cell reference.", IsMacroType = false)]
+    public static object SmilesName(
+        [ExcelArgument(Name = "smiles", Description = "A SMILES string, KET string, or cell reference.")] string smiles)
+        => EvaluateMoleculeProperty(smiles, "SMILES2NAME",
+            info => !string.IsNullOrWhiteSpace(info.CompoundName) ? info.CompoundName : null,
+            resolvePubChem: true, allowReaction: true);
 
     [ExcelFunction(Name = "SMILES2MW", Category = "SMILES",
         Description = "Calculates molecular weight (MW) in g/mol for a SMILES string, KET, or cell reference.", IsMacroType = false)]
     public static object SmilesMW(
         [ExcelArgument(Name = "smiles", Description = "A SMILES string, KET string, or cell reference.")] string smiles)
-    {
-        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2MW";
-        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
-        try
-        {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
-            if (info != null && !info.IsReaction && info.MolecularWeight > 0)
-                return Math.Round(info.MolecularWeight, 2);
-            return ExcelError.ExcelErrorNA;
-        }
-        catch
-        {
-            return ExcelError.ExcelErrorValue;
-        }
-    }
+        => EvaluateMoleculeProperty(smiles, "SMILES2MW",
+            info => info.MolecularWeight > 0 ? Math.Round(info.MolecularWeight, 2) : (object?)null);
 
     [ExcelFunction(Name = "SMILES2FORMULA", Category = "SMILES",
         Description = "Calculates Hill chemical formula for a SMILES string, KET, or cell reference.", IsMacroType = false)]
     public static object SmilesFormula(
         [ExcelArgument(Name = "smiles", Description = "A SMILES string, KET string, or cell reference.")] string smiles)
-    {
-        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2FORMULA";
-        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
-        try
-        {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
-            if (info != null && !info.IsReaction && !string.IsNullOrWhiteSpace(info.Formula))
-                return info.Formula;
-            return ExcelError.ExcelErrorNA;
-        }
-        catch
-        {
-            return ExcelError.ExcelErrorValue;
-        }
-    }
+        => EvaluateMoleculeProperty(smiles, "SMILES2FORMULA",
+            info => !string.IsNullOrWhiteSpace(info.Formula) ? info.Formula : null);
 
     [ExcelFunction(Name = "KET2NAME", Category = "SMILES",
         Description = "Resolves chemical substance name from PubChem for a Ketcher (KET) structure.", IsMacroType = false)]
@@ -282,21 +269,8 @@ public static class Functions
         Description = "Calculates monoisotopic exact mass (4 decimal places) for a SMILES, InChI, or KET structure.", IsMacroType = false)]
     public static object SmilesExactMass(
         [ExcelArgument(Name = "smiles", Description = "A SMILES string, InChI, KET string, or cell reference.")] string smiles)
-    {
-        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2EXACTMASS";
-        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
-        try
-        {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
-            if (info != null && !info.IsReaction && info.ExactMass > 0)
-                return Math.Round(info.ExactMass, 4);
-            return ExcelError.ExcelErrorNA;
-        }
-        catch
-        {
-            return ExcelError.ExcelErrorValue;
-        }
-    }
+        => EvaluateMoleculeProperty(smiles, "SMILES2EXACTMASS",
+            info => info.ExactMass > 0 ? Math.Round(info.ExactMass, 4) : (object?)null);
 
     [ExcelFunction(Name = "INCHI2EXACTMASS", Category = "SMILES",
         Description = "Calculates monoisotopic exact mass (4 decimal places) for an IUPAC InChI string.", IsMacroType = false)]
@@ -314,221 +288,68 @@ public static class Functions
         Description = "Calculates Crippen LogP (octanol-water partition coefficient) for a SMILES, InChI, or KET structure.", IsMacroType = false)]
     public static object SmilesLogP(
         [ExcelArgument(Name = "smiles", Description = "A SMILES string, InChI, KET string, or cell reference.")] string smiles)
-    {
-        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2LOGP";
-        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
-        try
-        {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
-            if (info != null && !info.IsReaction)
-                return Math.Round(info.LogP, 2);
-            return ExcelError.ExcelErrorNA;
-        }
-        catch
-        {
-            return ExcelError.ExcelErrorValue;
-        }
-    }
+        => EvaluateMoleculeProperty(smiles, "SMILES2LOGP", info => Math.Round(info.LogP, 2));
 
     [ExcelFunction(Name = "SMILES2TPSA", Category = "SMILES",
         Description = "Calculates Topological Polar Surface Area (TPSA in Å²) for a SMILES, InChI, or KET structure.", IsMacroType = false)]
     public static object SmilesTpsa(
         [ExcelArgument(Name = "smiles", Description = "A SMILES string, InChI, KET string, or cell reference.")] string smiles)
-    {
-        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2TPSA";
-        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
-        try
-        {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
-            if (info != null && !info.IsReaction)
-                return Math.Round(info.Tpsa, 2);
-            return ExcelError.ExcelErrorNA;
-        }
-        catch
-        {
-            return ExcelError.ExcelErrorValue;
-        }
-    }
+        => EvaluateMoleculeProperty(smiles, "SMILES2TPSA", info => Math.Round(info.Tpsa, 2));
 
     [ExcelFunction(Name = "SMILES2HBD", Category = "SMILES",
         Description = "Counts Hydrogen Bond Donors (HBD) for a SMILES, InChI, or KET structure.", IsMacroType = false)]
     public static object SmilesHbd(
         [ExcelArgument(Name = "smiles", Description = "A SMILES string, InChI, KET string, or cell reference.")] string smiles)
-    {
-        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2HBD";
-        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
-        try
-        {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
-            if (info != null && !info.IsReaction)
-                return info.HBondDonors;
-            return ExcelError.ExcelErrorNA;
-        }
-        catch
-        {
-            return ExcelError.ExcelErrorValue;
-        }
-    }
+        => EvaluateMoleculeProperty(smiles, "SMILES2HBD", info => info.HBondDonors);
 
     [ExcelFunction(Name = "SMILES2HBA", Category = "SMILES",
         Description = "Counts Hydrogen Bond Acceptors (HBA) for a SMILES, InChI, or KET structure.", IsMacroType = false)]
     public static object SmilesHba(
         [ExcelArgument(Name = "smiles", Description = "A SMILES string, InChI, KET string, or cell reference.")] string smiles)
-    {
-        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2HBA";
-        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
-        try
-        {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
-            if (info != null && !info.IsReaction)
-                return info.HBondAcceptors;
-            return ExcelError.ExcelErrorNA;
-        }
-        catch
-        {
-            return ExcelError.ExcelErrorValue;
-        }
-    }
+        => EvaluateMoleculeProperty(smiles, "SMILES2HBA", info => info.HBondAcceptors);
 
     [ExcelFunction(Name = "SMILES2ROTBONDS", Category = "SMILES",
         Description = "Counts rotatable bonds for a SMILES, InChI, or KET structure.", IsMacroType = false)]
     public static object SmilesRotBonds(
         [ExcelArgument(Name = "smiles", Description = "A SMILES string, InChI, KET string, or cell reference.")] string smiles)
-    {
-        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2ROTBONDS";
-        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
-        try
-        {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
-            if (info != null && !info.IsReaction)
-                return info.RotatableBonds;
-            return ExcelError.ExcelErrorNA;
-        }
-        catch
-        {
-            return ExcelError.ExcelErrorValue;
-        }
-    }
+        => EvaluateMoleculeProperty(smiles, "SMILES2ROTBONDS", info => info.RotatableBonds);
 
     [ExcelFunction(Name = "SMILES2LIPINSKI", Category = "SMILES",
         Description = "Evaluates Lipinski's Rule of 5 (MW <= 500, LogP <= 5, HBD <= 5, HBA <= 10) and returns \"PASS\" or \"FAIL\".", IsMacroType = false)]
     public static object SmilesLipinski(
         [ExcelArgument(Name = "smiles", Description = "A SMILES string, InChI, KET string, or cell reference.")] string smiles)
-    {
-        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2LIPINSKI";
-        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
-        try
-        {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
-            if (info != null && !info.IsReaction)
-                return info.PassesLipinski ? "PASS" : "FAIL";
-            return ExcelError.ExcelErrorNA;
-        }
-        catch
-        {
-            return ExcelError.ExcelErrorValue;
-        }
-    }
+        => EvaluateMoleculeProperty(smiles, "SMILES2LIPINSKI", info => info.PassesLipinski ? "PASS" : "FAIL");
 
     [ExcelFunction(Name = "SMILES2HEAVY", Category = "SMILES",
         Description = "Counts heavy (non-hydrogen) atoms for a SMILES, InChI, or KET structure.", IsMacroType = false)]
     public static object SmilesHeavy(
         [ExcelArgument(Name = "smiles", Description = "A SMILES string, InChI, KET string, or cell reference.")] string smiles)
-    {
-        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2HEAVY";
-        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
-        try
-        {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
-            if (info != null && !info.IsReaction && info.HeavyAtomCount > 0)
-                return info.HeavyAtomCount;
-            return ExcelError.ExcelErrorNA;
-        }
-        catch
-        {
-            return ExcelError.ExcelErrorValue;
-        }
-    }
+        => EvaluateMoleculeProperty(smiles, "SMILES2HEAVY",
+            info => info.HeavyAtomCount > 0 ? info.HeavyAtomCount : (object?)null);
 
     [ExcelFunction(Name = "SMILES2RINGS", Category = "SMILES",
         Description = "Counts the number of rings (SSSR) for a SMILES, InChI, or KET structure.", IsMacroType = false)]
     public static object SmilesRings(
         [ExcelArgument(Name = "smiles", Description = "A SMILES string, InChI, KET string, or cell reference.")] string smiles)
-    {
-        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2RINGS";
-        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
-        try
-        {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
-            if (info != null && !info.IsReaction)
-                return info.RingCount;
-            return ExcelError.ExcelErrorNA;
-        }
-        catch
-        {
-            return ExcelError.ExcelErrorValue;
-        }
-    }
+        => EvaluateMoleculeProperty(smiles, "SMILES2RINGS", info => info.RingCount);
 
     [ExcelFunction(Name = "SMILES2AROMATIC", Category = "SMILES",
         Description = "Counts the number of aromatic rings for a SMILES, InChI, or KET structure.", IsMacroType = false)]
     public static object SmilesAromatic(
         [ExcelArgument(Name = "smiles", Description = "A SMILES string, InChI, KET string, or cell reference.")] string smiles)
-    {
-        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2AROMATIC";
-        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
-        try
-        {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
-            if (info != null && !info.IsReaction)
-                return info.AromaticRingCount;
-            return ExcelError.ExcelErrorNA;
-        }
-        catch
-        {
-            return ExcelError.ExcelErrorValue;
-        }
-    }
+        => EvaluateMoleculeProperty(smiles, "SMILES2AROMATIC", info => info.AromaticRingCount);
 
     [ExcelFunction(Name = "SMILES2FSP3", Category = "SMILES",
         Description = "Calculates the fraction of sp3 hybridized carbons (Fsp3, 0.00 to 1.00) for a SMILES, InChI, or KET structure.", IsMacroType = false)]
     public static object SmilesFsp3(
         [ExcelArgument(Name = "smiles", Description = "A SMILES string, InChI, KET string, or cell reference.")] string smiles)
-    {
-        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2FSP3";
-        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
-        try
-        {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
-            if (info != null && !info.IsReaction)
-                return Math.Round(info.Fsp3, 2);
-            return ExcelError.ExcelErrorNA;
-        }
-        catch
-        {
-            return ExcelError.ExcelErrorValue;
-        }
-    }
+        => EvaluateMoleculeProperty(smiles, "SMILES2FSP3", info => Math.Round(info.Fsp3, 2));
 
     [ExcelFunction(Name = "SMILES2CHIRAL", Category = "SMILES",
         Description = "Counts defined tetrahedral chiral centers (stereocenters) for a SMILES, InChI, or KET structure.", IsMacroType = false)]
     public static object SmilesChiral(
         [ExcelArgument(Name = "smiles", Description = "A SMILES string, InChI, KET string, or cell reference.")] string smiles)
-    {
-        if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2CHIRAL";
-        if (string.IsNullOrWhiteSpace(smiles)) return ExcelError.ExcelErrorValue;
-        try
-        {
-            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles, resolvePubChem: false);
-            if (info != null && !info.IsReaction)
-                return info.ChiralCenters;
-            return ExcelError.ExcelErrorNA;
-        }
-        catch
-        {
-            return ExcelError.ExcelErrorValue;
-        }
-    }
+        => EvaluateMoleculeProperty(smiles, "SMILES2CHIRAL", info => info.ChiralCenters);
 
     [ExcelFunction(Name = "SMILES.MATCH", Category = "SMILES",
         Description = "Checks if a target molecule contains a substructure query (SMILES or SMARTS). Returns TRUE or FALSE.", IsMacroType = false)]
