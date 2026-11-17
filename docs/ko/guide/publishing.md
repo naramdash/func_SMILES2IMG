@@ -39,7 +39,11 @@
 
 ## 3. 🔬 분자 정보 상세창 (`Molecule Info`) & 5가지 서식 내보내기
 
-구조식 셀이나 그림을 **우클릭 ➔ `Chemical Structure` ➔ `Copy Molecule Info`** (또는 상단 리본의 **`[Molecule Info]`** 버튼)로 선택하면 외부 검색 없이 분자의 모든 물리화학적 특성을 확인하고 원하는 서식으로 즉시 복사할 수 있습니다.
+구조식 셀이나 그림을 **우클릭 ➔ `Chemical Structure ➔ Copy Molecule Info`** (또는 상단 리본의 **`[Molecule Info]`** 메뉴)로 선택하면 분자의 모든 물리화학적 특성을 확인하고 원하는 서식으로 즉시 복사할 수 있습니다. **`Detailed Molecule Info Window...`**를 열면 상단 2D 구조 미리보기 썸네일, 행별 **`[Copy]`** 버튼, 하단 서식 선택 드롭다운을 갖춘 표준 Windows 상세 창이 표시됩니다:
+
+<p align="center">
+  <img src="/molecule-info-dialog.png" alt="2D 구조 미리보기와 다중 서식 복사를 지원하는 Molecule Info 창" width="100%" style="max-width: 760px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
 
 ### 한눈에 확인 가능한 10가지 핵심 물성
 1. **Substance Name (물질명):** IUPAC / PubChem 일반명 (`Aspirin`)
@@ -87,6 +91,7 @@ Fraction Csp3 (Fsp3): 0.11
 Chiral Centers: 0
 Lipinski Rule of 5: Passed
 SMILES: CC(=O)Oc1ccccc1C(=O)O
+InChI: InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)
 InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 ```
 
@@ -107,11 +112,12 @@ InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 | **Fraction Csp3 (Fsp3)** | 0.11 |
 | **Lipinski Rule of 5** | Passed |
 | **SMILES** | `CC(=O)Oc1ccccc1C(=O)O` |
+| **InChI** | `InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)` |
 | **InChIKey** | `BSYNRYMUTXBXSQ-UHFFFAOYSA-N` |
 ```
 
 #### ⑤ 파이썬(Python) · 데이터 분석 연동용 (`Export as JSON`)
-상세 정보 창(`Detailed Molecule Info Window...`)에서 JSON 내보내기를 선택하면 모든 물리화학 지표가 구조화된 JSON 포맷으로 복사됩니다:
+상세 정보 창(`Detailed Molecule Info Window...`) 하단 드롭다운에서 **`JSON`**을 고르고 **`[Copy All]`** 버튼을 클릭하면 (또는 아무 행이나 우클릭 ➔ **`Copy All (JSON)`**) 모든 물리화학 지표가 구조화된 JSON 포맷으로 복사됩니다:
 ```json
 {
   "name": "Aspirin",
@@ -131,6 +137,7 @@ InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
   "chiralCenters": 0,
   "passesLipinski": true,
   "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+  "inchi": "InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)",
   "inchiKey": "BSYNRYMUTXBXSQ-UHFFFAOYSA-N"
 }
 ```
@@ -142,7 +149,7 @@ InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 <div class="s2i-card-grid">
   <a href="../reference/formula" class="s2i-card">
     <div class="s2i-card-title">📐 전체 함수 & 옵션 치트시트</div>
-    <p class="s2i-card-desc">인터랙티브 수식 생성기와 25종 이상의 엑셀 화학 함수 및 렌더링 옵션 레퍼런스</p>
+    <p class="s2i-card-desc">인터랙티브 수식 생성기와 40종 전체 엑셀 화학 함수 및 렌더링 옵션 레퍼런스</p>
   </a>
   <a href="../guide/faq" class="s2i-card">
     <div class="s2i-card-title">❓ 자주 묻는 질문 (FAQ)</div>

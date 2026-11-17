@@ -39,7 +39,11 @@ Clicking **`[SMILES] ➔ [Copy SVG]`** (or right-clicking ➔ **`Chemical Struct
 
 ## 3. 🔬 Molecule Info Window & 5 Multi-Format Exports
 
-**Right-click** any chemical cell or picture ➔ **`Chemical Structure ➔ Copy Molecule Info`** (or click **`[Molecule Info]`** on the ribbon) to inspect 10+ calculated properties and copy them in the exact format your document needs.
+**Right-click** any chemical cell or picture ➔ **`Chemical Structure ➔ Copy Molecule Info`** (or click **`[Molecule Info]`** on the ribbon) to inspect calculated properties and copy them in the exact format your document needs. Clicking **`Detailed Molecule Info Window...`** opens the standard Windows dialog with a live 2D structure thumbnail preview, 1-click row **`Copy`** buttons, and a bottom format selector:
+
+<p align="center">
+  <img src="/molecule-info-dialog.png" alt="Molecule Info Window with 2D Preview and Format Export" width="100%" style="max-width: 760px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
 
 ### 10+ Calculated Properties at a Glance
 1. **Substance Name:** Common IUPAC / PubChem name (`Aspirin`)
@@ -85,6 +89,7 @@ Fraction Csp3 (Fsp3): 0.11
 Chiral Centers: 0
 Lipinski Rule of 5: Passed
 SMILES: CC(=O)Oc1ccccc1C(=O)O
+InChI: InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)
 InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 ```
 
@@ -105,11 +110,12 @@ InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 | **Fraction Csp3 (Fsp3)** | 0.11 |
 | **Lipinski Rule of 5** | Passed |
 | **SMILES** | `CC(=O)Oc1ccccc1C(=O)O` |
+| **InChI** | `InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)` |
 | **InChIKey** | `BSYNRYMUTXBXSQ-UHFFFAOYSA-N` |
 ```
 
 #### ⑤ Python & Data Pipelines (`Export as JSON`)
-Inside the **Detailed Molecule Info Window**, choose **JSON** from the export button to copy a structured JSON object containing all calculated descriptors:
+Inside the **Detailed Molecule Info Window**, select **JSON** from the format dropdown at the bottom and click **`Copy All`** (or right-click any row ➔ **`Copy All (JSON)`**) to copy a structured JSON object containing all calculated descriptors:
 ```json
 {
   "name": "Aspirin",
@@ -129,6 +135,7 @@ Inside the **Detailed Molecule Info Window**, choose **JSON** from the export bu
   "chiralCenters": 0,
   "passesLipinski": true,
   "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+  "inchi": "InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)",
   "inchiKey": "BSYNRYMUTXBXSQ-UHFFFAOYSA-N"
 }
 ```
@@ -140,7 +147,7 @@ Inside the **Detailed Molecule Info Window**, choose **JSON** from the export bu
 <div class="s2i-card-grid">
   <a href="../reference/formula" class="s2i-card">
     <div class="s2i-card-title">📐 Formula & Option Reference</div>
-    <p class="s2i-card-desc">Interactive Excel formula builder and complete cheat sheet of 25+ chemical functions</p>
+    <p class="s2i-card-desc">Interactive Excel formula builder and complete cheat sheet of all 40 chemical functions</p>
   </a>
   <a href="../guide/faq" class="s2i-card">
     <div class="s2i-card-title">❓ FAQ & Troubleshooting</div>

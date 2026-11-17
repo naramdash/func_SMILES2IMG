@@ -136,6 +136,7 @@ SMILES 코드를 모르거나 다단계 유기 합성 반응식을 넣고 싶을
 * **🔬 `Molecule Info`:** 물질명·화학식·분자량·LogP·Lipinski 약물성 확인 및 엑셀 행(TSV)·마크다운 표 복사
 * **🎨 `Batch Style`:** 시트 전체 구조식을 컬러 / 논문용 흑백(ACS) / 흰색 배경 / 다크 모드로 일괄 변환
 * **📂 `SDF File`:** `.sdf` / `.mol` 파일을 12열 엑셀 표로 불러오거나(`Import`) 시트 데이터를 `.sdf`로 내보내기(`Export`)
+* **ℹ️ `About SMILES`:** 현재 버전·오픈소스 라이선스 공지 확인 및 최신 버전 업데이트 검사 (`Check for Updates`)
 
 <p align="center">
   <img src="/excel-context-menu-guide.png" alt="Chemical Structure Context Menu in Excel" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />

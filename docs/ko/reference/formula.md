@@ -1,4 +1,4 @@
-# 25+ 전체 엑셀 수식 & 스타일 키워드 사전
+# 40개 전체 엑셀 수식 & 스타일 키워드 사전
 
 복잡한 옵션 키워드를 외우지 마세요! 아래 **필수 수식 Top 5**를 복사해 바로 쓰거나, **클릭형 수식 생성기 위젯**에서 원하는 옵션을 체크해 1초 만에 수식을 만드세요.
 
@@ -102,7 +102,7 @@
 | **시약 이름 / CAS 번호 ➔ SMILES** | `=NAME2SMILES("50-78-2")` 또는 `=NAME2SMILES("Aspirin")` | `"CC(=O)Oc1ccccc1C(=O)O"` |
 | **SMILES / KET ➔ InChI** | `=SMILES2INCHI(A2)` / `=KET2INCHI(A2)` | `"InChI=1S/C9H8O4/c1-6(10)..."` |
 | **InChI ➔ SMILES** | `=INCHI2SMILES(A2)` | `"CC(=O)Oc1ccccc1C(=O)O"` |
-| **SMILES / InChI / KET ➔ InChIKey** | `=SMILES2INCHIKEY(A2)` / `=INCHI2INCHIKEY(A2)` | `"BSYNRYMUTXBXSQ-UHFFFAOYSA-N"` |
+| **SMILES / InChI / KET ➔ InChIKey** | `=SMILES2INCHIKEY(A2)` / `=INCHI2INCHIKEY(A2)` / `=KET2INCHIKEY(A2)` | `"BSYNRYMUTXBXSQ-UHFFFAOYSA-N"` |
 
 ---
 

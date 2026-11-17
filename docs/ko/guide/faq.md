@@ -64,7 +64,7 @@
 * **`Copy All Summary (Text)`:** **머리글(Header) + 데이터** 2줄 표로 복사되어 빈 시트나 워드에 새 표를 만들 때 씁니다.
 * **`Copy as Excel Row (TSV Columns)`:** **데이터 행만** 17개 칸으로 복사되어 기존 엑셀/워드 표의 아래 행에 이어 붙일 때 씁니다.
 * **`Copy as Multi-Line List`:** 파워포인트 슬라이드 텍스트 상자에 글머리 기호(불릿)로 붙여넣기 좋습니다.
-* **`Copy as Markdown Table` / JSON:** 노션(Notion), GitHub, 연구노트 등에 바로 붙여넣을 수 있습니다 (`Detailed Molecule Info Window...`에서도 지원).
+* **`Copy as Markdown Table` / JSON:** 노션(Notion), GitHub, 연구노트 등에 바로 붙여넣을 수 있습니다 (**`Detailed Molecule Info Window...`** 하단 드롭다운에서 서식을 고른 뒤 **`[Copy All]`**을 누르거나 개별 행을 더블클릭해 복사할 수도 있습니다).
 
 ---
 
@@ -75,7 +75,11 @@
 화학 렌더링 엔진(EPAM Indigo), 2D 스케처(Ketcher), 3D 단백질 뷰어(Mol\*)가 모두 내 컴퓨터에 설치되어 인터넷 없이도 작동합니다. 특허 출원 전 화합물이나 기업 기밀 구조도 외부 유출 걱정 없이 안전하게 다룰 수 있습니다. *(유일하게 인터넷을 쓰는 기능은 내장 사전에 없는 화합물의 영문 일반명을 PubChem에서 처음 조회할 때뿐이며, 한 번 조회된 이름은 내 PC에 영구 캐싱됩니다.)*
 
 ### Q. 새 버전 업데이트는 어떻게 하나요?
-오피스 상단 **`[SMILES]`** ➔ **`[About SMILES]`** 창에서 **`[Check for Updates]`** 버튼을 누르거나, 처음 설치할 때 사용한 PowerShell 한 줄 명령어를 다시 실행하면 최신 버전으로 자동 업그레이드됩니다.
+오피스 상단 **`[SMILES]`** ➔ **`[About SMILES]`** 창(개요·구성요소·라이선스 전문 3-탭 UI)에서 **`[Check for Updates]`** 버튼을 누르거나, 처음 설치할 때 사용한 PowerShell 한 줄 명령어를 다시 실행하면 최신 버전으로 자동 업그레이드됩니다:
+
+<p align="center">
+  <img src="/about-dialog.png" alt="About func_SMILES2IMG 3-탭 정보 창 (v1.8.0)" width="100%" style="max-width: 680px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+</p>
 
 ### Q. 기존 상용·오픈소스 도구(ChemDraw for Excel, JChem for Office, Chem4Word)와 무엇이 다른가요?
 | 비교 항목 | **func_SMILES2IMG (본 프로젝트)** | **ChemDraw / JChem for Office** | **Chem4Word** |

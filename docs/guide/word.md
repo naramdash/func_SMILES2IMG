@@ -19,7 +19,7 @@ Unlike Excel, Word uses the top **`[SMILES]`** ribbon tab or keyboard shortcut <
 1. **① Click `[SMILES]` ➔ `[Insert / Edit Structure]`** on the top ribbon (or press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>).
 2. **② Sketch in 2D (or Paste SMILES):** Draw your molecule or reaction scheme in the built-in Ketcher 2D editor and press <kbd>Ctrl</kbd> + <kbd>Enter</kbd>.
    * *Have a SMILES string on your clipboard?* Click **`[Paste Structure]`** to insert it as an inline figure in 0.1 seconds!
-3. **③ Double-Click Anytime to Edit:** **Double-click** any structure inside a paragraph or Word table cell to reopen and update it in place without breaking table column widths!
+3. **③ Double-Click Anytime to Edit:** **Double-click** any inline or floating chemical structure (including 2D images inside table cells and 3D Mol\* models) to reopen and update it in place without breaking layout or column widths!
 
 ---
 
@@ -46,8 +46,8 @@ Before submitting to a journal, you don't need to redraw or re-export dozens of 
 
 ### 📋 Paste Properties Directly into Word Tables & Paragraphs
 * **1-Click Property Copy:** Copy Substance Name, Formula (`C9H8O4`), Molecular Weight (`180.16 g/mol`), Exact Mass, or InChIKey individually.
-* **Auto-Fill Word Table Rows (TSV):** Click **`Copy Molecule Info ➔ Copy as Excel Row (TSV Columns)`** and paste directly into a Word table—each property automatically populates its own table cell!
-* **Detailed Molecule Info Window:** View all calculated properties (including LogP, TPSA, and Lipinski Rule of 5) in one window and export as a Markdown table or JSON.
+* **Auto-Fill Word Table Rows (TSV):** Click **`Chemical Structure ➔ Copy Molecule Info ➔ Copy as Excel Row (TSV Columns)`** and paste directly into a Word table—each property automatically populates its own table cell!
+* **Detailed Molecule Info Window:** View all calculated properties (including LogP, TPSA, Fsp³, chiral centers, and Lipinski Rule of 5) with a live 2D structure preview, and copy as a Markdown table, TSV row, or JSON via the bottom format dropdown.
 
 ### 🖼️ Copy Lossless Vector Graphics for Illustrator (`Copy SVG`)
 * Click **`[Copy SVG]`** on the ribbon (or right-click ➔ **`Copy Vector SVG`**) to copy a true scalable vector graphic (`SVG`) to the clipboard, ready to paste directly into Adobe Illustrator, Inkscape, or ChemDraw without losing resolution.
@@ -77,6 +77,7 @@ Before submitting to a journal, you don't need to redraw or re-export dozens of 
 * **🖼️ `Copy SMILES` / `Copy InChI` / `Copy KET` / `Copy SVG`:** Copy chemical identifiers or lossless SVG vectors
 * **🔬 `Molecule Info`:** Inspect and copy MW, Formula, LogP, Lipinski Ro5, and table rows
 * **🎨 `Batch Style`:** Convert all structures in the document to Color, Publication B&W, White Background, or Dark Mode
+* **ℹ️ `About SMILES`:** View version details, bundled open-source licenses, and check for updates (`Check for Updates`)
 
 ---
 

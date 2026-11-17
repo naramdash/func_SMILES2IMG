@@ -37,9 +37,9 @@
 
 1. 상단 **`[SMILES]` ➔ `[3D Structure (Mol*)]`** 버튼을 클릭합니다.
 2. 4자리 PDB 코드(예: `1CRN`, `4HHB`, `6LU7`)를 입력해 불러오거나 로컬 구조 파일을 엽니다.
-3. 원하는 스타일(Cartoon, Surface, Ball & Stick)로 꾸민 뒤 상단에서 **`[3D Model (.glb)]`** 버튼을 눌러 삽입합니다.
+3. 원하는 스타일(Cartoon, Surface, Ball & Stick)로 꾸민 뒤 **`3D Model (GLB)`** 모드를 선택하고 **`Apply to Slide`**(또는 <kbd>Ctrl</kbd> + <kbd>Enter</kbd>)를 누릅니다.
 4. 슬라이드 편집 화면이나 **슬라이드 쇼 발표 중에** 단백질 중앙의 3D 회전 핸들을 마우스로 드래그하면 청중 앞에서 360° 자유롭게 돌려가며 설명할 수 있습니다!
-   *(고해상도 평면 그림이 필요할 때는 **`[2D Picture (.png)]`** 버튼으로 삽입할 수도 있습니다.)*
+   *(어두운 슬라이드용 고해상도 평면 그림이 필요할 때는 **`2D Picture`** 모드와 **`BG: Transparent`**를 선택해 삽입할 수도 있습니다.)*
 
 ---
 
@@ -51,7 +51,7 @@
   <img src="/powerpoint-context-menu-guide.png" alt="Chemical Structure Context Menu in PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-* **발표 슬라이드 불릿 목록으로 붙여넣기:** **`Copy Molecule Info` ➔ `Copy as Multi-Line List`** 항목을 클릭한 뒤 슬라이드 텍스트 상자에 붙여넣으면 물질명·화학식·분자량이 깔끔한 글머리 기호 목록으로 바로 들어갑니다!
+* **발표 슬라이드 불릿 목록으로 붙여넣기:** **`Chemical Structure ➔ Copy Molecule Info ➔ Copy as Multi-Line List`** 항목을 클릭한 뒤 슬라이드 텍스트 상자에 붙여넣으면 물질명·화학식·분자량이 깔끔한 글머리 기호 목록으로 바로 들어갑니다!
 * **크기를 아무리 키워도 안 깨지는 벡터 복사 (`Copy SVG`):** 포스터 발표(학회 포스터)나 Illustrator 편집을 위해 상단 **`[Copy SVG]`** (또는 우클릭 **`Copy Vector SVG`**) 항목을 누르면 무손실 벡터 그래픽으로 복사됩니다.
 
 ---
@@ -68,6 +68,7 @@
 * **🖼️ `Copy SMILES` / `Copy InChI` / `Copy KET` / `Copy SVG`:** 화학 식별자 또는 학회 포스터·Illustrator용 무손실 SVG 벡터 복사
 * **🔬 `Molecule Info`:** 슬라이드 불릿 목록용 물성 복사 및 상세 물성 창 열기
 * **🎨 `Batch Style`:** 프레젠테이션 전체 구조식을 다크 모드 / 컬러 / 흑백 / 흰색 배경으로 원클릭 변환
+* **ℹ️ `About SMILES`:** 현재 버전·오픈소스 라이선스 공지 확인 및 최신 버전 업데이트 검사 (`Check for Updates`)
 
 ---
 

@@ -37,9 +37,9 @@ Explain binding pockets and protein conformations interactively instead of pasti
 
 1. Click **`[SMILES] ➔ [3D Structure (Mol*)]`** on the ribbon.
 2. Enter a 4-letter PDB ID (e.g., `1CRN`, `4HHB`, `6LU7`) to download, or open a local structure file.
-3. Customize the representation (Cartoon, Molecular Surface, Ball & Stick) and click **`[Insert 3D Model (.glb)]`**.
+3. Customize the representation (Cartoon, Molecular Surface, Ball & Stick), select **`3D Model (GLB)`**, and click **`Apply to Slide`** (or press <kbd>Ctrl</kbd> + <kbd>Enter</kbd>).
 4. Right on your slide, drag the central 3D handle with your mouse to **rotate and zoom the protein 360°** in front of your audience!  
-   *(You can also choose **`[Insert 2D Picture (.png)]`** with a transparent background whenever you prefer a flat high-res image.)*
+   *(You can also choose **`2D Picture`** with **`BG: Transparent`** whenever you prefer a flat high-res image for dark slide themes.)*
 
 ---
 
@@ -51,7 +51,7 @@ Explain binding pockets and protein conformations interactively instead of pasti
   <img src="/powerpoint-context-menu-guide.png" alt="Chemical Structure Context Menu in PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-* **Instant Slide Bullet Points:** Click **`Copy Molecule Info ➔ Copy as Multi-Line List`** and paste into any PowerPoint text box to get a ready-made bulleted list of Name, Formula, and Molecular Weight!
+* **Instant Slide Bullet Points:** Click **`Chemical Structure ➔ Copy Molecule Info ➔ Copy as Multi-Line List`** and paste into any PowerPoint text box to get a ready-made bulleted list of Name, Formula, and Molecular Weight!
 * **Lossless Vectors for Conference Posters (`Copy SVG`):** Click **`[Copy SVG]`** on the ribbon (or right-click ➔ **`Copy Vector SVG`**) to copy a scalable vector graphic that stays razor-sharp even on large-format conference posters or in Adobe Illustrator.
 
 ---
@@ -68,6 +68,7 @@ Explain binding pockets and protein conformations interactively instead of pasti
 * **🖼️ `Copy SMILES` / `Copy InChI` / `Copy KET` / `Copy SVG`:** Copy chemical identifiers or lossless SVG vectors for conference posters
 * **🔬 `Molecule Info`:** Copy multi-line property lists or open the full property summary window
 * **🎨 `Batch Style`:** Convert all structures across your slide deck to Dark Mode, Color, B&W, or White Background
+* **ℹ️ `About SMILES`:** View version details, bundled open-source licenses, and check for updates (`Check for Updates`)
 
 ---
 

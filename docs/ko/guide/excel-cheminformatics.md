@@ -192,7 +192,7 @@ SMARTS 문법을 외울 필요 없이 아래 표에서 원하는 작용기 코�
 <div class="s2i-card-grid">
   <a href="../reference/formula" class="s2i-card">
     <div class="s2i-card-title">📐 전체 엑셀 함수 치트시트</div>
-    <p class="s2i-card-desc">25종 이상의 전체 함수 규격, 반환 데이터 타입 및 오류 코드 사전 확인하기</p>
+    <p class="s2i-card-desc">40종 전체 함수 규격, 반환 데이터 타입 및 오류 코드 사전 확인하기</p>
   </a>
   <a href="../tools/formula-builder" class="s2i-card">
     <div class="s2i-card-title">🛠️ 엑셀 함수 표현 생성기</div>

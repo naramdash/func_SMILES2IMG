@@ -1,4 +1,4 @@
-# 25+ Excel Formula & Style Keyword Cheat Sheet
+# 40 Excel Formula & Style Keyword Cheat Sheet
 
 Don't memorize option keywords! **Copy one of the Top 5 essential formulas below**, or **click options in the interactive generator widget** to build and preview your custom formula in one click.
 
@@ -102,7 +102,7 @@ Filter compound libraries by scaffold or rank analogs against a lead molecule. F
 | **Name or CAS # ➔ SMILES** | `=NAME2SMILES("50-78-2")` or `=NAME2SMILES("Aspirin")` | `"CC(=O)Oc1ccccc1C(=O)O"` |
 | **SMILES / KET ➔ InChI** | `=SMILES2INCHI(A2)` / `=KET2INCHI(A2)` | `"InChI=1S/C9H8O4/c1-6(10)..."` |
 | **InChI ➔ SMILES** | `=INCHI2SMILES(A2)` | `"CC(=O)Oc1ccccc1C(=O)O"` |
-| **SMILES / InChI / KET ➔ InChIKey** | `=SMILES2INCHIKEY(A2)` / `=INCHI2INCHIKEY(A2)` | `"BSYNRYMUTXBXSQ-UHFFFAOYSA-N"` |
+| **SMILES / InChI / KET ➔ InChIKey** | `=SMILES2INCHIKEY(A2)` / `=INCHI2INCHIKEY(A2)` / `=KET2INCHIKEY(A2)` | `"BSYNRYMUTXBXSQ-UHFFFAOYSA-N"` |
 
 ---
 

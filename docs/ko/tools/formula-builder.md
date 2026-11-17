@@ -88,7 +88,7 @@ Excel, Word, PowerPoint 상단 리본의 **`[SMILES]`** ➔ **`[Batch Style]`** 
 <div class="feature-grid-2">
   <div class="feature-card">
     <h4>📐 <a href="/ko/reference/formula">전체 엑셀 함수 치트시트</a></h4>
-    <p>25종 이상의 모든 엑셀 화학 함수와 인수 규격, 스타일 키워드 전체 목록을 확인하세요.</p>
+    <p>40종 전체 엑셀 화학 함수와 인수 규격, 스타일 키워드 전체 목록을 확인하세요.</p>
   </div>
   <div class="feature-card">
     <h4>📗 <a href="/ko/guide/excel">Excel 기초 가이드</a></h4>

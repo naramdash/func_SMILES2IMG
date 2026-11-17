@@ -4,353 +4,126 @@
 
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
+. (Join-Path $PSScriptRoot 'Draw-ContextMenuFlyout.ps1')
 
-$width = 840
-$height = 560
-$bmp = New-Object System.Drawing.Bitmap ($width, $height)
+$width = 920
+$height = 580
+$bmp = New-Object System.Drawing.Bitmap($width, $height)
 $g = [System.Drawing.Graphics]::FromImage($bmp)
 $g.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
 $g.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::ClearTypeGridFit
 $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
 
 $excelGreen = [System.Drawing.Color]::FromArgb(16, 124, 65)
+$brushDark = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(30, 41, 59))
+$fontTitle = New-Object System.Drawing.Font('Segoe UI', 9.0, [System.Drawing.FontStyle]::Bold)
+$fontBar = New-Object System.Drawing.Font('Segoe UI', 8.5, [System.Drawing.FontStyle]::Regular)
+$fontFormula = New-Object System.Drawing.Font('Consolas', 9.0, [System.Drawing.FontStyle]::Regular)
+$fontTh = New-Object System.Drawing.Font('Segoe UI', 8.5, [System.Drawing.FontStyle]::Bold)
 
-# 1. Excel Green Header Sliver
-$g.FillRectangle((New-Object System.Drawing.SolidBrush ($excelGreen)), 0, 0, $width, 28)
-$fontPptTitle = New-Object System.Drawing.Font ('Segoe UI', 9.0, [System.Drawing.FontStyle]::Bold)
-$g.DrawString('Book1 - Excel', $fontPptTitle, [System.Drawing.Brushes]::White, 16, 5)
+# 1. Excel Header & Formula Bar
+$g.FillRectangle((New-Object System.Drawing.SolidBrush($excelGreen)), 0, 0, $width, 28)
+$g.DrawString('SMILES2IMG_Showcase.xlsx - Excel', $fontTitle, [System.Drawing.Brushes]::White, 16, 5)
 
-# 2. Formula Bar (#F3F4F6)
-$fBarRect = New-Object System.Drawing.Rectangle (0, 28, $width, 26)
-$g.FillRectangle((New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(243, 244, 246))), $fBarRect)
-$g.DrawLine((New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(209, 213, 219), 1)), 0, 54, $width, 54)
-
-# Name box
+$g.FillRectangle((New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(243, 244, 246))), 0, 28, $width, 26)
+$g.DrawLine((New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(209, 213, 219), 1)), 0, 54, $width, 54)
 $g.FillRectangle([System.Drawing.Brushes]::White, 12, 31, 46, 20)
-$g.DrawRectangle((New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(209, 213, 219), 1)), 12, 31, 46, 20)
-$fontFBar = New-Object System.Drawing.Font ('Segoe UI', 8.5, [System.Drawing.FontStyle]::Regular)
-$brushDark = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(30, 41, 59))
-$g.DrawString('D2', $fontFBar, $brushDark, 24, 33)
+$g.DrawRectangle((New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(209, 213, 219), 1)), 12, 31, 46, 20)
+$g.DrawString('D2', $fontBar, $brushDark, 24, 33)
+$g.DrawString('fx', (New-Object System.Drawing.Font('Segoe UI', 9.0, [System.Drawing.FontStyle]::Italic)), (New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(100, 116, 139))), 68, 32)
+$g.DrawLine((New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(209, 213, 219), 1)), 86, 30, 86, 51)
+$g.DrawString('=SMILES2IMG(E2)', $fontFormula, $brushDark, 96, 33)
 
-# fx icon
-$fontFx = New-Object System.Drawing.Font ('Segoe UI', 9.0, [System.Drawing.FontStyle]::Italic)
-$g.DrawString('fx', $fontFx, (New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(100, 116, 139))), 68, 32)
-$g.DrawLine((New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(209, 213, 219), 1)), 86, 30, 86, 51)
+# 2. Spreadsheet Grid
+$g.FillRectangle([System.Drawing.Brushes]::White, 0, 55, $width, ($height - 55))
+$g.FillRectangle((New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(243, 244, 246))), 0, 55, 36, ($height - 55))
+$g.FillRectangle((New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(243, 244, 246))), 36, 55, ($width - 36), 22)
+$g.DrawLine((New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(209, 213, 219), 1)), 36, 55, 36, $height)
+$g.DrawLine((New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(209, 213, 219), 1)), 36, 77, $width, 77)
 
-# Formula text
-$fontFormula = New-Object System.Drawing.Font ('Consolas', 9.0, [System.Drawing.FontStyle]::Regular)
-$g.DrawString('=SMILES2IMG("CC(=O)Oc1ccccc1C(=O)O", "white", "mw")', $fontFormula, $brushDark, 94, 33)
-
-# 3. Excel Spreadsheet Grid
-$gridRect = New-Object System.Drawing.Rectangle (0, 55, $width, ($height - 55))
-$g.FillRectangle([System.Drawing.Brushes]::White, $gridRect)
-
-# Row header column (left)
-$g.FillRectangle((New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(243, 244, 246))), 0, 55, 36, ($height - 55))
-$g.DrawLine((New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(209, 213, 219), 1)), 36, 55, 36, $height)
-
-# Column headers
-$colHeaders = @(
-    @{ Name = 'A'; W = 60 },
-    @{ Name = 'B'; W = 110 },
-    @{ Name = 'C'; W = 95 },
-    @{ Name = 'D'; W = 180 },
-    @{ Name = 'E'; W = 210 },
-    @{ Name = 'F'; W = 90 },
-    @{ Name = 'G'; W = 90 }
-)
-$g.FillRectangle((New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(243, 244, 246))), 36, 55, ($width - 36), 22)
-$g.DrawLine((New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(209, 213, 219), 1)), 36, 77, $width, 77)
-
-$curColX = 36
-foreach ($col in $colHeaders) {
-    $g.DrawLine((New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(209, 213, 219), 1)), $curColX, 55, $curColX, $height)
-    $g.DrawString($col.Name, $fontFBar, (New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(75, 85, 99))), ($curColX + $col.W / 2 - 5), 58)
-    $curColX += $col.W
+$cols = @(@{Name='A';W=56}, @{Name='B';W=105}, @{Name='C';W=95}, @{Name='D';W=185}, @{Name='E';W=235}, @{Name='F';W=110}, @{Name='G';W=98})
+$cx = 36
+foreach ($c in $cols) {
+    $g.DrawLine((New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(209, 213, 219), 1)), $cx, 55, $cx, $height)
+    $g.DrawString($c.Name, $fontBar, (New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(75, 85, 99))), ($cx + $c.W/2 - 5), 58)
+    $cx += $c.W
+}
+$ry = 77; $rowHeights = @(24, 130, 130, 90, 90)
+for ($i=0; $i -lt $rowHeights.Count; $i++) {
+    $ry += $rowHeights[$i]
+    $g.DrawLine((New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(226, 232, 240), 1)), 0, $ry, $width, $ry)
+    $g.DrawString("$($i+1)", $fontBar, (New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(75, 85, 99))), 12, ($ry - $rowHeights[$i] + 4))
 }
 
-# Rows
-$rowHeights = @(24, 130, 130, 80, 80, 80)
-$curRowY = 77
-$rowIdx = 1
-foreach ($rh in $rowHeights) {
-    $curRowY += $rh
-    $g.DrawLine((New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(226, 232, 240), 1)), 0, $curRowY, $width, $curRowY)
-    $g.DrawString("$rowIdx", $fontFBar, (New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(75, 85, 99))), 12, ($curRowY - $rh + 4))
-    $rowIdx++
-}
-
-# Table Data
-$fontTh = New-Object System.Drawing.Font ('Segoe UI', 8.5, [System.Drawing.FontStyle]::Bold)
 $g.DrawString('No.', $fontTh, $brushDark, 48, 82)
-$g.DrawString('Compound', $fontTh, $brushDark, 108, 82)
-$g.DrawString('Formula', $fontTh, $brushDark, 218, 82)
-$g.DrawString('2D Structure (=SMILES2IMG)', $fontTh, $brushDark, 312, 82)
-$g.DrawString('SMILES Code', $fontTh, $brushDark, 492, 82)
+$g.DrawString('Compound', $fontTh, $brushDark, 102, 82)
+$g.DrawString('Formula', $fontTh, $brushDark, 210, 82)
+$g.DrawString('2D Structure (=SMILES2IMG)', $fontTh, $brushDark, 304, 82)
+$g.DrawString('SMILES', $fontTh, $brushDark, 492, 82)
+$g.DrawString('MW (g/mol)', $fontTh, $brushDark, 725, 82)
 
-# Row 2 (Aspirin)
-$g.DrawString('1', $fontFBar, $brushDark, 52, 140)
-$g.DrawString('Aspirin', $fontTh, $brushDark, 108, 140)
-$g.DrawString('C9H8O4', $fontFBar, $brushDark, 218, 140)
-$g.DrawString('CC(=O)Oc1ccccc1C(=O)O', $fontFormula, (New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(71, 85, 105))), 492, 140)
+$g.DrawString('1', $fontBar, $brushDark, 52, 140)
+$g.DrawString('Aspirin', $fontTh, $brushDark, 102, 140)
+$g.DrawString('C9H8O4', $fontBar, $brushDark, 210, 140)
+$g.DrawString('CC(=O)Oc1ccccc1C(=O)O', $fontFormula, $brushDark, 492, 140)
+$g.DrawString('180.16', $fontBar, $brushDark, 738, 140)
 
-# Row 3 (Caffeine)
-$g.DrawString('2', $fontFBar, $brushDark, 52, 270)
-$g.DrawString('Caffeine', $fontTh, $brushDark, 108, 270)
-$g.DrawString('C8H10N4O2', $fontFBar, $brushDark, 218, 270)
-$g.DrawString('Cn1cnc2c1c(=O)n(C)c(=O)n2C', $fontFormula, (New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(71, 85, 105))), 492, 270)
-
-# Draw molecules into cells D2 & D3
 $showcasePath = Resolve-Path (Join-Path $PSScriptRoot '../assets/powerpoint-showcase.png')
-$showcaseBmp = [System.Drawing.Bitmap]::FromFile($showcasePath.Path)
-$aspirinRectSrc = New-Object System.Drawing.Rectangle (98, 368, 372, 418)
-$caffeineRectSrc = New-Object System.Drawing.Rectangle (550, 368, 372, 418)
+$sb = [System.Drawing.Bitmap]::FromFile($showcasePath.Path)
+$g.DrawImage($sb, (New-Object System.Drawing.Rectangle(324, 108, 114, 114)), (New-Object System.Drawing.Rectangle(98, 368, 372, 418)), [System.Drawing.GraphicsUnit]::Pixel)
+$g.DrawImage($sb, (New-Object System.Drawing.Rectangle(324, 238, 114, 114)), (New-Object System.Drawing.Rectangle(550, 368, 372, 418)), [System.Drawing.GraphicsUnit]::Pixel)
+$sb.Dispose()
 
-$cellD2PicRect = New-Object System.Drawing.Rectangle (330, 108, 115, 115)
-$g.DrawImage($showcaseBmp, $cellD2PicRect, $aspirinRectSrc, [System.Drawing.GraphicsUnit]::Pixel)
+$d2 = New-Object System.Drawing.Rectangle(292, 101, 185, 130)
+$g.DrawRectangle((New-Object System.Drawing.Pen($excelGreen, 2)), $d2)
 
-$cellD3PicRect = New-Object System.Drawing.Rectangle (330, 238, 115, 115)
-$g.DrawImage($showcaseBmp, $cellD3PicRect, $caffeineRectSrc, [System.Drawing.GraphicsUnit]::Pixel)
-$showcaseBmp.Dispose()
+# 3. Cascading Excel Right-Click Context Menus (matches BuildExcelRangeContextMenu)
+$mainItems = @(
+    @{ Label = 'Cut'; Icon = 'cut'; Shortcut = 'Ctrl+X' },
+    @{ Label = 'Copy'; Icon = 'copy'; Shortcut = 'Ctrl+C' },
+    @{ Label = 'Paste Options:'; Muted = $true },
+    @{ Kind = 'sep' },
+    @{ Label = 'Chemical Structure'; Icon = 'chem'; Highlight = $true; HasSub = $true; Key = 'chem' },
+    @{ Kind = 'sep' },
+    @{ Label = 'Paste Special...' },
+    @{ Label = 'Insert...' },
+    @{ Label = 'Delete...' },
+    @{ Label = 'Clear Contents' },
+    @{ Kind = 'sep' },
+    @{ Label = 'Filter'; HasSub = $true },
+    @{ Label = 'Sort'; HasSub = $true },
+    @{ Label = 'Format Cells...' }
+)
+$res1 = Draw-OfficeContextMenuPanel -g $g -X 46 -Y 86 -Width 224 -Items $mainItems -AccentColor $excelGreen -MiniToolbar @{ Mode = 'text' } -ShowSearchBox $true
 
-# Cell D2 Active Cell Green Border
-$d2Rect = New-Object System.Drawing.Rectangle (301, 101, 180, 130)
-$penGreenCell = New-Object System.Drawing.Pen ($excelGreen, 2)
-$g.DrawRectangle($penGreenCell, $d2Rect)
-$g.FillRectangle((New-Object System.Drawing.SolidBrush ($excelGreen)), ($d2Rect.Right - 3), ($d2Rect.Bottom - 3), 6, 6)
+$blue = [System.Drawing.Color]::FromArgb(37, 99, 235)
+$teal = [System.Drawing.Color]::FromArgb(13, 148, 136)
+$chemItems = @(
+    @{ Label = 'Insert / Edit Structure (SMILES2IMG)...'; Icon = 'chem'; IconColor = $excelGreen },
+    @{ Label = 'Insert / Edit Structure (INCHI2IMG)...'; Icon = 'fx'; IconColor = $blue },
+    @{ Label = 'Insert / Edit Structure (KET2IMG)...'; Icon = 'ket'; IconColor = $teal },
+    @{ Label = '3D Structure (Mol*)...'; Icon = 'cube'; IconColor = $blue },
+    @{ Label = 'Paste Structure'; Icon = 'paste'; IconColor = [System.Drawing.Color]::FromArgb(202, 138, 4) },
+    @{ Kind = 'sep' },
+    @{ Label = 'Copy SMILES'; Icon = 'copy'; IconColor = $blue },
+    @{ Label = 'Copy InChI'; Icon = 'inchi'; IconColor = $blue },
+    @{ Label = 'Copy Canvas Data (KET)'; Icon = 'copy'; IconColor = $teal },
+    @{ Label = 'Copy Vector SVG'; Icon = 'svg'; IconColor = $blue },
+    @{ Kind = 'sep' },
+    @{ Label = 'Copy Molecule Info'; Icon = 'info'; Highlight = $true; HasSub = $true; Key = 'info' }
+)
+$sub1Y = [math]::Max(130, $res1.Anchors['chem'].Y - 28)
+$res2 = Draw-OfficeContextMenuPanel -g $g -X 268 -Y $sub1Y -Width 294 -Items $chemItems -AccentColor $excelGreen
 
-# 4. Excel Main Context Menu (Cell right-click)
-$menuX = 140
-$menuY = 88
-$menuW = 250
-$menuH = 440
-
-# Drop Shadow for Main Menu
-for ($i = 7; $i -ge 1; $i--) {
-    $alpha = [int](20 - $i * 2.2)
-    $sBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb($alpha, 0, 0, 0))
-    $g.FillRectangle($sBrush, ($menuX - $i + 3), ($menuY - $i + 4), ($menuW + $i * 2), ($menuH + $i * 2))
-}
-
-$menuRect = New-Object System.Drawing.Rectangle ($menuX, $menuY, $menuW, $menuH)
-$g.FillRectangle([System.Drawing.Brushes]::White, $menuRect)
-$menuBorderPen = New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(209, 213, 219), 1)
-$g.DrawRectangle($menuBorderPen, $menuRect)
-
-# Mini Formatting Toolbar
-$miniBarRect = New-Object System.Drawing.Rectangle ($menuX, $menuY, $menuW, 46)
-$g.FillRectangle((New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(243, 244, 246))), $miniBarRect)
-$g.DrawLine($menuBorderPen, $menuX, ($menuY + 46), ($menuX + $menuW), ($menuY + 46))
-
-# Font Box & Size
-$fontMini = New-Object System.Drawing.Font ('Segoe UI', 8.5, [System.Drawing.FontStyle]::Regular)
-$fontMiniBold = New-Object System.Drawing.Font ('Segoe UI', 8.5, [System.Drawing.FontStyle]::Bold)
-$fontMiniItalic = New-Object System.Drawing.Font ('Segoe UI', 8.5, [System.Drawing.FontStyle]::Italic)
-
-$g.FillRectangle([System.Drawing.Brushes]::White, ($menuX + 10), ($menuY + 6), 65, 18)
-$g.DrawRectangle((New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(209, 213, 219), 1)), ($menuX + 10), ($menuY + 6), 65, 18)
-$g.DrawString('Calibri', $fontMini, $brushDark, ($menuX + 13), ($menuY + 7))
-
-$g.FillRectangle([System.Drawing.Brushes]::White, ($menuX + 78), ($menuY + 6), 28, 18)
-$g.DrawRectangle((New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(209, 213, 219), 1)), ($menuX + 78), ($menuY + 6), 28, 18)
-$g.DrawString('11', $fontMini, $brushDark, ($menuX + 84), ($menuY + 7))
-
-$g.DrawString('B', $fontMiniBold, $brushDark, ($menuX + 120), ($menuY + 7))
-$g.DrawString('I', $fontMiniItalic, $brushDark, ($menuX + 140), ($menuY + 7))
-$g.DrawString('A', $fontMiniBold, (New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(220, 38, 38))), ($menuX + 162), ($menuY + 7))
-$g.FillRectangle((New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(220, 38, 38))), ($menuX + 162), ($menuY + 21), 10, 2)
-
-# Row 2 of mini toolbar: Fill bucket, borders, align
-$g.FillRectangle((New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(250, 204, 21))), ($menuX + 10), ($menuY + 38), 12, 2)
-$g.DrawString('▨', $fontMini, $brushDark, ($menuX + 10), ($menuY + 26))
-$g.DrawString('田', $fontMini, $brushDark, ($menuX + 35), ($menuY + 26))
-$g.DrawString('≡', $fontMini, $brushDark, ($menuX + 60), ($menuY + 26))
-$g.DrawString('$', $fontMiniBold, (New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(16, 124, 65))), ($menuX + 85), ($menuY + 26))
-$g.DrawString('%', $fontMiniBold, $brushDark, ($menuX + 105), ($menuY + 26))
-
-# Search box
-$searchRect = New-Object System.Drawing.Rectangle (($menuX + 8), ($menuY + 54), ($menuW - 16), 24)
-$g.FillRectangle((New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(249, 250, 251))), $searchRect)
-$g.DrawRectangle((New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(229, 231, 235), 1)), $searchRect)
-
-# Vector Magnifying Glass
-$penMag = New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(148, 163, 184), 1.5)
-$g.DrawEllipse($penMag, ($menuX + 18), ($menuY + 60), 7, 7)
-$g.DrawLine($penMag, ($menuX + 24), ($menuY + 66), ($menuX + 27), ($menuY + 69))
-$fontSearch = New-Object System.Drawing.Font ('Segoe UI', 8.5, [System.Drawing.FontStyle]::Regular)
-$brushSearch = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(148, 163, 184))
-$g.DrawString('Search the menus', $fontSearch, $brushSearch, ($menuX + 32), ($menuY + 58))
-
-# Menu Items
-$fontMenu = New-Object System.Drawing.Font ('Segoe UI', 9.0, [System.Drawing.FontStyle]::Regular)
-$fontMenuBold = New-Object System.Drawing.Font ('Segoe UI', 9.0, [System.Drawing.FontStyle]::Bold)
-$brushMenu = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(31, 41, 55))
-$brushMutedMenu = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(107, 114, 128))
-$penSep = New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(229, 231, 235), 1)
-
-$curY = $menuY + 86
-
-# Helpers for icons
-function Draw-Icon-Copy($ix, $iy, $color) {
-    $p = New-Object System.Drawing.Pen ($color, 1.2)
-    $g.DrawRectangle($p, ($ix + 3), ($iy + 1), 8, 10)
-    $g.FillRectangle([System.Drawing.Brushes]::White, ($ix + 1), ($iy + 4), 8, 10)
-    $g.DrawRectangle($p, ($ix + 1), ($iy + 4), 8, 10)
-}
-function Draw-Icon-Scissors($ix, $iy) {
-    $p = New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(100, 116, 139), 1.2)
-    $g.DrawEllipse($p, ($ix + 2), ($iy + 9), 4, 4)
-    $g.DrawEllipse($p, ($ix + 2), ($iy + 2), 4, 4)
-    $g.DrawLine($p, ($ix + 5), ($iy + 9), ($ix + 12), ($iy + 3))
-    $g.DrawLine($p, ($ix + 5), ($iy + 4), ($ix + 12), ($iy + 11))
-}
-
-# Cut
-Draw-Icon-Scissors ($menuX + 14) ($curY + 4)
-$g.DrawString('Cut', $fontMenu, $brushMenu, ($menuX + 36), ($curY + 4))
-$g.DrawString('Ctrl+X', $fontMini, $brushMutedMenu, ($menuX + $menuW - 50), ($curY + 5))
-$curY += 24
-
-# Copy
-Draw-Icon-Copy ($menuX + 14) ($curY + 4) ([System.Drawing.Color]::FromArgb(100, 116, 139))
-$g.DrawString('Copy', $fontMenu, $brushMenu, ($menuX + 36), ($curY + 4))
-$g.DrawString('Ctrl+C', $fontMini, $brushMutedMenu, ($menuX + $menuW - 50), ($curY + 5))
-$curY += 24
-
-# Paste Options
-$g.DrawString('Paste Options:', $fontMenu, $brushMutedMenu, ($menuX + 36), ($curY + 4))
-$pasteBtnRect = New-Object System.Drawing.Rectangle (($menuX + 124), ($curY + 2), 20, 20)
-$g.FillRectangle((New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(241, 245, 249))), $pasteBtnRect)
-$g.DrawRectangle((New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(203, 213, 225), 1)), $pasteBtnRect)
-Draw-Icon-Copy ($menuX + 127) ($curY + 5) ([System.Drawing.Color]::FromArgb(100, 116, 139))
-$curY += 26
-
-# Separator
-$g.DrawLine($penSep, ($menuX + 36), $curY, ($menuX + $menuW - 10), $curY)
-$curY += 6
-
-# *** Chemical Structure Submenu (Hovered / Active State) ***
-$chemSubmenuRect = New-Object System.Drawing.Rectangle (($menuX + 2), $curY, ($menuW - 4), 26)
-$g.FillRectangle((New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(235, 247, 238))), $chemSubmenuRect)
-$g.DrawRectangle((New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(187, 247, 208), 1)), $chemSubmenuRect)
-
-# Equation / Beaker icon
-$g.DrawString('π', (New-Object System.Drawing.Font ('Cambria Math', 11.0, [System.Drawing.FontStyle]::Bold)), (New-Object System.Drawing.SolidBrush ($excelGreen)), ($menuX + 14), ($curY + 3))
-$g.DrawString('Chemical Structure', $fontMenuBold, (New-Object System.Drawing.SolidBrush ($excelGreen)), ($menuX + 36), ($curY + 4))
-$g.DrawString('›', $fontMenuBold, (New-Object System.Drawing.SolidBrush ($excelGreen)), ($menuX + $menuW - 18), ($curY + 3))
-$curY += 28
-
-# More standard Excel items
-$g.DrawString('Paste Special...', $fontMenu, $brushMenu, ($menuX + 36), ($curY + 4))
-$curY += 24
-
-$g.DrawString('Insert...', $fontMenu, $brushMenu, ($menuX + 36), ($curY + 4))
-$curY += 24
-
-$g.DrawString('Delete...', $fontMenu, $brushMenu, ($menuX + 36), ($curY + 4))
-$curY += 24
-
-$g.DrawString('Clear Contents', $fontMenu, $brushMenu, ($menuX + 36), ($curY + 4))
-$curY += 24
-
-# Separator
-$g.DrawLine($penSep, ($menuX + 36), $curY, ($menuX + $menuW - 10), $curY)
-$curY += 6
-
-$g.DrawString('Quick Analysis', $fontMenu, $brushMenu, ($menuX + 36), ($curY + 4))
-$curY += 24
-
-$g.DrawString('Filter', $fontMenu, $brushMenu, ($menuX + 36), ($curY + 4))
-$g.DrawString('›', $fontMenuBold, $brushMutedMenu, ($menuX + $menuW - 18), ($curY + 3))
-$curY += 24
-
-$g.DrawString('Sort', $fontMenu, $brushMenu, ($menuX + 36), ($curY + 4))
-$g.DrawString('›', $fontMenuBold, $brushMutedMenu, ($menuX + $menuW - 18), ($curY + 3))
-$curY += 24
-
-$g.DrawString('Format Cells...', $fontMenu, $brushMenu, ($menuX + 36), ($curY + 4))
-$curY += 24
-
-$g.DrawString('Define Name...', $fontMenu, $brushMenu, ($menuX + 36), ($curY + 4))
-$curY += 24
-
-# 5. Flyout Submenu for Chemical Structure!
-$subX = $menuX + $menuW - 2
-$subY = $chemSubmenuRect.Y
-$subW = 310
-$subH = 196
-
-# Drop Shadow for Flyout Submenu
-for ($j = 7; $j -ge 1; $j--) {
-    $alpha = [int](22 - $j * 2.3)
-    $sBrush2 = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb($alpha, 0, 0, 0))
-    $g.FillRectangle($sBrush2, ($subX - $j + 3), ($subY - $j + 4), ($subW + $j * 2), ($subH + $j * 2))
-}
-
-$flyoutRect = New-Object System.Drawing.Rectangle ($subX, $subY, $subW, $subH)
-$g.FillRectangle([System.Drawing.Brushes]::White, $flyoutRect)
-$g.DrawRectangle($menuBorderPen, $flyoutRect)
-
-$curSubY = $subY + 8
-
-# Helper for pen icon
-function Draw-Icon-Pen($ix, $iy) {
-    $p = New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(16, 124, 65), 1.5)
-    $g.DrawLine($p, ($ix + 2), ($iy + 11), ($ix + 11), ($iy + 2))
-    $g.DrawLine($p, ($ix + 11), ($iy + 2), ($ix + 13), ($iy + 4))
-    $g.DrawLine($p, ($ix + 13), ($iy + 4), ($ix + 4), ($iy + 13))
-    $g.DrawLine($p, ($ix + 2), ($iy + 11), ($ix + 1), ($iy + 14))
-    $g.DrawLine($p, ($ix + 1), ($iy + 14), ($ix + 4), ($iy + 13))
-}
-
-# 1. Insert / Edit Structure (SMILES2IMG)... [Highlighted]
-$subHoverRect = New-Object System.Drawing.Rectangle (($subX + 2), $curSubY, ($subW - 4), 26)
-$g.FillRectangle((New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(235, 247, 238))), $subHoverRect)
-$g.DrawRectangle((New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(187, 247, 208), 1)), $subHoverRect)
-
-Draw-Icon-Pen ($subX + 12) ($curSubY + 6)
-$g.DrawString('Insert / Edit Structure (SMILES2IMG)...', $fontMenuBold, (New-Object System.Drawing.SolidBrush ($excelGreen)), ($subX + 36), ($curSubY + 5))
-$curSubY += 28
-
-# 2. Insert / Edit Structure (KET2IMG)...
-$penKet = New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(16, 124, 65), 1.4)
-$g.DrawRectangle($penKet, ($subX + 14), ($curSubY + 6), 12, 12)
-$g.DrawLine($penKet, ($subX + 16), ($curSubY + 10), ($subX + 23), ($curSubY + 10))
-$g.DrawString('Insert / Edit Structure (KET2IMG)...', $fontMenu, $brushMenu, ($subX + 36), ($curSubY + 5))
-$curSubY += 26
-
-# 3. Paste Structure
-$penClip = New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(202, 138, 4), 1.4)
-$g.DrawRectangle($penClip, ($subX + 14), ($curSubY + 5), 11, 14)
-$g.FillRectangle((New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(202, 138, 4))), ($subX + 16), ($curSubY + 3), 7, 3)
-$g.DrawString('Paste Structure', $fontMenu, $brushMenu, ($subX + 36), ($curSubY + 5))
-$curSubY += 28
-
-# Separator
-$g.DrawLine($penSep, ($subX + 36), $curSubY, ($subX + $subW - 10), $curSubY)
-$curSubY += 6
-
-# 4. Copy SMILES
-Draw-Icon-Copy ($subX + 12) ($curSubY + 5) ([System.Drawing.Color]::FromArgb(37, 99, 235))
-$g.DrawString('Copy SMILES', $fontMenu, $brushMenu, ($subX + 36), ($curSubY + 5))
-$curSubY += 26
-
-# 5. Copy Canvas Data (KET)
-Draw-Icon-Copy ($subX + 12) ($curSubY + 5) ([System.Drawing.Color]::FromArgb(5, 150, 105))
-$g.DrawString('Copy Canvas Data (KET)', $fontMenu, $brushMenu, ($subX + 36), ($curSubY + 5))
-$curSubY += 26
-
-# 6. Copy Molecule Info (Formula & MW)
-$fontInfoIcon = New-Object System.Drawing.Font ('Segoe UI', 9.0, [System.Drawing.FontStyle]::Bold)
-$g.DrawString('ℹ', $fontInfoIcon, (New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(217, 119, 6))), ($subX + 14), ($curSubY + 3))
-$g.DrawString('Copy Molecule Info (Formula & MW)', $fontMenu, $brushMenu, ($subX + 36), ($curSubY + 5))
-$curSubY += 26
+$infoItems = Get-SharedMoleculeInfoContextItems
+$sub2Y = [math]::Min(($height - 315), [math]::Max(200, $res2.Anchors['info'].Y - 220))
+[void](Draw-OfficeContextMenuPanel -g $g -X 560 -Y $sub2Y -Width 268 -Items $infoItems -AccentColor $excelGreen)
 
 $g.Dispose()
-
-# Save
-$outDir = Split-Path $OutputPath -Parent
-if (-not (Test-Path $outDir)) { New-Item -ItemType Directory -Path $outDir -Force | Out-Null }
-$bmp.Save($OutputPath, [System.Drawing.Imaging.ImageFormat]::Png)
+foreach ($dest in @($OutputPath, (Join-Path $PSScriptRoot '../docs/public/excel-context-menu-guide.png'), (Join-Path $PSScriptRoot '../assets/context-menu-guide.png'), (Join-Path $PSScriptRoot '../docs/public/context-menu-guide.png'))) {
+    $dir = Split-Path $dest -Parent
+    if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+    $bmp.Save($dest, [System.Drawing.Imaging.ImageFormat]::Png)
+}
 $bmp.Dispose()
-Write-Host "[+] Generated Excel context menu guide at $OutputPath" -ForegroundColor Green
+Write-Host "[+] Generated v1.8.0 Excel context menu guide at $OutputPath" -ForegroundColor Green

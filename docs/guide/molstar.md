@@ -21,19 +21,19 @@ Type a 4-letter PDB code (e.g., `1CRN`, `4HHB`, `6LU7`) or open a local structur
 * 💡 **Excel Shortcut:** If your selected Excel cell already contains a 4-letter PDB code like `1CRN` or `4HHB`, opening Mol\* loads that structure automatically!
 
 ### Step 2. Load & Style Your Structure
-1. Enter a **4-character PDB ID** in the top bar and click **Download PDB**, or click **Open File** to load a local `.pdb`, `.cif`, `.bcif`, `.sdf`, `.mol`, or `.mol2` file.
+1. Enter a **4-character PDB ID** in the top bar and click **`Fetch`**, or click **`Open File...`** to load a local `.pdb`, `.cif`, `.bcif`, `.sdf`, `.mol`, or `.mol2` file.
 2. Customize the visual style:
    * **Cartoon / Ribbon:** Highlight α-helices, β-sheets, and loops.
    * **Ball & Stick / Surface:** Inspect binding pockets, active-site residues, and cofactors.
    * **Color Schemes:** Color by polymer chain, secondary structure, residue type, or B-factor.
 
 ### Step 3. Insert into Your Document (3D Model vs. 2D Picture)
-Choose how you want to embed the structure from the top toolbar:
+Select the output mode in the top toolbar and click **`Apply`** (or press <kbd>Ctrl</kbd> + <kbd>Enter</kbd>):
 
 | Insert Mode | Best For |
 | :--- | :--- |
-| **🧊 [Insert 3D Model (.glb)]** | Embeds an **interactive 3D object** you can drag with your mouse to rotate 360° during PowerPoint slide shows or inside Excel and Word. |
-| **🖼️ [Insert 2D Picture (.png)]** | Exports a **high-resolution 2D figure** for print journals and PDFs (enable **Transparent Background** for dark slide themes). |
+| **🧊 `3D Model (GLB)`** | Embeds an **interactive 3D object** you can drag with your mouse to rotate 360° during PowerPoint slide shows or inside Excel and Word. |
+| **🖼️ `2D Picture`** | Exports a **high-resolution 2D `.png` figure** for print journals and PDFs (use **`BG: Transparent`** for dark slide themes, or toggle White / Dark backgrounds). |
 
 ---
 

@@ -88,7 +88,7 @@ Want to explore all formulas above inside a live Excel workbook without typing? 
 <div class="feature-grid-2">
   <div class="feature-card">
     <h4>📐 <a href="/reference/formula">Excel Formula Cheat Sheet</a></h4>
-    <p>Full parameter specifications and alias tables for all 25+ Excel chemical functions.</p>
+    <p>Full parameter specifications and alias tables for all 40 Excel chemical functions.</p>
   </div>
   <div class="feature-card">
     <h4>📗 <a href="/guide/excel">Microsoft Excel Basics Guide</a></h4>

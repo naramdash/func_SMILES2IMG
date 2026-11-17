@@ -76,7 +76,7 @@ export default defineConfig({
           {
             text: '📑 Reference & Support',
             items: [
-              { text: '📑 25+ Formula & Style Cheat Sheet', link: '/reference/formula' },
+              { text: '📑 40 Formula & Style Cheat Sheet', link: '/reference/formula' },
               { text: '❓ Troubleshooting & #NAME? Fix (FAQ)', link: '/guide/faq' }
             ]
           }
@@ -158,7 +158,7 @@ export default defineConfig({
           {
             text: '📑 레퍼런스 및 고객 지원',
             items: [
-              { text: '📑 25+ 전체 수식 & 스타일 키워드 사전', link: '/ko/reference/formula' },
+              { text: '📑 40개 전체 수식 & 스타일 키워드 사전', link: '/ko/reference/formula' },
               { text: '❓ 설치 및 #NAME? 문제 해결 (FAQ)', link: '/ko/guide/faq' }
             ]
           }

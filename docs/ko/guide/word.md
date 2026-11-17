@@ -19,7 +19,7 @@
 1. **① 상단 `[SMILES]` 탭 ➔ `[Insert / Edit Structure]` 클릭** (또는 키보드 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>).
 2. **② 2D 구조·반응식 그리기 (또는 클립보드 붙여넣기):** 내장된 Ketcher 편집기에서 분자나 다단계 반응식을 그린 뒤 <kbd>Ctrl</kbd> + <kbd>Enter</kbd>를 누르면 커서 위치에 인라인 그림으로 바로 들어갑니다.
    * *복사해 둔 SMILES가 있다면?* **`[Paste Structure]`** 버튼을 누르면 0.1초 만에 구조식 그림으로 변환됩니다!
-3. **③ 언제든 더블클릭으로 제자리 수정:** 본문이나 **워드 표(Table) 안의 분자 그림을 더블클릭**하면 표의 열 너비나 레이아웃이 전혀 깨지지 않고 그 자리에서 바로 수정됩니다!
+3. **③ 언제든 더블클릭으로 제자리 수정:** 본문이나 **워드 표(Table) 안의 인라인 그림은 물론 부동 도형과 3D Mol\* 구조까지 더블클릭** 한 번으로 열 너비와 위치가 틀어지지 않게 그 자리에서 바로 수정할 수 있습니다!
 
 ---
 
@@ -46,8 +46,8 @@
 
 ### 📋 실험 섹션(Experimental) 및 워드 표에 물성 바로 붙여넣기
 * **개별 물성 원클릭 복사:** 물질명(Substance Name), 화학식(`C9H8O4`), 분자량(`180.16 g/mol`), 정밀 질량, InChIKey를 클릭 한 번으로 복사해 논문 본문에 붙여넣습니다.
-* **워드 표 행(TSV)으로 한 번에 붙여넣기:** **`Copy Molecule Info` ➔ `Copy as Excel Row (TSV Columns)`** 메뉴를 클릭한 뒤 워드 표(Table)에 붙여넣으면 각 셀 칸에 맞춰 물성 값들이 자동으로 나뉘어 들어갑니다!
-* **상세 정보 창 (`Detailed Molecule Info Window...`):** 분자량, 정밀 질량, LogP, TPSA, Lipinski 약물성 통과 여부를 한눈에 확인하고 마크다운 표나 JSON으로도 복사할 수 있습니다.
+* **워드 표 행(TSV)으로 한 번에 붙여넣기:** **`Chemical Structure ➔ Copy Molecule Info ➔ Copy as Excel Row (TSV Columns)`** 메뉴를 클릭한 뒤 워드 표(Table)에 붙여넣으면 각 셀 칸에 맞춰 물성 값들이 자동으로 나뉘어 들어갑니다!
+* **상세 정보 창 (`Detailed Molecule Info Window...`):** 상단 2D 구조 미리보기와 함께 분자량, 정밀 질량, LogP, TPSA, Fsp³, 키랄 중심, Lipinski 약물성 통과 여부를 한눈에 확인하고 하단 드롭다운에서 마크다운 표·TSV·JSON 서식으로 복사할 수 있습니다.
 
 ### 🖼️ Adobe Illustrator / ChemDraw용 무손실 벡터 복사 (`Copy SVG`)
 * 상단 **`[Copy SVG]`** (또는 우클릭 **`Copy Vector SVG`**) 메뉴를 클릭하면 화질 저하가 전혀 없는 표준 벡터 그래픽(`SVG`)으로 복사되어 Illustrator, Inkscape 등에 바로 붙여넣고 편집할 수 있습니다.
@@ -77,6 +77,7 @@
 * **🖼️ `Copy SMILES` / `Copy InChI` / `Copy KET` / `Copy SVG`:** 선택한 구조식에서 화학 식별자 또는 무손실 SVG 벡터 복사
 * **🔬 `Molecule Info`:** 분자량·화학식·약물성 확인 및 다양한 표 서식으로 복사
 * **🎨 `Batch Style`:** 문서 내 모든 구조식을 컬러 / 논문용 흑백(ACS) / 흰색 배경 / 다크 모드로 일괄 변환
+* **ℹ️ `About SMILES`:** 현재 버전·오픈소스 라이선스 공지 확인 및 최신 버전 업데이트 검사 (`Check for Updates`)
 
 ---
 

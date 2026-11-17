@@ -190,7 +190,7 @@ Because all chemical formulas return native Excel numbers (`double`), booleans (
 <div class="s2i-card-grid">
   <a href="../reference/formula" class="s2i-card">
     <div class="s2i-card-title">📐 Excel Formula Cheat Sheet</div>
-    <p class="s2i-card-desc">Browse all 25+ chemical functions, return data types, and error code specifications</p>
+    <p class="s2i-card-desc">Browse all 40 chemical functions, return data types, and error code specifications</p>
   </a>
   <a href="../tools/formula-builder" class="s2i-card">
     <div class="s2i-card-title">🛠️ Formula Generator & Style Simulator</div>
