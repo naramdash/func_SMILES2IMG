@@ -32,7 +32,11 @@
 Open **PowerShell** and run this single command to automatically install, configure security, and register the add-in across Microsoft Office (Excel, Word, PowerPoint):
 
 ```powershell
+# Stable release (v1.7.2)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+
+# Preview release (v1.8.0-preview.1 — 3D Complexity & Stereochemistry Descriptors, 12-Col SDF Import, Win32 Clipboard Fallback & Installer Summary)
+$v='v1.8.0-preview.1'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
 > **What the installer automates:**  

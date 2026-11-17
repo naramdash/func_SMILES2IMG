@@ -24,7 +24,7 @@ function Get-InstalledFileVersion($filePath) {
     try {
         $info = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($filePath)
         $rawVer = if ($info.ProductVersion) { $info.ProductVersion } elseif ($info.FileVersion) { $info.FileVersion } else { $null }
-        if ($rawVer -and $rawVer -match '^(\d+\.\d+\.\d+)') {
+        if ($rawVer -and $rawVer -match '^(\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?)') {
             return "v$($matches[1])"
         }
         return $rawVer
