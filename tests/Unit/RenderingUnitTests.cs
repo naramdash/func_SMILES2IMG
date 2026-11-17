@@ -344,6 +344,23 @@ internal static class RenderingUnitTests
         Check(ketFormula.StartsWith("=KET2IMG(\"") && ketFormula.Contains("\"\"root\"\"") && !ketFormula.Contains("\n"),
             "KET in-cell formula generation with compact JSON and escaped double quotes");
 
+        Check(StructureMetadata.ExtractPreloadForKetcher("CCO") == "CCO", "ExtractPreloadForKetcher preloads valid SMILES");
+        Check(StructureMetadata.ExtractPreloadForKetcher("Aspirin") == "CC(=O)Oc1ccccc1C(=O)O", "ExtractPreloadForKetcher preloads built-in offline name");
+        Check(StructureMetadata.ExtractPreloadForKetcher(SampleKet) == SampleKet, "ExtractPreloadForKetcher preloads KET JSON");
+        Check(StructureMetadata.ExtractPreloadForKetcher("Figure 1: Introduction") == "", "ExtractPreloadForKetcher skips non-chemical prose");
+
+        Check(MolstarSessionManager.ExtractInitialPdbTarget("1crn") == "1CRN", "ExtractInitialPdbTarget normalizes 4-char PDB ID");
+        Check(MolstarSessionManager.ExtractInitialPdbTarget("PDB: 6LU7") == "6LU7", "ExtractInitialPdbTarget parses PDB: prefix");
+        Check(MolstarSessionManager.ExtractInitialPdbTarget(@"C:\temp\protein.cif") == @"C:\temp\protein.cif", "ExtractInitialPdbTarget keeps local .cif path");
+        Check(MolstarSessionManager.ExtractInitialPdbTarget("Aspirin") == "", "ExtractInitialPdbTarget rejects non-PDB text");
+
+        Check(Smiles2Img.Editor.MoleculeActionHelper.ResolveSmilesWithTextFallback(null, "Aspirin", resolvePubChem: false) == "CC(=O)Oc1ccccc1C(=O)O",
+            "ResolveSmilesWithTextFallback resolves chemical name instead of returning literal name");
+        Check(Smiles2Img.Editor.MoleculeActionHelper.ResolveSmilesWithTextFallback(null, "Hello World", resolvePubChem: false) == null,
+            "ResolveSmilesWithTextFallback rejects non-chemical text");
+        Check(Smiles2Img.Editor.MoleculeActionHelper.ResolveStructureOrText(null, null, "Aspirin", resolvePubChem: false) == "CC(=O)Oc1ccccc1C(=O)O",
+            "ResolveStructureOrText resolves fallback text consistently");
+
         PassSuite("Unit: StructureMetadata, Format Conversions & MolstarSessionManager GZip Round-Trip");
     }
 

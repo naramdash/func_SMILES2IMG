@@ -13,7 +13,7 @@
   </a>
   <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
     <div class="s2i-card-title">📥 8개 탭 마스터 쇼케이스 엑셀 파일 (.xlsx)</div>
-    <p class="s2i-card-desc">0.빠른시작 · 1.구조식생성 · 2.물성/Lipinski · 3.부분구조/유사도 · 4.스타일매트릭스 · 5.반응식 · 6.구형호환 · 7.리본도구 총 8개 시트</p>
+    <p class="s2i-card-desc">0.빠른시작 · 1.구조식생성 · 2.물성/Lipinski/3D · 3.부분구조/유사도 · 4.스타일매트릭스 · 5.반응식 · 6.구형호환 · 7.리본도구 총 8개 시트</p>
   </a>
 </div>
 

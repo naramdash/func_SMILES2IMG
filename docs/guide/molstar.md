@@ -53,7 +53,7 @@ Not sure which code to test first? Try any of these 4 classic structures:
 ## 3. Double-Click to Adjust Camera or Style Later
 
 1. Select any previously inserted Mol\* 3D model or 2D picture in Excel, Word, or PowerPoint.
-2. **Double-click** it (or right-click ➔ **`Edit 3D Structure (Mol*)...`**).
+2. **Double-click** it (or right-click ➔ **`Chemical Structure ➔ 3D Structure (Mol*)...`**).
 3. Mol\* reopens with your exact protein, custom colors, representations, and camera angle intact.
 4. Tweak the view and click **Apply** to update the figure in place without changing its size or position!
 

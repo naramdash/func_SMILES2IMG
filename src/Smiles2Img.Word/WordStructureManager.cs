@@ -10,23 +10,100 @@ namespace Smiles2Img.Word;
 
 public static partial class WordStructureManager
 {
+    private static bool _isDoubleClickHandling;
+
+    private static string? CleanWordText(string? raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw)) return null;
+        var cleaned = raw!.Trim(' ', '\t', '\r', '\n', '\v', '\f', '\a');
+        return string.IsNullOrWhiteSpace(cleaned) ? null : cleaned;
+    }
+
+    private static void SetLockAspectRatio<T>(T target) where T : class
+    {
+        try
+        {
+            var prop = typeof(T).GetProperty("LockAspectRatio");
+            if (prop == null) return;
+            object value = prop.PropertyType.IsEnum ? Enum.ToObject(prop.PropertyType, -1) : -1;
+            prop.SetValue(target, value, null);
+        }
+        catch { }
+    }
+
+    private static void LockShapeAspectRatio(MSWord.InlineShape shape) => SetLockAspectRatio(shape);
+
+    private static void LockShapeAspectRatio(MSWord.Shape shape) => SetLockAspectRatio(shape);
+
+    private static void LockShapeAspectRatio(object shape)
+    {
+        if (shape is MSWord.InlineShape inlineShape)
+        {
+            SetLockAspectRatio(inlineShape);
+            return;
+        }
+        if (shape is MSWord.Shape floatShape)
+        {
+            SetLockAspectRatio(floatShape);
+            return;
+        }
+    }
+
+    private static bool TryGetSelectedGraphic(
+        MSWord.Selection? sel,
+        out MSWord.InlineShape? inlineShape,
+        out MSWord.Shape? floatShape,
+        out string? altText,
+        out string? title)
+    {
+        inlineShape = null;
+        floatShape = null;
+        altText = null;
+        title = null;
+        if (sel == null) return false;
+
+        if (sel.InlineShapes.Count > 0)
+        {
+            inlineShape = sel.InlineShapes[1];
+            altText = inlineShape.AlternativeText;
+            title = inlineShape.Title;
+            return true;
+        }
+
+        if (sel.ShapeRange.Count > 0)
+        {
+            floatShape = sel.ShapeRange[1];
+            altText = floatShape.AlternativeText;
+            title = floatShape.Title;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryOpenGraphicForDoubleClick(MSWord.Application app, string? altText, string? title)
+    {
+        if (StructureMetadata.IsMolstar(altText, title))
+        {
+            EditSelectedMolstar(app);
+            return true;
+        }
+        if (!string.IsNullOrEmpty(ExtractStructure(altText, title)))
+        {
+            EditSelectedMolecule(app);
+            return true;
+        }
+        return false;
+    }
+
     public static void InsertMolecule(MSWord.Application app)
     {
         try
         {
-            var sel = app.Selection;
-            if (sel != null)
+            if (TryGetSelectedGraphic(app.Selection, out _, out _, out var altText, out var title) &&
+                TryOpenGraphicForDoubleClick(app, altText, title))
             {
-                if (sel.InlineShapes.Count > 0 && !string.IsNullOrEmpty(ExtractStructure(sel.InlineShapes[1].AlternativeText, sel.InlineShapes[1].Title)))
-                {
-                    EditSelectedMolecule(app);
-                    return;
-                }
-                if (sel.ShapeRange.Count > 0 && !string.IsNullOrEmpty(ExtractStructure(sel.ShapeRange[1].AlternativeText, sel.ShapeRange[1].Title)))
-                {
-                    EditSelectedMolecule(app);
-                    return;
-                }
+                return;
             }
 
             if (app.Documents.Count == 0)
@@ -34,8 +111,10 @@ public static partial class WordStructureManager
                 app.Documents.Add();
             }
 
+            GetSelectionTexts(app, out _, out _, out var selText);
+            var initialStructure = StructureMetadata.ExtractPreloadForKetcher(selText);
             var hwnd = GetHwnd(app);
-            using var form = KetcherForm.Rent("Word", "");
+            using var form = KetcherForm.Rent("Word", initialStructure);
             var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
@@ -61,22 +140,14 @@ public static partial class WordStructureManager
     {
         try
         {
-            var sel = app.Selection;
-            MSWord.InlineShape? targetInline = null;
-            MSWord.Shape? targetShape = null;
-            string? currentStructure = null;
-
-            if (sel.InlineShapes.Count > 0)
+            TryGetSelectedGraphic(app.Selection, out var targetInline, out var targetShape, out var altText, out var title);
+            if (StructureMetadata.IsMolstar(altText, title))
             {
-                targetInline = sel.InlineShapes[1];
-                currentStructure = ExtractStructure(targetInline.AlternativeText, targetInline.Title);
-            }
-            else if (sel.ShapeRange.Count > 0)
-            {
-                targetShape = sel.ShapeRange[1];
-                currentStructure = ExtractStructure(targetShape.AlternativeText, targetShape.Title);
+                EditSelectedMolstar(app);
+                return;
             }
 
+            var currentStructure = ExtractStructure(altText, title);
             if (string.IsNullOrEmpty(currentStructure))
             {
                 MessageBox.Show(
@@ -120,42 +191,60 @@ public static partial class WordStructureManager
 
     public static void OnWindowBeforeDoubleClick(MSWord.Selection sel, ref bool cancel)
     {
+        if (_isDoubleClickHandling) return;
         try
         {
-            if (sel.InlineShapes.Count > 0)
+            if (TryGetSelectedGraphic(sel, out _, out _, out var altText, out var title) &&
+                TryOpenGraphicForDoubleClick(sel.Application, altText, title))
             {
-                var shape = sel.InlineShapes[1];
-                if (StructureMetadata.IsMolstar(shape.AlternativeText, shape.Title))
-                {
-                    cancel = true;
-                    EditSelectedMolstar(sel.Application);
-                    return;
-                }
-                if (!string.IsNullOrEmpty(ExtractStructure(shape.AlternativeText, shape.Title)))
-                {
-                    cancel = true;
-                    EditSelectedMolecule(sel.Application);
-                    return;
-                }
+                cancel = true;
             }
-            else if (sel.ShapeRange.Count > 0)
+        }
+        catch { }
+    }
+
+    /// <summary>
+    /// Intercepts WM_LBUTTONDBLCLK on floating Word shapes and 3D models whose double-click event
+    /// is otherwise swallowed by Word's Picture/3D Format pane.
+    /// </summary>
+    public static bool TryHandleFloatingDoubleClick(MSWord.Application app)
+    {
+        if (_isDoubleClickHandling) return false;
+        try
+        {
+            var sel = app.Selection;
+            if (TryGetSelectedGraphic(sel, out var inlineShape, out _, out var altText, out var title) &&
+                inlineShape == null)
             {
-                var shape = sel.ShapeRange[1];
-                if (StructureMetadata.IsMolstar(shape.AlternativeText, shape.Title))
+                _isDoubleClickHandling = true;
+                try
                 {
-                    cancel = true;
-                    EditSelectedMolstar(sel.Application);
-                    return;
+                    return TryOpenGraphicForDoubleClick(app, altText, title);
                 }
-                if (!string.IsNullOrEmpty(ExtractStructure(shape.AlternativeText, shape.Title)))
+                finally
                 {
-                    cancel = true;
-                    EditSelectedMolecule(sel.Application);
-                    return;
+                    _isDoubleClickHandling = false;
                 }
             }
         }
         catch { }
+        return false;
+    }
+
+    /// <summary>
+    /// Resolves the InlineShapes target and insertion range, anchoring to the container paragraph
+    /// when a floating Shape or Text Box is currently selected.
+    /// </summary>
+
+    internal static (MSWord.InlineShapes InlineShapes, MSWord.Range Range) ResolveInsertTarget(MSWord.Application app)
+    {
+        var sel = app.Selection;
+        if (sel.Type == MSWord.WdSelectionType.wdSelectionShape && sel.ShapeRange.Count > 0)
+        {
+            var anchor = sel.ShapeRange[1].Anchor;
+            return (anchor.InlineShapes, anchor);
+        }
+        return (sel.InlineShapes, sel.Range);
     }
 
     private static void InsertMoleculeAsPicture(MSWord.Application app, string? ket, string smiles, byte[] pngBytes)
@@ -164,13 +253,15 @@ public static partial class WordStructureManager
         try
         {
             File.WriteAllBytes(tempFile, pngBytes);
-            var shape = app.Selection.InlineShapes.AddPicture(
+            var (inlineShapes, _) = ResolveInsertTarget(app);
+            var shape = inlineShapes.AddPicture(
                 FileName: tempFile,
                 LinkToFile: false,
                 SaveWithDocument: true);
 
             shape.AlternativeText = StructureMetadata.FormatAlternativeText(ket, smiles);
             shape.Title = StructureMetadata.FormatTitle(smiles);
+            LockShapeAspectRatio(shape);
         }
         finally
         {
@@ -199,6 +290,7 @@ public static partial class WordStructureManager
             newShape.Height = height;
             newShape.AlternativeText = StructureMetadata.FormatAlternativeText(newKet, newSmiles);
             newShape.Title = StructureMetadata.FormatTitle(newSmiles);
+            LockShapeAspectRatio(newShape);
             newShape.Select();
         }
         finally
@@ -230,6 +322,7 @@ public static partial class WordStructureManager
 
             newShape.AlternativeText = StructureMetadata.FormatAlternativeText(newKet, newSmiles);
             newShape.Title = StructureMetadata.FormatTitle(newSmiles);
+            LockShapeAspectRatio(newShape);
             newShape.Select();
         }
         finally
@@ -255,21 +348,31 @@ public static partial class WordStructureManager
             var sel = app.Selection;
             if (sel == null) return;
 
-            if (sel.InlineShapes.Count > 0)
+            if (TryGetSelectedGraphic(sel, out var inlineShape, out var shape, out altText, out title))
             {
-                var inlineShape = sel.InlineShapes[1];
-                altText = inlineShape.AlternativeText;
-                title = inlineShape.Title;
+                if (inlineShape != null || shape == null)
+                    return;
+
+                if (sel.Start != sel.End && !string.IsNullOrWhiteSpace(sel.Text))
+                {
+                    selectedText = CleanWordText(sel.Text);
+                }
+                else if (string.IsNullOrEmpty(ExtractStructure(altText, title)) &&
+                         string.IsNullOrEmpty(ExtractSmiles(title, altText)))
+                {
+                    try
+                    {
+                        if (shape.TextFrame.HasText != 0)
+                            selectedText = CleanWordText(shape.TextFrame.TextRange.Text);
+                    }
+                    catch { }
+                }
+                return;
             }
-            else if (sel.ShapeRange.Count > 0)
+
+            if (sel.Start != sel.End && !string.IsNullOrWhiteSpace(sel.Text))
             {
-                var shape = sel.ShapeRange[1];
-                altText = shape.AlternativeText;
-                title = shape.Title;
-            }
-            else if (sel.Start != sel.End && !string.IsNullOrWhiteSpace(sel.Text))
-            {
-                selectedText = sel.Text.Trim();
+                selectedText = CleanWordText(sel.Text);
             }
         }
         catch { }
@@ -286,7 +389,7 @@ public static partial class WordStructureManager
     public static void CopySelectedMoleculeInchi(MSWord.Application app)
     {
         GetSelectionTexts(app, out var altText, out var title, out var selectedText);
-        var targetData = ExtractSmiles(title, altText) ?? ExtractStructure(altText, title) ?? selectedText;
+        var targetData = MoleculeActionHelper.ResolveStructureOrText(ExtractSmiles(title, altText), ExtractStructure(altText, title), selectedText);
         MoleculeActionHelper.CopyInchi(
             targetData,
             "Could not generate InChI from the selected structure or text.");
@@ -310,26 +413,32 @@ public static partial class WordStructureManager
             }
 
             var sel = app.Selection;
-            if (sel != null && sel.Start != sel.End && !string.IsNullOrWhiteSpace(sel.Text))
+            bool TryInsertCandidate(string? raw, bool clearSelection = false)
             {
-                var selectedText = sel.Text.Trim();
-                if (MoleculeRenderer.TryRenderStructure(selectedText, RenderOptions.Default, out var selPng, out var selKet, out var selSmiles) && selPng != null)
+                var candidate = CleanWordText(raw);
+                if (candidate == null ||
+                    !MoleculeRenderer.TryRenderStructure(candidate, RenderOptions.Default, out var png, out var ket, out var smiles) ||
+                    png == null)
                 {
-                    sel.Text = "";
-                    InsertMoleculeAsPicture(app, selKet, selSmiles ?? "", selPng);
-                    return;
+                    return false;
                 }
+
+                if (clearSelection && sel != null)
+                    sel.Text = "";
+
+                InsertMoleculeAsPicture(app, ket, smiles ?? "", png);
+                return true;
             }
 
-            if (SafeClipboard.ContainsText())
-            {
-                var clipText = SafeClipboard.GetText()?.Trim();
-                if (MoleculeRenderer.TryRenderStructure(clipText, RenderOptions.Default, out var clipPng, out var clipKet, out var clipSmiles) && clipPng != null)
-                {
-                    InsertMoleculeAsPicture(app, clipKet, clipSmiles ?? "", clipPng);
-                    return;
-                }
-            }
+            if (sel != null && sel.Start != sel.End && TryInsertCandidate(sel.Text, clearSelection: true))
+                return;
+
+            GetSelectionTexts(app, out _, out _, out var shapeText);
+            if (TryInsertCandidate(shapeText))
+                return;
+
+            if (SafeClipboard.ContainsText() && TryInsertCandidate(SafeClipboard.GetText()))
+                return;
 
             MessageBox.Show(
                 "No valid SMILES or KET structure data found in selection or clipboard.\nPlease copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) or select text in the document first.",
@@ -358,7 +467,7 @@ public static partial class WordStructureManager
             if (molstarInfo != null) return molstarInfo;
         }
 
-        var targetData = ExtractSmiles(title, altText) ?? ExtractStructure(altText, title) ?? selectedText;
+        var targetData = MoleculeActionHelper.ResolveStructureOrText(ExtractSmiles(title, altText), ExtractStructure(altText, title), selectedText);
         return string.IsNullOrEmpty(targetData) ? null : MoleculeRenderer.TryGetMoleculeInfo(targetData, resolvePubChem);
     }
 
@@ -395,7 +504,7 @@ public static partial class WordStructureManager
     public static void CopySelectedMoleculeSvg(MSWord.Application app)
     {
         GetSelectionTexts(app, out var altText, out var title, out var selectedText);
-        var targetData = ExtractStructure(altText, title) ?? ExtractSmiles(title, altText) ?? selectedText;
+        var targetData = MoleculeActionHelper.ResolveStructureOrText(ExtractStructure(altText, title), ExtractSmiles(title, altText), selectedText);
         MoleculeActionHelper.CopySvg(
             targetData,
             "Could not render SVG from the selected structure or text.",

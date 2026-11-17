@@ -19,6 +19,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
     private MSWord.Application? wordApp;
     private MSWord.ApplicationEvents4_Event? wordEvents;
     private IRibbonUI? ribbon;
+    private ThreadMouseDoubleClickHook? mouseHook;
 
     public void OnConnection(object Application, ext_ConnectMode ConnectMode, object AddInInst, ref Array custom)
     {
@@ -36,6 +37,8 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
 
             wordEvents = (MSWord.ApplicationEvents4_Event)wordApp;
             wordEvents.WindowBeforeDoubleClick += WordStructureManager.OnWindowBeforeDoubleClick;
+            mouseHook = new ThreadMouseDoubleClickHook(() =>
+                wordApp != null && WordStructureManager.TryHandleFloatingDoubleClick(wordApp));
         }
         catch (Exception ex)
         {
@@ -47,6 +50,9 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
     {
         try
         {
+            mouseHook?.Dispose();
+            mouseHook = null;
+
             if (wordEvents != null)
             {
                 wordEvents.WindowBeforeDoubleClick -= WordStructureManager.OnWindowBeforeDoubleClick;
@@ -152,22 +158,25 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
   <contextMenus>
 {RibbonXmlBuilder.BuildObjectContextMenu(
     "ContextMenuInlinePicture",
+    "menuContextWordInline",
     "btnContextInline",
-    editSuffixMolecule: false,
+    "sepContextWordInline",
     "menuContextInlineMoleculeInfo",
     "Inline",
     "sepContextInline")}
 {RibbonXmlBuilder.BuildObjectContextMenu(
     "ContextMenuPicture",
+    "menuContextWordPicture",
     "btnContextPicture",
-    editSuffixMolecule: false,
+    "sepContextWordPicture",
     "menuContextPictureMoleculeInfo",
     "Picture",
     "sepContextPicture")}
 {RibbonXmlBuilder.BuildObjectContextMenu(
     "ContextMenuShape",
+    "menuContextWordShape",
     "btnContextShape",
-    editSuffixMolecule: false,
+    "sepContextWordShape",
     "menuContextShapeMoleculeInfo",
     "Shape",
     "sepContextShape")}

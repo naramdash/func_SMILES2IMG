@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ExcelDna.Integration;
 using ExcelDna.Logging;
@@ -18,25 +17,7 @@ public static partial class KetcherEditor
 {
     private const string ContextMenuTag = "SMILES2IMG_CONTEXT_MENU";
 
-    private delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
-
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern IntPtr SetWindowsHookEx(int idHook, HookProc lpfn, IntPtr hMod, uint dwThreadId);
-
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool UnhookWindowsHookEx(IntPtr hhk);
-
-    [DllImport("user32.dll")]
-    private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
-
-    [DllImport("kernel32.dll")]
-    private static extern uint GetCurrentThreadId();
-
-    private const int WH_MOUSE = 7;
-    private const int WM_LBUTTONDBLCLK = 0x0203;
-
-    private static IntPtr hMouseHook = IntPtr.Zero;
-    private static HookProc? mouseHookProc;
+    private static ThreadMouseDoubleClickHook? mouseHook;
     private static bool isEditing;
     private static Excel.Application? events;
 
@@ -46,13 +27,7 @@ public static partial class KetcherEditor
         {
             events = (Excel.Application)ExcelDnaUtil.Application;
             events.SheetBeforeDoubleClick += OnSheetBeforeDoubleClick;
-
-            try
-            {
-                mouseHookProc = MouseHookCallback;
-                hMouseHook = SetWindowsHookEx(WH_MOUSE, mouseHookProc, IntPtr.Zero, GetCurrentThreadId());
-            }
-            catch { }
+            mouseHook = new ThreadMouseDoubleClickHook(TryHandleMouseDoubleClick);
         }
         catch (Exception ex)
         {
@@ -64,12 +39,8 @@ public static partial class KetcherEditor
     {
         try
         {
-            if (hMouseHook != IntPtr.Zero)
-            {
-                try { UnhookWindowsHookEx(hMouseHook); } catch { }
-                hMouseHook = IntPtr.Zero;
-            }
-            mouseHookProc = null;
+            mouseHook?.Dispose();
+            mouseHook = null;
 
             if (events != null)
             {
@@ -80,27 +51,25 @@ public static partial class KetcherEditor
         catch { }
     }
 
-    private static IntPtr MouseHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+    private static bool TryHandleMouseDoubleClick()
     {
-        if (nCode >= 0 && wParam == (IntPtr)WM_LBUTTONDBLCLK && !isEditing && events != null)
+        if (isEditing || events == null) return false;
+        try
         {
-            try
+            var targetShape = GetSelectedShape(events);
+            if (targetShape != null && !string.IsNullOrEmpty(ExtractStructure(targetShape)))
             {
-                var targetShape = GetSelectedShape(events);
-                if (targetShape != null && !string.IsNullOrEmpty(ExtractStructure(targetShape)))
+                isEditing = true;
+                ExcelAsyncUtil.QueueAsMacro(() =>
                 {
-                    isEditing = true;
-                    ExcelAsyncUtil.QueueAsMacro(() =>
-                    {
-                        try { EditShape(events, targetShape); }
-                        finally { isEditing = false; }
-                    });
-                    return (IntPtr)1;
-                }
+                    try { EditShape(events, targetShape); }
+                    finally { isEditing = false; }
+                });
+                return true;
             }
-            catch { }
         }
-        return CallNextHookEx(hMouseHook, nCode, wParam, lParam);
+        catch { }
+        return false;
     }
 
     public enum StructureFormatPreference
@@ -221,7 +190,11 @@ public static partial class KetcherEditor
             }
             else if (app.ActiveCell is Excel.Range cell)
             {
-                MoleculeActionHelper.CopyKet(ExtractKetFromCell(cell), "No canvas structure found in selected cell or object.", alreadyKet: true);
+                var ket = ExtractKetFromCell(cell);
+                if (!string.IsNullOrEmpty(ket))
+                    MoleculeActionHelper.CopyKet(ket, "No canvas structure found in selected cell or object.", alreadyKet: true);
+                else
+                    MoleculeActionHelper.CopyKet(ExtractSmilesFromCell(cell), "No canvas structure found in selected cell or object.");
             }
             else
             {
@@ -323,7 +296,8 @@ public static partial class KetcherEditor
             {
                 string cellFormula = Convert.ToString((object?)activeCell.Formula) ?? "";
                 string cellVal = Convert.ToString((object?)activeCell.Value2)?.Trim() ?? "";
-                if (!cellFormula.StartsWith("=", StringComparison.Ordinal) && !string.IsNullOrEmpty(cellVal) && IsLikelySmiles(cellVal))
+                if (!cellFormula.StartsWith("=", StringComparison.Ordinal) && !string.IsNullOrEmpty(cellVal) &&
+                    (IsLikelySmiles(cellVal) || MoleculeRenderer.IsInchi(cellVal) || MoleculeRenderer.IsKet(cellVal)))
                 {
                     if (string.IsNullOrEmpty(rawInput) || !MoleculeRenderer.TryRenderStructure(rawInput, RenderOptions.Default, out _, out _, out _))
                         rawInput = cellVal;

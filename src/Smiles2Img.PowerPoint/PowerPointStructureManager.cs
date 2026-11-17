@@ -37,8 +37,10 @@ public static partial class PowerPointStructureManager
                 return;
             }
 
+            GetSelectedShapeOrText(app, out _, out var selText);
+            var initialStructure = StructureMetadata.ExtractPreloadForKetcher(selText);
             var hwnd = GetHwnd(app);
-            using var form = KetcherForm.Rent("PowerPoint", "");
+            using var form = KetcherForm.Rent("PowerPoint", initialStructure);
             var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
@@ -219,6 +221,7 @@ public static partial class PowerPointStructureManager
     {
         shape.AlternativeText = StructureMetadata.FormatAlternativeText(ket, smiles);
         shape.Title = StructureMetadata.FormatTitle(smiles);
+        try { shape.LockAspectRatio = MsoTriState.msoTrue; } catch { }
         if (!string.IsNullOrEmpty(ket)) try { shape.Tags.Add("KET", ket); } catch { }
         if (!string.IsNullOrEmpty(smiles)) try { shape.Tags.Add("SMILES", smiles); } catch { }
     }
@@ -287,6 +290,19 @@ public static partial class PowerPointStructureManager
             if (sel.Type == MSPowerPoint.PpSelectionType.ppSelectionShapes && sel.ShapeRange.Count > 0)
             {
                 shape = sel.ShapeRange[1];
+                if (string.IsNullOrEmpty(ExtractStructure(shape)) && string.IsNullOrEmpty(ExtractSmiles(shape)))
+                {
+                    try
+                    {
+                        if (shape.HasTextFrame == MsoTriState.msoTrue && shape.TextFrame.HasText == MsoTriState.msoTrue)
+                        {
+                            var text = shape.TextFrame.TextRange.Text?.Trim();
+                            if (!string.IsNullOrWhiteSpace(text))
+                                selectedText = text;
+                        }
+                    }
+                    catch { }
+                }
             }
             else if (sel.Type == MSPowerPoint.PpSelectionType.ppSelectionText && sel.TextRange != null)
             {
@@ -294,6 +310,17 @@ public static partial class PowerPointStructureManager
             }
         }
         catch { }
+    }
+
+    private static string? ResolveTargetData(MSPowerPoint.Shape? shape, string? selectedText, bool structureFirst = false)
+    {
+        var extractedPrimary = shape == null
+            ? null
+            : (structureFirst ? ExtractStructure(shape) : ExtractSmiles(shape));
+        var extractedSecondary = shape == null
+            ? null
+            : (structureFirst ? ExtractSmiles(shape) : ExtractStructure(shape));
+        return MoleculeActionHelper.ResolveStructureOrText(extractedPrimary, extractedSecondary, selectedText);
     }
 
     public static void CopySelectedMoleculeSmiles(MSPowerPoint.Application app)
@@ -312,9 +339,8 @@ public static partial class PowerPointStructureManager
     public static void CopySelectedMoleculeInchi(MSPowerPoint.Application app)
     {
         GetSelectedShapeOrText(app, out var shape, out var selectedText);
-        var targetData = shape != null ? (ExtractSmiles(shape) ?? ExtractStructure(shape)) : selectedText;
         MoleculeActionHelper.CopyInchi(
-            targetData,
+            ResolveTargetData(shape, selectedText),
             "Could not generate InChI from the selected structure or text.");
     }
 
@@ -334,7 +360,7 @@ public static partial class PowerPointStructureManager
     public static void CopySelectedMoleculeSvg(MSPowerPoint.Application app)
     {
         GetSelectedShapeOrText(app, out var shape, out var selectedText);
-        var targetData = shape != null ? (ExtractStructure(shape) ?? ExtractSmiles(shape)) : selectedText;
+        var targetData = ResolveTargetData(shape, selectedText, structureFirst: true);
         if (string.IsNullOrEmpty(targetData))
         {
             MoleculeNotification.NotifyWarning("SVG Vector", "Please select a molecular structure picture or text first.");
@@ -465,7 +491,7 @@ public static partial class PowerPointStructureManager
             if (molstarInfo != null) return molstarInfo;
         }
 
-        var targetData = shape != null ? (ExtractSmiles(shape) ?? ExtractStructure(shape)) : selectedText;
+        var targetData = ResolveTargetData(shape, selectedText);
         return string.IsNullOrEmpty(targetData) ? null : MoleculeRenderer.TryGetMoleculeInfo(targetData, resolvePubChem);
     }
 

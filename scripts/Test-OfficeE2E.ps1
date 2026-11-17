@@ -161,7 +161,8 @@ try {
     $inline1 = $doc.InlineShapes.Item(1)
     $extractedSmiles1 = [Smiles2Img.StructureMetadata]::ExtractSmiles($inline1.Title, $inline1.AlternativeText)
     if ($extractedSmiles1 -ne $aspirinSmiles) { throw "Word InlineShape #1 SMILES mismatch! Got: $extractedSmiles1" }
-    Write-Host "  [PASS] Word In-Process OnQuickInsert (Selection -> InlineShape #1): $($inline1.Width)x$($inline1.Height) pt" -ForegroundColor Green
+    if ([int]$inline1.LockAspectRatio -ne -1) { throw "Word InlineShape #1 LockAspectRatio expected -1 (msoTrue), got: $($inline1.LockAspectRatio)" }
+    Write-Host "  [PASS] Word In-Process OnQuickInsert (Selection -> InlineShape #1): $($inline1.Width)x$($inline1.Height) pt (LockAspectRatio=msoTrue)" -ForegroundColor Green
 
     # Test 1B: KET Canvas via Clipboard -> In-Process Ribbon Callback OnQuickInsert
     $word.Selection.Collapse(0)
@@ -209,6 +210,35 @@ try {
         throw "Word OnCopyAllSummary failed or missing v1.8.0 17-column TSV header! Got: $wordClip"
     }
     Write-Host "  [PASS] Word In-Process OnCopyAllSummary copied 17-column TSV header + row" -ForegroundColor Green
+
+    # Test 1G: Cross-Host Parity Checks in Word (Replaced LockAspectRatio + "Aspirin" text fallback across Copy SMILES/InChI/SVG/Formula/KET)
+    $inlineAfterReplace = $doc.InlineShapes.Item(1)
+    if ([int]$inlineAfterReplace.LockAspectRatio -ne -1) { throw "Word replaced InlineShape LockAspectRatio expected -1 (msoTrue), got: $($inlineAfterReplace.LockAspectRatio)" }
+    $doc.Range($doc.Content.End - 1, $doc.Content.End - 1).Select()
+    $startPos = $word.Selection.Start
+    $word.Selection.TypeText("Aspirin")
+    $doc.Range($startPos, $startPos + 7).Select()
+
+    [void]$wordObj.ExecuteRibbonAction("OnCopySmiles")
+    $wAspSmiles = [Smiles2Img.Editor.SafeClipboard]::GetText()
+    if ($wAspSmiles -ne $aspirinSmiles) { throw "Word Copy SMILES on 'Aspirin' expected '$aspirinSmiles', got '$wAspSmiles'" }
+
+    [void]$wordObj.ExecuteRibbonAction("OnCopyInchi")
+    $wAspInchi = [Smiles2Img.Editor.SafeClipboard]::GetText()
+    if (-not $wAspInchi -or -not $wAspInchi.StartsWith("InChI=1S/C9H8O4")) { throw "Word Copy InChI on 'Aspirin' failed! Got: $wAspInchi" }
+
+    [void]$wordObj.ExecuteRibbonAction("OnCopySvg")
+    $wAspSvg = [Smiles2Img.Editor.SafeClipboard]::GetText()
+    if (-not $wAspSvg -or -not $wAspSvg.Contains("<svg")) { throw "Word Copy SVG on 'Aspirin' failed!" }
+
+    [void]$wordObj.ExecuteRibbonAction("OnCopyFormula")
+    $wAspForm = [Smiles2Img.Editor.SafeClipboard]::GetText()
+    if ($wAspForm -ne "C9H8O4") { throw "Word Copy Formula on 'Aspirin' expected 'C9H8O4', got '$wAspForm'" }
+
+    [void]$wordObj.ExecuteRibbonAction("OnCopyKet")
+    $wAspKet = [Smiles2Img.Editor.SafeClipboard]::GetText()
+    if (-not $wAspKet -or -not $wAspKet.Contains('"root"')) { throw "Word Copy KET on 'Aspirin' failed!" }
+    Write-Host "  [PASS] Word Cross-Host Parity: LockAspectRatio=msoTrue & 'Aspirin' Copy SMILES/InChI/SVG/Formula/KET all resolved" -ForegroundColor Green
 
     $doc.Close($false)
 } finally {
@@ -285,6 +315,43 @@ try {
     [void]$pptObj.ExecuteRibbonAction("OnCopyMoleculeInfo")
     if (-not [OfficeE2EWindow]::DialogDetected) { throw "PowerPoint OnCopyMoleculeInfo modal UI dialog did not appear on screen!" }
     Write-Host "  [PASS] PowerPoint Live Modal UI Popup: '$([OfficeE2EWindow]::LastDetectedTitle)' ($([OfficeE2EWindow]::LastDetectedWidth)x$([OfficeE2EWindow]::LastDetectedHeight) px)" -ForegroundColor Green
+
+    # Test 2F: Cross-Host Parity Checks in PowerPoint (LockAspectRatio + TextBox 'Aspirin' fallback & 'CCO' QuickInsert)
+    $pptLockShape = $slide.Shapes.Item(2)
+    if ([int]$pptLockShape.LockAspectRatio -ne -1) { throw "PowerPoint Shape LockAspectRatio expected -1 (msoTrue), got: $($pptLockShape.LockAspectRatio)" }
+    $tb = $slide.Shapes.AddTextbox(1, 50, 50, 220, 50)
+    $tb.TextFrame.TextRange.Text = "Aspirin"
+    $tb.Select()
+
+    [void]$pptObj.ExecuteRibbonAction("OnCopySmiles")
+    $pAspSmiles = [Smiles2Img.Editor.SafeClipboard]::GetText()
+    if ($pAspSmiles -ne $aspirinSmiles) { throw "PowerPoint Copy SMILES on TextBox 'Aspirin' expected '$aspirinSmiles', got '$pAspSmiles'" }
+
+    [void]$pptObj.ExecuteRibbonAction("OnCopyInchi")
+    $pAspInchi = [Smiles2Img.Editor.SafeClipboard]::GetText()
+    if (-not $pAspInchi -or -not $pAspInchi.StartsWith("InChI=1S/C9H8O4")) { throw "PowerPoint Copy InChI on TextBox 'Aspirin' failed! Got: $pAspInchi" }
+
+    [void]$pptObj.ExecuteRibbonAction("OnCopySvg")
+    $pAspSvg = [Smiles2Img.Editor.SafeClipboard]::GetText()
+    if (-not $pAspSvg -or -not $pAspSvg.Contains("<svg")) { throw "PowerPoint Copy SVG on TextBox 'Aspirin' failed!" }
+
+    [void]$pptObj.ExecuteRibbonAction("OnCopyFormula")
+    $pAspForm = [Smiles2Img.Editor.SafeClipboard]::GetText()
+    if ($pAspForm -ne "C9H8O4") { throw "PowerPoint Copy Formula on TextBox 'Aspirin' expected 'C9H8O4', got '$pAspForm'" }
+
+    [void]$pptObj.ExecuteRibbonAction("OnCopyKet")
+    $pAspKet = [Smiles2Img.Editor.SafeClipboard]::GetText()
+    if (-not $pAspKet -or -not $pAspKet.Contains('"root"')) { throw "PowerPoint Copy KET on TextBox 'Aspirin' failed!" }
+
+    $tb.TextFrame.TextRange.Text = "CCO"
+    $tb.Select()
+    [void][Smiles2Img.Editor.SafeClipboard]::SetText("not-a-molecule")
+    $beforeQuickShapes = $slide.Shapes.Count
+    [void]$pptObj.ExecuteRibbonAction("OnQuickInsert")
+    if ($slide.Shapes.Count -le $beforeQuickShapes) { throw "PowerPoint OnQuickInsert on TextBox 'CCO' failed to insert shape!" }
+    $quickInsertedPptShape = $slide.Shapes.Item($slide.Shapes.Count)
+    if ($quickInsertedPptShape.Tags.Item("SMILES") -ne "CCO") { throw "PowerPoint TextBox QuickInsert expected SMILES 'CCO', got '$($quickInsertedPptShape.Tags.Item("SMILES"))'" }
+    Write-Host "  [PASS] PowerPoint Cross-Host Parity: LockAspectRatio=msoTrue, TextBox 'Aspirin' Copy* & TextBox 'CCO' QuickInsert verified" -ForegroundColor Green
 
     $pres.Saved = [Microsoft.Office.Core.MsoTriState]::msoTrue
     $pres.Close()
@@ -470,6 +537,27 @@ try {
     } finally {
         Remove-Item -LiteralPath $tempSdfIn, $tempSdfOut -Force -ErrorAction SilentlyContinue
     }
+
+    # Test 3G: Excel Cross-Host Parity (Plain-text 'Aspirin' Copy KET + InChI ActiveCell QuickInsert)
+    $ws.Activate()
+    $ws.Range("A5").Value2 = "Aspirin"
+    [void]$ws.Range("A5").Select()
+    try { [System.Windows.Forms.Clipboard]::Clear() } catch {}
+    [void]$excel.Run("CopySelectedMoleculeKetCommand")
+    Start-Sleep -Milliseconds 400
+    $excelKet = [Smiles2Img.Editor.SafeClipboard]::GetText()
+    if (-not $excelKet -or -not $excelKet.Contains('"root"')) { throw "Excel CopySelectedMoleculeKetCommand on plain text 'Aspirin' failed! Got: $excelKet" }
+
+    $ws.Range("A6").Value2 = "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3"
+    [void]$ws.Range("A6").Select()
+    [void][Smiles2Img.Editor.SafeClipboard]::SetText("not-a-molecule")
+    [void]$excel.Run("QuickInsertCommand")
+    Start-Sleep -Milliseconds 800
+    $fA6 = [string]$ws.Range("A6").Formula
+    if (-not $fA6.StartsWith("=SMILES2IMG", [System.StringComparison]::OrdinalIgnoreCase) -or -not $fA6.Contains("CCO")) {
+        throw "Excel QuickInsertCommand on InChI cell failed! Got formula: $fA6"
+    }
+    Write-Host "  [PASS] Excel Cross-Host Parity: Copy KET on 'Aspirin' cell & QuickInsert on InChI cell verified ('$fA6')" -ForegroundColor Green
 
     $wb.Close($false)
 } finally {

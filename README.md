@@ -35,8 +35,8 @@ Open **PowerShell** and run this single command to automatically install, config
 # Stable release (v1.7.2)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 
-# Preview release (v1.8.0-preview.1 — 3D Complexity & Stereochemistry Descriptors, 12-Col SDF Import, Win32 Clipboard Fallback & Installer Summary)
-$v='v1.8.0-preview.1'; irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
+# Preview release (v1.8.0-preview.2 — Unified Flyout Context Menus, Cross-Host Parity, 3D Complexity Descriptors & 12-Col SDF Import)
+$v='v1.8.0-preview.2'; irm https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.8.0-preview.2/install.ps1 | iex
 ```
 
 > **What the installer automates:**  
@@ -103,61 +103,61 @@ func_SMILES2IMG/
 ├── Smiles2Img.sln                      # Visual Studio / .NET unified solution file
 ├── Directory.Build.props               # Shared version, TFM (net48), and compiler configuration
 ├── package.json                        # VitePress documentation dependencies and scripts
-├── .github/
-│   └── workflows/
-│       └── deploy-docs.yml             # GitHub Actions workflow for building & deploying docs to GitHub Pages
+├── .editorconfig & .vscode/            # Enforces UTF-8 (no BOM) & CRLF across editors
+├── .github/workflows/                  # GitHub Actions workflows
+│   ├── ci.yml                          # Release build + 24 Unit/WebView2 E2E test suites
+│   ├── release.yml                     # Release packaging, installer encoding check & GitHub Release
+│   └── deploy-docs.yml                 # Docs link audit & GitHub Pages deployment
 ├── docs/                               # VitePress documentation source
-│   ├── .vitepress/
-│   │   └── config.mts                  # VitePress site configuration & i18n routing
-│   ├── public/                         # Static assets (images, icons)
+│   ├── .vitepress/                     # VitePress config, i18n routing & interactive Vue widgets
+│   ├── public/                         # Static assets (images, icons, sample SDF, showcase XLSX)
 │   ├── guide/                          # English guides (getting started, excel, word, powerpoint, ketcher, molstar, faq)
 │   ├── reference/                      # English reference (formulas & parameter specs)
 │   └── ko/                             # Korean guides & reference (ko/guide/*, ko/reference/*)
 ├── src/
-│   ├── Smiles2Img.Core/                # Shared rendering, Ketcher 2D, Mol* 3D & notification core (net48)
-│   │   ├── Rendering/                  # EPAM Indigo 1.49.0 wrapper, ACS standards, color/option parsers, PubChem resolver
-│   │   ├── Editor/                     # Ketcher v3.18.0 & Mol* v5.13.1 forms, session managers, StructureMetadata, CopiedToast
+│   ├── Smiles2Img.Core/                # Shared rendering, Ketcher 2D, Mol* 3D, UI & COM core (net48)
+│   │   ├── Rendering/                  # EPAM Indigo 1.49.0 wrapper (MoleculeRenderer, MoleculeInfo, SdfManager, PubChemResolver)
+│   │   ├── Editor/                     # Ketcher v3.18.0 & Mol* v5.13.1 (WebView2 1.0.4314.35), RibbonXmlBuilder, WebView2HostHelper, MoleculeActionHelper
 │   │   ├── Notifications/              # Non-intrusive floating badges and notification service
 │   │   └── COM/                        # Shared Office COM interfaces (IDTExtensibility2, IRibbonExtensibility)
 │   ├── Smiles2Img.Excel/               # Excel-DNA standalone XLL add-in (net48)
-│   │   ├── Functions.cs                # =SMILES2IMG, =KET2IMG, and property calculation UDFs (=SMILES2NAME, =SMILES2MW, etc.)
-│   │   ├── FloatFunctions.cs           # =SMILES2IMG.FLOAT & =KET2IMG.FLOAT floating UDFs (Excel 2016-2021)
+│   │   ├── Functions.cs                # 36 in-cell UDFs (=SMILES2IMG, =SMILES2MW, =SMILES2FSP3, =SMILES.MATCH, etc.)
+│   │   ├── FloatFunctions.cs           # 4 floating shape UDFs (.FLOAT for Excel 2016-2021)
 │   │   ├── CellImages.cs               # In-cell image cache manager
 │   │   ├── FloatingPictures.cs         # Cell-anchored floating shape manager
-│   │   ├── SmilesRibbon.cs             # [SMILES] ribbon tab & right-click context menu handlers (Copy Molecule Info submenu)
-│   │   ├── KetcherEditor.cs            # Ketcher commands, quick paste, molecule info & double-click hooks
-│   │   └── KetcherEditor.ShapesAndCells.cs # KET canvas shape & formula cell extraction/insertion helpers
+│   │   ├── SmilesRibbon.cs             # [SMILES] ribbon tab & right-click context menu callbacks
+│   │   ├── KetcherEditor.cs            # Ketcher commands, quick paste, SDF I/O, molecule info & double-click hooks
+│   │   ├── KetcherEditor.ShapesAndCells.cs # KET canvas shape & formula cell extraction/insertion helpers
 │   │   └── ExcelMolstarManager.cs      # Mol* 3D viewer integration, floating GLB/PNG insertion & session re-editing
 │   ├── Smiles2Img.Word/                # Word COM add-in DLL (net48)
-│   │   ├── WordAddIn.cs                # IDTExtensibility2 + IRibbonExtensibility + context menu handlers
-│   │   └── WordStructureManager.cs     # Inline structure images, Mol* 3D models, replacement, quick paste & double-click
+│   │   ├── WordAddIn.cs                # IDTExtensibility2 + IRibbonExtensibility + context menu callbacks
+│   │   ├── WordStructureManager.cs     # 2D inline/floating structure images, Batch Style, quick paste & double-click
+│   │   └── WordStructureManager.Molstar.cs # Partial class handling Word Mol* 3D models & CustomXMLParts persistence
 │   └── Smiles2Img.PowerPoint/          # PowerPoint COM add-in DLL (net48)
 │       ├── PowerPointAddIn.cs          # IDTExtensibility2 + IRibbonExtensibility + context menu + double-click hook
-│       └── PowerPointStructureManager.cs # Slide structure shape insertion, Mol* 3D models, replacement, quick paste & metadata
-├── dist/                               # Distribution output directory
-│   ├── x64/
-│   │   ├── Smiles2Img-AddIn64-packed.xll # 64-bit standalone Excel XLL
-│   │   ├── Word/                       # 64-bit Word COM add-in binaries
-│   │   ├── PowerPoint/                 # 64-bit PowerPoint COM add-in binaries
-│   │   └── func_SMILES2IMG-x64.zip     # 64-bit unified func_SMILES2IMG package
-│   └── x86/
-│       ├── Smiles2Img-AddIn-packed.xll   # 32-bit standalone Excel XLL
-│       ├── Word/                       # 32-bit Word COM add-in binaries
-│       ├── PowerPoint/                 # 32-bit PowerPoint COM add-in binaries
-│       └── func_SMILES2IMG-x86.zip     # 32-bit unified func_SMILES2IMG package
+│       ├── PowerPointStructureManager.cs # 2D slide structure shape insertion, Batch Style, quick paste & metadata
+│       └── PowerPointStructureManager.Molstar.cs # Partial class handling slide Mol* 3D models & persistence
+├── dist/                               # Distribution output directory (generated by Release build / packaging)
+│   ├── x64/                            # 64-bit standalone XLL, Word/PowerPoint DLLs & func_SMILES2IMG-x64.zip
+│   └── x86/                            # 32-bit standalone XLL, Word/PowerPoint DLLs & func_SMILES2IMG-x86.zip
 ├── assets/                             # Visual showcase assets & documentation screenshots
-├── tests/                              # Automated test suites
-│   ├── Excel-Smoke.ps1                 # Full COM automation E2E smoke tests
-│   ├── Excel-365-FeatureTests.ps1      # Live Excel 365 new styles & full-option tests
+├── tests/                              # Categorized Unit & E2E test suites
+│   ├── Unit/                           # RenderingUnitTests, CheminformaticsUnitTests, UiAndRibbonUnitTests
+│   ├── E2E/                            # WebView2EditorE2ETests (Ketcher/Mol*/Dialogs) & OfficeLiveE2ERunner
+│   ├── TestAssert.cs                   # Shared test assertions & suite logging
+│   ├── Program.cs                      # Test runner CLI entry point (supports --full)
+│   ├── Excel-Smoke.ps1                 # Standalone Excel COM automation smoke tests
+│   ├── Excel-365-FeatureTests.ps1      # Live Excel 365 feature & full-option tests
 │   ├── Excel-DeepStressTests.ps1       # Bulk rendering & edge-case stress test
-│   ├── Program.cs                      # Unit tests + live WebView2/Ketcher v3.18.0 E2E round-trip runner
+│   ├── packages.lock.json              # Reproducible NuGet restore lock file
 │   └── Smiles2Img.Tests.csproj
 ├── scripts/
-│   ├── Test-OfficeE2E.ps1              # Unified Word, PowerPoint, and Excel COM Add-in E2E test suite
-│   ├── Package-Release.ps1             # Release archive packaging script
-│   └── Generate-Showcase-Workbook.ps1  # Showcase workbook generator
-├── install.ps1                         # Unified Office Suite one-click installer
-├── uninstall.ps1                       # Unified Office Suite uninstaller
+│   ├── Test-OfficeE2E.ps1              # Unified Live Word, PowerPoint, and Excel COM/XLL + UI E2E suite
+│   ├── Package-Release.ps1             # Builds Release, strips UTF-8 BOM from installers & creates ZIP archives
+│   ├── Generate-Showcase-Workbook.ps1  # 8-tab comprehensive showcase workbook generator
+│   └── audit-docs-links.js             # Audits internal Markdown links & download assets across docs/
+├── install.ps1                         # Unified Office Suite 1-click installer (clean-install/upgrade summary)
+├── uninstall.ps1                       # Unified Office Suite uninstaller (removal summary report)
 ├── THIRD_PARTY_NOTICES.md              # Open-source license acknowledgments
 └── README.md                           # Main developer documentation (this file)
 ```
@@ -202,38 +202,28 @@ npm run docs:preview
 
 ## 🧪 Automated Testing & Verification
 
-### 1. Core Unit Tests + Live WebView2 Ketcher E2E Tests (Office not required)
-Verifies molecule rendering, chiral hydrogen retention, transforms, alpha transparency, molecule properties and complexity descriptors (`Formula`, `MW`, `Exact Mass`, `LogP`, `TPSA`, `Lipinski`, `Heavy Atoms`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`), Office Ribbon XML reflection, and live WebView2 + EPAM Ketcher v3.18.0 round-trip (`SMILES` $\leftrightarrow$ `KET` + Transparent/White PNG export):
+### 1. Category 1 Unit Tests (18 Suites) + Category 2 WebView2 / WinForms UI E2E (6 Suites)
+Runs **24 test suites** (no Microsoft Office installation required): verifies 2D PNG/SVG rendering, chiral/stereochemical rules, transforms, molecule properties and complexity descriptors (`Formula`, `MW`, `Exact Mass`, `LogP`, `TPSA`, `Lipinski`, `Heavy Atoms`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`), Excel/Word/PowerPoint Ribbon & ContextMenu XML (`ValidateRibbonXml` + `VerifiedValidOfficeImageMsos`), WinForms dialogs (`MoleculeInfoDialog`, `AboutDialog`, `CopiedToast`), and live WebView2 Ketcher v3.18.0 + Mol\* v5.13.1 round-trip UI capture:
 
 ```powershell
-dotnet build tests/Smiles2Img.Tests.csproj -c Release --no-restore --tl:off
-& tests/bin/Release/net48/Smiles2Img.Tests.exe
+dotnet run --project tests -c Release
 ```
 
-### 2. Unified Office Suite COM E2E Tests (Word + PowerPoint + Excel)
-Launches live instances of **Microsoft Word, PowerPoint, and Excel** to verify COM add-in registration, `KET` + `SMILES` metadata round-tripping (`AlternativeText`, `Title`, `Tags`), aspect-ratio preserving in-place updates, and formula evaluation:
+### 2. Full End-to-End Test Suite Including Live Office COM/XLL Automation (25 Suites)
+Executes all 24 Unit & WebView2 UI suites plus live Microsoft **Word (COM)**, **PowerPoint (COM)**, and **Excel (Live `.xll` + 21 UDFs + SDF Round-Trip + Modal UI popups)** automation:
 
 ```powershell
+dotnet run --project tests -c Release -- --full
+
+# Or run the live Office suite script directly after building:
 powershell -NoProfile -STA -ExecutionPolicy Bypass -File scripts/Test-OfficeE2E.ps1
 ```
 
-### 3. Excel COM E2E Automation Smoke Tests (Runs live Excel)
-Automates an actual background Excel instance to test full lifecycle reliability:
-
+### 3. Additional Excel COM Automation Smoke & Stress Scripts
 ```powershell
+# Standalone Excel lifecycle & cache restoration smoke tests
 powershell -NoProfile -STA -ExecutionPolicy Bypass -File tests/Excel-Smoke.ps1
-```
-* XLL registration and formula discovery
-* In-cell picture embedding and formula persistence
-* Real-time image replacement upon SMILES modification (zero floating shapes)
-* Cache hit instantaneous reuse across multiple cells
-* Workbook saving, reopening, and cache restoration
-* Automatic orphaned cache cleanup when formulas are deleted
 
-### 4. Excel 365 Real-World Feature & Bulk Stress Tests
-Validates modern delimiters, ultimate full-option formulas, and 20+ concurrent complex molecules:
-
-```powershell
 # Live Excel 365 feature & full-option suite
 powershell -NoProfile -STA -ExecutionPolicy Bypass -File tests/Excel-365-FeatureTests.ps1
 
@@ -241,9 +231,15 @@ powershell -NoProfile -STA -ExecutionPolicy Bypass -File tests/Excel-365-Feature
 powershell -NoProfile -STA -ExecutionPolicy Bypass -File tests/Excel-DeepStressTests.ps1
 ```
 
+### 4. Documentation Link Audit & Static Site Build
+```powershell
+node scripts/audit-docs-links.js
+npm run docs:build
+```
+
 ---
 
 ## 📄 License & Third-Party Notices
 
 * Licensed under the [MIT License](LICENSE).
-* See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for licenses and copyright notices of embedded third-party components (EPAM Indigo, EPAM Ketcher, Excel-DNA, Microsoft Edge WebView2).
+* See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for licenses and copyright notices of embedded third-party components (EPAM Indigo `1.49.0`, EPAM Ketcher `v3.18.0`, Mol\* `v5.13.1`, IUPAC InChI Toolkit `1.07.1`, Excel-DNA `1.9.0`, Microsoft Edge WebView2 `1.0.4314.35`).

@@ -35,8 +35,16 @@ public static partial class PowerPointStructureManager
                 return;
             }
 
+            string initialPdb = "";
+            try
+            {
+                GetSelectedShapeOrText(app, out _, out var selText);
+                initialPdb = MolstarSessionManager.ExtractInitialPdbTarget(selText);
+            }
+            catch { }
+
             var hwnd = GetHwnd(app);
-            using var form = MolstarForm.Rent("PowerPoint", "");
+            using var form = MolstarForm.Rent("PowerPoint", initialPdb);
             var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
             if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))
@@ -248,6 +256,7 @@ public static partial class PowerPointStructureManager
     {
         shape.AlternativeText = MolstarSessionManager.FormatAltText(meta);
         shape.Title = $"Mol* 3D [{meta.Pdb}]";
+        try { shape.LockAspectRatio = MsoTriState.msoTrue; } catch { }
         try { shape.Tags.Add("MOLSTAR", meta.Id); } catch { }
         try { shape.Tags.Add("PDB", meta.Pdb); } catch { }
     }

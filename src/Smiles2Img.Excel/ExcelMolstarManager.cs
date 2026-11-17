@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using ExcelDna.Integration;
 using Microsoft.Office.Core;
@@ -16,8 +15,6 @@ namespace Smiles2Img;
 /// </summary>
 public static class ExcelMolstarManager
 {
-    private static readonly Regex PdbPattern = new(@"^[1-9][0-9A-Za-z]{3}$", RegexOptions.Compiled);
-
     public static void InsertMolstarStructure(Excel.Application app)
     {
         try
@@ -45,23 +42,7 @@ public static class ExcelMolstarManager
             {
                 if (app.ActiveCell is Excel.Range cell)
                 {
-                    string text = Convert.ToString((object?)cell.Value2)?.Trim() ?? "";
-                    if (!string.IsNullOrEmpty(text))
-                    {
-                        if (PdbPattern.IsMatch(text))
-                        {
-                            initialPdb = text;
-                        }
-                        else if (text.StartsWith("PDB:", StringComparison.OrdinalIgnoreCase))
-                        {
-                            initialPdb = text.Substring(4).Trim();
-                        }
-                        else if (text.EndsWith(".pdb", StringComparison.OrdinalIgnoreCase) ||
-                                 text.EndsWith(".cif", StringComparison.OrdinalIgnoreCase))
-                        {
-                            initialPdb = text;
-                        }
-                    }
+                    initialPdb = MolstarSessionManager.ExtractInitialPdbTarget(Convert.ToString((object?)cell.Value2));
                 }
             }
             catch { }

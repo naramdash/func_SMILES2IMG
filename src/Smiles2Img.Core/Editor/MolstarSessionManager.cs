@@ -23,6 +23,30 @@ public static class MolstarSessionManager
     public const string CustomXmlNamespace = "urn:smiles2img:molstar-session";
 
     private static readonly JavaScriptSerializer Serializer = new() { MaxJsonLength = int.MaxValue };
+    private static readonly System.Text.RegularExpressions.Regex PdbIdPattern =
+        new(@"^[1-9][0-9A-Za-z]{3}$", System.Text.RegularExpressions.RegexOptions.Compiled);
+
+    /// <summary>
+    /// Extracts a PDB ID (e.g. "4HHB", "PDB:1CRN") or local macromolecular structure path
+    /// from cell or document text to preload into the Mol* 3D viewer.
+    /// </summary>
+    public static string ExtractInitialPdbTarget(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return "";
+        var trimmed = text!.Trim();
+        if (PdbIdPattern.IsMatch(trimmed))
+            return trimmed.ToUpperInvariant();
+        if (trimmed.StartsWith("PDB:", StringComparison.OrdinalIgnoreCase))
+            return trimmed.Substring(4).Trim();
+        if (trimmed.EndsWith(".pdb", StringComparison.OrdinalIgnoreCase) ||
+            trimmed.EndsWith(".cif", StringComparison.OrdinalIgnoreCase) ||
+            trimmed.EndsWith(".bcif", StringComparison.OrdinalIgnoreCase) ||
+            trimmed.EndsWith(".ent", StringComparison.OrdinalIgnoreCase) ||
+            trimmed.EndsWith(".mol", StringComparison.OrdinalIgnoreCase) ||
+            trimmed.EndsWith(".sdf", StringComparison.OrdinalIgnoreCase))
+            return trimmed;
+        return "";
+    }
 
     private static string GetCacheDirectory()
     {

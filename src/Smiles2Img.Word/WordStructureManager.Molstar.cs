@@ -32,8 +32,16 @@ public static partial class WordStructureManager
                 app.Documents.Add();
             }
 
+            string initialPdb = "";
+            try
+            {
+                GetSelectionTexts(app, out _, out _, out var selText);
+                initialPdb = MolstarSessionManager.ExtractInitialPdbTarget(selText);
+            }
+            catch { }
+
             var hwnd = GetHwnd(app);
-            using var form = MolstarForm.Rent("Word", "");
+            using var form = MolstarForm.Rent("Word", initialPdb);
             var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
 
             if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))
@@ -124,9 +132,10 @@ public static partial class WordStructureManager
     private static void ApplyMolstarInsert(MSWord.Application app, MolstarForm form)
     {
         var meta = MolstarSessionManager.BuildAndPersistMetadata(app.Documents.Count > 0 ? app.ActiveDocument : null, form);
+        var (inlineShapes, range) = ResolveInsertTarget(app);
         dynamic? newShape = TryAddMolstarInline3DModel(
-            () => app.Selection.InlineShapes,
-            app.Selection.Range,
+            () => inlineShapes,
+            range,
             meta,
             form);
 
@@ -136,7 +145,7 @@ public static partial class WordStructureManager
             try
             {
                 File.WriteAllBytes(tempPng, form.ResultImageBytes);
-                var shape = app.Selection.InlineShapes.AddPicture(
+                var shape = inlineShapes.AddPicture(
                     FileName: tempPng,
                     LinkToFile: false,
                     SaveWithDocument: true);
@@ -160,7 +169,6 @@ public static partial class WordStructureManager
         var meta = MolstarSessionManager.BuildAndPersistMetadata(app.Documents.Count > 0 ? app.ActiveDocument : null, form, oldMeta.Id);
         var oldWidth = oldShape.Width;
         var range = oldShape.Range;
-        oldShape.Delete();
 
         dynamic? newShape = TryAddMolstarInline3DModel(
             () => range.InlineShapes,
@@ -188,6 +196,11 @@ public static partial class WordStructureManager
             {
                 try { if (File.Exists(tempPng)) File.Delete(tempPng); } catch { }
             }
+        }
+
+        if (newShape != null)
+        {
+            try { oldShape.Delete(); } catch { }
         }
 
         FinalizeMolstarShape(newShape, meta, form);
@@ -279,6 +292,7 @@ public static partial class WordStructureManager
         {
             newShape.AlternativeText = MolstarSessionManager.FormatAltText(meta);
             newShape.Title = $"Mol* 3D: {(string.IsNullOrEmpty(form.ResultPdbId) ? "Structure" : form.ResultPdbId)}";
+            LockShapeAspectRatio(newShape);
             newShape.Select();
         }
     }

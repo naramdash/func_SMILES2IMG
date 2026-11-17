@@ -182,37 +182,22 @@ public static class RibbonXmlBuilder
 
     public static string BuildObjectContextMenu(
         string contextMenuIdMso,
+        string menuId,
         string btnPrefix,
-        bool editSuffixMolecule,
+        string sepPrefix,
         string infoMenuId,
         string infoPrefix,
-        string separatorId)
-    {
-        var editBtnId = editSuffixMolecule ? $"{btnPrefix}EditMolecule" : $"{btnPrefix}Edit";
-        var copyButtons = BuildContextStructureCopyButtons(
-            $"{btnPrefix}CopySmiles",
-            $"{btnPrefix}CopyInchi",
-            $"{btnPrefix}CopyKet",
-            $"{btnPrefix}CopySvg",
-            insertBeforeCut: true);
-        var infoMenu = BuildContextMoleculeInfoMenu(infoMenuId, infoPrefix, insertBeforeCut: true);
-
-        return $@"    <contextMenu idMso=""{contextMenuIdMso}"">
-      <button id=""{editBtnId}""
-              label=""Edit Structure (Ketcher)...""
-              imageMso=""DesignMode""
-              onAction=""OnEditMolecule""
-              insertBeforeMso=""Cut"" />
-      <button id=""{btnPrefix}EditMolstar""
-              label=""Edit 3D Structure (Mol*)...""
-              imageMso=""Insert3DModelFromFile""
-              onAction=""OnEditMolstar""
-              insertBeforeMso=""Cut"" />
-{copyButtons}
-{infoMenu}
-      <menuSeparator id=""{separatorId}"" insertBeforeMso=""Cut"" />
-    </contextMenu>";
-    }
+        string separatorId) =>
+        BuildStandardContextMenu(
+            contextMenuIdMso,
+            anchorAttribute: @"insertBeforeMso=""Cut""",
+            insertImageMso: "PensGallery",
+            menuId,
+            btnPrefix,
+            sepPrefix,
+            infoMenuId,
+            infoPrefix,
+            separatorId);
 
     public static string BuildTextOrTableContextMenu(
         string contextMenuIdMso,
@@ -221,7 +206,28 @@ public static class RibbonXmlBuilder
         string sepPrefix,
         string infoMenuId,
         string infoPrefix,
-        string trailingSeparatorId)
+        string trailingSeparatorId) =>
+        BuildStandardContextMenu(
+            contextMenuIdMso,
+            anchorAttribute: @"insertAfterMso=""PasteGalleryMini""",
+            insertImageMso: "EquationInsertNew",
+            menuId,
+            btnPrefix,
+            sepPrefix,
+            infoMenuId,
+            infoPrefix,
+            trailingSeparatorId);
+
+    private static string BuildStandardContextMenu(
+        string contextMenuIdMso,
+        string anchorAttribute,
+        string insertImageMso,
+        string menuId,
+        string btnPrefix,
+        string sepPrefix,
+        string infoMenuId,
+        string infoPrefix,
+        string outerSeparatorId)
     {
         var copyButtons = BuildContextStructureCopyButtons(
             $"{btnPrefix}CopySmiles",
@@ -235,10 +241,10 @@ public static class RibbonXmlBuilder
       <menu id=""{menuId}""
             label=""Chemical Structure""
             imageMso=""EquationInsertNew""
-            insertAfterMso=""PasteGalleryMini"">
+            {anchorAttribute}>
         <button id=""{btnPrefix}Insert""
                 label=""Insert / Edit Structure...""
-                imageMso=""EquationInsertNew""
+                imageMso=""{insertImageMso}""
                 onAction=""OnInsertMolecule"" />
         <button id=""{btnPrefix}InsertMolstar""
                 label=""3D Structure (Mol*)...""
@@ -253,7 +259,7 @@ public static class RibbonXmlBuilder
         <menuSeparator id=""{sepPrefix}SubInfo"" />
 {infoMenu}
       </menu>
-      <menuSeparator id=""{trailingSeparatorId}"" insertAfterMso=""PasteGalleryMini"" />
+      <menuSeparator id=""{outerSeparatorId}"" {anchorAttribute} />
     </contextMenu>";
     }
 

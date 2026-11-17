@@ -403,10 +403,10 @@ public static class PubChemResolver
     }
 
     /// <summary>
-    /// Resolves a chemical name, IUPAC name, or CAS registry number to a canonical SMILES string.
-    /// Checks 0ms built-in dictionary first, then persistent local cache, then PubChem REST API.
+    /// Resolves a chemical name, IUPAC name, or CAS registry number using only the built-in
+    /// offline dictionary and local persistent disk cache without performing any network calls.
     /// </summary>
-    public static string? ResolveNameToSmiles(string? nameOrCas, int timeoutMs = 3000)
+    public static string? ResolveNameToSmilesOffline(string? nameOrCas)
     {
         if (string.IsNullOrWhiteSpace(nameOrCas)) return null;
         var q = nameOrCas!.Trim();
@@ -417,6 +417,22 @@ public static class PubChemResolver
         EnsureNameCacheLoaded();
         if (NameToSmilesCache.TryGetValue(q, out var cachedSmiles))
             return cachedSmiles;
+
+        return null;
+    }
+
+    /// <summary>
+    /// Resolves a chemical name, IUPAC name, or CAS registry number to a canonical SMILES string.
+    /// Checks 0ms built-in dictionary first, then persistent local cache, then PubChem REST API.
+    /// </summary>
+    public static string? ResolveNameToSmiles(string? nameOrCas, int timeoutMs = 3000)
+    {
+        if (string.IsNullOrWhiteSpace(nameOrCas)) return null;
+        var q = nameOrCas!.Trim();
+
+        var offlineMatch = ResolveNameToSmilesOffline(q);
+        if (!string.IsNullOrEmpty(offlineMatch))
+            return offlineMatch;
 
         try
         {

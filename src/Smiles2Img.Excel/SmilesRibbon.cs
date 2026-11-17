@@ -157,15 +157,17 @@ public class SmilesRibbon : ExcelRibbon
     "sepContextListMolecule")}
 {RibbonXmlBuilder.BuildObjectContextMenu(
     "ContextMenuPicture",
+    "menuContextExcelPicture",
     "btnContextPicture",
-    editSuffixMolecule: true,
+    "sepContextExcelPicture",
     "menuContextPictureExcelMoleculeInfo",
     "Pic",
     "sepContextPicMolecule")}
 {RibbonXmlBuilder.BuildObjectContextMenu(
     "ContextMenuShape",
+    "menuContextExcelShape",
     "btnContextShape",
-    editSuffixMolecule: true,
+    "sepContextExcelShape",
     "menuContextShapeExcelMoleculeInfo",
     "Shape",
     "sepContextShapeMolecule")}

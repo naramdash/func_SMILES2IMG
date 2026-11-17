@@ -9,12 +9,12 @@
 - 본 프로젝트는 Excel, Word, PowerPoint 전 제품을 통틀어 공식 명칭을 **`func_SMILES2IMG`** 하나로 통일합니다.
 - **절대 혼용 금지 명칭**: `SMILES for Office`, `SMILES for Microsoft Office Suite`, `SMILES for Excel`, `SMILES for Word`, `SMILES for PowerPoint` 등의 임의 브랜드명을 문서, UI, 설치 스크립트, 릴리스 노트, 빌드 아티팩트에 사용하지 마십시오.
 - **적용 범위**:
-  1. **제품 UI 및 코드 (`src/`)**: 리본 메뉴(`About func_SMILES2IMG`), `AboutDialog`, 메시지 박스 타이틀(`func_SMILES2IMG`), COM Add-in 등록 `FriendlyName` (`func_SMILES2IMG (Word)`, `func_SMILES2IMG (PowerPoint)`).
+  1. **제품 UI 및 코드 (`src/`)**: 리본 메뉴(`About func_SMILES2IMG`), `AboutDialog`, 메시지 박스 타이틀(`func_SMILES2IMG`), COM Add-in 레지스트리 `FriendlyName`(`func_SMILES2IMG`), UI 컨텍스트 라벨(`Word` / `PowerPoint` / `Excel`).
   2. **문서 사이트 (`docs/`, `README.md`, `THIRD_PARTY_NOTICES.md`)**: VitePress 사이트 타이틀, 히어로 타이틀, 본문, 이미지 대체 텍스트(`alt`), 메타데이터 전체에서 **`func_SMILES2IMG`**로 표기합니다.
   3. **빌드 아티팩트 및 GitHub Release (`gh release`, `.github/workflows/release.yml`, `scripts/Package-Release.ps1`)**:
      - 원클릭 설치/제거 스크립트: `install.ps1`, `uninstall.ps1`
      - 배포 패키지 아카이브: `func_SMILES2IMG-x64.zip`, `func_SMILES2IMG-x86.zip`
-     - GitHub Release 제목 및 본문 헤더: `func_SMILES2IMG vX.Y.Z`
+     - GitHub Release 제목 및 본문 헤더: `func_SMILES2IMG vX.Y.Z` (또는 프리뷰 태그 `vX.Y.Z-preview.N`)
 
 ---
 
@@ -45,13 +45,15 @@ Office Fluent UI (RibbonX XML)에서 아이콘(`imageMso`)을 변경할 때 아�
 
 1. **절대로 `imageMso` 이름을 임의로 추측하지 마십시오.**
    - 사전에 실제 Office(Excel/Word/PowerPoint)에서 정상 렌더링이 확인된 `VerifiedValidOfficeImageMsos` 목록에 있는 ID만 사용하십시오.
-2. **모든 리본 변경 시 `dotnet run --project tests`를 반드시 실행하십시오.**
-   - `tests/Program.cs`의 `ValidateRibbonXml` 메서드는 Excel, Word, PowerPoint의 리본 및 컨텍스트 메뉴 XML을 파싱하여:
+2. **리본/컨텍스트 메뉴 XML은 `RibbonXmlBuilder`를 통해 공통 관리하십시오.**
+   - `SmilesRibbon.cs`, `WordAddIn.cs`, `PowerPointAddIn.cs`에 중복 XML을 복붙하지 말고 [RibbonXmlBuilder.cs](src/Smiles2Img.Core/Editor/RibbonXmlBuilder.cs) 헬퍼를 사용하십시오.
+3. **모든 리본 변경 시 `dotnet run --project tests -c Release`를 반드시 실행하십시오.**
+   - [tests/Unit/UiAndRibbonUnitTests.cs](tests/Unit/UiAndRibbonUnitTests.cs)의 `ValidateRibbonXml` 메서드는 Excel, Word, PowerPoint의 리본 및 컨텍스트 메뉴 XML을 파싱하여:
      - `KnownInvalidImageMsos` (블랙리스트)에 포함된 아이콘이 있는지 검사합니다.
-     - `VerifiedValidOfficeImageMsos` (화이트리스트)에 등록되지 않은 임의의 아이콘이 있는지 검사하여 즉시 빌드를 중단시킵니다.
-3. **새로운 `imageMso`를 추가할 때의 절차**:
+     - `VerifiedValidOfficeImageMsos` (화이트리스트)에 등록되지 않은 임의의 아이콘이 있는지 검사하여 즉시 테스트를 중단시킵니다.
+4. **새로운 `imageMso`를 추가할 때의 절차**:
    - 먼저 해당 ID가 Excel 2016~365의 표준 `<button>`에서 실제로 표시되는지 확인하십시오.
-   - `tests/Program.cs`의 `VerifiedValidOfficeImageMsos`와 본 문서의 목록에 등록하십시오.
+   - [tests/Unit/UiAndRibbonUnitTests.cs](tests/Unit/UiAndRibbonUnitTests.cs)의 `VerifiedValidOfficeImageMsos`와 본 문서의 목록에 등록하십시오.
 
 ---
 
@@ -126,27 +128,46 @@ Office Fluent UI (RibbonX XML)에서 아이콘(`imageMso`)을 변경할 때 아�
 
 ---
 
-## 3. 릴리스 및 배포 절차 (Release Checklist)
+## 3. 공용 아키텍처 & 설치 스크립트 인코딩 규칙
+
+### 아키텍처 공통화 원칙
+- **WebView2 폼**: `KetcherForm`과 `MolstarForm`의 DPI 창 크기 조정, WebView2 초기화/락 폴백, 뷰포트 PNG 캡처, JS 이스케이프는 `src/Smiles2Img.Core/Editor/EmbeddedAssetExtractor.cs`의 `WebView2HostHelper`를 사용합니다.
+- **크로스 호스트 액션 / 세션**: Excel, Word, PowerPoint의 클립보드·SVG·물성 복사·Mol\* 메타데이터 영속화는 `MoleculeActionHelper` 및 `MolstarSessionManager.BuildAndPersistMetadata`를 공통 호출합니다.
+- **Word / PowerPoint 구조 관리자**: 2D 로직(`.cs`)과 3D Mol\* 로직(`.Molstar.cs`)을 `partial class`로 분리해 유지합니다.
+
+### 설치/제거 스크립트 (`install.ps1`, `uninstall.ps1`) 인코딩 규칙
+- 원클릭 실행(`irm ... | iex`)은 Windows PowerShell 5.1 환경에서 UTF-8 BOM(`EF BB BF`)이나 UTF-8 비-ASCII 문자가 섞이면 파싱 오류를 일으킵니다.
+- `.editorconfig` 및 `.vscode/settings.json`으로 UTF-8 무-BOM·CRLF를 강제하고, `install.ps1` / `uninstall.ps1`의 한글 출력 및 설명 문자열은 순수 7-bit ASCII(`$([char]0xXXXX)`)로만 작성하십시오.
+- `scripts/Package-Release.ps1`은 패키징 전 BOM 헤더 3바이트를 자동 제거하며, `.github/workflows/release.yml`의 `Verify Installer Scripts (Encoding & Syntax)` 단계가 BOM 유무·비-ASCII 문자·PowerShell AST 구문을 CI에서 검증합니다.
+
+---
+
+## 4. 릴리스 및 배포 절차 (Release Checklist)
 
 버전을 올리거나 미리보기(preview) 릴리스를 발행할 때는 다음 파일들을 **동시에** 수정해야 합니다:
 
 1. `Directory.Build.props`: `<Version>X.Y.Z-preview.N</Version>`
 2. `package.json`: `"version": "X.Y.Z-preview.N"`
 3. `README.md`: 설치 가이드 및 버전 번호
-4. `docs/.vitepress/config.mts`: 최신 버전 뱃지
+4. `docs/.vitepress/config.mts`: 최신 버전 뱃지 및 릴리스 노트 링크
 5. `docs/index.md` & `docs/ko/index.md`
-6. `docs/guide/getting-started.md` & `docs/ko/guide/getting-started.md`
-7. `install.ps1`: `$TargetReleaseTag` 및 어셈블리 폴백 버전 번호
+6. `docs/guide/getting-started.md` & `docs/ko/guide/getting-started.md`: 프리뷰 안내 콜아웃 및 버전 번호
+7. `install.ps1` & `uninstall.ps1`: 기본 폴백 버전(`"vX.Y.Z-preview.N"`), COM 어셈블리 폴백(`Version=X.Y.Z.0`), `Get-InstalledFileVersion` 프리뷰 파싱
+8. (`Indigo.Net`, `Microsoft.Web.WebView2` 등 의존성 변경 시) `src/Smiles2Img.Core/Editor/AboutDialog.cs`, `THIRD_PARTY_NOTICES.md`, `README.md` 동기화
 
 ### 검증 및 배포 커맨드:
 ```powershell
-# 1. 빌드 및 테스트 통과 필수
-dotnet test -c Release
+# 1. Release 빌드·패키징 + 전체 Unit/WebView2 UI 테스트 + 문서 링크 검증
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Package-Release.ps1
 dotnet run --project tests -c Release
+node scripts/audit-docs-links.js
+
+# (선택) 로컬 Office(Word/PowerPoint/Excel)까지 포함한 전체 25개 스위트 E2E 검증
+dotnet run --project tests -c Release -- --full
 
 # 2. 커밋 및 태그 푸시 -> GitHub Actions 자동 빌드 및 릴리스 생성
 git add -A
-git commit -m "feat/fix: description"
-git tag -a vX.Y.Z-preview.N -m "Release description"
+git commit -m "chore(release): bump version to vX.Y.Z-preview.N"
+git tag -a vX.Y.Z-preview.N -m "func_SMILES2IMG vX.Y.Z-preview.N"
 git push origin dev --tags
 ```

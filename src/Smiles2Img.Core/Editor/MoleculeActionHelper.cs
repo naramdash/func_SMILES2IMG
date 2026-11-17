@@ -11,11 +11,44 @@ namespace Smiles2Img.Editor;
 /// </summary>
 public static class MoleculeActionHelper
 {
-    public static string? ResolveSmilesWithTextFallback(string? extractedSmiles, string? selectedText)
+    public static string? ResolveSmilesWithTextFallback(string? extractedSmiles, string? selectedText, bool resolvePubChem = true)
     {
-        if (!string.IsNullOrWhiteSpace(extractedSmiles) || string.IsNullOrWhiteSpace(selectedText))
+        if (!string.IsNullOrWhiteSpace(extractedSmiles))
             return extractedSmiles;
-        return MoleculeRenderer.TryConvertToSmiles(selectedText) ?? PubChemResolver.ResolveNameToSmiles(selectedText);
+        if (string.IsNullOrWhiteSpace(selectedText))
+            return null;
+
+        var trimmed = selectedText!.Trim();
+        var info = MoleculeRenderer.TryGetMoleculeInfo(trimmed, resolvePubChem: false);
+        if (info != null && !string.IsNullOrWhiteSpace(info.Smiles))
+            return info.Smiles;
+
+        if (MoleculeRenderer.TryRenderStructure(trimmed, RenderOptions.Default, out _, out _, out var renderedSmiles) &&
+            !string.IsNullOrWhiteSpace(renderedSmiles))
+        {
+            return renderedSmiles;
+        }
+
+        return resolvePubChem
+            ? PubChemResolver.ResolveNameToSmiles(trimmed)
+            : PubChemResolver.ResolveNameToSmilesOffline(trimmed);
+    }
+
+    /// <summary>
+    /// Resolves usable structure/SMILES data from extracted metadata first, falling back to
+    /// offline structure parsing or chemical name lookup on selected document text.
+    /// </summary>
+    public static string? ResolveStructureOrText(
+        string? extractedPrimary,
+        string? extractedSecondary,
+        string? selectedText,
+        bool resolvePubChem = true)
+    {
+        if (!string.IsNullOrWhiteSpace(extractedPrimary))
+            return extractedPrimary;
+        if (!string.IsNullOrWhiteSpace(extractedSecondary))
+            return extractedSecondary;
+        return ResolveSmilesWithTextFallback(null, selectedText, resolvePubChem);
     }
 
     public static string? ResolveKetWithTextFallback(string? extractedStructure, string? selectedText)

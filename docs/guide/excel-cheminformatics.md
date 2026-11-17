@@ -13,7 +13,7 @@ Automatically calculate **Molecular Weight, Exact Mass, LogP, and Lipinski Rule 
   </a>
   <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
     <div class="s2i-card-title">📥 Download 8-Tab Master Excel Showcase (.xlsx)</div>
-    <p class="s2i-card-desc">0.Quick Guide · 1.Structures · 2.Properties/Lipinski · 3.Substructure · 4.Styles Matrix · 5.Reactions · 6.Legacy .FLOAT · 7.Ribbon Tools</p>
+    <p class="s2i-card-desc">0.Quick Guide · 1.Structures · 2.Properties/Lipinski/3D · 3.Substructure · 4.Styles Matrix · 5.Reactions · 6.Legacy .FLOAT · 7.Ribbon Tools</p>
   </a>
 </div>
 

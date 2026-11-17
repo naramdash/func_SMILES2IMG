@@ -203,4 +203,22 @@ public static class StructureMetadata
             return ketText.Substring(0, smilesIdx).Trim();
         return ketText;
     }
+
+    /// <summary>
+    /// Extracts an offline-validated SMILES or KET structure (or built-in/cached chemical name)
+    /// from selected document text to preload into the Ketcher 2D editor without network latency.
+    /// </summary>
+    public static string ExtractPreloadForKetcher(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return "";
+        var trimmed = text!.Trim();
+
+        if (MoleculeRenderer.TryRenderStructure(trimmed, RenderOptions.Default, out _, out var ket, out var smiles))
+        {
+            if (!string.IsNullOrWhiteSpace(ket)) return ket!;
+            if (!string.IsNullOrWhiteSpace(smiles)) return smiles!;
+        }
+
+        return PubChemResolver.ResolveNameToSmilesOffline(trimmed) ?? "";
+    }
 }

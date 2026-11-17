@@ -8,6 +8,13 @@
 
 <QuickInstallBox :hide-quickstart-btn="true" />
 
+::: tip 🚀 `v1.8.0-preview.2` (통합 우클릭 메뉴 · 앱 간 정합성 · 3D 복잡도 함수) 미리 체험하기
+위 기본 명령어는 최신 정식 버전(`v1.7.2`)을 설치합니다. Excel·Word·PowerPoint 통합 `Chemical Structure >` 우클릭 메뉴, 앱 간 물질명·프리로드·비율 고정 통일, `=SMILES2HEAVY`~`=SMILES2CHIRAL` 3D 복잡도 함수 5종 및 12열 SDF 가져오기가 포함된 최신 프리뷰(`v1.8.0-preview.2`)를 설치하려면 아래 명령어를 실행하세요:
+```powershell
+$v='v1.8.0-preview.2'; irm https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.8.0-preview.2/install.ps1 | iex
+```
+:::
+
 ---
 
 ## Step 2. 오피스 재시작 & 상단 `[SMILES]` 리본 탭 확인

@@ -60,9 +60,15 @@ internal static class UiAndRibbonUnitTests
         Check(excelDoc.Descendants().Any(e => (string?)e.Attribute("id") == "menuContextExcelList" &&
                                               (string?)e.Attribute("insertAfterMso") == "PasteGalleryMini"),
             "Excel ContextMenuListRange contains menuContextExcelList anchored after PasteGalleryMini");
-        Check(excelDoc.Descendants().Any(e => (string?)e.Attribute("idMso") == "ContextMenuPicture" &&
-                                              e.Descendants().Any(b => (string?)b.Attribute("insertBeforeMso") == "Cut")),
-            "Excel ContextMenuPicture has items anchored before Cut");
+        static void AssertContextMenuSubmenuBeforeCut(XDocument doc, string host, string idMso, string menuId) =>
+            Check(doc.Descendants().Any(e => (string?)e.Attribute("idMso") == idMso &&
+                                             e.Elements().Any(m => m.Name.LocalName == "menu" &&
+                                                                   (string?)m.Attribute("id") == menuId &&
+                                                                   (string?)m.Attribute("insertBeforeMso") == "Cut")),
+                $"{host} {idMso} wraps items inside {menuId} anchored before Cut");
+
+        AssertContextMenuSubmenuBeforeCut(excelDoc, "Excel", "ContextMenuPicture", "menuContextExcelPicture");
+        AssertContextMenuSubmenuBeforeCut(excelDoc, "Excel", "ContextMenuShape", "menuContextExcelShape");
 
         var wordAddIn = new WordAddIn();
         var wordXml = wordAddIn.GetCustomUI("");
@@ -71,9 +77,9 @@ internal static class UiAndRibbonUnitTests
         Check(wordDoc.Descendants().Any(e => (string?)e.Attribute("id") == "menuContextWordText" &&
                                              (string?)e.Attribute("insertAfterMso") == "PasteGalleryMini"),
             "Word ContextMenuText contains menuContextWordText anchored after PasteGalleryMini");
-        Check(wordDoc.Descendants().Any(e => (string?)e.Attribute("idMso") == "ContextMenuPicture" &&
-                                             e.Descendants().Any(b => (string?)b.Attribute("insertBeforeMso") == "Cut")),
-            "Word ContextMenuPicture has items anchored before Cut");
+        AssertContextMenuSubmenuBeforeCut(wordDoc, "Word", "ContextMenuInlinePicture", "menuContextWordInline");
+        AssertContextMenuSubmenuBeforeCut(wordDoc, "Word", "ContextMenuPicture", "menuContextWordPicture");
+        AssertContextMenuSubmenuBeforeCut(wordDoc, "Word", "ContextMenuShape", "menuContextWordShape");
 
         var pptAddIn = new PowerPointAddIn();
         var pptXml = pptAddIn.GetCustomUI("");
@@ -88,9 +94,24 @@ internal static class UiAndRibbonUnitTests
         Check(pptDoc.Descendants().Any(e => (string?)e.Attribute("id") == "menuContextPptTable" &&
                                             (string?)e.Attribute("insertAfterMso") == "PasteGalleryMini"),
             "PowerPoint ContextMenuTable contains menuContextPptTable anchored after PasteGalleryMini");
-        Check(pptDoc.Descendants().Any(e => (string?)e.Attribute("idMso") == "ContextMenuPicture" &&
-                                            e.Descendants().Any(b => (string?)b.Attribute("insertBeforeMso") == "Cut")),
-            "PowerPoint ContextMenuPicture has items anchored before Cut");
+        AssertContextMenuSubmenuBeforeCut(pptDoc, "PowerPoint", "ContextMenuPicture", "menuContextPptPicture");
+        AssertContextMenuSubmenuBeforeCut(pptDoc, "PowerPoint", "ContextMenuShape", "menuContextPptShape");
+
+        foreach (var (hostName, doc) in new[] { ("Excel", excelDoc), ("Word", wordDoc), ("PowerPoint", pptDoc) })
+        {
+            var contextMenus = doc.Descendants().Where(e => e.Name.LocalName == "contextMenu").ToList();
+            Check(contextMenus.Count > 0, $"{hostName}: has <contextMenu> entries");
+            foreach (var cm in contextMenus)
+            {
+                var idMso = (string?)cm.Attribute("idMso") ?? "(unknown)";
+                var directButtons = cm.Elements().Where(e => e.Name.LocalName == "button").ToList();
+                Check(directButtons.Count == 0,
+                    $"{hostName} {idMso}: no flattened top-level <button> items directly inside <contextMenu>");
+                Check(cm.Elements().Any(e => e.Name.LocalName == "menu" &&
+                                             (string?)e.Attribute("label") == "Chemical Structure"),
+                    $"{hostName} {idMso}: exposes a top-level 'Chemical Structure' flyout <menu>");
+            }
+        }
 
         PassSuite("Unit: Excel, Word & PowerPoint Ribbon/ContextMenu XML & VerifiedValidOfficeImageMsos");
     }

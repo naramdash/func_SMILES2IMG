@@ -343,7 +343,7 @@ foreach ($candidate in $installedCandidateFiles) {
     }
 }
 if (-not $installedVersion) {
-    $installedVersion = if ($tag -ne 'latest') { $tag } else { "v1.8.0-preview.1" }
+    $installedVersion = if ($tag -ne 'latest') { $tag } else { "v1.8.0-preview.2" }
 }
 
 # -------------------------------------------------------------
