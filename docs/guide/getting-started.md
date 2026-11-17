@@ -8,11 +8,8 @@ Install **`func_SMILES2IMG`** in 10 seconds and render your first 2D chemical st
 
 <QuickInstallBox :hide-quickstart-btn="true" />
 
-::: tip 🚀 Want to Try `v1.8.0-preview.4` (Unified Context Menus, Cross-Host Parity & Standard UI UX)?
-The default command above installs the latest stable release (`v1.7.2`). To test the latest preview (`v1.8.0-preview.4`) featuring unified `Chemical Structure >` context menus across Excel/Word/PowerPoint, cross-host text/name parity & aspect-ratio lock, refreshed standard Windows Info/About dialogs with 2D preview, `=SMILES2HEAVY`/`=SMILES2RINGS`/`=SMILES2AROMATIC`/`=SMILES2FSP3`/`=SMILES2CHIRAL`, and 12-column SDF import, run:
-```powershell
-$v='v1.8.0-preview.4'; irm https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.8.0-preview.4/install.ps1 | iex
-```
+::: tip 🚀 What's New in `v1.8.0` (Included Automatically Above)
+The 1-line command above installs **`func_SMILES2IMG v1.8.0`**, featuring unified `Chemical Structure >` right-click menus across Excel/Word/PowerPoint, cross-host text/name parity & aspect-ratio lock, refreshed standard Windows Info/About dialogs with 2D preview, `=SMILES2HEAVY`/`=SMILES2RINGS`/`=SMILES2AROMATIC`/`=SMILES2FSP3`/`=SMILES2CHIRAL`, and 12-column SDF import.
 :::
 
 ---

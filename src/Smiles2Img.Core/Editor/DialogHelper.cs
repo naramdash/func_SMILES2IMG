@@ -118,33 +118,51 @@ public static class DialogHelper
             BackColor = SystemColors.Window
         };
 
-        var titleStack = new FlowLayoutPanel
+        var titleStack = new TableLayoutPanel
         {
-            FlowDirection = FlowDirection.TopDown,
+            Dock = DockStyle.Fill,
             AutoSize = true,
             AutoSizeMode = AutoSizeMode.GrowAndShrink,
-            WrapContents = false,
-            Dock = DockStyle.Fill,
-            Margin = Padding.Empty
+            ColumnCount = 1,
+            RowCount = 2,
+            Margin = Padding.Empty,
+            Padding = Padding.Empty
         };
+        titleStack.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+        titleStack.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        titleStack.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
         var baseFont = SystemFonts.MessageBoxFont ?? Control.DefaultFont;
+        var titleFont = new Font(baseFont.FontFamily, 12f, FontStyle.Bold);
+        int titleH = TextRenderer.MeasureText("Ag", titleFont).Height + 4;
+        int subH = TextRenderer.MeasureText("Ag", baseFont).Height + 4;
+
         titleStack.Controls.Add(new Label
         {
             Text = title,
             UseMnemonic = false,
-            Font = new Font(baseFont.FontFamily, 12f, FontStyle.Bold),
+            Font = titleFont,
             ForeColor = SystemColors.ControlText,
-            AutoSize = true,
+            AutoSize = false,
+            AutoEllipsis = true,
+            Dock = DockStyle.Top,
+            Height = titleH,
+            TextAlign = ContentAlignment.MiddleLeft,
             Margin = new Padding(0, 0, 0, 2)
-        });
+        }, 0, 0);
         titleStack.Controls.Add(new Label
         {
             Text = subtitle,
             UseMnemonic = false,
+            Font = baseFont,
             ForeColor = SystemColors.GrayText,
-            AutoSize = true,
+            AutoSize = false,
+            AutoEllipsis = true,
+            Dock = DockStyle.Top,
+            Height = subH,
+            TextAlign = ContentAlignment.MiddleLeft,
             Margin = Padding.Empty
-        });
+        }, 0, 1);
 
         int col = 0;
         if (leftVisual != null)

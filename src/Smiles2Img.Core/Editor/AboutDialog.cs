@@ -310,8 +310,8 @@ public sealed class AboutDialog : Form
         };
 
         var (scrollHost, _) = DialogHelper.CreateScrollableWrappedLabel(
-            "func_SMILES2IMG integrates chemical structure sketching, 26+ worksheet formulas, and 3D macromolecular visualization directly inside Excel, Word, and PowerPoint.\r\n\r\n" +
-            "• Microsoft Excel: In-cell (=SMILES2IMG, =INCHI2IMG, =KET2IMG, =NAME2IMG), floating (.FLOAT), 20+ property/complexity/search UDFs (=SMILES2MW, =SMILES2LOGP, =SMILES2LIPINSKI, =SMILES2FSP3, =SMILES.MATCH), and 12-column SDF import/export.\r\n" +
+            "func_SMILES2IMG integrates chemical structure sketching, 40 worksheet formulas, and 3D macromolecular visualization directly inside Excel, Word, and PowerPoint.\r\n\r\n" +
+            "• Microsoft Excel: In-cell (=SMILES2IMG, =INCHI2IMG, =KET2IMG, =NAME2IMG), floating (.FLOAT), 32 property/complexity/conversion/search UDFs (=SMILES2MW, =SMILES2LOGP, =SMILES2LIPINSKI, =SMILES2FSP3, =SMILES.MATCH), and 12-column SDF import/export.\r\n" +
             "• Microsoft Word: Inline and floating high-resolution structure images, lossless Vector SVG copy, 1-click Batch Style normalization, and live KET metadata round-trip editing.\r\n" +
             "• Microsoft PowerPoint: Slide shapes with KET metadata, 3D Mol* (.glb / 2D) models, Batch Style presets, and instant property export.\r\n" +
             "• Built-in Offline Engines: EPAM Ketcher, EPAM Indigo C++ Toolkit, Mol* 3D Viewer, and IUPAC InChI Library running locally without external servers.");
@@ -353,10 +353,10 @@ public sealed class AboutDialog : Form
         };
         grid.DefaultCellStyle.Padding = new Padding(4, 2, 4, 2);
 
-        grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Component", HeaderText = "Component", FillWeight = 25f, SortMode = DataGridViewColumnSortMode.NotSortable });
-        grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Version", HeaderText = "Version", FillWeight = 12f, SortMode = DataGridViewColumnSortMode.NotSortable });
-        grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "License", HeaderText = "License", FillWeight = 29f, SortMode = DataGridViewColumnSortMode.NotSortable });
-        grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Website", HeaderText = "Website (Double-click row to open)", FillWeight = 34f, SortMode = DataGridViewColumnSortMode.NotSortable });
+        grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Component", HeaderText = "Component", AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells, SortMode = DataGridViewColumnSortMode.NotSortable });
+        grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Version", HeaderText = "Version", AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells, SortMode = DataGridViewColumnSortMode.NotSortable });
+        grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "License", HeaderText = "License", AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells, SortMode = DataGridViewColumnSortMode.NotSortable });
+        grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Website", HeaderText = "Website (Double-click row to open)", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, SortMode = DataGridViewColumnSortMode.NotSortable });
 
         foreach (var c in Components)
         {

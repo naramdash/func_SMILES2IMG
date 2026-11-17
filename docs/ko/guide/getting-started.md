@@ -8,11 +8,8 @@
 
 <QuickInstallBox :hide-quickstart-btn="true" />
 
-::: tip 🚀 `v1.8.0-preview.4` (통합 우클릭 메뉴 · 앱 간 정합성 · 표준 WinForms UI/UX) 미리 체험하기
-위 기본 명령어는 최신 정식 버전(`v1.7.2`)을 설치합니다. Excel·Word·PowerPoint 통합 `Chemical Structure >` 우클릭 메뉴, 앱 간 물질명·프리로드·비율 고정 통일, 2D 미리보기가 포함된 표준 Molecule Info/About 창, `=SMILES2HEAVY`~`=SMILES2CHIRAL` 3D 복잡도 함수 5종 및 12열 SDF 가져오기가 포함된 최신 프리뷰(`v1.8.0-preview.4`)를 설치하려면 아래 명령어를 실행하세요:
-```powershell
-$v='v1.8.0-preview.4'; irm https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.8.0-preview.4/install.ps1 | iex
-```
+::: tip 🚀 `v1.8.0` 정식 출시 (위 명령어로 바로 설치됨)
+위 기본 명령어로 최신 정식 버전(**`func_SMILES2IMG v1.8.0`**)이 바로 설치됩니다. Excel·Word·PowerPoint 통합 `Chemical Structure >` 우클릭 메뉴, 앱 간 물질명·프리로드·비율 고정 통일, 2D 미리보기가 포함된 표준 Windows Molecule Info/About 창, `=SMILES2HEAVY`~`=SMILES2CHIRAL` 3D 복잡도 함수 5종 및 12열 SDF 가져오기를 바로 사용할 수 있습니다.
 :::
 
 ---

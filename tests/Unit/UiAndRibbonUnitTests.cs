@@ -136,6 +136,29 @@ internal static class UiAndRibbonUnitTests
             Check(ccoDlg is not null && ccoDlg.Icon != null && ccoDlg.Icon.Handle != IntPtr.Zero, "MoleculeInfoDialog instantiated with valid Win32 icon handle");
         }
 
+        // Verify ultra-long compound names keep the 2D header preview inside client bounds
+        var longInfo = MoleculeRenderer.TryGetMoleculeInfo("CC(=O)Oc1ccccc1C(=O)O", resolvePubChem: false)!;
+        longInfo.CompoundName = "(2S)-2-{[(R)-{[(2R,3S,4R,5R)-5-(4-aminopyrrolo[2,1-f][1,2,4]triazin-7-yl)-5-cyano-3,4-dihydroxytetrahydrofuran-2-yl]methoxy}(phenoxy)phosphoryl]amino}propanoate";
+        using (var longDlg = new MoleculeInfoDialog(longInfo))
+        {
+            longDlg.CreateControl();
+            longDlg.PerformLayout();
+            var pic = FindPictureBox(longDlg);
+            Check(pic != null && pic!.Right <= longDlg.ClientSize.Width,
+                $"Long compound name keeps header 2D preview within client bounds ({pic?.Right} <= {longDlg.ClientSize.Width})");
+        }
+
+        static System.Windows.Forms.PictureBox? FindPictureBox(System.Windows.Forms.Control root)
+        {
+            foreach (System.Windows.Forms.Control child in root.Controls)
+            {
+                if (child is System.Windows.Forms.PictureBox pb) return pb;
+                var nested = FindPictureBox(child);
+                if (nested != null) return nested;
+            }
+            return null;
+        }
+
         var summary = ccoInfo.FormatClipboardSummary();
         Check(SafeClipboard.SetText(summary), "SafeClipboard.SetText succeeds");
         Check(SafeClipboard.ContainsText() && SafeClipboard.GetText() == summary, "SafeClipboard.GetText round-trip");
@@ -170,6 +193,8 @@ internal static class UiAndRibbonUnitTests
         Check(AboutDialog.IsNewerVersion("2.0.0", "1.7.0-preview.5"), "2.0.0 stable is newer than 1.7.0-preview.5");
         Check(!AboutDialog.IsNewerVersion("1.6.9", "1.7.0"), "1.6.9 is not newer than 1.7.0");
         Check(!AboutDialog.IsNewerVersion(null, "1.7.0"), "null is not newer");
+        Check(AboutDialog.IsNewerVersion("v1.8.0", "v1.8.0-preview.4"), "1.8.0 stable is newer than 1.8.0-preview.4");
+        Check(!AboutDialog.IsNewerVersion("v1.8.0", "v1.8.0"), "1.8.0 is not newer than 1.8.0");
 
         PassSuite("Unit: AboutDialog.IsNewerVersion SemVer Comparison Logic");
     }
