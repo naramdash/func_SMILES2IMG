@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Windows.Forms;
 using Smiles2Img.Editor;
 using Smiles2Img.Notifications;
@@ -249,10 +248,8 @@ public static partial class WordStructureManager
 
     private static void InsertMoleculeAsPicture(MSWord.Application app, string? ket, string smiles, byte[] pngBytes)
     {
-        var tempFile = Path.Combine(Path.GetTempPath(), $"structure_{Guid.NewGuid():N}.png");
-        try
+        StructureMetadata.WithTempFile(pngBytes, "structure", "png", tempFile =>
         {
-            File.WriteAllBytes(tempFile, pngBytes);
             var (inlineShapes, _) = ResolveInsertTarget(app);
             var shape = inlineShapes.AddPicture(
                 FileName: tempFile,
@@ -262,19 +259,13 @@ public static partial class WordStructureManager
             shape.AlternativeText = StructureMetadata.FormatAlternativeText(ket, smiles);
             shape.Title = StructureMetadata.FormatTitle(smiles);
             LockShapeAspectRatio(shape);
-        }
-        finally
-        {
-            try { if (File.Exists(tempFile)) File.Delete(tempFile); } catch { }
-        }
+        });
     }
 
     private static void ReplaceInlineShape(MSWord.InlineShape oldShape, string? newKet, string newSmiles, byte[] pngBytes)
     {
-        var tempFile = Path.Combine(Path.GetTempPath(), $"structure_{Guid.NewGuid():N}.png");
-        try
+        StructureMetadata.WithTempFile(pngBytes, "structure", "png", tempFile =>
         {
-            File.WriteAllBytes(tempFile, pngBytes);
             var oldWidth = oldShape.Width;
             var range = oldShape.Range;
 
@@ -292,19 +283,13 @@ public static partial class WordStructureManager
             newShape.Title = StructureMetadata.FormatTitle(newSmiles);
             LockShapeAspectRatio(newShape);
             newShape.Select();
-        }
-        finally
-        {
-            try { if (File.Exists(tempFile)) File.Delete(tempFile); } catch { }
-        }
+        });
     }
 
     private static void ReplaceShape(MSWord.Shape oldShape, string? newKet, string newSmiles, byte[] pngBytes)
     {
-        var tempFile = Path.Combine(Path.GetTempPath(), $"structure_{Guid.NewGuid():N}.png");
-        try
+        StructureMetadata.WithTempFile(pngBytes, "structure", "png", tempFile =>
         {
-            File.WriteAllBytes(tempFile, pngBytes);
             var doc = (MSWord.Document)oldShape.Parent;
             var (left, top, newWidth, newHeight) = StructureMetadata.FitReplacementBounds(
                 oldShape.Left, oldShape.Top, oldShape.Width, oldShape.Height, pngBytes);
@@ -324,11 +309,7 @@ public static partial class WordStructureManager
             newShape.Title = StructureMetadata.FormatTitle(newSmiles);
             LockShapeAspectRatio(newShape);
             newShape.Select();
-        }
-        finally
-        {
-            try { if (File.Exists(tempFile)) File.Delete(tempFile); } catch { }
-        }
+        });
     }
 
     public static string? ExtractStructure(params string?[] texts) =>

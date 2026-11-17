@@ -205,6 +205,38 @@ public static class StructureMetadata
     }
 
     /// <summary>
+    /// Writes binary payload to a unique temporary file, runs <paramref name="action"/>,
+    /// and guarantees best-effort deletion afterward.
+    /// </summary>
+    public static T WithTempFile<T>(byte[] bytes, string filePrefix, string extension, Func<string, T> action)
+    {
+        var ext = extension.StartsWith(".", StringComparison.Ordinal) ? extension : "." + extension;
+        var tempFile = Path.Combine(Path.GetTempPath(), $"{filePrefix}_{Guid.NewGuid():N}{ext}");
+        try
+        {
+            File.WriteAllBytes(tempFile, bytes);
+            return action(tempFile);
+        }
+        finally
+        {
+            try { if (File.Exists(tempFile)) File.Delete(tempFile); } catch { }
+        }
+    }
+
+    /// <summary>
+    /// Writes binary payload to a unique temporary file, runs <paramref name="action"/>,
+    /// and guarantees best-effort deletion afterward.
+    /// </summary>
+    public static void WithTempFile(byte[] bytes, string filePrefix, string extension, Action<string> action)
+    {
+        WithTempFile<object?>(bytes, filePrefix, extension, path =>
+        {
+            action(path);
+            return null;
+        });
+    }
+
+    /// <summary>
     /// Extracts an offline-validated SMILES or KET structure (or built-in/cached chemical name)
     /// from selected document text to preload into the Ketcher 2D editor without network latency.
     /// </summary>

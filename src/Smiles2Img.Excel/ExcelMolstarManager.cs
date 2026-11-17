@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Windows.Forms;
 using ExcelDna.Integration;
 using Microsoft.Office.Core;
@@ -128,9 +127,7 @@ public static class ExcelMolstarManager
     private static void ApplyMolstarInsert(Excel.Application app, Excel.Worksheet sheet, MolstarForm form)
     {
         var meta = MolstarSessionManager.BuildAndPersistMetadata(app.ActiveWorkbook, form);
-        var sessionId = meta.Id;
 
-        // Target placement: near ActiveCell or (100, 100)
         float left = 100f, top = 100f;
         try
         {
@@ -142,49 +139,11 @@ public static class ExcelMolstarManager
         }
         catch { }
 
-        float w = 320f, h = 320f;
-        Excel.Shape? newShape = null;
-
-        if (form.ResultMode == "3dmodel" && form.ResultGlbBytes != null && form.ResultGlbBytes.Length > 0)
-        {
-            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.glb");
-            try
-            {
-                File.WriteAllBytes(tempGlb, form.ResultGlbBytes);
-                dynamic shapes = sheet.Shapes;
-                newShape = shapes.Add3DModel(tempGlb, MsoTriState.msoFalse, MsoTriState.msoTrue, left, top, w, h);
-            }
-            catch
-            {
-                // Fallback to 2D image if 3D model is unsupported
-                meta.Mode = "image";
-            }
-            finally
-            {
-                try { if (File.Exists(tempGlb)) File.Delete(tempGlb); } catch { }
-            }
-        }
-
+        Excel.Shape? newShape = TryAddMolstar3DModel(sheet, meta, form, left, top, 320f, 320f);
         if (newShape == null && form.ResultImageBytes != null && form.ResultImageBytes.Length > 0)
         {
-            var (imgW, imgH) = StructureMetadata.GetScaledDimensions(form.ResultImageBytes!, 320f, 240f, scale: 0.85f);
-            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{sessionId}.png");
-            try
-            {
-                File.WriteAllBytes(tempPng, form.ResultImageBytes);
-                newShape = sheet.Shapes.AddPicture(
-                    Filename: tempPng,
-                    LinkToFile: MsoTriState.msoFalse,
-                    SaveWithDocument: MsoTriState.msoTrue,
-                    Left: left,
-                    Top: top,
-                    Width: imgW,
-                    Height: imgH);
-            }
-            finally
-            {
-                try { if (File.Exists(tempPng)) File.Delete(tempPng); } catch { }
-            }
+            var (imgW, imgH) = StructureMetadata.GetScaledDimensions(form.ResultImageBytes, 320f, 240f, scale: 0.85f);
+            newShape = AddMolstarPicture(sheet, meta, form.ResultImageBytes, left, top, imgW, imgH);
         }
 
         if (newShape != null)
@@ -207,47 +166,11 @@ public static class ExcelMolstarManager
 
         oldShape.Delete();
 
-        Excel.Shape? newShape = null;
-
-        if (form.ResultMode == "3dmodel" && form.ResultGlbBytes != null && form.ResultGlbBytes.Length > 0)
-        {
-            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.glb");
-            try
-            {
-                File.WriteAllBytes(tempGlb, form.ResultGlbBytes);
-                dynamic shapes = sheet.Shapes;
-                newShape = shapes.Add3DModel(tempGlb, MsoTriState.msoFalse, MsoTriState.msoTrue, left, top, width, height);
-            }
-            catch
-            {
-                meta.Mode = "image";
-            }
-            finally
-            {
-                try { if (File.Exists(tempGlb)) File.Delete(tempGlb); } catch { }
-            }
-        }
-
+        Excel.Shape? newShape = TryAddMolstar3DModel(sheet, meta, form, left, top, width, height);
         if (newShape == null && form.ResultImageBytes != null && form.ResultImageBytes.Length > 0)
         {
-            (left, top, width, height) = StructureMetadata.FitReplacementBounds(left, top, width, height, form.ResultImageBytes!);
-            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.png");
-            try
-            {
-                File.WriteAllBytes(tempPng, form.ResultImageBytes);
-                newShape = sheet.Shapes.AddPicture(
-                    Filename: tempPng,
-                    LinkToFile: MsoTriState.msoFalse,
-                    SaveWithDocument: MsoTriState.msoTrue,
-                    Left: left,
-                    Top: top,
-                    Width: width,
-                    Height: height);
-            }
-            finally
-            {
-                try { if (File.Exists(tempPng)) File.Delete(tempPng); } catch { }
-            }
+            (left, top, width, height) = StructureMetadata.FitReplacementBounds(left, top, width, height, form.ResultImageBytes);
+            newShape = AddMolstarPicture(sheet, meta, form.ResultImageBytes, left, top, width, height);
         }
 
         if (newShape != null)
@@ -258,10 +181,44 @@ public static class ExcelMolstarManager
         }
     }
 
+    private static Excel.Shape? TryAddMolstar3DModel(
+        Excel.Worksheet sheet, MolstarMetadata meta, MolstarForm form, float left, float top, float width, float height)
+    {
+        if (form.ResultMode != "3dmodel" || form.ResultGlbBytes == null || form.ResultGlbBytes.Length == 0)
+            return null;
+
+        try
+        {
+            return StructureMetadata.WithTempFile(form.ResultGlbBytes, $"molstar_{meta.Id}", "glb", tempGlb =>
+            {
+                dynamic shapes = sheet.Shapes;
+                return (Excel.Shape)shapes.Add3DModel(tempGlb, MsoTriState.msoFalse, MsoTriState.msoTrue, left, top, width, height);
+            });
+        }
+        catch
+        {
+            // Fallback to 2D image if 3D model is unsupported
+            meta.Mode = "image";
+            return null;
+        }
+    }
+
+    private static Excel.Shape AddMolstarPicture(
+        Excel.Worksheet sheet, MolstarMetadata meta, byte[] pngBytes, float left, float top, float width, float height) =>
+        StructureMetadata.WithTempFile(pngBytes, $"molstar_{meta.Id}", "png", tempPng =>
+            sheet.Shapes.AddPicture(
+                Filename: tempPng,
+                LinkToFile: MsoTriState.msoFalse,
+                SaveWithDocument: MsoTriState.msoTrue,
+                Left: left,
+                Top: top,
+                Width: width,
+                Height: height));
+
     private static void ApplyShapeMetadata(Excel.Shape shape, MolstarMetadata meta)
     {
         try { shape.AlternativeText = MolstarSessionManager.FormatAltText(meta); } catch { }
-        try { shape.Title = StructureMetadata.FormatTitle(meta.Pdb, "Mol* 3D Structure"); } catch { }
+        try { shape.Title = MolstarSessionManager.FormatTitle(meta.Pdb); } catch { }
         try { shape.Placement = Excel.XlPlacement.xlMoveAndSize; } catch { }
         try { shape.LockAspectRatio = MsoTriState.msoTrue; } catch { }
     }

@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Windows.Forms;
 using Smiles2Img.Editor;
 using MsoTriState = Microsoft.Office.Core.MsoTriState;
@@ -143,17 +142,15 @@ public static partial class PowerPointStructureManager
             320f,
             320f);
 
-        if (newShape == null)
+        if (newShape == null && form.ResultImageBytes != null && form.ResultImageBytes.Length > 0)
         {
-            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.png");
-            try
+            newShape = StructureMetadata.WithTempFile(form.ResultImageBytes, $"molstar_{meta.Id}", "png", tempPng =>
             {
-                File.WriteAllBytes(tempPng, form.ResultImageBytes!);
-                var (width, height) = StructureMetadata.GetScaledDimensions(form.ResultImageBytes!, 320f, 240f, scale: 0.85f);
+                var (width, height) = StructureMetadata.GetScaledDimensions(form.ResultImageBytes, 320f, 240f, scale: 0.85f);
                 float left = Math.Max(50f, (slideWidth - width) / 2f);
                 float top = Math.Max(50f, (slideHeight - height) / 2f);
 
-                newShape = slide.Shapes.AddPicture(
+                return slide.Shapes.AddPicture(
                     FileName: tempPng,
                     LinkToFile: MsoTriState.msoFalse,
                     SaveWithDocument: MsoTriState.msoTrue,
@@ -161,15 +158,14 @@ public static partial class PowerPointStructureManager
                     Top: top,
                     Width: width,
                     Height: height);
-            }
-            finally
-            {
-                try { if (File.Exists(tempPng)) File.Delete(tempPng); } catch { }
-            }
+            });
         }
 
-        ApplyMolstarShapeMetadata(newShape, meta);
-        newShape.Select();
+        if (newShape != null)
+        {
+            ApplyMolstarShapeMetadata(newShape, meta);
+            newShape.Select();
+        }
     }
 
     private static void ApplyMolstarReplace(MSPowerPoint.Application app, MSPowerPoint.Shape oldShape, MolstarForm form, MolstarMetadata oldMeta)
@@ -192,16 +188,14 @@ public static partial class PowerPointStructureManager
             oldWidth,
             oldHeight);
 
-        if (newShape == null)
+        if (newShape == null && form.ResultImageBytes != null && form.ResultImageBytes.Length > 0)
         {
-            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.png");
-            try
+            newShape = StructureMetadata.WithTempFile(form.ResultImageBytes, $"molstar_{meta.Id}", "png", tempPng =>
             {
-                File.WriteAllBytes(tempPng, form.ResultImageBytes!);
                 var (left, top, newWidth, newHeight) = StructureMetadata.FitReplacementBounds(
-                    oldLeft, oldTop, oldWidth, oldHeight, form.ResultImageBytes!);
+                    oldLeft, oldTop, oldWidth, oldHeight, form.ResultImageBytes);
 
-                newShape = slide.Shapes.AddPicture(
+                return slide.Shapes.AddPicture(
                     FileName: tempPng,
                     LinkToFile: MsoTriState.msoFalse,
                     SaveWithDocument: MsoTriState.msoTrue,
@@ -209,15 +203,14 @@ public static partial class PowerPointStructureManager
                     Top: top,
                     Width: newWidth,
                     Height: newHeight);
-            }
-            finally
-            {
-                try { if (File.Exists(tempPng)) File.Delete(tempPng); } catch { }
-            }
+            });
         }
 
-        ApplyMolstarShapeMetadata(newShape, meta);
-        newShape.Select();
+        if (newShape != null)
+        {
+            ApplyMolstarShapeMetadata(newShape, meta);
+            newShape.Select();
+        }
     }
 
     private static MSPowerPoint.Shape? TryAddMolstar3DModel(
@@ -234,28 +227,25 @@ public static partial class PowerPointStructureManager
             return null;
         }
 
-        var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.glb");
         try
         {
-            File.WriteAllBytes(tempGlb, form.ResultGlbBytes);
-            dynamic shapes = slide.Shapes;
-            return shapes.Add3DModel(tempGlb, MsoTriState.msoFalse, MsoTriState.msoTrue, left, top, width, height);
+            return StructureMetadata.WithTempFile(form.ResultGlbBytes, $"molstar_{meta.Id}", "glb", tempGlb =>
+            {
+                dynamic shapes = slide.Shapes;
+                return (MSPowerPoint.Shape)shapes.Add3DModel(tempGlb, MsoTriState.msoFalse, MsoTriState.msoTrue, left, top, width, height);
+            });
         }
         catch
         {
             meta.Mode = "image";
             return null;
         }
-        finally
-        {
-            try { if (File.Exists(tempGlb)) File.Delete(tempGlb); } catch { }
-        }
     }
 
     private static void ApplyMolstarShapeMetadata(MSPowerPoint.Shape shape, MolstarMetadata meta)
     {
         shape.AlternativeText = MolstarSessionManager.FormatAltText(meta);
-        shape.Title = $"Mol* 3D [{meta.Pdb}]";
+        shape.Title = MolstarSessionManager.FormatTitle(meta.Pdb);
         try { shape.LockAspectRatio = MsoTriState.msoTrue; } catch { }
         try { shape.Tags.Add("MOLSTAR", meta.Id); } catch { }
         try { shape.Tags.Add("PDB", meta.Pdb); } catch { }

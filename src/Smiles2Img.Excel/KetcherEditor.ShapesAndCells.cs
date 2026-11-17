@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using com.epam.indigo;
@@ -124,11 +123,8 @@ public static partial class KetcherEditor
     private static void InsertCanvasShapeOnSheet(
         Excel.Application app, Excel.Worksheet sheet, string? ket, string? smiles, byte[] pngBytes, Excel.Range? anchorCell = null)
     {
-        var tempFile = Path.Combine(Path.GetTempPath(), $"structure_{Guid.NewGuid():N}.png");
-        try
+        StructureMetadata.WithTempFile(pngBytes, "structure", "png", tempFile =>
         {
-            File.WriteAllBytes(tempFile, pngBytes);
-
             float left = 100f;
             float top = 100f;
             var targetCell = anchorCell ?? (app.ActiveCell as Excel.Range);
@@ -154,20 +150,13 @@ public static partial class KetcherEditor
             shape.Placement = Excel.XlPlacement.xlMoveAndSize;
             shape.LockAspectRatio = MsoTriState.msoTrue;
             shape.Select();
-        }
-        finally
-        {
-            try { if (File.Exists(tempFile)) File.Delete(tempFile); } catch { }
-        }
+        });
     }
 
     public static void ReplaceShape(Excel.Shape oldShape, string? newKet, string? newSmiles, byte[] pngBytes)
     {
-        var tempFile = Path.Combine(Path.GetTempPath(), $"structure_{Guid.NewGuid():N}.png");
-        try
+        StructureMetadata.WithTempFile(pngBytes, "structure", "png", tempFile =>
         {
-            File.WriteAllBytes(tempFile, pngBytes);
-
             var sheet = (Excel.Worksheet)oldShape.Parent;
             var oldPlacement = oldShape.Placement;
             var (left, top, newWidth, newHeight) = StructureMetadata.FitReplacementBounds(
@@ -189,11 +178,7 @@ public static partial class KetcherEditor
             newShape.Placement = oldPlacement;
             newShape.LockAspectRatio = MsoTriState.msoTrue;
             newShape.Select();
-        }
-        finally
-        {
-            try { if (File.Exists(tempFile)) File.Delete(tempFile); } catch { }
-        }
+        });
     }
 
     public static string? ExtractStructure(Excel.Shape shape)
@@ -263,43 +248,10 @@ public static partial class KetcherEditor
             string formula = Convert.ToString((object?)cell.Formula) ?? "";
             string val = Convert.ToString((object?)cell.Value2)?.Trim() ?? "";
 
-            if (!string.IsNullOrEmpty(formula) &&
-                (formula.IndexOf("SMILES", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("KET", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("INCHI", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("NAME2", StringComparison.OrdinalIgnoreCase) >= 0))
+            if (TryResolveFormulaArgument(cell, formula, out _, out var rawData, out _) && !string.IsNullOrEmpty(rawData))
             {
-                var match = FormulaRefPattern.Match(formula);
-                if (match.Success)
-                {
-                    string? rawData = null;
-                    if (match.Groups["literal"].Success)
-                        rawData = match.Groups["literal"].Value.Replace("\"\"", "\"").Trim();
-                    else if (match.Groups["ref"].Success)
-                    {
-                        var refAddr = match.Groups["ref"].Value;
-                        try
-                        {
-                            var sheet = (Excel.Worksheet)cell.Parent;
-                            var app = (Excel.Application)sheet.Application;
-                            Excel.Range refCell = ResolveSingleRefCell(app, sheet, refAddr);
-
-                            rawData = (Convert.ToString(refCell.Value2) ?? "").Trim();
-                        }
-                        catch { }
-                    }
-
-                    if (!string.IsNullOrEmpty(rawData))
-                    {
-                        if (formula.IndexOf("NAME2", StringComparison.OrdinalIgnoreCase) >= 0)
-                            rawData = PubChemResolver.ResolveNameToSmiles(rawData) ?? rawData;
-
-                        var smiles = MoleculeRenderer.TryConvertToSmiles(rawData);
-                        if (!string.IsNullOrEmpty(smiles))
-                            return smiles;
-                        return rawData;
-                    }
-                }
+                var smiles = MoleculeRenderer.TryConvertToSmiles(rawData);
+                return !string.IsNullOrEmpty(smiles) ? smiles : rawData;
             }
 
             if (!string.IsNullOrEmpty(val))
@@ -333,45 +285,19 @@ public static partial class KetcherEditor
     {
         try
         {
+            if (cell == null) return null;
+            if (cell.Count > 1)
+            {
+                try { cell = (Excel.Range)cell.Cells[1, 1]; } catch { }
+            }
+
             string formula = Convert.ToString((object?)cell.Formula) ?? "";
             string val = Convert.ToString((object?)cell.Value2) ?? "";
 
-            if (!string.IsNullOrEmpty(formula) &&
-                (formula.IndexOf("SMILES", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("KET", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("INCHI", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("NAME2", StringComparison.OrdinalIgnoreCase) >= 0))
+            if (TryResolveFormulaArgument(cell, formula, out _, out var rawData, out _) && !string.IsNullOrEmpty(rawData))
             {
-                var match = FormulaRefPattern.Match(formula);
-                if (match.Success)
-                {
-                    string? rawData = null;
-                    if (match.Groups["literal"].Success)
-                        rawData = match.Groups["literal"].Value.Replace("\"\"", "\"").Trim();
-                    else if (match.Groups["ref"].Success)
-                    {
-                        var refAddr = match.Groups["ref"].Value;
-                        try
-                        {
-                            var sheet = (Excel.Worksheet)cell.Parent;
-                            var app = (Excel.Application)sheet.Application;
-                            Excel.Range refCell = ResolveSingleRefCell(app, sheet, refAddr);
-                            rawData = (Convert.ToString(refCell.Value2) ?? "").Trim();
-                        }
-                        catch { }
-                    }
-
-                    if (!string.IsNullOrEmpty(rawData))
-                    {
-                        if (formula.IndexOf("NAME2", StringComparison.OrdinalIgnoreCase) >= 0)
-                            rawData = PubChemResolver.ResolveNameToSmiles(rawData) ?? rawData;
-
-                        var ket = MoleculeRenderer.TryConvertToKet(rawData);
-                        if (!string.IsNullOrEmpty(ket))
-                            return ket;
-                        return rawData;
-                    }
-                }
+                var ket = MoleculeRenderer.TryConvertToKet(rawData);
+                return !string.IsNullOrEmpty(ket) ? ket : rawData;
             }
 
             if (!string.IsNullOrEmpty(val))
@@ -422,13 +348,7 @@ public static partial class KetcherEditor
             var cell = (Excel.Range)target.Cells[1, 1];
             string formula = Convert.ToString((object?)cell.Formula) ?? "";
 
-            bool isStructureCell = !string.IsNullOrEmpty(formula) && IsImageFormulaName(formula) &&
-                                   (formula.IndexOf("SMILES", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                    formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                    formula.IndexOf("INCHI", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                    formula.IndexOf("NAME2IMG", StringComparison.OrdinalIgnoreCase) >= 0);
-
-            if (isStructureCell)
+            if (!string.IsNullOrEmpty(formula) && IsImageFormulaName(formula))
             {
                 cancel = true;
                 var address = cell.Address;
@@ -458,43 +378,10 @@ public static partial class KetcherEditor
             bool isKetFunction = preference == StructureFormatPreference.Ket ||
                 (preference == StructureFormatPreference.Auto && formula.IndexOf("KET2IMG", StringComparison.OrdinalIgnoreCase) >= 0);
 
-            if (!string.IsNullOrEmpty(formula) &&
-                (formula.IndexOf("SMILES", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("KET", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("INCHI", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 formula.IndexOf("NAME2", StringComparison.OrdinalIgnoreCase) >= 0))
+            if (TryResolveFormulaArgument(cell, formula, out var resolvedTargetCell, out var extractedArg, out isFormulaLiteral))
             {
-                var match = FormulaRefPattern.Match(formula);
-                if (match.Success)
-                {
-                    if (match.Groups["ref"].Success)
-                    {
-                        var refAddr = match.Groups["ref"].Value;
-                        try
-                        {
-                            var app = (Excel.Application)sheet.Application;
-                            Excel.Range refCell = refAddr.Contains("!")
-                                ? (Excel.Range)app.Range[refAddr]
-                                : (Excel.Range)sheet.Range[refAddr];
-                            targetCellToWrite = refCell;
-                            initialSmiles = Convert.ToString(refCell.Value2) ?? "";
-                        }
-                        catch
-                        {
-                            targetCellToWrite = cell;
-                        }
-                    }
-                    else if (match.Groups["literal"].Success)
-                    {
-                        isFormulaLiteral = true;
-                        initialSmiles = match.Groups["literal"].Value.Replace("\"\"", "\"");
-                    }
-
-                    if (formula.IndexOf("NAME2IMG", StringComparison.OrdinalIgnoreCase) >= 0 && !string.IsNullOrWhiteSpace(initialSmiles))
-                    {
-                        initialSmiles = PubChemResolver.ResolveNameToSmiles(initialSmiles) ?? initialSmiles;
-                    }
-                }
+                targetCellToWrite = resolvedTargetCell;
+                initialSmiles = extractedArg ?? "";
             }
             else
             {
@@ -554,34 +441,13 @@ public static partial class KetcherEditor
                 }
                 else if (isFormulaLiteral)
                 {
-                    var escaped = dataToWrite!.Replace("\"", "\"\"");
-                    if (escaped.Length > 8000)
-                    {
-                        MessageBox.Show(
-                            "The molecular structure exceeds Excel's 8,192-character formula limit.\nConsider simplifying the structure or referencing another cell.",
-                            "func_SMILES2IMG",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Warning);
-                        return;
-                    }
-                    var updatedFormula = FormulaRefPattern.Replace(formula, m =>
-                    {
-                        return $"{funcName}(\"{escaped}\"";
-                    }, 1);
+                    if (!TryBuildEscapedFormulaLiteral(dataToWrite!, out var escaped)) return;
+                    var updatedFormula = FormulaRefPattern.Replace(formula, _ => $"{funcName}(\"{escaped}\"", 1);
                     if (formula.IndexOf("2IMG", StringComparison.OrdinalIgnoreCase) >= 0) cell.Formula = updatedFormula;
                 }
                 else
                 {
-                    var escaped = dataToWrite!.Replace("\"", "\"\"");
-                    if (escaped.Length > 8000)
-                    {
-                        MessageBox.Show(
-                            "The molecular structure exceeds Excel's 8,192-character formula limit.\nConsider simplifying the structure or referencing another cell.",
-                            "func_SMILES2IMG",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Warning);
-                        return;
-                    }
+                    if (!TryBuildEscapedFormulaLiteral(dataToWrite!, out var escaped)) return;
 
                     try
                     {
@@ -605,6 +471,73 @@ public static partial class KetcherEditor
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
+    }
+
+    private static bool TryResolveFormulaArgument(
+        Excel.Range cell,
+        string formula,
+        out Excel.Range targetCell,
+        out string? rawData,
+        out bool isLiteral)
+    {
+        targetCell = cell;
+        rawData = null;
+        isLiteral = false;
+
+        if (string.IsNullOrEmpty(formula) ||
+            (formula.IndexOf("SMILES", StringComparison.OrdinalIgnoreCase) < 0 &&
+             formula.IndexOf("KET", StringComparison.OrdinalIgnoreCase) < 0 &&
+             formula.IndexOf("INCHI", StringComparison.OrdinalIgnoreCase) < 0 &&
+             formula.IndexOf("NAME2", StringComparison.OrdinalIgnoreCase) < 0))
+        {
+            return false;
+        }
+
+        var match = FormulaRefPattern.Match(formula);
+        if (!match.Success) return false;
+
+        if (match.Groups["literal"].Success)
+        {
+            isLiteral = true;
+            rawData = match.Groups["literal"].Value.Replace("\"\"", "\"").Trim();
+        }
+        else if (match.Groups["ref"].Success)
+        {
+            var refAddr = match.Groups["ref"].Value;
+            try
+            {
+                var sheet = (Excel.Worksheet)cell.Parent;
+                var app = (Excel.Application)sheet.Application;
+                Excel.Range refCell = ResolveSingleRefCell(app, sheet, refAddr);
+                targetCell = refCell;
+                rawData = (Convert.ToString(refCell.Value2) ?? "").Trim();
+            }
+            catch
+            {
+                targetCell = cell;
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(rawData) &&
+            formula.IndexOf("NAME2", StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            rawData = PubChemResolver.ResolveNameToSmiles(rawData) ?? rawData;
+        }
+
+        return true;
+    }
+
+    private static bool TryBuildEscapedFormulaLiteral(string data, out string escaped)
+    {
+        escaped = data.Replace("\"", "\"\"");
+        if (escaped.Length <= 8000) return true;
+
+        MessageBox.Show(
+            "The molecular structure exceeds Excel's 8,192-character formula limit.\nConsider simplifying the structure or referencing another cell.",
+            "func_SMILES2IMG",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Warning);
+        return false;
     }
 
     private static bool IsImageFormulaName(string formula) =>

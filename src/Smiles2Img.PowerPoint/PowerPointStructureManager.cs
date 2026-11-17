@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Windows.Forms;
 using Smiles2Img.Editor;
 using Smiles2Img.Notifications;
@@ -148,11 +147,8 @@ public static partial class PowerPointStructureManager
 
     private static void InsertMoleculeAsPicture(MSPowerPoint.Application app, MSPowerPoint.Slide slide, string? ket, string smiles, byte[] pngBytes)
     {
-        var tempFile = Path.Combine(Path.GetTempPath(), $"structure_{Guid.NewGuid():N}.png");
-        try
+        StructureMetadata.WithTempFile(pngBytes, "structure", "png", tempFile =>
         {
-            File.WriteAllBytes(tempFile, pngBytes);
-
             float slideWidth = 960f;
             float slideHeight = 540f;
             try
@@ -177,19 +173,13 @@ public static partial class PowerPointStructureManager
 
             ApplyShapeMetadata(shape, ket, smiles);
             shape.Select();
-        }
-        finally
-        {
-            try { if (File.Exists(tempFile)) File.Delete(tempFile); } catch { }
-        }
+        });
     }
 
     private static void ReplaceShape(MSPowerPoint.Shape oldShape, string? newKet, string newSmiles, byte[] pngBytes, bool selectNew = true)
     {
-        var tempFile = Path.Combine(Path.GetTempPath(), $"structure_{Guid.NewGuid():N}.png");
-        try
+        StructureMetadata.WithTempFile(pngBytes, "structure", "png", tempFile =>
         {
-            File.WriteAllBytes(tempFile, pngBytes);
             var slide = (MSPowerPoint.Slide)oldShape.Parent;
             var (left, top, newWidth, newHeight) = StructureMetadata.FitReplacementBounds(
                 oldShape.Left, oldShape.Top, oldShape.Width, oldShape.Height, pngBytes);
@@ -210,11 +200,7 @@ public static partial class PowerPointStructureManager
             {
                 try { newShape.Select(); } catch { }
             }
-        }
-        finally
-        {
-            try { if (File.Exists(tempFile)) File.Delete(tempFile); } catch { }
-        }
+        });
     }
 
     private static void ApplyShapeMetadata(MSPowerPoint.Shape shape, string? ket, string? smiles)

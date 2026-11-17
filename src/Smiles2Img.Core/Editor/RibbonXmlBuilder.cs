@@ -100,12 +100,11 @@ public static class RibbonXmlBuilder
           </menu>";
     }
 
-    public static string BuildContextMoleculeInfoMenu(string menuId, string prefix, bool insertBeforeCut = false)
+    public static string BuildContextMoleculeInfoMenu(string menuId, string prefix)
     {
-        var anchorAttr = insertBeforeCut ? "\n            insertBeforeMso=\"Cut\"" : string.Empty;
         return $@"      <menu id=""{menuId}""
             label=""Copy Molecule Info""
-            imageMso=""GroupTaskProperties""{anchorAttr}>
+            imageMso=""GroupTaskProperties"">
         <button id=""btnContext{prefix}CopyName""
                 label=""Copy Substance Name""
                 imageMso=""PropertySheet""
@@ -158,26 +157,24 @@ public static class RibbonXmlBuilder
         string smilesBtnId,
         string inchiBtnId,
         string ketBtnId,
-        string svgBtnId,
-        bool insertBeforeCut = false)
+        string svgBtnId)
     {
-        var anchorAttr = insertBeforeCut ? "\n              insertBeforeMso=\"Cut\"" : string.Empty;
         return $@"      <button id=""{smilesBtnId}""
               label=""Copy SMILES""
               imageMso=""Copy""
-              onAction=""OnCopySmiles""{anchorAttr} />
+              onAction=""OnCopySmiles"" />
       <button id=""{inchiBtnId}""
               label=""Copy InChI""
               imageMso=""Copy""
-              onAction=""OnCopyInchi""{anchorAttr} />
+              onAction=""OnCopyInchi"" />
       <button id=""{ketBtnId}""
               label=""Copy Canvas Data (KET)""
               imageMso=""Copy""
-              onAction=""OnCopyKet""{anchorAttr} />
+              onAction=""OnCopyKet"" />
       <button id=""{svgBtnId}""
               label=""Copy Vector SVG""
               imageMso=""CopyPicture""
-              onAction=""OnCopySvg""{anchorAttr} />";
+              onAction=""OnCopySvg"" />";
     }
 
     public static string BuildObjectContextMenu(
@@ -233,9 +230,8 @@ public static class RibbonXmlBuilder
             $"{btnPrefix}CopySmiles",
             $"{btnPrefix}CopyInchi",
             $"{btnPrefix}CopyKet",
-            $"{btnPrefix}CopySvg",
-            insertBeforeCut: false);
-        var infoMenu = BuildContextMoleculeInfoMenu(infoMenuId, infoPrefix, insertBeforeCut: false);
+            $"{btnPrefix}CopySvg");
+        var infoMenu = BuildContextMoleculeInfoMenu(infoMenuId, infoPrefix);
 
         return $@"    <contextMenu idMso=""{contextMenuIdMso}"">
       <menu id=""{menuId}""
@@ -280,9 +276,8 @@ public static class RibbonXmlBuilder
             $"{copyBtnPrefix}CopySmilesCell",
             $"{copyBtnPrefix}CopyInchiCell",
             $"{copyBtnPrefix}CopyKetCell",
-            $"{copyBtnPrefix}CopySvgCell",
-            insertBeforeCut: false);
-        var infoMenu = BuildContextMoleculeInfoMenu(infoMenuId, infoPrefix, insertBeforeCut: false);
+            $"{copyBtnPrefix}CopySvgCell");
+        var infoMenu = BuildContextMoleculeInfoMenu(infoMenuId, infoPrefix);
 
         return $@"    <contextMenu idMso=""{contextMenuIdMso}"">
       <menuSeparator id=""{preSeparatorId}"" insertAfterMso=""PasteGalleryMini"" />

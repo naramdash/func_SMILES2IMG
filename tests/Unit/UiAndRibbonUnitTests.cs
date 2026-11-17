@@ -145,6 +145,18 @@ internal static class UiAndRibbonUnitTests
         CopiedToast.Show("Test Molecule", "CCO", isWarning: false);
         CopiedToast.Show("Test Warning", "Notice", isWarning: true);
 
+        string? capturedTempPath = null;
+        var tempResult = StructureMetadata.WithTempFile(new byte[] { 1, 2, 3, 4 }, "unit_probe", "bin", path =>
+        {
+            capturedTempPath = path;
+            Check(File.Exists(path) && File.ReadAllBytes(path).Length == 4, "WithTempFile writes payload to existing temp file");
+            return 42;
+        });
+        Check(tempResult == 42 && capturedTempPath != null && !File.Exists(capturedTempPath), "WithTempFile cleans up temp file after completion");
+        Check(MolstarSessionManager.FormatTitle("4HHB") == "Mol* 3D: 4HHB" &&
+              MolstarSessionManager.FormatTitle("") == "Mol* 3D: Structure",
+            "MolstarSessionManager.FormatTitle formats valid PDB and default title consistently");
+
         PassSuite("Unit: WinForms Dialogs (AboutDialog, MoleculeInfoDialog), GDI+ UiIcons & SafeClipboard");
     }
 

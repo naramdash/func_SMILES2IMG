@@ -80,6 +80,9 @@ public static class MolstarSessionManager
         return meta;
     }
 
+    public static string FormatTitle(string? pdbId) =>
+        $"Mol* 3D: {(string.IsNullOrWhiteSpace(pdbId) ? "Structure" : pdbId!.Trim())}";
+
     public static string FormatAltText(MolstarMetadata meta)
     {
         return AltTextPrefix + Serializer.Serialize(new Dictionary<string, object>

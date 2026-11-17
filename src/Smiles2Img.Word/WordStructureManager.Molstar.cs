@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Windows.Forms;
 using Smiles2Img.Editor;
 using MSWord = Microsoft.Office.Interop.Word;
@@ -139,29 +138,23 @@ public static partial class WordStructureManager
             meta,
             form);
 
-        if (newShape == null && form.ResultImageBytes != null)
+        if (newShape is null && form.ResultImageBytes is { Length: > 0 } imageBytes)
         {
-            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.png");
-            try
+            newShape = StructureMetadata.WithTempFile(imageBytes, $"molstar_{meta.Id}", "png", tempPng =>
             {
-                File.WriteAllBytes(tempPng, form.ResultImageBytes);
                 var shape = inlineShapes.AddPicture(
                     FileName: tempPng,
                     LinkToFile: false,
                     SaveWithDocument: true);
 
-                var (w, h) = StructureMetadata.GetScaledDimensions(form.ResultImageBytes!, 320f, 240f, scale: 0.85f);
+                var (w, h) = StructureMetadata.GetScaledDimensions(imageBytes, 320f, 240f, scale: 0.85f);
                 shape.Width = w;
                 shape.Height = h;
-                newShape = shape;
-            }
-            finally
-            {
-                try { if (File.Exists(tempPng)) File.Delete(tempPng); } catch { }
-            }
+                return (dynamic)shape;
+            });
         }
 
-        FinalizeMolstarShape(newShape, meta, form);
+        FinalizeMolstarShape(newShape, meta);
     }
 
     private static void ApplyMolstarReplaceInline(MSWord.Application app, MSWord.InlineShape oldShape, MolstarForm form, MolstarMetadata oldMeta)
@@ -176,34 +169,28 @@ public static partial class WordStructureManager
             meta,
             form);
 
-        if (newShape == null && form.ResultImageBytes != null)
+        if (newShape is null && form.ResultImageBytes is { Length: > 0 } imageBytes)
         {
-            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.png");
-            try
+            newShape = StructureMetadata.WithTempFile(imageBytes, $"molstar_{meta.Id}", "png", tempPng =>
             {
-                File.WriteAllBytes(tempPng, form.ResultImageBytes);
                 var shape = range.InlineShapes.AddPicture(
                     FileName: tempPng,
                     LinkToFile: false,
                     SaveWithDocument: true);
 
-                var (_, h) = StructureMetadata.GetScaledDimensions(form.ResultImageBytes!, oldWidth, oldWidth, minWidth: oldWidth, maxWidth: oldWidth);
+                var (_, h) = StructureMetadata.GetScaledDimensions(imageBytes, oldWidth, oldWidth, minWidth: oldWidth, maxWidth: oldWidth);
                 shape.Width = oldWidth;
                 shape.Height = h;
-                newShape = shape;
-            }
-            finally
-            {
-                try { if (File.Exists(tempPng)) File.Delete(tempPng); } catch { }
-            }
+                return (dynamic)shape;
+            });
         }
 
-        if (newShape != null)
+        if (newShape is not null)
         {
             try { oldShape.Delete(); } catch { }
         }
 
-        FinalizeMolstarShape(newShape, meta, form);
+        FinalizeMolstarShape(newShape, meta);
     }
 
     private static void ApplyMolstarReplaceShape(MSWord.Application app, MSWord.Shape oldShape, MolstarForm form, MolstarMetadata oldMeta)
@@ -217,33 +204,28 @@ public static partial class WordStructureManager
         oldShape.Delete();
 
         dynamic? newShape = null;
-        if (form.ResultMode == "3dmodel" && form.ResultGlbBytes != null && form.ResultGlbBytes.Length > 0)
+        if (form.ResultMode == "3dmodel" && form.ResultGlbBytes is { Length: > 0 } glbBytes)
         {
-            var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.glb");
             try
             {
-                File.WriteAllBytes(tempGlb, form.ResultGlbBytes);
-                dynamic shapes = doc.Shapes;
-                newShape = shapes.Add3DModel(tempGlb, false, true, oldLeft, oldTop, oldWidth, oldHeight);
+                newShape = StructureMetadata.WithTempFile<dynamic>(glbBytes, $"molstar_{meta.Id}", "glb", tempGlb =>
+                {
+                    dynamic shapes = doc.Shapes;
+                    return shapes.Add3DModel(tempGlb, false, true, oldLeft, oldTop, oldWidth, oldHeight);
+                });
             }
             catch
             {
                 meta.Mode = "image";
             }
-            finally
-            {
-                try { if (File.Exists(tempGlb)) File.Delete(tempGlb); } catch { }
-            }
         }
 
-        if (newShape == null && form.ResultImageBytes != null)
+        if (newShape is null && form.ResultImageBytes is { Length: > 0 } imageBytes)
         {
-            var tempPng = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.png");
-            try
+            newShape = StructureMetadata.WithTempFile(imageBytes, $"molstar_{meta.Id}", "png", tempPng =>
             {
-                File.WriteAllBytes(tempPng, form.ResultImageBytes);
-                var (left, top, w, h) = StructureMetadata.FitReplacementBounds(oldLeft, oldTop, oldWidth, oldHeight, form.ResultImageBytes!);
-                newShape = doc.Shapes.AddPicture(
+                var (left, top, w, h) = StructureMetadata.FitReplacementBounds(oldLeft, oldTop, oldWidth, oldHeight, imageBytes);
+                return (dynamic)doc.Shapes.AddPicture(
                     FileName: tempPng,
                     LinkToFile: false,
                     SaveWithDocument: true,
@@ -251,14 +233,10 @@ public static partial class WordStructureManager
                     Top: top,
                     Width: w,
                     Height: h);
-            }
-            finally
-            {
-                try { if (File.Exists(tempPng)) File.Delete(tempPng); } catch { }
-            }
+            });
         }
 
-        FinalizeMolstarShape(newShape, meta, form);
+        FinalizeMolstarShape(newShape, meta);
     }
 
     private static dynamic? TryAddMolstarInline3DModel(Func<MSWord.InlineShapes> getInlineShapes, MSWord.Range anchorRange, MolstarMetadata meta, MolstarForm form)
@@ -268,30 +246,27 @@ public static partial class WordStructureManager
             return null;
         }
 
-        var tempGlb = Path.Combine(Path.GetTempPath(), $"molstar_{meta.Id}.glb");
         try
         {
-            File.WriteAllBytes(tempGlb, form.ResultGlbBytes);
-            dynamic inlineShapes = getInlineShapes();
-            return inlineShapes.Add3DModel(tempGlb, false, true, anchorRange);
+            return StructureMetadata.WithTempFile<dynamic>(form.ResultGlbBytes, $"molstar_{meta.Id}", "glb", tempGlb =>
+            {
+                dynamic inlineShapes = getInlineShapes();
+                return inlineShapes.Add3DModel(tempGlb, false, true, anchorRange);
+            });
         }
         catch
         {
             meta.Mode = "image";
             return null;
         }
-        finally
-        {
-            try { if (File.Exists(tempGlb)) File.Delete(tempGlb); } catch { }
-        }
     }
 
-    private static void FinalizeMolstarShape(dynamic? newShape, MolstarMetadata meta, MolstarForm form)
+    private static void FinalizeMolstarShape(dynamic? newShape, MolstarMetadata meta)
     {
         if (newShape != null)
         {
             newShape.AlternativeText = MolstarSessionManager.FormatAltText(meta);
-            newShape.Title = $"Mol* 3D: {(string.IsNullOrEmpty(form.ResultPdbId) ? "Structure" : form.ResultPdbId)}";
+            newShape.Title = MolstarSessionManager.FormatTitle(meta.Pdb);
             LockShapeAspectRatio(newShape);
             newShape.Select();
         }
