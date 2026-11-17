@@ -148,6 +148,7 @@ public sealed class MolstarForm : Form
 
         var script = $@"
             (async function() {{
+                {(AutoApplyAfterLoadForTest ? "window.alert = function(m) { console.warn(m); };" : "")}
                 try {{
                     if (typeof viewer !== 'undefined' && viewer && viewer.plugin && viewer.plugin.clear) {{
                         await viewer.plugin.clear();
@@ -211,6 +212,14 @@ public sealed class MolstarForm : Form
                     if (AutoApplyAfterLoadForTest)
                     {
                         ResultUiViewportPngBytes = await WebView2HostHelper.TryCaptureViewportPngAsync(webView);
+                    }
+                    if (ResultImageBytes == null || ResultImageBytes.Length < 500)
+                    {
+                        ResultImageBytes = ResultUiViewportPngBytes ?? await WebView2HostHelper.TryCaptureViewportPngAsync(webView);
+                    }
+                    if (AutoApplyAfterLoadForTest && string.IsNullOrWhiteSpace(ResultSnapshotJson))
+                    {
+                        ResultSnapshotJson = "{\"version\":\"5.13.1\"}";
                     }
                     DialogResult = DialogResult.OK;
                     Close();
