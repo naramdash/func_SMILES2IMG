@@ -50,10 +50,10 @@ const activeApp = ref<'excel' | 'word' | 'ppt'>('excel')
       </div>
       <div class="oat-links">
         <a :href="withBase(isKo ? '/ko/guide/excel' : '/guide/excel')" class="oat-btn primary">
-          {{ isKo ? '📗 Excel 기초 가이드 보기 ➔' : '📗 Excel Basics Guide ➔' }}
+          {{ isKo ? '📗 Excel 레시피 1~5 (구조식 · 스타일 · 반응식) ➔' : '📗 Excel Recipes 1–5 (Tables & Styles) ➔' }}
         </a>
         <a :href="withBase(isKo ? '/ko/guide/excel-cheminformatics' : '/guide/excel-cheminformatics')" class="oat-btn">
-          {{ isKo ? '🔬 물성 계산 · SAR · SDF 심화 가이드 ➔' : '🔬 SAR, Lipinski & SDF Guide ➔' }}
+          {{ isKo ? '🔬 Excel 레시피 6~10 (물성 · SAR · SDF) ➔' : '🔬 Excel Recipes 6–10 (SAR, Lipinski & SDF) ➔' }}
         </a>
       </div>
     </div>
@@ -64,8 +64,8 @@ const activeApp = ref<'excel' | 'word' | 'ppt'>('excel')
       </div>
       <div class="oat-points">
         <div class="oat-point">
-          <strong>📝 {{ isKo ? '본문 문장과 표 안에 자연스러운 인라인 삽입' : 'Inline Structures Flowing with Paragraphs' }}</strong>
-          <span>{{ isKo ? '글자처럼 줄바꿈되며 논문 요약 표(Table) 셀 안에서도 정갈하게 정렬됩니다.' : 'Structures flow naturally with text inside manuscript paragraphs and summary tables.' }}</span>
+          <strong>📝 {{ isKo ? '1편의 논문 원고를 6장에 걸쳐 완성' : '6-Chapter Continuous Manuscript Tutorial' }}</strong>
+          <span>{{ isKo ? '서론 인라인 구조식부터 화합물 요약 표, 합성 Scheme, 투고 마무리까지 순서대로 따라 합니다.' : 'Build one real research manuscript from Ch. 1 prose figures through Ch. 6 ACS B&W submission.' }}</span>
         </div>
         <div class="oat-point">
           <strong>✏️ {{ isKo ? '표 레이아웃 깨짐 없는 더블클릭 제자리 수정' : 'Double-Click Edit Without Breaking Tables' }}</strong>
@@ -78,7 +78,7 @@ const activeApp = ref<'excel' | 'word' | 'ppt'>('excel')
       </div>
       <div class="oat-links">
         <a :href="withBase(isKo ? '/ko/guide/word' : '/guide/word')" class="oat-btn primary">
-          {{ isKo ? '📘 Word 논문·보고서 가이드 보기 ➔' : '📘 Word Manuscript Guide ➔' }}
+          {{ isKo ? '📘 Word 6장 논문 튜토리얼 보기 ➔' : '📘 Word 6-Chapter Tutorial ➔' }}
         </a>
         <a :href="withBase(isKo ? '/ko/guide/publishing' : '/guide/publishing')" class="oat-btn">
           {{ isKo ? '🎨 출판 스타일 · SVG 벡터 · 물성 표 복사 ➔' : '🎨 Batch Style, SVG & Table Export ➔' }}
@@ -100,13 +100,13 @@ const activeApp = ref<'excel' | 'word' | 'ppt'>('excel')
           <span>{{ isKo ? 'PDB 코드로 단백질·리간드 결합 모델을 넣어 발표 중 실시간으로 360° 회전 시연합니다.' : 'Embed interactive 3D protein models directly onto slides and rotate live during talks.' }}</span>
         </div>
         <div class="oat-point">
-          <strong>📋 {{ isKo ? '학회 포스터용 무손실 SVG 벡터 원클릭 복사' : 'Poster-Ready Lossless SVG & Bullet Lists' }}</strong>
-          <span>{{ isKo ? 'A0 대형 포스터에 넣어도 깨지지 않는 벡터 그래픽(SVG)과 물성 요약을 바로 붙여넣습니다.' : 'Copy razor-sharp SVG vectors for large conference posters or paste property bullet lists.' }}</span>
+          <strong>📋 {{ isKo ? '완성 슬라이드 갤러리 보고 3단계 따라 만들기' : 'Visual Slide Gallery -> 3-Step Follow-Along' }}</strong>
+          <span>{{ isKo ? '원하는 슬라이드 디자인의 실제 작동 영상을 먼저 보고 3단계로 바로 제작합니다.' : 'Preview live-recorded slide decks first, then follow 3 steps to recreate each layout.' }}</span>
         </div>
       </div>
       <div class="oat-links">
         <a :href="withBase(isKo ? '/ko/guide/powerpoint' : '/guide/powerpoint')" class="oat-btn primary">
-          {{ isKo ? '📙 PowerPoint 발표 가이드 보기 ➔' : '📙 PowerPoint Slide Guide ➔' }}
+          {{ isKo ? '📙 PowerPoint 슬라이드 갤러리 보기 ➔' : '📙 PowerPoint Slide Gallery ➔' }}
         </a>
         <a :href="withBase(isKo ? '/ko/guide/molstar' : '/guide/molstar')" class="oat-btn">
           {{ isKo ? '🧬 Mol* 3D 단백질 뷰어 가이드 ➔' : '🧬 Mol* 3D Protein Viewer Guide ➔' }}

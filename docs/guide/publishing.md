@@ -41,9 +41,7 @@ Clicking **`[SMILES] ➔ [Copy SVG]`** (or right-clicking ➔ **`Chemical Struct
 
 **Right-click** any chemical cell or picture ➔ **`Chemical Structure ➔ Copy Molecule Info`** (or click **`[Molecule Info]`** on the ribbon) to inspect calculated properties and copy them in the exact format your document needs. Clicking **`Detailed Molecule Info Window...`** opens the standard Windows dialog with a live 2D structure thumbnail preview, 1-click row **`Copy`** buttons, and a bottom format selector:
 
-<p align="center">
-  <img src="/molecule-info-dialog.png" alt="Molecule Info Window with 2D Preview and Format Export" width="100%" style="max-width: 760px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
+<FeatureMedia id="common-molecule-info" />
 
 ### 10+ Calculated Properties at a Glance
 1. **Substance Name:** Common IUPAC / PubChem name (`Aspirin`)

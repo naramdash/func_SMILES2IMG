@@ -2,9 +2,7 @@
 
 단축키 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>로 분자와 다단계 합성 반응식을 새로 그리거나, **이미 문서/셀에 삽입된 구조식을 더블클릭**해 0.05초 만에 다시 열어 그 자리에서 수정하는 방법입니다.
 
-<p align="center">
-  <img src="/hero-demo.gif" alt="셀 또는 그림 더블클릭으로 Ketcher 2D 스케처 양방향 편집" width="100%" style="max-width: 760px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
+<FeatureMedia id="common-ketcher-2d" />
 
 ::: tip 💡 Excel · Word · PowerPoint 공통 양방향(Round-Trip) 편집
 * **더블클릭 제자리 수정 (0.05초 실행):** 엑셀 셀이나 워드·파워포인트에 들어간 분자 그림에는 원본 화학 좌표가 보존되어 있어, **언제든 더블클릭하면 스케처가 다시 열려 이어서 수정**할 수 있습니다.
@@ -17,7 +15,7 @@
 ## 1. 3단계로 그리기 & 수정하기
 
 <p align="center">
-  <img src="/workflow-ketcher.png" alt="Ketcher 작업 흐름" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/ketcher-guide.png" alt="실제 구동 중인 EPAM Ketcher 2D 구조·반응식 편집기" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
 ### Step 1. 편집기 열기

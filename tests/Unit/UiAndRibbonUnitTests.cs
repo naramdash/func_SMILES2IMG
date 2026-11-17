@@ -99,6 +99,13 @@ internal static class UiAndRibbonUnitTests
 
         foreach (var (hostName, doc) in new[] { ("Excel", excelDoc), ("Word", wordDoc), ("PowerPoint", pptDoc) })
         {
+            Check(doc.Descendants().Any(e => e.Name.LocalName == "button" &&
+                                             (string?)e.Attribute("onAction") == "OnAbout" &&
+                                             (string?)e.Attribute("label") == "About func_SMILES2IMG"),
+                $"{hostName}: About button label is 'About func_SMILES2IMG'");
+            Check(!doc.Descendants().Any(e => (string?)e.Attribute("label") == "About SMILES"),
+                $"{hostName}: no ribbon element uses prohibited 'About SMILES' label");
+
             var contextMenus = doc.Descendants().Where(e => e.Name.LocalName == "contextMenu").ToList();
             Check(contextMenus.Count > 0, $"{hostName}: has <contextMenu> entries");
             foreach (var cm in contextMenus)

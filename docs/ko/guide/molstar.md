@@ -2,9 +2,7 @@
 
 4자리 PDB 코드(예: `1CRN`, `4HHB`, `6LU7`)만 입력하거나 내 PC의 `.pdb`/`.cif` 파일을 열어, 파워포인트·워드·엑셀 화면 안에서 **마우스로 360° 돌려볼 수 있는 3D 단백질 모델(`.glb`)** 또는 고해상도 그림으로 바로 삽입하세요.
 
-<p align="center">
-  <img src="/powerpoint-showcase.png" alt="오피스 내 360도 회전 가능한 3D 단백질 모델" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
+<FeatureMedia id="common-molstar-3d" />
 
 ::: tip 💡 내장 3D 단백질 뷰어 (Mol*) 3대 핵심 장점
 * **PDB 코드 4자리로 즉시 호출:** `1CRN`, `4HHB`, `6LU7` 같은 코드만 입력하면 구조를 바로 불러오며, 로컬 `.pdb`, `.cif`, `.sdf` 파일 열기도 지원합니다.

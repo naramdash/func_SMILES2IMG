@@ -1,15 +1,11 @@
-# Excel Part 2: MW, Lipinski Ro5, SAR Screening & SDF Files
+# Excel Cookbook Part 2: MW, Lipinski Ro5, SAR Screening & SDF Files
 
-Automatically calculate **Molecular Weight, Exact Mass, LogP, and Lipinski Rule of 5** right next to your structure column, filter compound libraries by **SMARTS substructures**, and import/export **`.sdf` database files** in 0ms offline.
-
-<p align="center">
-  <img src="/hero-demo.gif" alt="Excel SAR Screening & MW Auto-Calculation Demo" width="100%" style="max-width: 760px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
+> **Excel Cookbook Part 2:** Ready-to-copy recipes for zero-latency physicochemical properties, 3D complexity metrics, substructure/similarity SAR screening, cross-notation conversions, and 12-column `.sdf` file import/export—each backed by live Excel captures.
 
 <div class="s2i-card-grid" style="margin-top: 12px;">
   <a href="/func_SMILES2IMG/sample_compounds.sdf" download="sample_compounds.sdf" class="s2i-card">
     <div class="s2i-card-title">📥 Download Sample Chemical DB (.sdf)</div>
-    <p class="s2i-card-desc">Test [SMILES] ➔ [SDF File] ➔ [Import SDF] in Excel to generate a 12-column SAR & 3D complexity table in 1 click</p>
+    <p class="s2i-card-desc">Test [SMILES] ➔ [SDF File] ➔ [Import SDF] in Excel to generate a 12-column SAR &amp; 3D complexity table in 1 click</p>
   </a>
   <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
     <div class="s2i-card-title">📥 Download 8-Tab Master Excel Showcase (.xlsx)</div>
@@ -17,171 +13,102 @@ Automatically calculate **Molecular Weight, Exact Mass, LogP, and Lipinski Rule 
   </a>
 </div>
 
-## ⚡ Copy & Paste These 4 Cheminformatics Formulas
+---
 
-Assuming cell `A2` contains a SMILES string (e.g., `CC(=O)Oc1ccccc1C(=O)O`), paste these into adjacent columns and drag down:
+## Recipe 6 & 7: Physicochemical Properties, Lipinski Rule of 5 & 3D Complexity
+
+**Goal:** Compute Molecular Weight, HRMS Exact Mass, LogP, TPSA, HBD/HBA/RotBonds, Rings, Aromatic Rings, Fraction Csp3 (`Fsp3`), Chiral Centers, and Lipinski Pass/Fail directly beside your structure column in 0ms offline.
 
 ```text
 =SMILES2MW(A2)
-```
-```text
+=SMILES2EXACTMASS(A2)
 =SMILES2LIPINSKI(A2)
+=SMILES2FSP3(A2)
 ```
+
+<FeatureMedia id="excel-cheminformatics" />
+
+| Descriptor | Formula | Lipinski / MedChem Rule | Aspirin (`A2`) | Notes |
+| :--- | :--- | :---: | :---: | :--- |
+| **Chemical Formula** | `=SMILES2FORMULA(A2)` | — | `C9H8O4` | Standard Hill notation |
+| **Molecular Weight** | `=SMILES2MW(A2)` | **≤ 500** g/mol | `180.16` | Numeric double for stoichiometry |
+| **Exact Mass (HRMS)** | `=SMILES2EXACTMASS(A2)` | — | `180.0423` | `[M+H]+` = `+1.0073`, `[M+Na]+` = `+22.9892` |
+| **LogP / TPSA** | `=SMILES2LOGP(A2)` / `=SMILES2TPSA(A2)` | **≤ 5.0** / **≤ 140 Å²** | `1.31` / `63.60` | CNS BBB ≤ 90 Å² |
+| **HBD / HBA / RotB** | `=SMILES2HBD` / `HBA` / `ROTBONDS` | **≤ 5** / **≤ 10** / **≤ 10** | `1` / `4` / `3` | Oral bioavailability descriptors |
+| **Lipinski Pass/Fail** | `=SMILES2LIPINSKI(A2)` | — | `PASS` | Combined 4-rule evaluation |
+| **Heavy / Rings / Arom** | `=SMILES2HEAVY` / `RINGS` / `AROMATIC` | **Arom ≤ 3** | `13` / `1` / `1` | Developability & scaffold tracking |
+| **3D Fsp³ / Chiral** | `=SMILES2FSP3(A2)` / `=SMILES2CHIRAL(A2)` | **Fsp³ ≥ 0.25** | `0.11` / `0` | "Escape from Flatland" metrics |
+
+> 🔄 Using InChI or KET? Replace `SMILES2` with `INCHI2` or `KET2` (e.g., `=INCHI2MW(A2)`, `=KET2EXACTMASS(A2)`).
+
+---
+
+## Recipe 8: Substructure Filtering (`SMILES.MATCH`), Highlighting & Tanimoto Similarity (`SAR`)
+
+**Goal:** Filter libraries containing a target scaffold, visually highlight the matching atoms in color, and rank analogs by 2D fingerprint similarity (`0.0–1.0`).
+
 ```text
 =SMILES.MATCH(A2, "c1ccccc1")
+=SMILES.SIMILARITY(A2, $B$2)
+=SMILES2IMG(A2, "", "hl:c1ccccc1")
 ```
-```text
-=SMILES.SIMILARITY(A2, $B$1)
-```
 
----
+<FeatureMedia id="excel-sar-screening" />
 
-## 1. Auto-Calculate Basic Properties (Name · Formula · MW · Exact Mass)
-
-When cell `A2` contains a SMILES string (e.g., Aspirin `CC(=O)Oc1ccccc1C(=O)O`), place these formulas in adjacent columns:
-
-| Property | Excel Formula | Example Output (Aspirin) | Practical Tip |
+### 12 Ready-to-Copy SMARTS Functional Group Patterns
+| Functional Group | Pattern | Match Formula | Highlight Formula |
 | :--- | :--- | :--- | :--- |
-| **Substance Name** | `=SMILES2NAME(A2)` | `"Aspirin"` | Uses built-in 60+ reagent dictionary + PubChem lookup with disk caching |
-| **Name / CAS # ➔ SMILES** | `=NAME2SMILES("50-78-2")` | `"CC(=O)Oc1ccccc1C(=O)O"` | Converts common names or CAS Registry Numbers into canonical SMILES |
-| **Chemical Formula** | `=SMILES2FORMULA(A2)` | `"C9H8O4"` | Standard Hill-notation molecular formula |
-| **Molecular Weight (MW)** | `=SMILES2MW(A2)` | `180.16` | Standard average molecular weight (g/mol) for stoichiometry & molarity |
-| **Monoisotopic Exact Mass** | `=SMILES2EXACTMASS(A2)` | `180.0423` | **For HRMS / LC-MS peak matching** (monoisotopic mass in Da, 4 decimals) |
-| **Standard InChIKey** | `=SMILES2INCHIKEY(A2)` | `"BSYNRYMUTXBXSQ-..."` | 27-character hash—ideal for deduplicating compounds across sheets (`VLOOKUP`/`XLOOKUP`) |
-
-::: info 🧪 LC-MS / HRMS Tip: Calculating Adduct m/z Values
-High-resolution mass spectrometry measures monoisotopic mass (`=SMILES2EXACTMASS(A2)`) rather than average molecular weight (`MW`). Combine it with standard adduct masses directly in Excel:
-* **`[M+H]⁺` (Protonated):** `=SMILES2EXACTMASS(A2) + 1.0073`
-* **`[M+Na]⁺` (Sodiated):** `=SMILES2EXACTMASS(A2) + 22.9892`
-* **`[M−H]⁻` (Deprotonated):** `=SMILES2EXACTMASS(A2) - 1.0073`
-:::
-
-> 🔄 **Working with InChI or KET Reactions?** Simply replace the `SMILES2` prefix with `INCHI2` or `KET2` (e.g., `=INCHI2MW(A2)`, `=KET2EXACTMASS(A2)`).
-
----
-
-## 2. Oral Drug-Likeness (Lipinski Rule of 5) & ADME Descriptors
-
-Evaluate whether candidate compounds have favorable physicochemical properties for oral bioavailability directly inside your worksheet.
-
-### Automatic Lipinski Rule of 5 Check (`=SMILES2LIPINSKI`)
-```text
-=SMILES2LIPINSKI(A2)
-```
-Evaluates the 4 classic Lipinski criteria and returns **`"PASS"`** or **`"FAIL"`**:
-
-| Descriptor | Individual Formula | Lipinski Cutoff | Aspirin Example | Medicinal Chemistry Role |
-| :--- | :--- | :---: | :---: | :--- |
-| **Molecular Weight (MW)** | `=SMILES2MW(A2)` | **≤ 500** g/mol | `180.16` | Size limit for passive membrane permeability |
-| **Lipophilicity (LogP)** | `=SMILES2LOGP(A2)` | **≤ 5.0** | `1.31` | Wildman-Crippen octanol/water partition balance |
-| **H-Bond Donors (HBD)** | `=SMILES2HBD(A2)` | **≤ 5** | `1` | Total count of `-OH` and `-NH` hydrogens |
-| **H-Bond Acceptors (HBA)** | `=SMILES2HBA(A2)` | **≤ 10** | `4` | Total count of nitrogen (`N`) and oxygen (`O`) atoms |
-
-### Additional ADME Descriptors: Polar Surface Area (`TPSA`) & Rotatable Bonds (`ROTBONDS`)
-| Descriptor | Formula | Example | Medicinal Chemistry Rule of Thumb |
-| :--- | :--- | :---: | :--- |
-| **Topological Polar Surface Area** | `=SMILES2TPSA(A2)` | `63.60` (Å²) | • **≤ 140 Å²:** Good oral intestinal absorption<br>• **≤ 90 Å²:** Favorable for CNS Blood-Brain Barrier (BBB) penetration |
-| **Rotatable Bonds** | `=SMILES2ROTBONDS(A2)` | `3` | • **≤ 10 bonds (Veber's Rule):** Favorable conformational flexibility for oral bioavailability |
-| **Heavy Atom Count** | `=SMILES2HEAVY(A2)` | `13` | • **15–35 heavy atoms:** Typical lead-like / drug-like non-hydrogen atom count |
-| **Total Ring Count (SSSR)** | `=SMILES2RINGS(A2)` | `1` | • Counts smallest set of smallest rings (SSSR) in the molecular scaffold |
-| **Aromatic Ring Count** | `=SMILES2AROMATIC(A2)` | `1` | • **≤ 3 aromatic rings (Ritchie & Macdonald):** Lower aromatic ring count improves aqueous solubility and clinical developability |
-| **Fraction Csp³ (Fsp³)** | `=SMILES2FSP3(A2)` | `0.11` | • **≥ 0.25–0.42 ("Escape from Flatland"):** Higher sp³ carbon fraction correlates with improved 3D shape, solubility, and selectivity |
-| **Chiral Centers** | `=SMILES2CHIRAL(A2)` | `0` | • Counts defined tetrahedral stereocenters (`@` / `@@`) for stereochemical complexity tracking |
-
----
-
-## 3. Substructure Search (`=SMILES.MATCH`) & SMARTS Dictionary
-
-Screen thousands of rows to find molecules containing a specific scaffold or functional group:
-
-```text
-=SMILES.MATCH(A2, "query_pattern")
-```
-* Returns **`TRUE`** if the substructure is present and **`FALSE`** otherwise—making it effortless to filter your table with Excel's **AutoFilter**.
-* Pass the exact same pattern into `=SMILES2IMG(A2, "", "hl:pattern")` to visually highlight the matching atoms and bonds!
-
-### 📋 Copy-and-Paste Dictionary of 12 Common Functional Groups (SMILES / SMARTS)
-No need to memorize SMARTS syntax—copy any pattern below straight into your formula:
-
-| Scaffold / Functional Group | Pattern Code | Match Formula Example | Highlight Image Formula |
-| :--- | :--- | :--- | :--- |
-| **Benzene Ring (Aromatic)** | `c1ccccc1` | `=SMILES.MATCH(A2, "c1ccccc1")` | `=SMILES2IMG(A2, "", "hl:c1ccccc1")` |
+| **Benzene Ring** | `c1ccccc1` | `=SMILES.MATCH(A2, "c1ccccc1")` | `=SMILES2IMG(A2, "", "hl:c1ccccc1")` |
 | **Pyridine Ring** | `c1ccncc1` | `=SMILES.MATCH(A2, "c1ccncc1")` | `=SMILES2IMG(A2, "", "hl:c1ccncc1")` |
-| **Carboxylic Acid (`-COOH`)** | `C(=O)[OH]` | `=SMILES.MATCH(A2, "C(=O)[OH]")` | `=SMILES2IMG(A2, "", "hl:C(=O)[OH]")` |
-| **Ester (`-COO-`)** | `C(=O)O[#6]` | `=SMILES.MATCH(A2, "C(=O)O[#6]")` | `=SMILES2IMG(A2, "", "hl:C(=O)O[#6]")` |
-| **Amide (`-CONH-`)** | `C(=O)N` | `=SMILES.MATCH(A2, "C(=O)N")` | `=SMILES2IMG(A2, "", "hl:C(=O)N")` |
-| **Sulfonamide (`-SO₂NH-`)** | `S(=O)(=O)N` | `=SMILES.MATCH(A2, "S(=O)(=O)N")` | `=SMILES2IMG(A2, "", "hl:S(=O)(=O)N")` |
-| **Ketone (`-C(=O)-`)** | `[#6]C(=O)[#6]` | `=SMILES.MATCH(A2, "[#6]C(=O)[#6]")` | `=SMILES2IMG(A2, "", "hl:[#6]C(=O)[#6]")` |
-| **Aldehyde (`-CHO`)** | `[CX3H1](=O)` | `=SMILES.MATCH(A2, "[CX3H1](=O)")` | `=SMILES2IMG(A2, "", "hl:[CX3H1](=O)")` |
-| **Phenol (Aromatic `-OH`)** | `c1ccccc1[OH]` | `=SMILES.MATCH(A2, "c1ccccc1[OH]")` | `=SMILES2IMG(A2, "", "hl:c1ccccc1[OH]")` |
-| **Nitro Group (`-NO₂`)** | `[N+](=O)[O-]` | `=SMILES.MATCH(A2, "[N+](=O)[O-]")` | `=SMILES2IMG(A2, "", "hl:[N+](=O)[O-]")` |
-| **Any Halogen (`F, Cl, Br, I`)** | `[F,Cl,Br,I]` | `=SMILES.MATCH(A2, "[F,Cl,Br,I]")` | `=SMILES2IMG(A2, "", "hl:[F,Cl,Br,I]")` |
-| **Trifluoromethyl (`-CF₃`)** | `C(F)(F)F` | `=SMILES.MATCH(A2, "C(F)(F)F")` | `=SMILES2IMG(A2, "", "hl:C(F)(F)F")` |
+| **Carboxylic Acid** | `C(=O)[OH]` | `=SMILES.MATCH(A2, "C(=O)[OH]")` | `=SMILES2IMG(A2, "", "hl:C(=O)[OH]")` |
+| **Ester** | `C(=O)O[#6]` | `=SMILES.MATCH(A2, "C(=O)O[#6]")` | `=SMILES2IMG(A2, "", "hl:C(=O)O[#6]")` |
+| **Amide** | `C(=O)N` | `=SMILES.MATCH(A2, "C(=O)N")` | `=SMILES2IMG(A2, "", "hl:C(=O)N")` |
+| **Sulfonamide** | `S(=O)(=O)N` | `=SMILES.MATCH(A2, "S(=O)(=O)N")` | `=SMILES2IMG(A2, "", "hl:S(=O)(=O)N")` |
+| **Ketone** | `[#6]C(=O)[#6]` | `=SMILES.MATCH(A2, "[#6]C(=O)[#6]")` | `=SMILES2IMG(A2, "", "hl:[#6]C(=O)[#6]")` |
+| **Aldehyde** | `[CX3H1](=O)` | `=SMILES.MATCH(A2, "[CX3H1](=O)")` | `=SMILES2IMG(A2, "", "hl:[CX3H1](=O)")` |
+| **Phenol** | `c1ccccc1[OH]` | `=SMILES.MATCH(A2, "c1ccccc1[OH]")` | `=SMILES2IMG(A2, "", "hl:c1ccccc1[OH]")` |
+| **Nitro** | `[N+](=O)[O-]` | `=SMILES.MATCH(A2, "[N+](=O)[O-]")` | `=SMILES2IMG(A2, "", "hl:[N+](=O)[O-]")` |
+| **Halogen** | `[F,Cl,Br,I]` | `=SMILES.MATCH(A2, "[F,Cl,Br,I]")` | `=SMILES2IMG(A2, "", "hl:[F,Cl,Br,I]")` |
+| **Trifluoromethyl** | `C(F)(F)F` | `=SMILES.MATCH(A2, "C(F)(F)F")` | `=SMILES2IMG(A2, "", "hl:C(F)(F)F")` |
+
+> Similarity `[metric]` supports `"tanimoto"` (default), `"tversky"`, and `"euclid-sub"`.
 
 ---
 
-## 4. Rank Analogs by 2D Fingerprint Similarity (`=SMILES.SIMILARITY`)
+## Recipe 9: Convert Between Name, CAS, SMILES, InChI & InChIKey
 
-Compare every compound in your sheet (`A2`, `A3`...) against a reference lead compound (e.g., locked in cell `$B$1`) on a **`0.0` to `1.0` scale**:
+**Goal:** Standardize messy compound lists into canonical SMILES, IUPAC InChI, and 27-character InChIKeys for `XLOOKUP`/`VLOOKUP` deduplication, or render directly from InChI.
 
 ```text
-=SMILES.SIMILARITY(A2, $B$1)
+=NAME2SMILES("50-78-2")
+=SMILES2INCHI(B2)
+=SMILES2INCHIKEY(B2)
+=INCHI2IMG(C2)
 ```
-> 💡 **Pro Tip:** Lock the reference cell with `$B$1`, drag the formula down, and sort the column **Largest to Smallest** to immediately surface the closest structural analogs!
 
-### Choosing a Similarity Metric (`[metric]` argument)
-| Metric Option | Formula Example | When to Use |
-| :--- | :--- | :--- |
-| **`"tanimoto"`** *(Default)* | `=SMILES.SIMILARITY(A2, $B$1, "tanimoto")` | Industry-standard balanced 2D fingerprint similarity between two molecules |
-| **`"tversky"`** | `=SMILES.SIMILARITY(A2, $B$1, "tversky")` | Asymmetric similarity—ideal when comparing a smaller fragment against larger molecules |
-| **`"euclid-sub"`** | `=SMILES.SIMILARITY(A2, $B$1, "euclid-sub")` | Substructure-weighted Euclidean similarity score |
+<FeatureMedia id="excel-conversions" />
 
 ---
 
-## 5. Import & Export `.sdf` / `.mol` Chemical Database Files
+## Recipe 10: Import & Export 12-Column `.SDF` / `.MOL` Chemical Databases
 
-Open and save multi-compound **`.sdf` (Structure-Data File)** and **`.mol`** libraries directly in Excel without external conversion scripts.
+**Goal:** Open multi-compound `.sdf` libraries directly into a formatted 12-column live-formula Excel sheet (`Name`, `Structure`, `SMILES`, `Formula`, `MW`, `Exact Mass`, `LogP`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`, `Lipinski`) or export worksheet rows back to V2000 `.sdf`.
 
-### 📥 Import an `.sdf` File into a 12-Column SAR & Complexity Table (`Import SDF File (.sdf)...`)
-1. Click **`[SMILES] ➔ [SDF File] ➔ [Import SDF File (.sdf)...]`** on the Excel ribbon.
-2. Select any `.sdf` or `.mol` file on your PC. A formatted **12-column medicinal chemistry & 3D complexity table** (with auto-adjusted row heights and column widths) is generated automatically:
+<FeatureMedia id="excel-sdf-workflow" />
 
-| Column | Header | Auto-Generated Content (Row 2 Example) |
-| :---: | :--- | :--- |
-| **Col A** | **Name** | Compound title or `<NAME>` / `<TITLE>` SD property tag |
-| **Col B** | **Structure** | `=SMILES2IMG(C2)` *(or `=SMILES2IMG.FLOAT(C2)` automatically on Excel 2016–2021)* |
-| **Col C** | **SMILES** | Canonical SMILES string |
-| **Col D** | **Formula** | `=SMILES2FORMULA(C2)` (Standard Hill formula) |
-| **Col E** | **MW (g/mol)** | `=SMILES2MW(C2)` (Average molecular weight) |
-| **Col F** | **Exact Mass** | `=SMILES2EXACTMASS(C2)` (HRMS monoisotopic mass) |
-| **Col G** | **LogP** | `=SMILES2LOGP(C2)` (Crippen octanol/water LogP) |
-| **Col H** | **Rings** | `=SMILES2RINGS(C2)` (Total ring count / SSSR) |
-| **Col I** | **Aromatic Rings** | `=SMILES2AROMATIC(C2)` (Aromatic ring count) |
-| **Col J** | **Fsp3** | `=SMILES2FSP3(C2)` (Fraction of sp3 carbons, Escape from Flatland) |
-| **Col K** | **Chiral Centers** | `=SMILES2CHIRAL(C2)` (Tetrahedral stereocenter count) |
-| **Col L** | **Lipinski** | `=SMILES2LIPINSKI(C2)` (`"PASS"` / `"FAIL"` Rule of 5 check) |
-
-### 📤 Export a Worksheet Back to `.sdf` (`Export Worksheet to SDF...`)
-1. Click **`[SMILES]`** ➔ **`[SDF File]`** ➔ **`[Export Worksheet to SDF...]`** and choose a destination file name.
-2. Without requiring manual column mapping, the add-in automatically scans the active worksheet for compound names and SMILES/structure formulas and writes a standard V2000 `.sdf` file—ready for molecular docking or sharing with collaborators.
+1. Click **`[SMILES] ➔ [SDF File] ➔ [Import SDF File (.sdf)...]`** and select an `.sdf` or `.mol` file.
+2. All 12 columns and structure images populate automatically with adjusted row heights and column widths.
+3. Click **`[SMILES] ➔ [SDF File] ➔ [Export Sheet to SDF (.sdf)...]`** anytime to save compounds back to `.sdf`.
 
 ---
 
-## 6. Combining with Native Excel Functions (`IF`, `AND`) & Conditional Formatting
+## Combining with Excel `IF` / `AND` & Conditional Formatting
 
-Because all chemical formulas return native Excel numbers (`double`), booleans (`TRUE`/`FALSE`), and text, you can combine them directly with Excel's built-in logic and **Conditional Formatting**:
-
-### ① Multi-Criteria Lead Selection (`=IF` + `AND`)
-| Screening Goal | Ready-to-Copy Excel Formula (`A2` = SMILES) |
+| Screening Rule | Copy-Paste Formula (`A2` = SMILES) |
 | :--- | :--- |
-| **Flag hits passing Lipinski Ro5 AND containing a pyridine ring** | `=IF(AND(SMILES2LIPINSKI(A2)="PASS", SMILES.MATCH(A2, "c1ccncc1")), "✅ Priority Hit", "Exclude")` |
-| **Flag CNS / BBB penetrant candidates (`TPSA ≤ 90` & `MW ≤ 450`)** | `=IF(AND(SMILES2TPSA(A2)<=90, SMILES2MW(A2)<=450), "🧠 CNS Candidate", "Standard")` |
-| **Flag 3D-rich, soluble leads (`Fsp³ ≥ 0.25` & `Aromatic Rings ≤ 3`)** | `=IF(AND(SMILES2FSP3(A2)>=0.25, SMILES2AROMATIC(A2)<=3), "✨ Escape Flatland", "Flat / Aromatic")` |
-| **Conditionally highlight halogens only when present** | `=IF(SMILES.MATCH(A2, "[F,Cl,Br,I]"), SMILES2IMG(A2, "", "hl:[F,Cl,Br,I]"), SMILES2IMG(A2))` |
-
-### ② 10-Second Conditional Formatting (`PASS`/`FAIL` Badges & Similarity Data Bars)
-1. **Color-Code `PASS` / `FAIL`:** Select your `=SMILES2LIPINSKI(A2)` column ➔ **Home ➔ Conditional Formatting ➔ Highlight Cells Rules ➔ Equal To...** ➔ type `PASS` and choose **Green Fill with Dark Green Text**.
-2. **Similarity Gauge Bars (`0.0–1.0`):** Select your `=SMILES.SIMILARITY(A2, $B$1)` column ➔ **Home ➔ Conditional Formatting ➔ Data Bars** to render visual progress bars inside every cell.
+| **Priority Pyridine Hit (`Ro5 PASS`)** | `=IF(AND(SMILES2LIPINSKI(A2)="PASS", SMILES.MATCH(A2, "c1ccncc1")), "✅ Priority Hit", "Exclude")` |
+| **CNS BBB Candidate (`TPSA ≤ 90`, `MW ≤ 450`)** | `=IF(AND(SMILES2TPSA(A2)<=90, SMILES2MW(A2)<=450), "🧠 CNS Candidate", "Standard")` |
+| **3D-Rich Lead (`Fsp3 ≥ 0.25`, `Arom ≤ 3`)** | `=IF(AND(SMILES2FSP3(A2)>=0.25, SMILES2AROMATIC(A2)<=3), "✨ Escape Flatland", "Flat")` |
 
 ---
 
@@ -189,13 +116,11 @@ Because all chemical formulas return native Excel numbers (`double`), booleans (
 
 <div class="s2i-card-grid">
   <a href="../reference/formula" class="s2i-card">
-    <div class="s2i-card-title">📐 Excel Formula Cheat Sheet</div>
-    <p class="s2i-card-desc">Browse all 40 chemical functions, return data types, and error code specifications</p>
+    <div class="s2i-card-title">📑 40 Formula &amp; Style Reference</div>
+    <p class="s2i-card-desc">Browse all 40 chemical UDFs, return data types, and error code specifications</p>
   </a>
   <a href="../tools/formula-builder" class="s2i-card">
-    <div class="s2i-card-title">🛠️ Formula Generator & Style Simulator</div>
-    <p class="s2i-card-desc">Click to combine styling/highlight options interactively and copy the formula</p>
+    <div class="s2i-card-title">⚡ Interactive Formula Builder</div>
+    <p class="s2i-card-desc">Click styling and highlight options to build formulas visually</p>
   </a>
 </div>
-
-

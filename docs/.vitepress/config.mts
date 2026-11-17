@@ -51,32 +51,32 @@ export default defineConfig({
             ]
           },
           {
-            text: '📊 By Office App (Workflows)',
+            text: '📗 Microsoft Excel (Recipe Cookbook)',
             items: [
-              { text: '📗 Excel Part 1: Structure Tables & Name/CAS', link: '/guide/excel' },
-              { text: '🔬 Excel Part 2: MW, Lipinski, SAR & SDF', link: '/guide/excel-cheminformatics' },
-              { text: '📘 Word: Manuscripts & Summary Tables', link: '/guide/word' },
-              { text: '📙 PowerPoint: Dark Mode & 3D Slides', link: '/guide/powerpoint' }
+              { text: '📘 Recipes 1–5: Tables, Name/CAS, Styles & Reactions', link: '/guide/excel' },
+              { text: '🔬 Recipes 6–10: MW, Lipinski, SAR & SDF Files', link: '/guide/excel-cheminformatics' },
+              { text: '⚡ Interactive Formula Builder', link: '/tools/formula-builder' },
+              { text: '📑 40 Formula & Style Cheat Sheet', link: '/reference/formula' }
             ]
           },
           {
-            text: '🎨 Core Visual Tools (All Apps)',
+            text: '📘 Microsoft Word (Manuscript Tutorial)',
             items: [
-              { text: '✏️ Draw 2D Structures & Reactions (Ketcher)', link: '/guide/ketcher' },
-              { text: '🧬 Insert & Rotate 3D Proteins (Mol*)', link: '/guide/molstar' },
-              { text: '📐 1-Click ACS B&W & Illustrator SVG', link: '/guide/publishing' }
+              { text: '📝 6-Chapter Manuscript Tutorial & Task Index', link: '/guide/word' },
+              { text: '📐 ACS B&W Batch Style, SVG & Property Tables', link: '/guide/publishing' }
             ]
           },
           {
-            text: '🛠️ Interactive Web Tools',
+            text: '📙 Microsoft PowerPoint (Slide Gallery)',
             items: [
-              { text: '⚡ Interactive Formula Builder', link: '/tools/formula-builder' }
+              { text: '🎨 Visual Slide Gallery & 3D Proteins', link: '/guide/powerpoint' }
             ]
           },
           {
-            text: '📑 Reference & Support',
+            text: '🧩 Shared Editors & Support',
             items: [
-              { text: '📑 40 Formula & Style Cheat Sheet', link: '/reference/formula' },
+              { text: '✏️ Ketcher 2D Sketcher (All Apps)', link: '/guide/ketcher' },
+              { text: '🧬 Mol* 3D Protein Viewer (All Apps)', link: '/guide/molstar' },
               { text: '❓ Troubleshooting & #NAME? Fix (FAQ)', link: '/guide/faq' }
             ]
           }
@@ -133,32 +133,32 @@ export default defineConfig({
             ]
           },
           {
-            text: '📊 앱별 실무 가이드 (By Office App)',
+            text: '📗 Microsoft Excel (실무 레시피 & 40개 함수)',
             items: [
-              { text: '📗 Excel 1부: 구조식 테이블 & 이름/CAS 변환', link: '/ko/guide/excel' },
-              { text: '🔬 Excel 2부: 물성(MW·Lipinski), SAR & SDF 연동', link: '/ko/guide/excel-cheminformatics' },
-              { text: '📘 Word: 논문·보고서 본문 및 표에 구조 넣기', link: '/ko/guide/word' },
-              { text: '📙 PowerPoint: 다크 모드 & 3D 발표 슬라이드', link: '/ko/guide/powerpoint' }
+              { text: '📘 레시피 1~5: 구조식 표 · 이름/CAS · 스타일 · 반응식', link: '/ko/guide/excel' },
+              { text: '🔬 레시피 6~10: 물성 · Lipinski · SAR & SDF 연동', link: '/ko/guide/excel-cheminformatics' },
+              { text: '⚡ 클릭으로 만드는 수식 생성기', link: '/ko/tools/formula-builder' },
+              { text: '📑 40개 전체 수식 & 스타일 키워드 사전', link: '/ko/reference/formula' }
             ]
           },
           {
-            text: '🎨 공통 핵심 기능 (Core Visual Tools)',
+            text: '📘 Microsoft Word (논문 1편 완성 튜토리얼)',
             items: [
-              { text: '✏️ 2D 구조 및 반응식 직접 그리기 (Ketcher)', link: '/ko/guide/ketcher' },
-              { text: '🧬 3D 단백질(PDB) 삽입 및 360° 회전 (Mol*)', link: '/ko/guide/molstar' },
-              { text: '📐 논문 투고용 ACS 일괄 변환 & SVG 내보내기', link: '/ko/guide/publishing' }
+              { text: '📝 6장 연속 논문 원고 튜토리얼 & 빠른 찾아보기', link: '/ko/guide/word' },
+              { text: '📐 투고용 ACS 흑백 변환 · SVG · 물성 표 복사', link: '/ko/guide/publishing' }
             ]
           },
           {
-            text: '🛠️ 웹 인터랙티브 도구',
+            text: '📙 Microsoft PowerPoint (슬라이드 갤러리)',
             items: [
-              { text: '⚡ 클릭으로 만드는 수식 생성기', link: '/ko/tools/formula-builder' }
+              { text: '🎨 비주얼 슬라이드 갤러리 & 3D 단백질 발표', link: '/ko/guide/powerpoint' }
             ]
           },
           {
-            text: '📑 레퍼런스 및 고객 지원',
+            text: '🧩 공통 에디터 & 문제 해결',
             items: [
-              { text: '📑 40개 전체 수식 & 스타일 키워드 사전', link: '/ko/reference/formula' },
+              { text: '✏️ Ketcher 2D 구조·반응식 편집기 (공통)', link: '/ko/guide/ketcher' },
+              { text: '🧬 Mol* 3D 단백질 뷰어 (공통)', link: '/ko/guide/molstar' },
               { text: '❓ 설치 및 #NAME? 문제 해결 (FAQ)', link: '/ko/guide/faq' }
             ]
           }

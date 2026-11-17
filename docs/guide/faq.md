@@ -75,11 +75,9 @@ Yes! Click **`[SMILES]`** ➔ **`[SDF File]`** on the Excel ribbon:
 The chemical rendering engine (EPAM Indigo), 2D sketcher (Ketcher), and 3D protein viewer (Mol\*) are all bundled locally inside the add-in. Proprietary drug candidates and unpublished structures never leave your computer. *(The only optional web request is looking up an uncached common name from PubChem when using `=NAME2SMILES` or `=SMILES2NAME`, and results are cached locally on your PC).*
 
 ### Q. How do I check for updates or upgrade?
-Click **`[SMILES]`** ➔ **`[About SMILES]`** on the ribbon to open the standard 3-tab About dialog (`Overview & Author`, `Third-Party Components`, `License Notices`) and click **`[Check for Updates]`**, or re-run the one-line PowerShell install command at any time to upgrade to the latest release:
+Click **`[SMILES]`** ➔ **`[About func_SMILES2IMG]`** on the ribbon to open the standard 3-tab About dialog (`Overview & Author`, `Third-Party Components`, `License Notices`) and click **`[Check for Updates]`**, or re-run the one-line PowerShell install command at any time to upgrade to the latest release:
 
-<p align="center">
-  <img src="/about-dialog.png" alt="About func_SMILES2IMG 3-Tab Dialog in v1.8.0" width="100%" style="max-width: 680px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
+<FeatureMedia id="common-about-dialog" />
 
 ### Q. How does `func_SMILES2IMG` compare to ChemDraw for Excel, JChem for Office, or Chem4Word?
 | Feature | **func_SMILES2IMG (This Suite)** | **ChemDraw / JChem for Office** | **Chem4Word** |

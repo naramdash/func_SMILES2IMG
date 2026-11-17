@@ -120,7 +120,7 @@ public class SmilesRibbon : ExcelRibbon
         </group>
         <group id=""grpAbout"" label=""About"">
           <button id=""btnAbout""
-                  label=""About SMILES""
+                  label=""About func_SMILES2IMG""
                   screentip=""About func_SMILES2IMG""
                   supertip=""Displays creator info, GitHub repository link, and open-source third-party licenses.""
                   imageMso=""Info""

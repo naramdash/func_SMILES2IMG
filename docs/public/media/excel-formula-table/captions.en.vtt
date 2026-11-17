@@ -1,0 +1,8 @@
+WEBVTT
+
+00:00:01.000 --> 00:00:03.000
+Select cell C2 and type =SMILES2IMG(B2).
+
+00:00:02.000 --> 00:00:04.000
+Fill down C2:C5 to render Aspirin, Caffeine, Ibuprofen, and Paracetamol.
+

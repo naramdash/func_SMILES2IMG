@@ -145,7 +145,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
         </group>
         <group id=""grpWordAbout"" label=""About"">
           <button id=""btnWordAbout""
-                  label=""About SMILES""
+                  label=""About func_SMILES2IMG""
                   screentip=""About func_SMILES2IMG""
                   supertip=""Displays creator info, GitHub repository link, and open-source third-party licenses.""
                   imageMso=""Info""

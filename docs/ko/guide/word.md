@@ -1,96 +1,108 @@
-# Word: 학술 논문 본문 & 요약 표(Table) 작성 가이드
+# Word 6장 논문 튜토리얼: 원고 한 편 처음부터 투고까지 완성하기
 
-학술 논문, 학위 논문, 연구 보고서 본문과 표(Table) 안에 고해상도 2D 화학 구조식·반응식 및 3D 단백질을 삽입하고, 클릭 한 번으로 논문 전체를 **학술지 흑백(ACS 스타일)**으로 통일하는 실무 가이드입니다.
+> **Word 가이드 구성 방식 — 연속 스토리 튜토리얼:** 하나의 연구 논문 원고(*Synthesis and Structural Characterization of Aspirin Analogs*)를 1장 서론 삽입부터 6장 학술지 투고 마감까지 순서대로 완성해 나갑니다. 특정 기능만 빠르게 찾으려면 아래 **빠른 작업 색인(Task Index)**을 누르세요.
+
+<FeatureMedia id="word-overview" />
+
+## 빠른 작업 색인 (하고 싶은 일로 바로 이동)
+
+| Word에서 하고 싶은 작업 | 이동할 장(Chapter) | 리본 버튼 / 단축키 |
+| :--- | :---: | :--- |
+| 본문에 새 2D 화학 구조식 직접 그려 넣기 | [1장](#제1장-서론-본문에-2d-구조식-삽입하기) | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd> 또는 `[Insert / Edit Structure]` |
+| 본문에 적은 SMILES 글자를 0.1초 만에 그림으로 바꾸기 | [2장](#제2장-본문-smiles-텍스트를-0-1초-만에-그림으로-변환) | 텍스트 선택 ➔ `[Paste Structure]` |
+| 화합물 요약 표(Table)에 구조식과 분자량·화학식 채우기 | [3장](#제3장-화합물-요약-표-작성-molecule-info-복사) | 우클릭 ➔ `Copy Molecule Info` |
+| 다단계 합성 반응식(Scheme) 넣고 화살표 보존하기 | [4장](#제4장-다단계-합성-반응식-삽입-무손실-ket-보존) | Ketcher 반응 화살표(`➔`) 작도 ➔ 적용 |
+| 표 안 그림 제자리 수정 & 3D 단백질 Figure 삽입 | [5장](#제5장-그림-더블클릭-수정-3d-단백질-figure-삽입-mol) | 그림 **더블클릭** 또는 `[3D Structure (Mol*)]` |
+| 투고 전 원고 전체 ACS 흑백 통일 & Illustrator SVG 복사 | [6장](#제6장-투고-전-acs-흑백-일괄-통일-svg-내보내기) | `[Batch Style]` 및 `[Copy SVG]` |
+
+---
+
+## 제1장: 서론 본문에 2D 구조식 삽입하기
+
+1장에서는 논문 서론 문단 안에 아스피린(Aspirin) 구조식을 글자 흐름에 맞춰 깔끔한 인라인 이미지로 넣습니다.
+
+<FeatureMedia id="word-ch1-insert-ketcher" />
+
+1. 구조식이 들어갈 문장 끝에 커서를 둡니다.
+2. 상단 **`[SMILES]` ➔ `[Insert / Edit Structure]`**를 클릭하거나 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누릅니다.
+3. 오프라인 **Ketcher 2D 편집기**에서 분자를 그린 뒤 <kbd>Ctrl</kbd> + <kbd>Enter</kbd>를 누르면 커서 위치에 즉시 삽입됩니다.
+
+---
+
+## 제2장: 본문 SMILES 텍스트를 0.1초 만에 그림으로 변환
+
+실험노트나 문서에 적혀 있는 SMILES 문자열을 편집기 창을 열지도 않고 마우스로 긁어서 곧바로 구조식 그림으로 치환합니다.
+
+<FeatureMedia id="word-ch2-quick-insert" />
+
+1. 문서 본문에 있는 SMILES 문자열(예: `Cn1cnc2c1c(=O)n(C)c(=O)n2C`)을 드래그해 선택합니다.
+2. 리본 **`[SMILES]` ➔ `[Paste Structure]`** (또는 우클릭 ➔ **`Chemical Structure ➔ Paste Structure`**)를 클릭합니다.
+3. 선택한 텍스트가 비율이 고정된 고화질 인라인 구조식으로 즉시 바뀝니다. *(텍스트를 선택하지 않고 누르면 클립보드의 SMILES/KET를 삽입합니다.)*
+
+---
+
+## 제3장: 화합물 요약 표 작성 & `Molecule Info` 물성 복사
+
+3장에서는 워드 표(Table) 셀 안에 후보 화합물을 배치하고, 화학식·분자량·LogP를 클릭 한 번으로 채웁니다.
+
+<FeatureMedia id="word-ch3-compound-table" />
+
+1. 워드 표의 구조식 셀에 커서를 두고 **`[Insert / Edit Structure]`** 또는 **`[Paste Structure]`**로 구조식을 삽입합니다.
+2. 삽입된 구조식을 선택하고 **`[SMILES] ➔ [Molecule Info]`** (또는 우클릭 ➔ **`Chemical Structure ➔ Copy Molecule Info`**)를 클릭합니다.
+3. **`Copy as Excel Row (TSV Columns)`**를 선택하면 17개 물성이 탭으로 나뉘어 워드 표의 여러 셀에 한 번에 들어가며, **`Detailed Molecule Info Window...`**에서는 개별 값, 마크다운 표, JSON을 선택 복사할 수 있습니다.
+
+---
+
+## 제4장: 다단계 합성 반응식 삽입 (무손실 KET 보존)
+
+4장에서는 살리실산 + 아세트산 무수물 ➔ 아스피린 합성 경로(Scheme 1)를 삽입합니다.
+
+<FeatureMedia id="word-ch4-reaction-scheme" />
+
+* Ketcher에서 반응 화살표(`➔`), `+` 기호, 촉매·온도 주석을 함께 그려 적용하면 그림 속성(`AlternativeText`)에 전체 KET 좌표가 무손실 보존됩니다.
+* `.docx` 파일을 저장하고 공동 저자와 주고받은 뒤에도, **그림을 더블클릭**하면 화살표 각도와 주석 위치 그대로 다시 열려 수정할 수 있습니다.
+
+---
+
+## 제5장: 그림 더블클릭 수정 & 3D 단백질 Figure 삽입 (`Mol*`)
+
+표 안에 넣은 구조식의 치환기를 고치거나, 약물이 결합하는 3D 단백질 구조를 논문의 Figure로 추가합니다.
+
+<FeatureMedia id="word-ch5-edit-and-molstar" />
+
+1. 본문이나 표 셀 안의 **2D 그림을 더블클릭**하면 열 너비나 문단 배치가 망가지지 않고 제자리에서 크기 비율(`LockAspectRatio = msoTrue`)을 유지한 채 수정됩니다.
+2. 3D 단백질 Figure를 넣으려면 **`[SMILES] ➔ [3D Structure (Mol*)]`**를 클릭하고 `1CRN`, `6LU7` 등 4자리 PDB 코드를 불러온 뒤, **3D 모델(`.glb`)** 또는 **고해상도 2D 그림(`.png`)**으로 삽입합니다.
+
+---
+
+## 제6장: 투고 전 ACS 흑백 일괄 통일 & SVG 내보내기
+
+학술지(ACS, Wiley, Elsevier, RSC) 투고 직전, 원고 전체에 흩어진 모든 분자 그림을 한 번에 논문 규격으로 통일합니다.
+
+<FeatureMedia id="word-ch6-publication-finish" />
+
+1. **`[SMILES] ➔ [Batch Style] ➔ [Publication B&W]`**를 클릭하면 선택한 영역(선택이 없으면 **원고 전체**)이 순수 흑백 선화로 통일됩니다. *(음영 처리된 표 셀에는 **`White Background`** 프리셋을 추천합니다.)*
+2. Adobe Illustrator나 Inkscape에서 세밀하게 다듬을 Scheme은 선택 후 **`[Copy SVG]`**로 무손실 벡터 경로를 복사해 붙여넣습니다.
+
+---
+
+## Word 상단 `[SMILES]` 리본 & 우클릭 메뉴 참조
 
 <p align="center">
-  <img src="/word-showcase.png" alt="func_SMILES2IMG Word Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/word-context-menu-guide.png" alt="Microsoft Word 실제 3단 Chemical Structure 우클릭 메뉴" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
----
-
-## 🎯 워드에서 시작하는 3단계 방법 (수식 입력 없음: ① ➔ ② ➔ ③)
-
-엑셀과 달리 워드에서는 셀 수식을 치지 않고 **상단 `[SMILES]` 리본 메뉴** 또는 단축키 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>로 바로 시작합니다:
-
-<p align="center">
-  <img src="/word-ribbon-guide.png" alt="Microsoft Word 상단 SMILES 리본 메뉴" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
-
-1. **① 상단 `[SMILES]` 탭 ➔ `[Insert / Edit Structure]` 클릭** (또는 키보드 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>).
-2. **② 2D 구조·반응식 그리기 (또는 클립보드 붙여넣기):** 내장된 Ketcher 편집기에서 분자나 다단계 반응식을 그린 뒤 <kbd>Ctrl</kbd> + <kbd>Enter</kbd>를 누르면 커서 위치에 인라인 그림으로 바로 들어갑니다.
-   * *복사해 둔 SMILES가 있다면?* **`[Paste Structure]`** 버튼을 누르면 0.1초 만에 구조식 그림으로 변환됩니다!
-3. **③ 언제든 더블클릭으로 제자리 수정:** 본문이나 **워드 표(Table) 안의 인라인 그림은 물론 부동 도형과 3D Mol\* 구조까지 더블클릭** 한 번으로 열 너비와 위치가 틀어지지 않게 그 자리에서 바로 수정할 수 있습니다!
-
----
-
-## 2. 투고 학술지 규정에 맞춰 문서 전체 스타일 통일하기 (`Batch Style`)
-
-논문을 투고할 때 수십 개의 분자 그림을 하나하나 다시 그릴 필요 없이, 상단 **`[SMILES]` ➔ `[Batch Style]`** 버튼 하나로 문서 전체(또는 선택한 영역)의 구조식 스타일을 통일할 수 있습니다.
-
-| 스타일 프리셋 | 변환 결과 | 추천 활용처 |
-| :--- | :--- | :--- |
-| **Standard Color** | 원소별 표준 컬러 + **투명 배경** | 컬러 학위 논문, 전자 문서(PDF), 연구 보고서 |
-| **Publication B&W** | 고대비 **흑백 선화 (ACS 스타일)** | ACS, Wiley, Elsevier 등 인쇄 학술지 및 특허 명세서 투고 |
-| **White Background** | 원소별 컬러 + **흰색 사각형 배경** | 배경 음영이 칠해진 워드 표(Table)나 강조 박스 내부 |
-| **Dark Mode** | **흰색 결합선** + 투명 배경 | 어두운 배경의 표지 및 다크 테마 문서 |
-
----
-
-## 3. 워드 표(Table)에 분자 물성 채우기 & Illustrator 벡터 복사
-
-워드 문서에 삽입된 화학 구조식을 **우클릭 ➔ `Chemical Structure`** (또는 상단 리본 메뉴)로 선택하면 논문 작성 시간을 대폭 줄여주는 도구들을 쓸 수 있습니다.
-
-<p align="center">
-  <img src="/word-context-menu-guide.png" alt="Chemical Structure Context Menu in Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
-
-### 📋 실험 섹션(Experimental) 및 워드 표에 물성 바로 붙여넣기
-* **개별 물성 원클릭 복사:** 물질명(Substance Name), 화학식(`C9H8O4`), 분자량(`180.16 g/mol`), 정밀 질량, InChIKey를 클릭 한 번으로 복사해 논문 본문에 붙여넣습니다.
-* **워드 표 행(TSV)으로 한 번에 붙여넣기:** **`Chemical Structure ➔ Copy Molecule Info ➔ Copy as Excel Row (TSV Columns)`** 메뉴를 클릭한 뒤 워드 표(Table)에 붙여넣으면 각 셀 칸에 맞춰 물성 값들이 자동으로 나뉘어 들어갑니다!
-* **상세 정보 창 (`Detailed Molecule Info Window...`):** 상단 2D 구조 미리보기와 함께 분자량, 정밀 질량, LogP, TPSA, Fsp³, 키랄 중심, Lipinski 약물성 통과 여부를 한눈에 확인하고 하단 드롭다운에서 마크다운 표·TSV·JSON 서식으로 복사할 수 있습니다.
-
-### 🖼️ Adobe Illustrator / ChemDraw용 무손실 벡터 복사 (`Copy SVG`)
-* 상단 **`[Copy SVG]`** (또는 우클릭 **`Copy Vector SVG`**) 메뉴를 클릭하면 화질 저하가 전혀 없는 표준 벡터 그래픽(`SVG`)으로 복사되어 Illustrator, Inkscape 등에 바로 붙여넣고 편집할 수 있습니다.
-
----
-
-## 4. 논문에 3D 단백질 구조 넣기 (`Mol*`)
-
-1. 상단 **`[SMILES]` ➔ `[3D Structure (Mol*)]`** 버튼을 클릭합니다.
-2. 4자리 PDB 코드(예: `1CRN`, `4HHB`, `6LU7`)를 입력해 다운로드하거나 내 PC의 구조 파일(`.pdb`, `.cif`, `.sdf`)을 엽니다.
-3. 원하는 스타일(Cartoon 리본, 표면 등)과 각도를 맞춘 뒤:
-   * **[3D Model (.glb)]:** 워드 문서 안에서 마우스로 360° 직접 돌려볼 수 있는 인터랙티브 3D 모델로 삽입합니다.
-   * **[2D Picture (.png)]:** 논문 인쇄 및 PDF 제출용 고해상도 그림으로 삽입합니다.
-4. 삽입된 3D 모델이나 그림 역시 **더블클릭**하면 작업하던 각도 그대로 다시 열려 언제든 수정할 수 있습니다.
-
----
-
-## 5. 상단 `[SMILES]` 리본 메뉴 한눈에 보기
-
-<p align="center">
-  <img src="/word-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Word" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
-
-* **✏️ `Insert / Edit Structure`:** 2D 분자 및 합성 반응식 스케처 실행 (선택된 분자가 있으면 즉시 수정 모드로 열림)
-* **🧬 `3D Structure (Mol*)`:** 3D 단백질/고분자 뷰어 실행
-* **📋 `Paste Structure`:** 드래그한 SMILES 텍스트나 클립보드 데이터를 0.1초 만에 구조식 그림으로 삽입
-* **🖼️ `Copy SMILES` / `Copy InChI` / `Copy KET` / `Copy SVG`:** 선택한 구조식에서 화학 식별자 또는 무손실 SVG 벡터 복사
-* **🔬 `Molecule Info`:** 분자량·화학식·약물성 확인 및 다양한 표 서식으로 복사
-* **🎨 `Batch Style`:** 문서 내 모든 구조식을 컬러 / 논문용 흑백(ACS) / 흰색 배경 / 다크 모드로 일괄 변환
-* **ℹ️ `About SMILES`:** 현재 버전·오픈소스 라이선스 공지 확인 및 최신 버전 업데이트 검사 (`Check for Updates`)
-
----
-
-## 🚀 다음 단계로 이어서 보기
+* **`Insert / Edit Structure`** (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd>), **`3D Structure (Mol*)`**, **`Paste Structure`**
+* **`Copy SMILES`**, **`Copy InChI`**, **`Copy KET`**, **`Copy SVG`**
+* **`Molecule Info`**, **`Batch Style`**, **`About func_SMILES2IMG`**
 
 <div class="s2i-card-grid">
   <a href="../guide/publishing" class="s2i-card">
-    <div class="s2i-card-title">🎨 출판 스타일 · SVG · 물성 복사</div>
-    <p class="s2i-card-desc">학술지 투고용 ACS 흑백 일괄 변환 프리셋 비교 및 5가지 물성 내보내기 서식</p>
+    <div class="s2i-card-title">🎨 출판 스타일 · SVG · 5가지 물성 내보내기</div>
+    <p class="s2i-card-desc">Batch Style 4종 인터랙티브 비교 및 TSV·마크다운·JSON 물성 복사 가이드</p>
   </a>
   <a href="../guide/powerpoint" class="s2i-card">
-    <div class="s2i-card-title">📽️ PowerPoint 발표 슬라이드</div>
-    <p class="s2i-card-desc">다크 모드 슬라이드용 투명 구조식과 발표 중 360° 회전하는 3D 단백질 모델</p>
+    <div class="s2i-card-title">📙 다음 앱: PowerPoint 슬라이드 갤러리</div>
+    <p class="s2i-card-desc">논문 속 분자와 3D 단백질을 다크 모드 발표 슬라이드로 옮겨 보세요</p>
   </a>
 </div>
-

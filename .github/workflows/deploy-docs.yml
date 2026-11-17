@@ -37,6 +37,9 @@ jobs:
       - name: Audit documentation links and assets
         run: node scripts/audit-docs-links.js
 
+      - name: Audit documentation live media coverage
+        run: node scripts/audit-docs-media.js
+
       - name: Build with VitePress
         run: npm run docs:build
 

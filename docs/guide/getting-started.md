@@ -1,6 +1,6 @@
 # 1-Min Install & Your First Molecule
 
-Install **`func_SMILES2IMG`** in 10 seconds and render your first 2D chemical structure or 3D protein inside Excel, Word, or PowerPoint.
+Install **`func_SMILES2IMG`** in 10 seconds without administrator rights, then jump straight to your Office app guide (**Excel Recipe Cookbook**, **Word 6-Chapter Manuscript Tutorial**, or **PowerPoint Visual Slide Gallery**).
 
 ---
 
@@ -8,101 +8,99 @@ Install **`func_SMILES2IMG`** in 10 seconds and render your first 2D chemical st
 
 <QuickInstallBox :hide-quickstart-btn="true" />
 
-::: tip 🚀 What's New in `v1.8.0` (Included Automatically Above)
-The 1-line command above installs **`func_SMILES2IMG v1.8.0`**, featuring unified `Chemical Structure >` right-click menus across Excel/Word/PowerPoint, cross-host text/name parity & aspect-ratio lock, refreshed standard Windows Info/About dialogs with 2D preview, `=SMILES2HEAVY`/`=SMILES2RINGS`/`=SMILES2AROMATIC`/`=SMILES2FSP3`/`=SMILES2CHIRAL`, and 12-column SDF import.
+::: tip 🚀 What's Included in `v1.8.0`
+Running the command above automatically installs **`func_SMILES2IMG v1.8.0`**, featuring unified `Chemical Structure >` cascading right-click menus across Excel/Word/PowerPoint, cross-host text/name parity & aspect-ratio lock, refreshed Windows Info & About dialogs with 2D preview, `=SMILES2HEAVY`–`=SMILES2CHIRAL` 3D complexity formulas, and 12-column `.sdf` import.
 :::
 
 ---
 
-## Step 2. Restart Office & Check the `[SMILES]` Ribbon Tab
+## Step 2. Restart Office & Verify the `[SMILES]` Ribbon Tab
 
 1. **Completely close and reopen** Excel, Word, or PowerPoint.
-2. Confirm that the **`[SMILES]`** tab appears on the top Office ribbon:
+2. Confirm that **`[SMILES]`** appears on the top Office ribbon, and click **`[About func_SMILES2IMG]`** anytime to verify the installed version or check for updates:
 
-<p align="center">
-  <img src="/excel-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft Office" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
+<FeatureMedia id="common-about-dialog" />
 
 ---
 
-## Step 3. Render Your First Molecule (Pick Your App)
+## Step 3. Pick Your Office App & Render Your First Structure
 
-<p align="center">
-  <img src="/hero-demo.gif" alt="func_SMILES2IMG 1-Minute Quickstart Demo" width="100%" style="max-width: 760px; border-radius: 10px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);" />
-</p>
+<div class="s2i-card-grid" style="margin-top: 12px;">
+  <a href="./excel" class="s2i-card">
+    <div class="s2i-card-title">📗 Microsoft Excel — Recipe Cookbook</div>
+    <p class="s2i-card-desc">Result-first recipes for structure tables, Name/CAS lookup, Lipinski/SAR, and 40 formulas</p>
+  </a>
+  <a href="./word" class="s2i-card">
+    <div class="s2i-card-title">📘 Microsoft Word — 6-Chapter Manuscript Tutorial</div>
+    <p class="s2i-card-desc">Build one complete research manuscript from prose figures and tables to ACS B&amp;W submission</p>
+  </a>
+  <a href="./powerpoint" class="s2i-card">
+    <div class="s2i-card-title">📙 Microsoft PowerPoint — Visual Slide Gallery</div>
+    <p class="s2i-card-desc">Browse dark-mode structure cards, synthesis slides, and 360° rotatable 3D proteins</p>
+  </a>
+</div>
 
-### 📗 Option A. Using Microsoft Excel? (Copy & Paste a Formula)
-Copy either formula below and paste it into any empty cell (widen the row height slightly for a larger image):
+### 📗 Option A. Microsoft Excel (Formula or `Ctrl + Shift + K`)
+Paste either formula below into any empty cell (on Excel 2016–2021, append **`.FLOAT`**, e.g. `=NAME2IMG.FLOAT("Aspirin")`):
 
 ```text
 =NAME2IMG("Aspirin")
 ```
-Or from a SMILES string:
 ```text
 =SMILES2IMG("CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
 ```
-> 💡 **Using Excel 2016, 2019, or 2021?**  
-> Append **`.FLOAT`** to the formula name—for example, `=NAME2IMG.FLOAT("Aspirin")` or `=SMILES2IMG.FLOAT(A2)`!
+
+<FeatureMedia id="excel-overview" />
 
 ::: tip 📥 Download Live Interactive 8-Tab Master Excel Showcase
-Explore all capabilities without manual typing! Download the official **8-tab master guide workbook** with live in-cell structures, drug property screening, substructure matching, styling matrix, and reaction schemes:
+Explore all capabilities without typing formulas from scratch! Download the official **8-tab master guide workbook**:
 <div style="margin: 10px 0 4px 0;">
   <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card" style="display: block; padding: 12px 16px; border: 1.5px solid var(--vp-c-brand-1); border-radius: 8px; text-decoration: none;">
-    <div style="font-weight: 700; color: var(--vp-c-brand-1); font-size: 1rem;">📥 Download func_SMILES2IMG Master Showcase Workbook (.xlsx)</div>
-    <div style="color: var(--vp-c-text-2); font-size: 0.88rem; margin-top: 4px;">• 0. Quick Guide & Shortcuts • 1. Name/CAS/SMILES • 2. Drug Properties, Lipinski & 3D Complexity • 3. Substructure & Similarity • 4. Drawing Styles & Options • 5. Reactions & KET Canvas • 6. Legacy Excel (.FLOAT) • 7. 3D & Ribbon Tools</div>
+    <div style="font-weight: 700; color: var(--vp-c-brand-1); font-size: 1rem;">📥 Download func_SMILES2IMG_Comprehensive_Showcase.xlsx (.xlsx)</div>
+    <div style="color: var(--vp-c-text-2); font-size: 0.88rem; margin-top: 4px;">0. Quick Guide · 1. Name/CAS/SMILES · 2. Lipinski &amp; 3D Complexity · 3. Substructure &amp; Similarity · 4. Styles Matrix · 5. Reactions &amp; KET · 6. Legacy .FLOAT · 7. 3D &amp; Ribbon Tools</div>
   </a>
 </div>
 :::
 
-### 📘📙 Option B. Using Word or PowerPoint? (Press `Ctrl + Shift + K`)
-Word and PowerPoint do not use cell formulas—use the ribbon button or shortcut instead:
-1. Click **`[SMILES]` ➔ `[Insert / Edit Structure]`** on the top ribbon, or press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>.
-2. Sketch your molecule or reaction scheme inside the built-in **Ketcher 2D Editor**.
-3. Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (or click **Apply**) to insert a crisp structure directly onto your page or slide!
-4. **Edit Anytime:** **Double-click** any inserted molecule picture to reopen the editor and modify it in place.
+### 📘 Option B. Microsoft Word (Prose & Summary Tables)
+Click **`[SMILES]` ➔ `[Insert / Edit Structure]`** (or press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>), sketch in Ketcher, and press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to insert inline.
+
+<FeatureMedia id="word-overview" />
+
+### 📙 Option C. Microsoft PowerPoint (Dark Mode & 3D Slides)
+Insert transparent structures for dark slides, sketch reactions, or embed 360°-rotatable 3D proteins (`Mol*`).
+
+<FeatureMedia id="powerpoint-overview" />
 
 ---
 
 ::: details ❓ Seeing `#NAME?` in Excel or Missing the `[SMILES]` Tab? (30-Second Fix)
-If formulas show `#NAME?` or the `[SMILES]` tab is missing right after installation, check these 3 common causes:
-
 1. **Did you restart Excel / Word / PowerPoint?**  
-   Add-ins load when Office starts. Close all open Office windows completely and reopen the app.
+   Add-ins load on startup. Close all open Office windows completely and reopen the app.
 2. **Are you on Excel 2016, 2019, or 2021?**  
-   In-cell image formulas (`=SMILES2IMG`) require Microsoft 365 or Excel 2024+. On Excel 2016–2021, use **`.FLOAT`** formulas instead:
-   ```text
-   =NAME2IMG.FLOAT("Aspirin")
-   ```
-3. **Windows 11 Smart App Control (SAC) Blocking Unsigned Open-Source Add-ins:**  
-   If Windows 11 shows a *"file format and extension do not match"* warning:
-   - Open Windows **Settings** (<kbd>Win</kbd> + <kbd>I</kbd>) ➔ **Privacy & security** ➔ **Windows Security** ➔ **App & browser control**.
-   - Click **Smart App Control settings** and switch it to **Off**, then restart Office. *(Microsoft Defender Antivirus real-time protection remains 100% active.)*
+   In-cell image formulas (`=SMILES2IMG`) require Microsoft 365 or Excel 2024+. On Excel 2016–2021, append **`.FLOAT`**: `=NAME2IMG.FLOAT("Aspirin")`.
+3. **Windows 11 Smart App Control (SAC):**  
+   Open **Settings** (<kbd>Win</kbd> + <kbd>I</kbd>) ➔ **Privacy & security** ➔ **Windows Security** ➔ **App & browser control** ➔ **Smart App Control settings** ➔ **Off**, then restart Office. *(Microsoft Defender Antivirus remains 100% active.)*
 :::
 
 ---
 
 ## 🔄 Updating & Uninstalling
 
-* **Upgrade to the Latest Release:**
-  - Click **`[SMILES]` ➔ `[About SMILES]` ➔ `[Check for Updates]`** on the Office ribbon, or re-run the 1-line PowerShell install command anytime to upgrade automatically.
+* **Upgrade to the Latest Release:** Click **`[SMILES]` ➔ `[About func_SMILES2IMG]` ➔ `[Check for Updates]`** on the ribbon, or re-run the 1-line PowerShell installer above.
 * **Uninstall Cleanly:**
-  - Run this single command in PowerShell to remove all add-in files and registry entries:
-    ```powershell
-    irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex
-    ```
+  ```powershell
+  irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/uninstall.ps1 | iex
+  ```
 
 ---
 
-## 📚 Corporate Network & System Info (Click to Expand)
+## 📚 Corporate Network & System Info
 
 ::: details 🏢 Offline / Corporate Network Manual ZIP Installation
-If your company firewall blocks GitHub scripts:
-1. Download `func_SMILES2IMG-x64.zip` (or `func_SMILES2IMG-x86.zip` for 32-bit Office) from [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest).
-2. Right-click the `.zip` file ➔ **Properties** ➔ check **Unblock** at the bottom ➔ click **OK**.
-3. Extract the archive, open PowerShell in that folder, and run:
-   ```powershell
-   powershell -ExecutionPolicy Bypass -File install.ps1
-   ```
+1. Download `func_SMILES2IMG-x64.zip` (or `func_SMILES2IMG-x86.zip`) from [GitHub Releases](https://github.com/naramdash/func_SMILES2IMG/releases/latest).
+2. Right-click the `.zip` file ➔ **Properties** ➔ check **Unblock** ➔ click **OK**.
+3. Extract the archive, open PowerShell in that folder, and run `powershell -ExecutionPolicy Bypass -File install.ps1`.
 :::
 
 ::: details 💻 System Requirements

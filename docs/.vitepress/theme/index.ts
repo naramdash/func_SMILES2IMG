@@ -6,6 +6,7 @@ import FormulaBuilder from './components/FormulaBuilder.vue'
 import BatchStylePreview from './components/BatchStylePreview.vue'
 import OfficeAppTabs from './components/OfficeAppTabs.vue'
 import QuickInstallBox from './components/QuickInstallBox.vue'
+import FeatureMedia from './components/FeatureMedia.vue'
 import './custom.css'
 
 export default {
@@ -47,5 +48,6 @@ export default {
     app.component('BatchStylePreview', BatchStylePreview)
     app.component('OfficeAppTabs', OfficeAppTabs)
     app.component('QuickInstallBox', QuickInstallBox)
+    app.component('FeatureMedia', FeatureMedia)
   }
 } satisfies Theme

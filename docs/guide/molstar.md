@@ -2,9 +2,7 @@
 
 Type a 4-letter PDB code (e.g., `1CRN`, `4HHB`, `6LU7`) or open a local structure file to embed **interactive 360°-rotatable 3D protein models (`.glb`)** or high-resolution 2D figures directly inside PowerPoint, Word, and Excel.
 
-<p align="center">
-  <img src="/powerpoint-showcase.png" alt="Interactive 3D Protein Models in Microsoft Office" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
+<FeatureMedia id="common-molstar-3d" />
 
 ::: tip 💡 Key Highlights of the Built-in 3D Protein Viewer (Mol*)
 * **Direct 4-Letter PDB Lookup:** Type `1CRN`, `4HHB`, or `6LU7` to fetch the crystal structure immediately, or open local `.pdb`, `.cif`, and `.sdf` files.

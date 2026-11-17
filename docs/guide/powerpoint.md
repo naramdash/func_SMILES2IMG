@@ -1,87 +1,110 @@
-# PowerPoint: Dark Mode Slides & 360° 3D Proteins
+# PowerPoint Visual Slide Gallery: Dark Mode Decks & 3D Proteins
 
-Place transparent 2D chemical structures onto dark presentation slides without ugly white boxes, restyle entire slide decks in one click, and rotate 3D protein models live during your talk.
+> **PowerPoint Guide Style — Visual Slide Gallery:** Browse finished presentation slide patterns below, preview the live-recorded video and screenshot of each layout, and follow 3 quick steps to build the slide in your own deck.
 
-<p align="center">
-  <img src="/powerpoint-showcase.png" alt="func_SMILES2IMG PowerPoint Showcase" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
+<FeatureMedia id="powerpoint-overview" />
 
 ---
 
-## 🎯 How to Start in PowerPoint (3 Steps: ① ➔ ② ➔ ③)
+## Slide Pattern 1: 4-Card Lead Compound Screening Grid (Dark Theme)
 
-Unlike Excel, PowerPoint uses the top **`[SMILES]`** ribbon tab or keyboard shortcut <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>:
+Build conference-ready dark-slate screening cards with transparent chemical structures—zero ugly white bounding boxes.
 
-<p align="center">
-  <img src="/powerpoint-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
+<FeatureMedia id="powerpoint-slide-candidate-grid" />
 
-1. **① Click `[SMILES]` ➔ `[Insert / Edit Structure]`** on the top ribbon (or press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>).
-2. **② Sketch & Insert (`Ctrl + Enter`):** Draw your molecule or synthesis pathway in Ketcher (toggle **`[Background: Transparent]`** in the top bar for dark slides!) and press <kbd>Ctrl</kbd> + <kbd>Enter</kbd>.
-   * *Have a SMILES string on your clipboard?* Click **`[Paste Structure]`** to place a crisp molecule shape on your slide in 0.1s!
-3. **③ Double-Click Anytime to Edit:** **Double-click** any slide molecule to update it in place while keeping its exact slide coordinates and size.
+1. Set your slide background to dark navy/slate (`#0F172A`) and lay out compound cards.
+2. Insert each compound via **`[SMILES] ➔ [Paste Structure]`** or **`[Insert / Edit Structure]`**.
+3. Click **`[SMILES] ➔ [Batch Style] ➔ [Dark Mode]`** to convert all slide molecules into crisp white-ink transparent structures.
 
 ---
 
-## 2. Dark Mode (White Ink) vs. Standard Color in 1 Click (`Batch Style`)
+## Slide Pattern 2: Dark Mode White Ink with Transparent Canvas
 
-Stop pasting white-background screenshots onto dark conference slides! Click **`[SMILES] ➔ [Batch Style]`** on the ribbon to switch all structures across your slide deck between **Standard Color**, **Dark Mode (White Ink + Transparent BG)**, **Publication B&W**, or **White Background**:
+Compare standard light styling against conference-projector Dark Mode (white carbon bonds, vivid heteroatoms, transparent alpha background).
+
+<FeatureMedia id="powerpoint-slide-dark-mode" />
+
+* **Shortcut inside Ketcher:** Toggle **`[Background: Transparent]`** in Ketcher's top bar before clicking **Apply to Slide**.
+* **Batch Switch Later:** Select any set of slide pictures (or leave none selected to update the **entire deck**) and click **`[Batch Style] ➔ [Dark Mode]`**.
 
 <BatchStylePreview />
 
 ---
 
-## 3. Present 360°-Rotatable 3D Proteins (`Mol*`)
+## Slide Pattern 3: Multi-Step Synthetic Mechanism Slide
 
-Explain binding pockets and protein conformations interactively instead of pasting multiple static angles:
+Place reaction pathways with arrows, `+` signs, and catalyst conditions cleanly on slides—with full KET coordinates stored inside `Shape.Tags["KET"]`.
 
-1. Click **`[SMILES] ➔ [3D Structure (Mol*)]`** on the ribbon.
-2. Enter a 4-letter PDB ID (e.g., `1CRN`, `4HHB`, `6LU7`) to download, or open a local structure file.
-3. Customize the representation (Cartoon, Molecular Surface, Ball & Stick), select **`3D Model (GLB)`**, and click **`Apply to Slide`** (or press <kbd>Ctrl</kbd> + <kbd>Enter</kbd>).
-4. Right on your slide, drag the central 3D handle with your mouse to **rotate and zoom the protein 360°** in front of your audience!  
-   *(You can also choose **`2D Picture`** with **`BG: Transparent`** whenever you prefer a flat high-res image for dark slide themes.)*
+<FeatureMedia id="powerpoint-slide-reaction" />
+
+1. Click **`[SMILES] ➔ [Insert / Edit Structure]`** (<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>).
+2. Sketch reactants, reaction arrows (`➔`), and reagent text (`T`), then press <kbd>Ctrl</kbd> + <kbd>Enter</kbd>.
+3. **Double-click** the reaction graphic anytime on your slide to tweak arrows or conditions in place without moving card alignments.
 
 ---
 
-## 4. Paste Bullet-Point Summaries & Copy Vector SVG for Posters
+## Slide Pattern 4: Interactive 360°-Rotatable 3D Protein Slide (`Mol*`)
 
-**Right-click** any molecule shape on your slide and select **`Chemical Structure`**:
+Let your audience see binding pockets and secondary structure from every angle—drag to rotate 3D models live during your presentation.
+
+<FeatureMedia id="powerpoint-slide-molstar-3d" />
+
+1. Click **`[SMILES] ➔ [3D Structure (Mol*)]`** on the PowerPoint ribbon.
+2. Enter a 4-letter PDB ID (`1CRN`, `4HHB`, `6LU7`, `1BNA`) and click **`Fetch`**, or load a local `.pdb`/`.cif`/`.sdf` file.
+3. Choose **`3D Model (GLB)`** (rotatable 360° on the slide) or **`2D Picture`** (`BG: Transparent`) and click **`Apply to Slide`**.
+
+---
+
+## Slide Pattern 5: Convert a Slide TextBox SMILES in 0.1s
+
+Turn SMILES text boxes typed directly on a slide into centered vector-sharp structures in a single click.
+
+<FeatureMedia id="powerpoint-slide-textbox-quick-insert" />
+
+1. Select a PowerPoint TextBox containing a SMILES string (e.g. `CC(=O)Oc1ccccc1C(=O)O`) or compound name (`Aspirin`).
+2. Click **`[SMILES] ➔ [Paste Structure]`** on the ribbon.
+3. PowerPoint places the rendered molecule right on your slide with locked aspect ratio (`msoTrue`).
+
+---
+
+## Slide Pattern 6: Live Q&A Property Lookup (`Molecule Info`)
+
+When a reviewer or audience member asks for molecular weight, exact mass, or Lipinski compliance during Q&A, inspect and copy all 17 descriptors straight from the slide shape.
+
+<FeatureMedia id="powerpoint-slide-live-qa-info" />
+
+1. Select any molecule shape on your slide and click **`[SMILES] ➔ [Molecule Info]`** (or right-click ➔ **`Chemical Structure ➔ Copy Molecule Info`**).
+2. Choose **`Copy as Multi-Line List`** to paste ready-made bulleted properties straight into a slide text box, or open **`Detailed Molecule Info Window...`**.
+
+---
+
+## Slide Pattern 7: One-Click Slide Deck Theme Switcher (`Batch Style`)
+
+Moving figures from a dark talk template onto a white handout deck? Switch the whole deck in one click.
+
+<FeatureMedia id="powerpoint-slide-batch-style" />
+
+1. Leave all shapes unselected to transform the **entire presentation**, or select specific shapes on one slide.
+2. Open **`[SMILES] ➔ [Batch Style]`** and switch between **`Standard Color`**, **`Publication B&W`**, **`White Background`**, and **`Dark Mode`**.
+
+---
+
+## PowerPoint Right-Click Context Menu & Poster SVG
 
 <p align="center">
-  <img src="/powerpoint-context-menu-guide.png" alt="Chemical Structure Context Menu in PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/powerpoint-context-menu-guide.png" alt="Live 3-Level Chemical Structure Context Menu in PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
-* **Instant Slide Bullet Points:** Click **`Chemical Structure ➔ Copy Molecule Info ➔ Copy as Multi-Line List`** and paste into any PowerPoint text box to get a ready-made bulleted list of Name, Formula, and Molecular Weight!
-* **Lossless Vectors for Conference Posters (`Copy SVG`):** Click **`[Copy SVG]`** on the ribbon (or right-click ➔ **`Copy Vector SVG`**) to copy a scalable vector graphic that stays razor-sharp even on large-format conference posters or in Adobe Illustrator.
-
----
-
-## 5. Top `[SMILES]` Ribbon Overview
-
-<p align="center">
-  <img src="/powerpoint-ribbon-guide.png" alt="SMILES Ribbon Tab in Microsoft PowerPoint" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
-
-* **✏️ `Insert / Edit Structure`:** Open the 2D molecule & reaction sketcher (or edit the selected slide shape)
-* **🧬 `3D Structure (Mol*)`:** Open the interactive 3D protein viewer
-* **📋 `Paste Structure`:** Convert a selected SMILES text box or clipboard data into a slide shape in 0.1s
-* **🖼️ `Copy SMILES` / `Copy InChI` / `Copy KET` / `Copy SVG`:** Copy chemical identifiers or lossless SVG vectors for conference posters
-* **🔬 `Molecule Info`:** Copy multi-line property lists or open the full property summary window
-* **🎨 `Batch Style`:** Convert all structures across your slide deck to Dark Mode, Color, B&W, or White Background
-* **ℹ️ `About SMILES`:** View version details, bundled open-source licenses, and check for updates (`Check for Updates`)
-
----
-
-## 🚀 Continue Exploring
+* Right-click any slide molecule ➔ **`Chemical Structure ➔ Copy Vector SVG`** to paste scalable vector graphics directly into A0 conference posters or Adobe Illustrator.
+* Click **`[SMILES] ➔ [About func_SMILES2IMG]`** to check version info and updates.
 
 <div class="s2i-card-grid">
   <a href="../guide/molstar" class="s2i-card">
-    <div class="s2i-card-title">🧬 Mol* 3D Protein & Crystal Viewer</div>
-    <p class="s2i-card-desc">Try 4 sample PDB codes (1CRN, 4HHB, 6LU7, 1BNA) and capture 3D binding pockets</p>
+    <div class="s2i-card-title">🧬 Mol* 3D Protein Viewer Deep Dive</div>
+    <p class="s2i-card-desc">Explore 4 sample PDB structures and double-click camera angle restoration</p>
   </a>
   <a href="../guide/publishing" class="s2i-card">
-    <div class="s2i-card-title">🎨 Publishing, SVG & Property Tables</div>
-    <p class="s2i-card-desc">Copy lossless SVG vectors for conference posters and test Dark Mode batch styling</p>
+    <div class="s2i-card-title">📐 Publishing, Vector SVG &amp; Batch Style</div>
+    <p class="s2i-card-desc">Copy poster-ready SVG paths and explore all 5 property export formats</p>
   </a>
 </div>
-

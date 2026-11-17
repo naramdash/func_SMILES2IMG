@@ -41,9 +41,7 @@
 
 구조식 셀이나 그림을 **우클릭 ➔ `Chemical Structure ➔ Copy Molecule Info`** (또는 상단 리본의 **`[Molecule Info]`** 메뉴)로 선택하면 분자의 모든 물리화학적 특성을 확인하고 원하는 서식으로 즉시 복사할 수 있습니다. **`Detailed Molecule Info Window...`**를 열면 상단 2D 구조 미리보기 썸네일, 행별 **`[Copy]`** 버튼, 하단 서식 선택 드롭다운을 갖춘 표준 Windows 상세 창이 표시됩니다:
 
-<p align="center">
-  <img src="/molecule-info-dialog.png" alt="2D 구조 미리보기와 다중 서식 복사를 지원하는 Molecule Info 창" width="100%" style="max-width: 760px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
+<FeatureMedia id="common-molecule-info" />
 
 ### 한눈에 확인 가능한 10가지 핵심 물성
 1. **Substance Name (물질명):** IUPAC / PubChem 일반명 (`Aspirin`)

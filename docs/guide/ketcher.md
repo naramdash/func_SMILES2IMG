@@ -2,9 +2,7 @@
 
 Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> to draw molecules and multi-step reaction schemes from scratch, or **double-click any existing structure** in Excel, Word, or PowerPoint to reopen and edit it in place in 0.05 seconds.
 
-<p align="center">
-  <img src="/hero-demo.gif" alt="Double-Click Any Cell or Structure to Edit in Ketcher 2D" width="100%" style="max-width: 760px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
+<FeatureMedia id="common-ketcher-2d" />
 
 ::: tip 💡 Two-Way Round-Trip Editing Across Excel, Word & PowerPoint
 * **Double-Click Re-Editing (<0.05s):** Every structure inserted into an Excel cell, Word page, or PowerPoint slide retains its lossless chemical coordinates—just **double-click** it anytime to modify atoms, bonds, or reaction arrows!
@@ -17,7 +15,7 @@ Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> to draw molecules and mu
 ## 1. Draw & Edit in 3 Steps
 
 <p align="center">
-  <img src="/workflow-ketcher.png" alt="Ketcher Workflow" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
+  <img src="/ketcher-guide.png" alt="Live EPAM Ketcher 2D Molecular & Reaction Editor" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
 </p>
 
 ### Step 1. Open the Sketcher

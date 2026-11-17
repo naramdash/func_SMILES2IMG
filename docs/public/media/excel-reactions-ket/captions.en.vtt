@@ -1,0 +1,8 @@
+WEBVTT
+
+00:00:01.000 --> 00:00:03.000
+Open Ketcher 2D editor to draw or inspect the KET reaction scheme.
+
+00:00:01.000 --> 00:00:04.000
+Apply reaction scheme back to cell B2 as =KET2IMG(A2).
+
