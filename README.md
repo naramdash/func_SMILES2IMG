@@ -6,7 +6,7 @@
 [![Docs KO](https://img.shields.io/badge/문서-🇰🇷%20한국어%20가이드-0f766e.svg)](https://naramdash.github.io/func_SMILES2IMG/ko/)
 [![Framework](https://img.shields.io/badge/.NET%20Framework-4.8-512BD4.svg)](https://dotnet.microsoft.com/)
 [![Excel-DNA](https://img.shields.io/badge/Excel--DNA-1.9.0-green.svg)](https://excel-dna.net/)
-[![EPAM Indigo](https://img.shields.io/badge/EPAM%20Indigo-1.49.0--rc.2-orange.svg)](https://lifescience.opensource.epam.com/indigo/)
+[![EPAM Indigo](https://img.shields.io/badge/EPAM%20Indigo-1.49.0-orange.svg)](https://lifescience.opensource.epam.com/indigo/)
 [![EPAM Ketcher](https://img.shields.io/badge/EPAM%20Ketcher-v3.18.0-blueviolet.svg)](https://lifescience.opensource.epam.com/ketcher/)
 [![Mol* Viewer](https://img.shields.io/badge/Mol*--Viewer-v5.13.1-teal.svg)](https://molstar.org/)
 

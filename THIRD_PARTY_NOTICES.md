@@ -15,11 +15,11 @@ This software incorporates or connects with the following open-source and third-
 | Component | Version | License | Authors / Organization | Website / Repository |
 | :--- | :--- | :--- | :--- | :--- |
 | **EPAM Ketcher** | 3.18.0 | [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) | EPAM Systems, Inc. | [github.com/epam/ketcher](https://github.com/epam/ketcher) |
-| **EPAM Indigo & Indigo.Net** | 1.49.0-rc.2 | [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) | EPAM Systems, Inc. | [github.com/epam/Indigo](https://github.com/epam/Indigo) |
+| **EPAM Indigo & Indigo.Net** | 1.49.0 | [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) | EPAM Systems, Inc. | [github.com/epam/Indigo](https://github.com/epam/Indigo) |
 | **Mol\* 3D Viewer** | 5.13.1 | [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) / MIT | Mol\* Contributors | [github.com/molstar/molstar](https://github.com/molstar/molstar) |
 | **IUPAC InChI Toolkit** | 1.07.1 | [IUPAC/InChI-Trust #1.0](https://www.inchi-trust.org/download/104/LICENCE.pdf) | IUPAC & InChI Trust Limited | [inchi-trust.org](https://www.inchi-trust.org) |
 | **Excel-DNA & IntelliSense**| 1.9.0 | [zlib](https://licenses.nuget.org/Zlib) / [MIT](https://licenses.nuget.org/MIT) | Govert van Drimmelen | [github.com/Excel-DNA/ExcelDna](https://github.com/Excel-DNA/ExcelDna) |
-| **Microsoft.Web.WebView2** | 1.0.4258.31 | [Microsoft Software License](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) | Microsoft Corporation | [developer.microsoft.com/webview2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) |
+| **Microsoft.Web.WebView2** | 1.0.4314.35 | [Microsoft Software License](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) | Microsoft Corporation | [developer.microsoft.com/webview2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) |
 | **System.Drawing.Common** | 4.7.2 | [MIT](https://licenses.nuget.org/MIT) | .NET Foundation and Contributors | [github.com/dotnet/runtime](https://github.com/dotnet/runtime) |
 
 ---

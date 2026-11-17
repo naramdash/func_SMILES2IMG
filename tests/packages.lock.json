@@ -4,9 +4,9 @@
     ".NETFramework,Version=v4.8": {
       "Indigo.Net": {
         "type": "Direct",
-        "requested": "[1.49.0-rc.2, )",
-        "resolved": "1.49.0-rc.2",
-        "contentHash": "hkSvDPwOMHPAteoCtK2IQb4na0msqNm2NprNrSZh1lpH7+M2bu65YasiyVwxW3yq2w8JUw3zztLL1DdIsnT1pg==",
+        "requested": "[1.49.0, )",
+        "resolved": "1.49.0",
+        "contentHash": "0UaI8PjSsRVLD9pPc+ekPk8KQpy2dOEVfe8usvh0me5XcCvfEmnR3CYlNptgrJ+PFgLK9y5ihfbxOheRs8S9Fw==",
         "dependencies": {
           "System.Drawing.Common": "4.7.2"
         }
@@ -57,8 +57,8 @@
       },
       "Microsoft.Web.WebView2": {
         "type": "Transitive",
-        "resolved": "1.0.4258.31",
-        "contentHash": "sHVZ2MQrHT1J3q5/6csn0fIP27rzpTO/RRC+wPQDrZheB7T4t2n+vVbY6SdCKr4WRV9s/gmBM3PPMWWJtoDzMg=="
+        "resolved": "1.0.4314.35",
+        "contentHash": "x5MFf2W03xueU1mMNvivXfHSsQ+ODo7vJ36qw/dLtU5Gs+8d7+7N7zzmNNDoT3ffosmcvZNBtUnlzyiDUuBkSQ=="
       },
       "System.Drawing.Common": {
         "type": "Transitive",
@@ -71,14 +71,14 @@
           "ExcelDna.AddIn": "[1.9.0, )",
           "ExcelDna.IntelliSense": "[1.9.0, )",
           "ExcelDna.Interop": "[16.0.0, )",
-          "Smiles2Img.Core": "[1.7.1, )"
+          "Smiles2Img.Core": "[1.8.0-preview.1, )"
         }
       },
       "smiles2img.core": {
         "type": "Project",
         "dependencies": {
-          "Indigo.Net": "[1.49.0-rc.2, )",
-          "Microsoft.Web.WebView2": "[1.0.4258.31, )"
+          "Indigo.Net": "[1.49.0, )",
+          "Microsoft.Web.WebView2": "[1.0.4314.35, )"
         }
       },
       "smiles2img.powerpoint": {
@@ -86,47 +86,47 @@
         "dependencies": {
           "ExcelDna.Interop": "[16.0.0, )",
           "Microsoft.Office.Interop.PowerPoint": "[15.0.4420.1018, )",
-          "Smiles2Img.Core": "[1.7.1, )"
+          "Smiles2Img.Core": "[1.8.0-preview.1, )"
         }
       },
       "smiles2img.word": {
         "type": "Project",
         "dependencies": {
           "Microsoft.Office.Interop.Word": "[15.0.4797.1004, )",
-          "Smiles2Img.Core": "[1.7.1, )"
+          "Smiles2Img.Core": "[1.8.0-preview.1, )"
         }
       }
     },
     ".NETFramework,Version=v4.8/win-x64": {
       "Indigo.Net": {
         "type": "Direct",
-        "requested": "[1.49.0-rc.2, )",
-        "resolved": "1.49.0-rc.2",
-        "contentHash": "hkSvDPwOMHPAteoCtK2IQb4na0msqNm2NprNrSZh1lpH7+M2bu65YasiyVwxW3yq2w8JUw3zztLL1DdIsnT1pg==",
+        "requested": "[1.49.0, )",
+        "resolved": "1.49.0",
+        "contentHash": "0UaI8PjSsRVLD9pPc+ekPk8KQpy2dOEVfe8usvh0me5XcCvfEmnR3CYlNptgrJ+PFgLK9y5ihfbxOheRs8S9Fw==",
         "dependencies": {
           "System.Drawing.Common": "4.7.2"
         }
       },
       "Microsoft.Web.WebView2": {
         "type": "Transitive",
-        "resolved": "1.0.4258.31",
-        "contentHash": "sHVZ2MQrHT1J3q5/6csn0fIP27rzpTO/RRC+wPQDrZheB7T4t2n+vVbY6SdCKr4WRV9s/gmBM3PPMWWJtoDzMg=="
+        "resolved": "1.0.4314.35",
+        "contentHash": "x5MFf2W03xueU1mMNvivXfHSsQ+ODo7vJ36qw/dLtU5Gs+8d7+7N7zzmNNDoT3ffosmcvZNBtUnlzyiDUuBkSQ=="
       }
     },
     ".NETFramework,Version=v4.8/win-x86": {
       "Indigo.Net": {
         "type": "Direct",
-        "requested": "[1.49.0-rc.2, )",
-        "resolved": "1.49.0-rc.2",
-        "contentHash": "hkSvDPwOMHPAteoCtK2IQb4na0msqNm2NprNrSZh1lpH7+M2bu65YasiyVwxW3yq2w8JUw3zztLL1DdIsnT1pg==",
+        "requested": "[1.49.0, )",
+        "resolved": "1.49.0",
+        "contentHash": "0UaI8PjSsRVLD9pPc+ekPk8KQpy2dOEVfe8usvh0me5XcCvfEmnR3CYlNptgrJ+PFgLK9y5ihfbxOheRs8S9Fw==",
         "dependencies": {
           "System.Drawing.Common": "4.7.2"
         }
       },
       "Microsoft.Web.WebView2": {
         "type": "Transitive",
-        "resolved": "1.0.4258.31",
-        "contentHash": "sHVZ2MQrHT1J3q5/6csn0fIP27rzpTO/RRC+wPQDrZheB7T4t2n+vVbY6SdCKr4WRV9s/gmBM3PPMWWJtoDzMg=="
+        "resolved": "1.0.4314.35",
+        "contentHash": "x5MFf2W03xueU1mMNvivXfHSsQ+ODo7vJ36qw/dLtU5Gs+8d7+7N7zzmNNDoT3ffosmcvZNBtUnlzyiDUuBkSQ=="
       }
     }
   }

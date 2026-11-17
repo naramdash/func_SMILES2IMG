@@ -40,7 +40,7 @@ public sealed class AboutDialog : Form
         new ComponentInfo
         {
             Name = "EPAM Indigo Toolkit",
-            Version = "1.49.0-rc.2",
+            Version = "1.49.0",
             License = "Apache License 2.0",
             Website = "https://github.com/epam/Indigo",
             Copyright = "Copyright (c) 2009-2024 EPAM Systems, Inc.",
@@ -76,7 +76,7 @@ public sealed class AboutDialog : Form
         new ComponentInfo
         {
             Name = "Microsoft.Web.WebView2",
-            Version = "1.0.4258.31",
+            Version = "1.0.4314.35",
             License = "Microsoft Software License",
             Website = "https://developer.microsoft.com/en-us/microsoft-edge/webview2/",
             Copyright = "Copyright (c) Microsoft Corporation",
