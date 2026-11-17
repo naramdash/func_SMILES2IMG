@@ -1,13 +1,13 @@
 using System;
 using System.Drawing;
-using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Smiles2Img.Editor;
 
 /// <summary>
-/// Lightweight, non-blocking, borderless toast window that confirms clipboard copy actions
-/// without stealing focus or requiring user interaction.
+/// Lightweight, non-blocking floating toast positioned near the cursor using standard Windows colors,
+/// clamped to the active monitor working area without stealing focus.
 /// </summary>
 public sealed class CopiedToast : Form
 {
@@ -15,13 +15,7 @@ public sealed class CopiedToast : Form
     private const int WS_EX_TOOLWINDOW = 0x00000080;
     private const int WS_EX_TOPMOST = 0x00000008;
 
-    [DllImport("gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
-    private static extern IntPtr CreateRoundRectRgn(int nLeftRect, int nTopRect, int nRightRect, int nBottomRect, int nWidthEllipse, int nHeightEllipse);
-
-    [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
-    private static extern bool DeleteObject(IntPtr hObject);
-
-    private readonly float _dpiScale = 1.0f;
+    private readonly System.Windows.Forms.Timer _closeTimer;
 
     protected override CreateParams CreateParams
     {
@@ -37,88 +31,82 @@ public sealed class CopiedToast : Form
 
     private CopiedToast(string title, string value, bool isWarning = false)
     {
-        try
-        {
-            using var g = CreateGraphics();
-            _dpiScale = Math.Max(1.0f, g.DpiX / 96.0f);
-        }
-        catch { }
+        float dpiScale = DialogHelper.GetDpiScale(this);
 
         FormBorderStyle = FormBorderStyle.None;
         ShowInTaskbar = false;
         StartPosition = FormStartPosition.Manual;
         AutoSize = true;
         AutoSizeMode = AutoSizeMode.GrowAndShrink;
-        BackColor = isWarning ? Color.FromArgb(130, 60, 20) : Color.FromArgb(20, 50, 85);
-        Padding = new Padding((int)(16 * _dpiScale), (int)(10 * _dpiScale), (int)(16 * _dpiScale), (int)(10 * _dpiScale));
+        Font = SystemFonts.MessageBoxFont ?? new Font("Segoe UI", 9.0f);
 
-        string prefix = isWarning ? "⚠ " : "✓ Copied ";
+        Color bgColor = isWarning ? Color.FromArgb(255, 244, 229) : SystemColors.Info;
+        Color fgColor = SystemColors.InfoText;
+        BackColor = SystemColors.ControlDark;
+        Padding = new Padding(1);
+
+        var inner = new Panel
+        {
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            BackColor = bgColor,
+            Padding = new Padding((int)(12 * dpiScale), (int)(8 * dpiScale), (int)(12 * dpiScale), (int)(8 * dpiScale)),
+            Dock = DockStyle.Fill
+        };
+
+        string header = isWarning ? title : $"Copied {title}";
         var lbl = new Label
         {
-            Text = $"{prefix}{title}:\n{Truncate(value, 55)}",
+            Text = $"{header}: {Truncate(value, 60)}",
             UseMnemonic = false,
-            Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-            ForeColor = Color.White,
+            ForeColor = fgColor,
+            BackColor = bgColor,
             AutoSize = true,
-            Dock = DockStyle.Fill,
-            TextAlign = ContentAlignment.MiddleLeft
+            MaximumSize = new Size((int)(360 * dpiScale), 0),
+            Dock = DockStyle.Fill
         };
-        Controls.Add(lbl);
 
+        inner.Controls.Add(lbl);
+        Controls.Add(inner);
+
+        var preferred = GetPreferredSize(Size.Empty);
         var mouse = Cursor.Position;
-        var screen = Screen.FromPoint(mouse).WorkingArea;
-        int x = Math.Min(mouse.X + 16, screen.Right - (int)(320 * _dpiScale));
-        int y = Math.Min(mouse.Y + 20, screen.Bottom - (int)(80 * _dpiScale));
-        Location = new Point(Math.Max(screen.Left + 10, x), Math.Max(screen.Top + 10, y));
+        var area = Screen.FromPoint(mouse).WorkingArea;
+        int margin = (int)(8 * dpiScale);
+        int x = Math.Max(area.Left + margin, Math.Min(mouse.X + (int)(16 * dpiScale), area.Right - preferred.Width - margin));
+        int y = Math.Max(area.Top + margin, Math.Min(mouse.Y + (int)(20 * dpiScale), area.Bottom - preferred.Height - margin));
+        Location = new Point(x, y);
 
-        var timer = new Timer { Interval = isWarning ? 2000 : 1400 };
-        timer.Tick += (s, e) =>
+        _closeTimer = new System.Windows.Forms.Timer { Interval = isWarning ? 2000 : 1400 };
+        _closeTimer.Tick += (_, _) =>
         {
-            try
-            {
-                timer.Stop();
-                Close();
-            }
-            catch { }
-            finally
-            {
-                try { timer.Dispose(); } catch { }
-            }
+            _closeTimer.Stop();
+            Close();
         };
-        timer.Start();
+        _closeTimer.Start();
     }
 
-    protected override void OnResize(EventArgs e)
+    protected override void Dispose(bool disposing)
     {
-        base.OnResize(e);
-        try
+        if (disposing)
         {
-            int radius = (int)(12 * _dpiScale);
-            IntPtr hRgn = CreateRoundRectRgn(0, 0, Width, Height, radius, radius);
-            if (hRgn != IntPtr.Zero)
-            {
-                var oldRegion = Region;
-                Region = Region.FromHrgn(hRgn);
-                oldRegion?.Dispose();
-                DeleteObject(hRgn);
-            }
+            _closeTimer?.Dispose();
         }
-        catch { }
+        base.Dispose(disposing);
     }
 
     private static string Truncate(string text, int maxLen)
     {
         if (string.IsNullOrWhiteSpace(text)) return "";
-        text = text.Replace("\r", "").Replace("\n", " ");
-        if (text.Length <= maxLen) return text;
-        return text.Substring(0, maxLen - 3) + "...";
+        text = text.Replace("\r", "").Replace("\n", " ").Trim();
+        return text.Length <= maxLen ? text : text.Substring(0, maxLen - 3) + "...";
     }
 
     public static void Show(string title, string value, bool isWarning = false)
     {
         try
         {
-            var thread = new System.Threading.Thread(() =>
+            var thread = new Thread(() =>
             {
                 try
                 {
@@ -127,7 +115,7 @@ public sealed class CopiedToast : Form
                 }
                 catch { }
             });
-            thread.SetApartmentState(System.Threading.ApartmentState.STA);
+            thread.SetApartmentState(ApartmentState.STA);
             thread.IsBackground = true;
             thread.Start();
         }

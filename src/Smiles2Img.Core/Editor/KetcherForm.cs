@@ -145,12 +145,7 @@ public sealed class KetcherForm : Form
             {
                 msg += "\n\n(Please verify that the Microsoft Edge WebView2 Runtime is installed.)";
             }
-            MessageBox.Show(
-                this,
-                "An error occurred while initializing Ketcher web editor:\n" + msg,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
+            DialogHelper.ShowError("An error occurred while initializing Ketcher web editor:\n" + msg, this);
             Close();
         }
     }

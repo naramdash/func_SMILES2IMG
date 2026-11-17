@@ -39,9 +39,8 @@ public static partial class WordStructureManager
             }
             catch { }
 
-            var hwnd = GetHwnd(app);
             using var form = MolstarForm.Rent("Word", initialPdb);
-            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
+            var result = DialogHelper.ShowModalDialog(form, GetHwnd(app));
 
             if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))
             {
@@ -50,11 +49,7 @@ public static partial class WordStructureManager
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while opening Mol* 3D Viewer:\n" + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("An error occurred while opening Mol* 3D Viewer:\n" + ex.Message, GetHwnd(app));
         }
     }
 
@@ -84,11 +79,9 @@ public static partial class WordStructureManager
             var meta = MolstarSessionManager.ParseAltText(altText, title);
             if (meta == null)
             {
-                MessageBox.Show(
+                DialogHelper.ShowInfo(
                     "The selected object is not a Mol* 3D structure object.\nPlease select a Mol* structure image or 3D model first.",
-                    "func_SMILES2IMG",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                    GetHwnd(app));
                 return;
             }
 
@@ -102,9 +95,8 @@ public static partial class WordStructureManager
                 catch { }
             }
 
-            var hwnd = GetHwnd(app);
             using var form = MolstarForm.Rent("Word", meta.Pdb, snapshotJson);
-            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
+            var result = DialogHelper.ShowModalDialog(form, GetHwnd(app));
 
             if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))
             {
@@ -120,11 +112,7 @@ public static partial class WordStructureManager
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while editing Mol* 3D structure:\n" + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("An error occurred while editing Mol* 3D structure:\n" + ex.Message, GetHwnd(app));
         }
     }
 

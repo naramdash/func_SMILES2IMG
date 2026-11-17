@@ -214,9 +214,35 @@ internal static class WebView2EditorE2ETests
                 using var ms = new MemoryStream();
                 bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                 var bytes = ms.ToArray();
-                VerifyUiScreenshotHasVisualDiversity(bytes, 500, 400, "AboutDialog");
+                VerifyUiScreenshotHasVisualDiversity(bytes, 500, 400, "AboutDialog Tab 1");
                 File.WriteAllBytes("output/samples/e2e_ui_about_dialog.png", bytes);
             }
+
+            var tabs = FindControl<TabControl>(aboutDlg)!;
+            Check(tabs != null && tabs.TabPages.Count == 3, "AboutDialog contains 3 standard tabs");
+            tabs!.SelectedIndex = 1;
+            Application.DoEvents();
+            var compGrid = FindControl<DataGridView>(tabs.TabPages[1])!;
+            Check(compGrid != null && compGrid.Rows.Count >= 7, $"AboutDialog Components tab lists >= 7 components, got: {compGrid?.Rows.Count}");
+            using (var bmp2 = new Bitmap(aboutDlg.Width, aboutDlg.Height))
+            {
+                aboutDlg.DrawToBitmap(bmp2, new Rectangle(0, 0, aboutDlg.Width, aboutDlg.Height));
+                bmp2.Save("output/samples/e2e_ui_about_tab2.png", System.Drawing.Imaging.ImageFormat.Png);
+            }
+
+            tabs.SelectedIndex = 2;
+            Application.DoEvents();
+            var copyNoticesBtn = FindControl<Button>(tabs.TabPages[2], b => b.Text.Contains("Copy Full"))!;
+            Check(copyNoticesBtn != null, "AboutDialog Notices tab hosts Copy Full License Notices button");
+            copyNoticesBtn!.PerformClick();
+            Application.DoEvents();
+            Check(SafeClipboard.GetText()?.Contains("THIRD-PARTY COMPONENTS") == true, "AboutDialog Copy Full License Notices copies notices text");
+            using (var bmp3 = new Bitmap(aboutDlg.Width, aboutDlg.Height))
+            {
+                aboutDlg.DrawToBitmap(bmp3, new Rectangle(0, 0, aboutDlg.Width, aboutDlg.Height));
+                bmp3.Save("output/samples/e2e_ui_about_tab3.png", System.Drawing.Imaging.ImageFormat.Png);
+            }
+
             aboutDlg.Close();
         }
 

@@ -129,12 +129,7 @@ public sealed class MolstarForm : Form
             {
                 msg += "\n\n(Please verify that the Microsoft Edge WebView2 Runtime is installed.)";
             }
-            MessageBox.Show(
-                this,
-                "An error occurred while initializing Mol* 3D viewer:\n" + msg,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
+            DialogHelper.ShowError("An error occurred while initializing Mol* 3D viewer:\n" + msg, this);
             Close();
         }
     }

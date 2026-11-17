@@ -28,19 +28,16 @@ public static partial class PowerPointStructureManager
             var slide = EnsureActiveSlide(app);
             if (slide == null)
             {
-                MessageBox.Show(
+                DialogHelper.ShowInfo(
                     "No active slide found.\nPlease select a slide to insert the molecule structure first.",
-                    "func_SMILES2IMG",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                    GetHwnd(app));
                 return;
             }
 
             GetSelectedShapeOrText(app, out _, out var selText);
             var initialStructure = StructureMetadata.ExtractPreloadForKetcher(selText);
-            var hwnd = GetHwnd(app);
             using var form = KetcherForm.Rent("PowerPoint", initialStructure);
-            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
+            var result = DialogHelper.ShowModalDialog(form, GetHwnd(app));
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
             {
@@ -53,11 +50,7 @@ public static partial class PowerPointStructureManager
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while inserting molecule:\n" + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("An error occurred while inserting molecule:\n" + ex.Message, GetHwnd(app));
         }
     }
 
@@ -70,11 +63,9 @@ public static partial class PowerPointStructureManager
                 var sel = app.ActiveWindow?.Selection;
                 if (sel == null || sel.Type != MSPowerPoint.PpSelectionType.ppSelectionShapes || sel.ShapeRange.Count == 0)
                 {
-                    MessageBox.Show(
+                    DialogHelper.ShowInfo(
                         "No molecular structure image selected.\nPlease select a molecular structure picture first.",
-                        "func_SMILES2IMG",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                        GetHwnd(app));
                     return;
                 }
 
@@ -90,17 +81,14 @@ public static partial class PowerPointStructureManager
             var currentStructure = ExtractStructure(targetShape);
             if (string.IsNullOrEmpty(currentStructure))
             {
-                MessageBox.Show(
+                DialogHelper.ShowInfo(
                     "The selected object is not a SMILES/KET molecule structure image.",
-                    "func_SMILES2IMG",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                    GetHwnd(app));
                 return;
             }
 
-            var hwnd = GetHwnd(app);
             using var form = KetcherForm.Rent("PowerPoint", currentStructure ?? "");
-            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
+            var result = DialogHelper.ShowModalDialog(form, GetHwnd(app));
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
             {
@@ -113,11 +101,7 @@ public static partial class PowerPointStructureManager
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while editing molecule:\n" + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("An error occurred while editing molecule:\n" + ex.Message, GetHwnd(app));
         }
     }
 
@@ -423,11 +407,9 @@ public static partial class PowerPointStructureManager
             var slide = EnsureActiveSlide(app);
             if (slide == null)
             {
-                MessageBox.Show(
+                DialogHelper.ShowInfo(
                     "No active slide found.\nPlease select a slide to insert the molecule structure first.",
-                    "func_SMILES2IMG",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                    GetHwnd(app));
                 return;
             }
 
@@ -450,19 +432,13 @@ public static partial class PowerPointStructureManager
                 }
             }
 
-            MessageBox.Show(
+            DialogHelper.ShowInfo(
                 "No valid SMILES or KET structure data found in clipboard or selected text.\nPlease copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) first.",
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+                GetHwnd(app));
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while inserting structure from clipboard:\n" + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("An error occurred while inserting structure from clipboard:\n" + ex.Message, GetHwnd(app));
         }
     }
 

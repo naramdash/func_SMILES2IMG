@@ -45,7 +45,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Failed to initialize func_SMILES2IMG:\n" + ex.Message, "func_SMILES2IMG", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("Failed to initialize func_SMILES2IMG:\n" + ex.Message);
         }
     }
 
@@ -382,19 +382,13 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
 
     public void OnAbout(IRibbonControl control)
     {
+        IntPtr hwnd = IntPtr.Zero;
         try
         {
-            IntPtr hwnd = IntPtr.Zero;
             if (pptApp != null)
-            {
-                try { hwnd = (IntPtr)pptApp.HWND; } catch { }
-            }
-            IWin32Window? owner = hwnd != IntPtr.Zero ? new Win32Window(hwnd) : null;
-            Smiles2Img.Editor.AboutDialog.ShowModal(owner);
+                hwnd = (IntPtr)pptApp.HWND;
         }
-        catch
-        {
-            Smiles2Img.Editor.AboutDialog.ShowModal();
-        }
+        catch { }
+        DialogHelper.ShowAbout(hwnd);
     }
 }

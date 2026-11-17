@@ -35,12 +35,4 @@ public static class MoleculeNotification
         // Display lightweight in-app floating toast near cursor
         CopiedToast.Show(label, message, isWarning: true);
     }
-
-    private static string Truncate(string text, int maxLen)
-    {
-        if (string.IsNullOrWhiteSpace(text)) return "";
-        text = text.Replace("\r", "").Replace("\n", " ");
-        if (text.Length <= maxLen) return text;
-        return text.Substring(0, maxLen - 3) + "...";
-    }
 }

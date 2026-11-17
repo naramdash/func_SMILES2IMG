@@ -1,22 +1,21 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Smiles2Img.Editor;
 
 /// <summary>
-/// Modern, responsive, and DPI-aware About & License Information Dialog
-/// displaying project metadata, author info, GitHub repository link,
-/// and complete third-party open-source components and licenses.
+/// Standard Windows Forms About &amp; License dialog displaying version info,
+/// update check status, bundled open-source components, and full license notices.
 /// </summary>
 public sealed class AboutDialog : Form
 {
-    private class ComponentInfo
+    private sealed class ComponentInfo
     {
         public string Name { get; set; } = "";
         public string Version { get; set; } = "";
@@ -26,9 +25,9 @@ public sealed class AboutDialog : Form
         public string Description { get; set; } = "";
     }
 
-    private static readonly List<ComponentInfo> Components = new()
-    {
-        new ComponentInfo
+    private static readonly List<ComponentInfo> Components =
+    [
+        new()
         {
             Name = "EPAM Ketcher",
             Version = "3.18.0",
@@ -37,7 +36,7 @@ public sealed class AboutDialog : Form
             Copyright = "Copyright (c) 2011-2024 EPAM Systems, Inc.",
             Description = "High-performance standalone molecular structure editor, chemical reaction canvas, and KET format serialization."
         },
-        new ComponentInfo
+        new()
         {
             Name = "EPAM Indigo Toolkit",
             Version = "1.49.0",
@@ -46,7 +45,7 @@ public sealed class AboutDialog : Form
             Copyright = "Copyright (c) 2009-2024 EPAM Systems, Inc.",
             Description = "Cheminformatics engine providing molecular layout computation, aromatization, 0ms local property calculation, and high-resolution PNG rendering."
         },
-        new ComponentInfo
+        new()
         {
             Name = "Mol* (Molstar) 3D Viewer",
             Version = "5.13.1",
@@ -55,7 +54,7 @@ public sealed class AboutDialog : Form
             Copyright = "Copyright (c) 2018-2024 Mol* contributors",
             Description = "Comprehensive macromolecular 3D visualization engine for PDB and AlphaFold structures, supporting interactive 3D model (.glb) generation."
         },
-        new ComponentInfo
+        new()
         {
             Name = "IUPAC InChI Toolkit",
             Version = "1.07.1",
@@ -64,7 +63,7 @@ public sealed class AboutDialog : Form
             Copyright = "Copyright (c) IUPAC and InChI Trust Limited",
             Description = "Standard algorithm for International Chemical Identifier (InChI) conversion, structure normalization, and 27-character InChIKey hashing."
         },
-        new ComponentInfo
+        new()
         {
             Name = "Excel-DNA & IntelliSense",
             Version = "1.9.0",
@@ -73,7 +72,7 @@ public sealed class AboutDialog : Form
             Copyright = "Copyright (c) 2005-2024 Govert van Drimmelen",
             Description = "High-speed C-API add-in framework connecting .NET to Microsoft Excel, providing in-cell function auto-completion and argument tooltips."
         },
-        new ComponentInfo
+        new()
         {
             Name = "Microsoft.Web.WebView2",
             Version = "1.0.4314.35",
@@ -82,7 +81,7 @@ public sealed class AboutDialog : Form
             Copyright = "Copyright (c) Microsoft Corporation",
             Description = "Chromium-based native embedding runtime enabling EPAM Ketcher and Mol* canvases inside Office without external browser processes."
         },
-        new ComponentInfo
+        new()
         {
             Name = "System.Drawing.Common",
             Version = "4.7.2",
@@ -91,533 +90,420 @@ public sealed class AboutDialog : Form
             Copyright = "Copyright (c) .NET Foundation and Contributors",
             Description = "Cross-platform GDI+ graphics primitives for rasterization, font measurement, and in-memory image streaming."
         }
-    };
+    ];
+
+    private const string RepoUrl = "https://github.com/naramdash/func_SMILES2IMG";
+    private const string DocsUrl = "https://naramdash.github.io/func_SMILES2IMG/";
+
+    private readonly Image? _logoBitmap;
 
     public AboutDialog(string? appName = null)
     {
-        Text = "About func_SMILES2IMG";
+        float dpiScale = DialogHelper.ConfigureStandardForm(
+            this,
+            "About func_SMILES2IMG",
+            UiIcons.AboutIcon,
+            baseWidth: 780,
+            baseHeight: 650,
+            minWidth: 620,
+            minHeight: 480);
 
-        float dpiScale = 1.0f;
-        try
+        int pad = (int)(14 * dpiScale);
+        int btnH = Math.Max(28, (int)(28 * dpiScale));
+
+        int iconSize = (int)(36 * dpiScale);
+        _logoBitmap = (UiIcons.ChemicalIcon ?? UiIcons.AboutIcon)?.ToBitmap();
+        var picLogo = new PictureBox
         {
-            using var g = CreateGraphics();
-            dpiScale = Math.Max(1.0f, g.DpiX / 96.0f);
-        }
-        catch { }
-
-        var screen = Screen.FromControl(this) ?? Screen.PrimaryScreen;
-        int targetW = Math.Min((int)(820 * dpiScale), (int)(screen.WorkingArea.Width * 0.92));
-        int targetH = Math.Min((int)(680 * dpiScale), (int)(screen.WorkingArea.Height * 0.92));
-        ClientSize = new Size(Math.Max(targetW, 720), Math.Max(targetH, 560));
-        MinimumSize = new Size(Math.Min(650, screen.WorkingArea.Width), Math.Min(480, screen.WorkingArea.Height));
-
-        StartPosition = FormStartPosition.CenterScreen;
-        FormBorderStyle = FormBorderStyle.Sizable;
-        MaximizeBox = true;
-        MinimizeBox = false;
-        ShowInTaskbar = false;
-        Font = new Font("Segoe UI", 9.25f, FontStyle.Regular);
-        BackColor = Color.FromArgb(249, 250, 251);
-
-        if (UiIcons.AboutIcon != null)
-        {
-            try { Icon = UiIcons.AboutIcon; } catch { }
-        }
-
-        KeyPreview = true;
-        KeyDown += (s, e) =>
-        {
-            if (e.KeyCode == Keys.Escape) Close();
+            Size = new Size(iconSize, iconSize),
+            SizeMode = PictureBoxSizeMode.Zoom,
+            Image = _logoBitmap,
+            Margin = new Padding(0, 2, (int)(12 * dpiScale), 0)
         };
 
-        var toolTip = new ToolTip
-        {
-            AutoPopDelay = 8000,
-            InitialDelay = 400,
-            ReshowDelay = 200,
-            ShowAlways = true
-        };
+        var headerContainer = DialogHelper.CreateHeaderStrip(
+            dpiScale,
+            "func_SMILES2IMG",
+            $"{GetProductVersion()}  ·  MIT License  ·  Chemical Structure & 3D Add-in for Excel, Word & PowerPoint",
+            leftVisual: picLogo);
 
-        // Header Panel
-        var pnlHeader = new Panel
-        {
-            Dock = DockStyle.Top,
-            AutoSize = true,
-            AutoSizeMode = AutoSizeMode.GrowAndShrink,
-            BackColor = Color.FromArgb(20, 50, 85),
-            Padding = new Padding(24, 16, 24, 16)
-        };
-
-        var lblTitle = new Label
-        {
-            Text = "func_SMILES2IMG",
-            UseMnemonic = false,
-            ForeColor = Color.White,
-            Font = new Font("Segoe UI", 13.5f, FontStyle.Bold),
-            AutoSize = true,
-            Dock = DockStyle.Top,
-            Margin = new Padding(0, 0, 0, 4)
-        };
-
-        var lblSubtitle = new Label
-        {
-            Text = "Chemical Structure & Macromolecule Add-in for Excel · Word · PowerPoint",
-            UseMnemonic = false,
-            ForeColor = Color.FromArgb(215, 230, 248),
-            Font = new Font("Segoe UI", 9.5f, FontStyle.Regular),
-            AutoSize = true,
-            Dock = DockStyle.Top,
-            Margin = new Padding(0, 4, 0, 0)
-        };
-
-        pnlHeader.Controls.Add(lblSubtitle);
-        pnlHeader.Controls.Add(lblTitle);
-
-        // Bottom Action Panel
-        var pnlBottom = new Panel
-        {
-            Dock = DockStyle.Bottom,
-            Height = (int)(56 * dpiScale),
-            BackColor = Color.FromArgb(243, 244, 246),
-            Padding = new Padding(20, 10, 20, 10)
-        };
-
-        var btnClose = new Button
-        {
-            Text = "Close",
-            DialogResult = DialogResult.OK,
-            Size = new Size((int)(90 * dpiScale), (int)(34 * dpiScale)),
-            Dock = DockStyle.Right,
-            BackColor = Color.FromArgb(20, 50, 85),
-            ForeColor = Color.White,
-            FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand,
-            Font = new Font("Segoe UI", 9.25f, FontStyle.Bold)
-        };
-        btnClose.FlatAppearance.BorderSize = 0;
-        btnClose.Click += (s, e) => Close();
-
-        var btnOpenGitHub = new Button
-        {
-            Text = "Open GitHub Repo",
-            Size = new Size((int)(140 * dpiScale), (int)(34 * dpiScale)),
-            Dock = DockStyle.Left,
-            BackColor = Color.White,
-            ForeColor = Color.FromArgb(30, 41, 59),
-            FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand,
-            Font = new Font("Segoe UI", 9.25f, FontStyle.Regular),
-            Margin = new Padding(0, 0, 8, 0)
-        };
-        btnOpenGitHub.FlatAppearance.BorderColor = Color.FromArgb(209, 213, 219);
-        btnOpenGitHub.Click += (s, e) => OpenBrowser("https://github.com/naramdash/func_SMILES2IMG");
-
-        var btnCopyAll = new Button
-        {
-            Text = "Copy Notices",
-            Size = new Size((int)(110 * dpiScale), (int)(34 * dpiScale)),
-            Dock = DockStyle.Left,
-            BackColor = Color.White,
-            ForeColor = Color.FromArgb(30, 41, 59),
-            FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand,
-            Font = new Font("Segoe UI", 9.25f, FontStyle.Regular),
-            Margin = new Padding(8, 0, 0, 0)
-        };
-        btnCopyAll.FlatAppearance.BorderColor = Color.FromArgb(209, 213, 219);
-        btnCopyAll.Click += (s, e) =>
-        {
-            try
-            {
-                SafeClipboard.SetText(BuildFullNoticesText());
-                btnCopyAll.Text = "✓ Copied!";
-                btnCopyAll.BackColor = Color.FromArgb(236, 253, 245);
-                btnCopyAll.ForeColor = Color.FromArgb(16, 149, 102);
-
-                var timer = new Timer { Interval = 1800 };
-                timer.Tick += (ts, te) =>
-                {
-                    if (!btnCopyAll.IsDisposed) btnCopyAll.Text = "Copy Notices";
-                    if (!btnCopyAll.IsDisposed) btnCopyAll.BackColor = Color.White;
-                    if (!btnCopyAll.IsDisposed) btnCopyAll.ForeColor = Color.FromArgb(30, 41, 59);
-                    timer.Stop();
-                    timer.Dispose();
-                };
-                timer.Start();
-            }
-            catch { }
-        };
-
-        var btnCheckUpdate = new Button
-        {
-            Text = "Check for Updates",
-            Size = new Size((int)(136 * dpiScale), (int)(34 * dpiScale)),
-            Dock = DockStyle.Left,
-            BackColor = Color.White,
-            ForeColor = Color.FromArgb(2, 132, 199),
-            FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand,
-            Font = new Font("Segoe UI", 9.25f, FontStyle.Bold),
-            Margin = new Padding(8, 0, 0, 0)
-        };
-        btnCheckUpdate.FlatAppearance.BorderColor = Color.FromArgb(186, 230, 253);
-        btnCheckUpdate.Click += async (s, e) =>
-        {
-            try
-            {
-                btnCheckUpdate.Enabled = false;
-                btnCheckUpdate.Text = "Checking...";
-                var currentVerStr = GetProductVersion();
-
-                var latestTag = await System.Threading.Tasks.Task.Run(() => FetchLatestGitHubReleaseTag());
-                if (IsDisposed) return;
-
-                if (string.IsNullOrWhiteSpace(latestTag))
-                {
-                    btnCheckUpdate.Text = "Check for Updates";
-                    btnCheckUpdate.Enabled = true;
-                    MessageBox.Show(
-                        this,
-                        "Could not reach GitHub Releases API. Opening releases page in browser instead.",
-                        "func_SMILES2IMG",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-                    OpenBrowser("https://github.com/naramdash/func_SMILES2IMG/releases");
-                    return;
-                }
-
-                var cleanLatest = latestTag!.Trim().TrimStart('v', 'V');
-                var cleanCurrent = currentVerStr.Trim().TrimStart('v', 'V');
-
-                bool isNewer = IsNewerVersion(cleanLatest, cleanCurrent);
-
-                if (isNewer)
-                {
-                    btnCheckUpdate.Text = $"Update: v{cleanLatest}";
-                    btnCheckUpdate.BackColor = Color.FromArgb(254, 243, 199);
-                    btnCheckUpdate.ForeColor = Color.FromArgb(180, 83, 9);
-                    btnCheckUpdate.Enabled = true;
-
-                    var updateCmd = "irm https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/install.ps1 | iex";
-                    var dr = MessageBox.Show(
-                        this,
-                        $"A new version (v{cleanLatest}) is available! (Current: v{cleanCurrent})\n\n" +
-                        "Click [Yes] to copy the 1-line PowerShell update command to your clipboard and open the release page.",
-                        "func_SMILES2IMG",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Information);
-
-                    if (dr == DialogResult.Yes)
-                    {
-                        try { SafeClipboard.SetText(updateCmd); } catch { }
-                        OpenBrowser("https://github.com/naramdash/func_SMILES2IMG/releases/latest");
-                    }
-                }
-                else
-                {
-                    btnCheckUpdate.Text = $"✓ Up to Date (v{cleanCurrent})";
-                    btnCheckUpdate.BackColor = Color.FromArgb(236, 253, 245);
-                    btnCheckUpdate.ForeColor = Color.FromArgb(16, 149, 102);
-                    btnCheckUpdate.Enabled = true;
-                }
-            }
-            catch
-            {
-                if (!IsDisposed)
-                {
-                    btnCheckUpdate.Text = "Check for Updates";
-                    btnCheckUpdate.Enabled = true;
-                }
-            }
-        };
-
-        var sepLeft1 = new Panel { Width = 8, Dock = DockStyle.Left, BackColor = Color.Transparent };
-        var sepLeft2 = new Panel { Width = 8, Dock = DockStyle.Left, BackColor = Color.Transparent };
-
-        pnlBottom.Controls.Add(btnCheckUpdate);
-        pnlBottom.Controls.Add(sepLeft2);
-        pnlBottom.Controls.Add(btnCopyAll);
-        pnlBottom.Controls.Add(sepLeft1);
-        pnlBottom.Controls.Add(btnOpenGitHub);
-        pnlBottom.Controls.Add(btnClose);
-
-        // Center Content Tab Control
-        var tabControl = new TabControl
+        var leftActions = new FlowLayoutPanel
         {
             Dock = DockStyle.Fill,
-            Padding = new Point(14, 8),
-            Font = new Font("Segoe UI", 9.5f, FontStyle.Regular)
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            WrapContents = false,
+            Margin = Padding.Empty
         };
 
-        // Tab 1: Project & Author Overview
-        var tabOverview = new TabPage("Overview & Author")
+        var btnCheckUpdate = DialogHelper.CreateStandardButton("Check for Updates", (int)(120 * dpiScale), btnH, new Padding(0, 0, (int)(10 * dpiScale), 0));
+        var lblUpdateStatus = new Label
         {
-            BackColor = Color.White,
-            Padding = new Padding(20)
+            Text = "",
+            UseMnemonic = false,
+            AutoSize = true,
+            ForeColor = SystemColors.GrayText,
+            Margin = new Padding(0, (int)(6 * dpiScale), 0, 0)
         };
+        btnCheckUpdate.Click += async (_, _) => await CheckForUpdatesAsync(btnCheckUpdate, lblUpdateStatus);
+        leftActions.Controls.Add(btnCheckUpdate);
+        leftActions.Controls.Add(lblUpdateStatus);
+
+        var rightActions = new FlowLayoutPanel
+        {
+            FlowDirection = FlowDirection.RightToLeft,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            WrapContents = false,
+            Anchor = AnchorStyles.Right,
+            Margin = Padding.Empty
+        };
+
+        var btnClose = DialogHelper.CreateStandardButton("Close", (int)(88 * dpiScale), btnH);
+        btnClose.DialogResult = DialogResult.OK;
+        btnClose.Click += (_, _) => Close();
+
+        var btnOpenGitHub = DialogHelper.CreateStandardButton("Open GitHub", (int)(105 * dpiScale), btnH, new Padding(0, 0, (int)(8 * dpiScale), 0));
+        btnOpenGitHub.Click += (_, _) => DialogHelper.OpenUrl(RepoUrl);
+
+        rightActions.Controls.Add(btnClose);
+        rightActions.Controls.Add(btnOpenGitHub);
+
+        var bottomContainer = DialogHelper.CreateBottomActionBar(dpiScale, leftActions, rightActions);
+
+        // Center native TabControl
+        var contentHost = new Panel
+        {
+            Dock = DockStyle.Fill,
+            Padding = new Padding(pad, (int)(10 * dpiScale), pad, (int)(8 * dpiScale))
+        };
+
+        var tabControl = new TabControl { Dock = DockStyle.Fill };
+
+        var tabOverview = new TabPage("Overview & Author") { UseVisualStyleBackColor = true, Padding = new Padding(pad) };
         BuildOverviewTab(tabOverview, dpiScale);
 
-        // Tab 2: Third-Party Dependencies
-        var tabComponents = new TabPage("Third-Party Components")
+        var tabComponents = new TabPage("Third-Party Components") { UseVisualStyleBackColor = true, Padding = new Padding(pad) };
+        BuildComponentsTab(tabComponents, dpiScale);
+
+        var tabNotices = new TabPage("License Notices (Full Text)") { UseVisualStyleBackColor = true, Padding = new Padding(pad) };
+        BuildFullNoticesTab(tabNotices, dpiScale, btnH);
+
+        tabControl.TabPages.AddRange(new[] { tabOverview, tabComponents, tabNotices });
+        contentHost.Controls.Add(tabControl);
+
+        Controls.Add(contentHost);
+        Controls.Add(bottomContainer);
+        Controls.Add(headerContainer);
+
+        AcceptButton = btnClose;
+        CancelButton = btnClose;
+    }
+
+    private async Task CheckForUpdatesAsync(Button btnCheckUpdate, Label lblStatus)
+    {
+        try
         {
-            BackColor = Color.White,
-            Padding = new Padding(16)
-        };
-        BuildComponentsTab(tabComponents, dpiScale, toolTip);
+            btnCheckUpdate.Enabled = false;
+            lblStatus.ForeColor = SystemColors.GrayText;
+            lblStatus.Text = "Checking GitHub Releases...";
+            var currentVerStr = GetProductVersion();
 
-        // Tab 3: Complete Notices Text
-        var tabFullNotices = new TabPage("License Notices (Full Text)")
+            var latestTag = await Task.Run(FetchLatestGitHubReleaseTag);
+            if (IsDisposed) return;
+
+            btnCheckUpdate.Enabled = true;
+            if (string.IsNullOrWhiteSpace(latestTag))
+            {
+                lblStatus.Text = "Could not reach GitHub Releases.";
+                DialogHelper.ShowInfo("Could not reach GitHub Releases API. Opening releases page in browser.", Handle);
+                DialogHelper.OpenUrl(RepoUrl + "/releases");
+                return;
+            }
+
+            var cleanLatest = latestTag!.Trim().TrimStart('v', 'V');
+            var cleanCurrent = currentVerStr.Trim().TrimStart('v', 'V');
+
+            if (IsNewerVersion(cleanLatest, cleanCurrent))
+            {
+                lblStatus.ForeColor = Color.FromArgb(180, 83, 9);
+                lblStatus.Text = $"Update available: v{cleanLatest}";
+
+                const string updateCmd = "irm https://github.com/naramdash/func_SMILES2IMG/releases/latest/download/install.ps1 | iex";
+                var dr = DialogHelper.ConfirmYesNo(
+                    $"A new version (v{cleanLatest}) is available! (Current: v{cleanCurrent})\n\n" +
+                    "Click [Yes] to copy the 1-line PowerShell update command to your clipboard and open the release page.",
+                    this);
+
+                if (dr == DialogResult.Yes)
+                {
+                    try { SafeClipboard.SetText(updateCmd); } catch { }
+                    DialogHelper.OpenUrl(RepoUrl + "/releases/latest");
+                }
+            }
+            else
+            {
+                lblStatus.ForeColor = Color.FromArgb(22, 101, 52);
+                lblStatus.Text = $"Up to date (v{cleanCurrent})";
+            }
+        }
+        catch
         {
-            BackColor = Color.White,
-            Padding = new Padding(16)
-        };
-        BuildFullNoticesTab(tabFullNotices, dpiScale);
-
-        tabControl.TabPages.Add(tabOverview);
-        tabControl.TabPages.Add(tabComponents);
-        tabControl.TabPages.Add(tabFullNotices);
-
-        Controls.Add(tabControl);
-        Controls.Add(pnlBottom);
-        Controls.Add(pnlHeader);
+            if (!IsDisposed)
+            {
+                btnCheckUpdate.Enabled = true;
+                lblStatus.Text = "";
+            }
+        }
     }
 
     private static void BuildOverviewTab(TabPage tab, float dpiScale)
     {
-        var pnl = new TableLayoutPanel
+        var metaGrid = new TableLayoutPanel
         {
-            Dock = DockStyle.Fill,
+            Dock = DockStyle.Top,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
             ColumnCount = 2,
-            RowCount = 8,
-            AutoScroll = true,
-            Padding = new Padding(12)
+            Margin = Padding.Empty,
+            Padding = new Padding(2, 0, 2, (int)(8 * dpiScale))
         };
-        pnl.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, (int)(160 * dpiScale)));
-        pnl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+        metaGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, (int)(130 * dpiScale)));
+        metaGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
 
-        void AddRow(string label, Control valueControl)
+        void AddRow(string labelText, Control valueControl)
         {
+            metaGrid.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             var lbl = new Label
             {
-                Text = label,
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                ForeColor = Color.FromArgb(55, 65, 81),
+                Text = labelText,
+                Font = new Font(SystemFonts.MessageBoxFont ?? Control.DefaultFont, FontStyle.Bold),
                 AutoSize = true,
-                Anchor = AnchorStyles.Left | AnchorStyles.Top,
-                Margin = new Padding(0, 6, 12, 6)
+                Anchor = AnchorStyles.Left,
+                Margin = new Padding(0, 4, 8, 4)
             };
-            valueControl.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
-            valueControl.Margin = new Padding(0, 4, 0, 10);
-            pnl.Controls.Add(lbl);
-            pnl.Controls.Add(valueControl);
+            valueControl.Anchor = AnchorStyles.Left;
+            valueControl.Margin = new Padding(0, 4, 0, 4);
+            metaGrid.Controls.Add(lbl);
+            metaGrid.Controls.Add(valueControl);
         }
 
-        AddRow("Project:", new Label
+        static LinkLabel CreateLink(string url)
         {
-            Text = "func_SMILES2IMG",
-            Font = new Font("Segoe UI", 9.75f, FontStyle.Bold),
-            ForeColor = Color.FromArgb(17, 24, 39),
-            AutoSize = true
-        });
+            var link = new LinkLabel { Text = url, AutoSize = true, Cursor = Cursors.Hand };
+            link.LinkClicked += (_, _) => DialogHelper.OpenUrl(url);
+            return link;
+        }
 
-        AddRow("Version:", new Label
-        {
-            Text = $"{GetProductVersion()} (Excel · Word · PowerPoint)",
-            Font = new Font("Segoe UI", 9.5f, FontStyle.Regular),
-            ForeColor = Color.FromArgb(37, 99, 235),
-            AutoSize = true
-        });
+        AddRow("Project:", new Label { Text = "func_SMILES2IMG", AutoSize = true, UseMnemonic = false });
+        AddRow("Version:", new Label { Text = $"{GetProductVersion()} (Excel · Word · PowerPoint)", AutoSize = true, UseMnemonic = false });
+        AddRow("Author:", new Label { Text = "KimJuho (naramdash)", AutoSize = true, UseMnemonic = false });
+        AddRow("License:", new Label { Text = "MIT License (Free & Open Source)", AutoSize = true, UseMnemonic = false });
+        AddRow("Repository:", CreateLink(RepoUrl));
+        AddRow("Documentation:", CreateLink(DocsUrl));
 
-        AddRow("Author / Creator:", new Label
+        var grpCapabilities = new GroupBox
         {
-            Text = "KimJuho (naramdash)",
-            Font = new Font("Segoe UI", 9.75f, FontStyle.Bold),
-            ForeColor = Color.FromArgb(17, 24, 39),
-            AutoSize = true
-        });
-
-        var linkGithub = new LinkLabel
-        {
-            Text = "https://github.com/naramdash/func_SMILES2IMG",
-            Font = new Font("Segoe UI", 9.5f, FontStyle.Regular),
-            LinkColor = Color.FromArgb(37, 99, 235),
-            AutoSize = true,
-            Cursor = Cursors.Hand
+            Text = "Capabilities && Offline Local Engines",
+            Dock = DockStyle.Fill,
+            Padding = new Padding((int)(10 * dpiScale), (int)(8 * dpiScale), (int)(10 * dpiScale), (int)(10 * dpiScale))
         };
-        linkGithub.LinkClicked += (s, e) => OpenBrowser("https://github.com/naramdash/func_SMILES2IMG");
-        AddRow("GitHub Repository:", linkGithub);
 
-        var linkDocs = new LinkLabel
-        {
-            Text = "https://naramdash.github.io/func_SMILES2IMG/",
-            Font = new Font("Segoe UI", 9.5f, FontStyle.Regular),
-            LinkColor = Color.FromArgb(37, 99, 235),
-            AutoSize = true,
-            Cursor = Cursors.Hand
-        };
-        linkDocs.LinkClicked += (s, e) => OpenBrowser("https://naramdash.github.io/func_SMILES2IMG/");
-        AddRow("Documentation Site:", linkDocs);
+        var (scrollHost, _) = DialogHelper.CreateScrollableWrappedLabel(
+            "func_SMILES2IMG integrates chemical structure sketching, 26+ worksheet formulas, and 3D macromolecular visualization directly inside Excel, Word, and PowerPoint.\r\n\r\n" +
+            "• Microsoft Excel: In-cell (=SMILES2IMG, =INCHI2IMG, =KET2IMG, =NAME2IMG), floating (.FLOAT), 20+ property/complexity/search UDFs (=SMILES2MW, =SMILES2LOGP, =SMILES2LIPINSKI, =SMILES2FSP3, =SMILES.MATCH), and 12-column SDF import/export.\r\n" +
+            "• Microsoft Word: Inline and floating high-resolution structure images, lossless Vector SVG copy, 1-click Batch Style normalization, and live KET metadata round-trip editing.\r\n" +
+            "• Microsoft PowerPoint: Slide shapes with KET metadata, 3D Mol* (.glb / 2D) models, Batch Style presets, and instant property export.\r\n" +
+            "• Built-in Offline Engines: EPAM Ketcher, EPAM Indigo C++ Toolkit, Mol* 3D Viewer, and IUPAC InChI Library running locally without external servers.");
 
-        AddRow("Project License:", new Label
-        {
-            Text = "MIT License (Free & Open Source)",
-            UseMnemonic = false,
-            Font = new Font("Segoe UI", 9.5f, FontStyle.Regular),
-            ForeColor = Color.FromArgb(16, 149, 102),
-            AutoSize = true
-        });
+        grpCapabilities.Controls.Add(scrollHost);
 
-        var txtDesc = new TextBox
-        {
-            Multiline = true,
-            ReadOnly = true,
-            BorderStyle = BorderStyle.None,
-            BackColor = Color.White,
-            ForeColor = Color.FromArgb(75, 85, 99),
-            Font = new Font("Segoe UI", 9.25f, FontStyle.Regular),
-            Text = "func_SMILES2IMG seamlessly integrates chemical structure sketching, 26+ formula calculations, and 3D macromolecular visualization into Excel, Word, and PowerPoint.\r\n\r\n" +
-                   "• Microsoft Excel: In-cell (=SMILES2IMG, =INCHI2IMG, =KET2IMG, =NAME2IMG), floating (.FLOAT), and 20+ property/complexity/matching UDFs (=SMILES2MW, =SMILES2LOGP, =SMILES2LIPINSKI, =SMILES2FSP3, =SMILES.MATCH) plus SDF import/export.\r\n" +
-                   "• Microsoft Word: Inline and floating high-resolution molecular images, lossless SVG vector copy, 1-click Batch Style normalization, and live KET round-trip editing.\r\n" +
-                   "• Microsoft PowerPoint: Slide shapes with KET metadata, 3D macromolecular Mol* (.glb / 2D) integration, Batch Style presets, and instant property export.\r\n" +
-                   "• Built-in Engines: EPAM Ketcher, EPAM Indigo C++ Toolkit, Mol* 3D Viewer, and IUPAC InChI Library running purely locally and offline.",
-            Height = (int)(195 * dpiScale)
-        };
-        AddRow("Description:", txtDesc);
-
-        tab.Controls.Add(pnl);
+        tab.Controls.Add(grpCapabilities);
+        tab.Controls.Add(metaGrid);
     }
 
-    private static void BuildComponentsTab(TabPage tab, float dpiScale, ToolTip toolTip)
+    private static void BuildComponentsTab(TabPage tab, float dpiScale)
     {
-        var split = new SplitContainer
+        var layout = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
-            Orientation = Orientation.Horizontal,
-            SplitterDistance = (int)(220 * dpiScale),
-            SplitterWidth = 6
+            ColumnCount = 1,
+            RowCount = 2
         };
+        layout.RowStyles.Add(new RowStyle(SizeType.Percent, 58f));
+        layout.RowStyles.Add(new RowStyle(SizeType.Percent, 42f));
 
-        var lv = new ListView
+        // Standard DataGridView with AutoSizeColumnsMode.Fill avoids trailing blank space
+        var grid = new DataGridView
         {
             Dock = DockStyle.Fill,
-            View = View.Details,
-            FullRowSelect = true,
-            GridLines = true,
+            ReadOnly = true,
+            AllowUserToAddRows = false,
+            AllowUserToDeleteRows = false,
+            AllowUserToResizeRows = false,
+            AllowUserToOrderColumns = false,
+            RowHeadersVisible = false,
             MultiSelect = false,
-            Font = new Font("Segoe UI", 9.25f, FontStyle.Regular)
+            SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+            AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+            AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells,
+            BackgroundColor = SystemColors.Window,
+            ScrollBars = ScrollBars.Vertical,
+            ShowCellToolTips = true
         };
-        lv.Columns.Add("Component", (int)(190 * dpiScale));
-        lv.Columns.Add("Version", (int)(90 * dpiScale));
-        lv.Columns.Add("License", (int)(160 * dpiScale));
-        lv.Columns.Add("Website / Repository", (int)(260 * dpiScale));
+        grid.DefaultCellStyle.Padding = new Padding(4, 2, 4, 2);
+
+        grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Component", HeaderText = "Component", FillWeight = 25f, SortMode = DataGridViewColumnSortMode.NotSortable });
+        grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Version", HeaderText = "Version", FillWeight = 12f, SortMode = DataGridViewColumnSortMode.NotSortable });
+        grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "License", HeaderText = "License", FillWeight = 29f, SortMode = DataGridViewColumnSortMode.NotSortable });
+        grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Website", HeaderText = "Website (Double-click row to open)", FillWeight = 34f, SortMode = DataGridViewColumnSortMode.NotSortable });
 
         foreach (var c in Components)
         {
-            var item = new ListViewItem(c.Name);
-            item.SubItems.Add(c.Version);
-            item.SubItems.Add(c.License);
-            item.SubItems.Add(c.Website);
-            item.Tag = c;
-            lv.Items.Add(item);
+            int idx = grid.Rows.Add(c.Name, c.Version, c.License, c.Website);
+            grid.Rows[idx].Tag = c;
         }
 
-        var pnlDetail = new Panel
+        // Standard GroupBox details pane (no fake TextBox caret or idle vertical scrollbar)
+        var grpDetail = new GroupBox
         {
+            Text = "Selected Component Details",
             Dock = DockStyle.Fill,
-            Padding = new Padding(12),
-            BackColor = Color.FromArgb(250, 250, 250)
+            Padding = new Padding((int)(10 * dpiScale), (int)(8 * dpiScale), (int)(10 * dpiScale), (int)(8 * dpiScale)),
+            Margin = new Padding(0, (int)(8 * dpiScale), 0, 0)
         };
 
-        var lblDetailTitle = new Label
+        var detailLayout = new TableLayoutPanel
         {
-            Dock = DockStyle.Top,
-            Font = new Font("Segoe UI", 10.5f, FontStyle.Bold),
-            ForeColor = Color.FromArgb(17, 24, 39),
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 3
+        };
+        detailLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        detailLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        detailLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
+
+        var lblTitle = new Label
+        {
+            Font = new Font(SystemFonts.MessageBoxFont ?? Control.DefaultFont, FontStyle.Bold),
+            AutoSize = true,
             UseMnemonic = false,
-            Height = (int)(26 * dpiScale)
+            Margin = new Padding(0, 0, 0, 4)
         };
 
-        var linkDetailWeb = new LinkLabel
+        var linkWeb = new LinkLabel
         {
-            Dock = DockStyle.Top,
-            Font = new Font("Segoe UI", 9.25f, FontStyle.Regular),
-            LinkColor = Color.FromArgb(37, 99, 235),
-            Height = (int)(22 * dpiScale),
-            Cursor = Cursors.Hand
+            AutoSize = true,
+            Cursor = Cursors.Hand,
+            Margin = new Padding(0, 0, 0, 6)
         };
-        linkDetailWeb.LinkClicked += (s, e) =>
+        linkWeb.LinkClicked += (_, _) =>
         {
-            if (!string.IsNullOrEmpty(linkDetailWeb.Text)) OpenBrowser(linkDetailWeb.Text);
-        };
-
-        var txtDetailDesc = new TextBox
-        {
-            Dock = DockStyle.Fill,
-            Multiline = true,
-            ReadOnly = true,
-            ScrollBars = ScrollBars.Vertical,
-            BackColor = Color.White,
-            Font = new Font("Segoe UI", 9.25f, FontStyle.Regular),
-            Margin = new Padding(0, 6, 0, 0)
+            if (!string.IsNullOrWhiteSpace(linkWeb.Text))
+                DialogHelper.OpenUrl(linkWeb.Text);
         };
 
-        pnlDetail.Controls.Add(txtDetailDesc);
-        pnlDetail.Controls.Add(linkDetailWeb);
-        pnlDetail.Controls.Add(lblDetailTitle);
+        var (detailScroll, lblDetailDesc) = DialogHelper.CreateScrollableWrappedLabel();
+
+        detailLayout.Controls.Add(lblTitle, 0, 0);
+        detailLayout.Controls.Add(linkWeb, 0, 1);
+        detailLayout.Controls.Add(detailScroll, 0, 2);
+        grpDetail.Controls.Add(detailLayout);
 
         void UpdateDetail(ComponentInfo c)
         {
-            lblDetailTitle.Text = $"{c.Name} (v{c.Version}) — {c.License}";
-            linkDetailWeb.Text = c.Website;
-            txtDetailDesc.Text = $"{c.Copyright}\r\n\r\n{c.Description}\r\n\r\nLicense Terms: {c.License}\r\nSource: {c.Website}";
+            lblTitle.Text = $"{c.Name} (v{c.Version}) — {c.License}";
+            linkWeb.Text = c.Website;
+            lblDetailDesc.Text = $"{c.Copyright}\r\n\r\n{c.Description}";
         }
 
-        lv.SelectedIndexChanged += (s, e) =>
+        grid.SelectionChanged += (_, _) =>
         {
-            if (lv.SelectedItems.Count > 0 && lv.SelectedItems[0].Tag is ComponentInfo ci)
-            {
+            if (grid.CurrentRow?.Tag is ComponentInfo ci)
                 UpdateDetail(ci);
-            }
+        };
+        grid.CellDoubleClick += (_, e) =>
+        {
+            if (e.RowIndex >= 0 && grid.Rows[e.RowIndex].Tag is ComponentInfo ci && !string.IsNullOrEmpty(ci.Website))
+                DialogHelper.OpenUrl(ci.Website);
         };
 
-        if (lv.Items.Count > 0)
+        if (grid.Rows.Count > 0)
         {
-            lv.Items[0].Selected = true;
+            grid.Rows[0].Selected = true;
             UpdateDetail(Components[0]);
         }
 
-        split.Panel1.Controls.Add(lv);
-        split.Panel2.Controls.Add(pnlDetail);
-        tab.Controls.Add(split);
+        layout.Controls.Add(grid, 0, 0);
+        layout.Controls.Add(grpDetail, 0, 1);
+        tab.Controls.Add(layout);
     }
 
-    private static void BuildFullNoticesTab(TabPage tab, float dpiScale)
+    private static void BuildFullNoticesTab(TabPage tab, float dpiScale, int btnH)
     {
+        var topBar = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Top,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            WrapContents = false,
+            Padding = new Padding(0, 0, 0, (int)(8 * dpiScale))
+        };
+
+        var btnCopyNotices = DialogHelper.CreateStandardButton("Copy Full License Notices", (int)(160 * dpiScale), btnH, new Padding(0, 0, (int)(10 * dpiScale), 0));
+        btnCopyNotices.TabIndex = 0;
+        var lblCopyStatus = new Label
+        {
+            Text = "",
+            UseMnemonic = false,
+            AutoSize = true,
+            ForeColor = Color.FromArgb(22, 101, 52),
+            Margin = new Padding(0, (int)(6 * dpiScale), 0, 0)
+        };
+
+        btnCopyNotices.Click += (_, _) =>
+        {
+            try
+            {
+                SafeClipboard.SetText(BuildFullNoticesText());
+                lblCopyStatus.Text = "Copied full notices to clipboard.";
+            }
+            catch { }
+        };
+
+        topBar.Controls.Add(btnCopyNotices);
+        topBar.Controls.Add(lblCopyStatus);
+
         var txt = new TextBox
         {
             Dock = DockStyle.Fill,
             Multiline = true,
             ReadOnly = true,
-            ScrollBars = ScrollBars.Both,
-            BackColor = Color.White,
-            ForeColor = Color.FromArgb(30, 41, 59),
+            WordWrap = true,
+            TabIndex = 1,
+            ScrollBars = ScrollBars.Vertical,
+            BackColor = SystemColors.Window,
+            ForeColor = SystemColors.WindowText,
             Font = new Font("Consolas", 9.0f, FontStyle.Regular),
             Text = BuildFullNoticesText()
         };
+        tab.Enter += (_, _) => txt.Select(0, 0);
+
         tab.Controls.Add(txt);
+        tab.Controls.Add(topBar);
     }
 
     public static string BuildFullNoticesText()
     {
         var sb = new StringBuilder();
-        sb.AppendLine("================================================================================");
+        sb.AppendLine("================================================================");
         sb.AppendLine(" func_SMILES2IMG (Excel · Word · PowerPoint)");
         sb.AppendLine($" Version: {GetProductVersion()}");
         sb.AppendLine(" Author: KimJuho (naramdash)");
-        sb.AppendLine(" Repository: https://github.com/naramdash/func_SMILES2IMG");
-        sb.AppendLine(" Documentation: https://naramdash.github.io/func_SMILES2IMG/");
+        sb.AppendLine($" Repository: {RepoUrl}");
+        sb.AppendLine($" Documentation: {DocsUrl}");
         sb.AppendLine(" License: MIT License");
-        sb.AppendLine("================================================================================");
+        sb.AppendLine("================================================================");
         sb.AppendLine();
         sb.AppendLine("Copyright (c) 2026 KimJuho");
         sb.AppendLine();
@@ -639,9 +525,9 @@ public sealed class AboutDialog : Form
         sb.AppendLine("OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE");
         sb.AppendLine("SOFTWARE.");
         sb.AppendLine();
-        sb.AppendLine("================================================================================");
+        sb.AppendLine("================================================================");
         sb.AppendLine(" THIRD-PARTY COMPONENTS & OPEN-SOURCE NOTICES");
-        sb.AppendLine("================================================================================");
+        sb.AppendLine("================================================================");
         sb.AppendLine();
 
         foreach (var c in Components)
@@ -703,12 +589,9 @@ public sealed class AboutDialog : Form
             using var resp = (System.Net.HttpWebResponse)req.GetResponse();
             using var stream = resp.GetResponseStream();
             if (stream == null) return null;
-            using var reader = new System.IO.StreamReader(stream, System.Text.Encoding.UTF8);
+            using var reader = new System.IO.StreamReader(stream, Encoding.UTF8);
             var json = reader.ReadToEnd();
-            var match = System.Text.RegularExpressions.Regex.Match(
-                json,
-                "\"tag_name\"\\s*:\\s*\"([^\"]+)\"",
-                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            var match = Regex.Match(json, "\"tag_name\"\\s*:\\s*\"([^\"]+)\"", RegexOptions.IgnoreCase);
             if (match.Success)
                 return match.Groups[1].Value.Trim();
         }
@@ -716,20 +599,13 @@ public sealed class AboutDialog : Form
         return null;
     }
 
-    private static void OpenBrowser(string url)
+    protected override void Dispose(bool disposing)
     {
-        try
+        if (disposing)
         {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = url,
-                UseShellExecute = true
-            });
+            _logoBitmap?.Dispose();
         }
-        catch
-        {
-            try { Process.Start(url); } catch { }
-        }
+        base.Dispose(disposing);
     }
 
     public static void ShowModal(IWin32Window? owner = null)
@@ -737,20 +613,11 @@ public sealed class AboutDialog : Form
         try
         {
             using var dlg = new AboutDialog();
-            if (owner != null)
-            {
-                dlg.StartPosition = FormStartPosition.CenterParent;
-                dlg.ShowDialog(owner);
-            }
-            else
-            {
-                dlg.StartPosition = FormStartPosition.CenterScreen;
-                dlg.ShowDialog();
-            }
+            DialogHelper.ShowModalDialog(dlg, owner);
         }
         catch
         {
-            OpenBrowser("https://github.com/naramdash/func_SMILES2IMG");
+            DialogHelper.OpenUrl(RepoUrl);
         }
     }
 
@@ -762,17 +629,14 @@ public sealed class AboutDialog : Form
         SplitVersion(latestVersion!, out var latestBase, out var latestPre);
         SplitVersion(currentVersion!, out var currentBase, out var currentPre);
 
-        // 업데이트 후보(서버 버전)가 preview/prerelease인 경우 무시 (정식 Stable 릴리즈만 업데이트 제안)
+        // Only notify when a non-prerelease version supersedes current version
         if (!string.IsNullOrEmpty(latestPre))
             return false;
 
-        // 1. Compare numeric base versions (Major.Minor.Patch)
         int cmpBase = CompareNumericParts(latestBase, currentBase);
-        if (cmpBase > 0) return true; // 서버의 정식 버전이 더 높으면 업데이트 대상
+        if (cmpBase > 0) return true;
         if (cmpBase < 0) return false;
 
-        // 2. Base versions are identical (e.g. latest: 1.7.0 정식 vs current: 1.7.0-preview.5)
-        // 현재 로컬이 preview 상태이고 서버에 동일 버전의 정식 릴리즈가 출시된 경우 업데이트 권유
         return !string.IsNullOrEmpty(currentPre);
     }
 
@@ -808,5 +672,4 @@ public sealed class AboutDialog : Form
         }
         return 0;
     }
-
 }

@@ -35,8 +35,8 @@ Open **PowerShell** and run this single command to automatically install, config
 # Stable release (v1.7.2)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 
-# Preview release (v1.8.0-preview.3 — Unified Flyout Context Menus, Cross-Host Parity, 3D Complexity Descriptors & 12-Col SDF Import)
-$v='v1.8.0-preview.3'; irm https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.8.0-preview.3/install.ps1 | iex
+# Preview release (v1.8.0-preview.4 — Unified Flyout Context Menus, Cross-Host Parity, 3D Complexity Descriptors, 12-Col SDF Import & Standard WinForms UI)
+$v='v1.8.0-preview.4'; irm https://github.com/naramdash/func_SMILES2IMG/releases/download/v1.8.0-preview.4/install.ps1 | iex
 ```
 
 > **What the installer automates:**  

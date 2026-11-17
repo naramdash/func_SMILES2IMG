@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using Smiles2Img.Notifications;
 using Smiles2Img.Rendering;
@@ -7,363 +8,165 @@ using Smiles2Img.Rendering;
 namespace Smiles2Img.Editor;
 
 /// <summary>
-/// Modern, responsive, and resizable Windows Forms dialog displaying chemical substance info,
-/// IUPAC name, molecular weight, formula, exact mass, SMILES, and InChI with individual
-/// and all-in-one copy actions.
+/// Standard Windows Forms dialog displaying molecular properties, 2D structure preview,
+/// and one-click individual or spreadsheet-ready summary copy actions.
 /// </summary>
 public sealed class MoleculeInfoDialog : Form
 {
     private static MoleculeSummaryFormat _lastUsedFormat = MoleculeSummaryFormat.ExcelTsvWithHeader;
 
+    private static readonly (MoleculeSummaryFormat Format, string Label, string DisplayName)[] SummaryFormats =
+    [
+        (MoleculeSummaryFormat.ExcelTsvWithHeader, "Excel Table (With Header)", "Excel Table with Headers"),
+        (MoleculeSummaryFormat.ExcelTsvRow, "Excel Row (TSV)", "Excel TSV Row"),
+        (MoleculeSummaryFormat.MultiLine, "Multi-Line List", "Multi-Line List"),
+        (MoleculeSummaryFormat.MarkdownTable, "Markdown Table", "Markdown Table"),
+        (MoleculeSummaryFormat.Json, "JSON", "JSON"),
+        (MoleculeSummaryFormat.CompactOneLine, "Compact Summary", "Compact Summary")
+    ];
+
     private readonly MoleculeInfo _info;
     private readonly Label _lblStatus;
+    private readonly Timer _rowResetTimer;
+    private readonly ContextMenuStrip _rowMenu;
+    private Image? _previewImage;
+    private int _copiedRowIndex = -1;
 
     public MoleculeInfoDialog(MoleculeInfo info, string? title = null)
     {
         _info = info ?? throw new ArgumentNullException(nameof(info));
 
-        Text = title ?? "Molecule Info & Chemical Properties";
+        bool isCompactEntity = _info.IsReaction || _info.IsMacromolecule;
+        float dpiScale = DialogHelper.ConfigureStandardForm(
+            this,
+            title ?? "Molecule Info & Chemical Properties",
+            UiIcons.MoleculeInfoIcon,
+            baseWidth: 880,
+            baseHeight: isCompactEntity ? 420 : 620,
+            minWidth: 680,
+            minHeight: isCompactEntity ? 340 : 480);
 
-        float dpiScale = 1.0f;
-        try
+        int pad = (int)(14 * dpiScale);
+        int btnH = Math.Max(28, (int)(28 * dpiScale));
+
+        string heading = !string.IsNullOrWhiteSpace(_info.SubstanceName)
+            ? _info.SubstanceName
+            : (!string.IsNullOrWhiteSpace(_info.Formula) ? _info.Formula : "Chemical Structure");
+        string subheading = _info.IsReaction
+            ? "Reaction Structure (Indigo Engine)"
+            : (_info.IsMacromolecule
+                ? $"{_info.IupacName}  ·  Macromolecular Complex"
+                : $"{_info.Formula}  ·  MW {_info.MolecularWeight:F2} g/mol  ·  Lipinski: {(_info.PassesLipinski ? "Pass" : "Violation")}");
+
+        PictureBox? picPreview = null;
+        _previewImage = TryRenderPreview(_info);
+        if (_previewImage != null)
         {
-            using var g = CreateGraphics();
-            dpiScale = Math.Max(1.0f, g.DpiX / 96.0f);
-        }
-        catch { }
-
-        var screen = Screen.FromControl(this) ?? Screen.PrimaryScreen;
-        int targetW = Math.Min((int)(940 * dpiScale), (int)(screen.WorkingArea.Width * 0.92));
-        int targetH = Math.Min((int)(660 * dpiScale), (int)(screen.WorkingArea.Height * 0.92));
-        ClientSize = new Size(Math.Max(targetW, 800), Math.Max(targetH, 560));
-        MinimumSize = new Size(Math.Min(700, screen.WorkingArea.Width), Math.Min(500, screen.WorkingArea.Height));
-
-        StartPosition = FormStartPosition.CenterScreen;
-        FormBorderStyle = FormBorderStyle.Sizable;
-        MaximizeBox = true;
-        MinimizeBox = false;
-        ShowInTaskbar = false;
-        Font = new Font("Segoe UI", 9.25f, FontStyle.Regular);
-        BackColor = Color.FromArgb(249, 250, 251);
-
-        if (UiIcons.MoleculeInfoIcon != null)
-        {
-            try { Icon = UiIcons.MoleculeInfoIcon; } catch { }
-        }
-
-        KeyPreview = true;
-        KeyDown += (s, e) =>
-        {
-            if (e.KeyCode == Keys.Escape)
+            picPreview = new PictureBox
             {
-                Close();
-            }
-        };
+                Image = _previewImage,
+                Size = new Size((int)(112 * dpiScale), (int)(72 * dpiScale)),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.White,
+                Margin = new Padding((int)(12 * dpiScale), 0, 0, 0)
+            };
+        }
 
-        var toolTip = new ToolTip
-        {
-            AutoPopDelay = 8000,
-            InitialDelay = 400,
-            ReshowDelay = 200,
-            ShowAlways = true
-        };
-
-        // Header Panel: Auto-sized so both lines are 100% visible on any DPI scale without clipping
-        var pnlHeader = new Panel
-        {
-            Dock = DockStyle.Top,
-            AutoSize = true,
-            AutoSizeMode = AutoSizeMode.GrowAndShrink,
-            BackColor = Color.FromArgb(20, 50, 85),
-            Padding = new Padding(24, 16, 20, 16)
-        };
-
-        var lblHeaderTitle = new Label
-        {
-            Text = "Molecular Properties & Substance Info",
-            UseMnemonic = false,
-            ForeColor = Color.White,
-            Font = new Font("Segoe UI", 13f, FontStyle.Bold),
-            AutoSize = true,
-            Dock = DockStyle.Top,
-            Margin = new Padding(0, 0, 0, 4)
-        };
-
-        var lblHeaderSub = new Label
-        {
-            Text = "Calculated via Indigo Chemical Engine & Resolved via PubChem / RCSB PDB",
-            UseMnemonic = false,
-            ForeColor = Color.FromArgb(203, 225, 245),
-            Font = new Font("Segoe UI", 9f, FontStyle.Regular),
-            AutoSize = true,
-            Dock = DockStyle.Top,
-            Margin = new Padding(0, 4, 0, 0)
-        };
-
-        pnlHeader.Controls.Add(lblHeaderSub);
-        pnlHeader.Controls.Add(lblHeaderTitle);
-
-        // Bottom Action Panel
-        var pnlBottom = new Panel
-        {
-            Dock = DockStyle.Bottom,
-            Height = (int)Math.Max(64, 56 * dpiScale),
-            BackColor = Color.FromArgb(243, 244, 246),
-            Padding = new Padding(16, 12, 16, 12)
-        };
-
-        var sepBottom = new Panel
-        {
-            Dock = DockStyle.Top,
-            Height = 1,
-            BackColor = Color.FromArgb(229, 231, 235)
-        };
-        pnlBottom.Controls.Add(sepBottom);
-
-        var pnlButtons = new FlowLayoutPanel
-        {
-            Dock = DockStyle.Right,
-            FlowDirection = FlowDirection.RightToLeft,
-            AutoSize = true,
-            AutoSizeMode = AutoSizeMode.GrowAndShrink,
-            Margin = Padding.Empty,
-            Padding = Padding.Empty,
-            WrapContents = false
-        };
-
-        var btnClose = new Button
-        {
-            Text = "Close",
-            Font = new Font("Segoe UI", 9.25f, FontStyle.Regular),
-            ForeColor = Color.FromArgb(55, 65, 81),
-            BackColor = Color.White,
-            FlatStyle = FlatStyle.Flat,
-            Size = new Size((int)(95 * dpiScale), 36),
-            Cursor = Cursors.Hand,
-            Margin = new Padding(0, 2, 0, 0)
-        };
-        btnClose.FlatAppearance.BorderColor = Color.FromArgb(209, 213, 219);
-        btnClose.FlatAppearance.MouseOverBackColor = Color.FromArgb(243, 244, 246);
-        btnClose.Click += (s, e) => Close();
-        toolTip.SetToolTip(btnClose, "Close this dialog (Esc)");
+        var headerContainer = DialogHelper.CreateHeaderStrip(dpiScale, heading, subheading, rightVisual: picPreview);
 
         _lblStatus = new Label
         {
-            Text = "Tip: Double-click any row, click 'Copy', or press Ctrl+C to copy. Use 'Copy All' for spreadsheets.",
+            Text = "Double-click any row, click Copy, or press Ctrl+C / Enter to copy a value.",
             UseMnemonic = false,
-            Font = new Font("Segoe UI", 9f, FontStyle.Regular),
-            ForeColor = Color.FromArgb(75, 85, 99),
+            ForeColor = SystemColors.GrayText,
             Dock = DockStyle.Fill,
             TextAlign = ContentAlignment.MiddleLeft,
             AutoEllipsis = true,
-            Padding = new Padding(6, 0, 10, 0)
+            Margin = new Padding(0, 0, (int)(10 * dpiScale), 0)
         };
 
-        var pnlSplitCopy = new TableLayoutPanel
+        var actionFlow = new FlowLayoutPanel
         {
-            RowCount = 1,
-            ColumnCount = 2,
             AutoSize = true,
             AutoSizeMode = AutoSizeMode.GrowAndShrink,
-            Margin = new Padding(0, 2, 12, 0),
-            Padding = Padding.Empty,
-            BackColor = Color.FromArgb(24, 76, 120)
-        };
-        pnlSplitCopy.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
-        pnlSplitCopy.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-        pnlSplitCopy.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, Math.Max(26f, 24f * dpiScale)));
-
-        var btnCopyAll = new Button
-        {
-            Text = GetFormatButtonLabel(_lastUsedFormat),
-            Font = new Font("Segoe UI", 9.25f, FontStyle.Bold),
-            ForeColor = Color.White,
-            BackColor = Color.FromArgb(24, 76, 120),
-            FlatStyle = FlatStyle.Flat,
-            AutoSize = true,
-            AutoSizeMode = AutoSizeMode.GrowAndShrink,
-            Padding = new Padding(12, 6, 8, 6),
-            Cursor = Cursors.Hand,
-            Margin = Padding.Empty,
-            Dock = DockStyle.Fill
-        };
-        btnCopyAll.FlatAppearance.BorderSize = 0;
-        btnCopyAll.FlatAppearance.MouseOverBackColor = Color.FromArgb(30, 95, 150);
-        toolTip.SetToolTip(btnCopyAll, "Copy complete molecule properties to clipboard");
-
-        var btnCopyMenu = new Button
-        {
-            Text = "▾",
-            Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
-            ForeColor = Color.White,
-            BackColor = Color.FromArgb(24, 76, 120),
-            FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand,
-            Margin = Padding.Empty,
-            Dock = DockStyle.Fill
-        };
-        btnCopyMenu.FlatAppearance.BorderSize = 0;
-        btnCopyMenu.FlatAppearance.MouseOverBackColor = Color.FromArgb(30, 95, 150);
-        toolTip.SetToolTip(btnCopyMenu, "Choose summary export format (Excel TSV, Multi-Line, Markdown, JSON)");
-
-        pnlSplitCopy.Paint += (s, e) =>
-        {
-            try
-            {
-                using var pen = new Pen(Color.FromArgb(40, 110, 170), 1f);
-                int x = btnCopyMenu.Left;
-                e.Graphics.DrawLine(pen, x, 4, x, pnlSplitCopy.Height - 4);
-            }
-            catch { }
+            WrapContents = false,
+            Anchor = AnchorStyles.Right,
+            Margin = Padding.Empty
         };
 
-        void ExecuteCopy(MoleculeSummaryFormat format)
+        var cboFormat = new ComboBox
         {
-            _lastUsedFormat = format;
-            btnCopyAll.Text = GetFormatButtonLabel(format);
-
-            string text = _info.FormatClipboardSummary(format);
-            string? html = _info.FormatHtmlForSummary(format);
-
-            try { SafeClipboard.SetTextAndHtml(text, html); } catch { }
-
-            string displayName = format switch
-            {
-                MoleculeSummaryFormat.ExcelTsvRow => "Excel TSV Row",
-                MoleculeSummaryFormat.ExcelTsvWithHeader => "Excel Table with Headers",
-                MoleculeSummaryFormat.MultiLine => "Multi-Line List",
-                MoleculeSummaryFormat.MarkdownTable => "Markdown Table",
-                MoleculeSummaryFormat.Json => "JSON",
-                _ => "Compact Summary"
-            };
-
-            FlashCopied(btnCopyAll, displayName);
-            _lblStatus.Text = $"✓ Copied full info as {displayName} to clipboard.";
-            _lblStatus.ForeColor = Color.FromArgb(22, 101, 52);
-            MoleculeNotification.NotifyCopied($"Molecule Info ({displayName})", _info.SubstanceName ?? _info.Formula ?? "All properties");
-        }
-
-        btnCopyAll.Click += (s, e) => ExecuteCopy(_lastUsedFormat);
-
-        btnCopyMenu.Click += (s, e) =>
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Width = (int)(188 * dpiScale),
+            Margin = new Padding(0, 1, (int)(6 * dpiScale), 0)
+        };
+        foreach (var (_, label, _) in SummaryFormats)
+            cboFormat.Items.Add(label);
+        cboFormat.SelectedIndex = Math.Max(0, Array.FindIndex(SummaryFormats, f => f.Format == _lastUsedFormat));
+        cboFormat.SelectedIndexChanged += (_, _) =>
         {
-            var menu = new ContextMenuStrip { Font = new Font("Segoe UI", 9.25f), ShowImageMargin = false };
-
-            void AddMenuItem(string label, MoleculeSummaryFormat fmt)
-            {
-                var item = new ToolStripMenuItem(label, null, (ms, me) => ExecuteCopy(fmt))
-                {
-                    Checked = (_lastUsedFormat == fmt)
-                };
-                menu.Items.Add(item);
-            }
-
-            AddMenuItem("📋 Excel Row (TSV for Spreadsheets)", MoleculeSummaryFormat.ExcelTsvRow);
-            AddMenuItem("📊 Excel Table (With Header Row)", MoleculeSummaryFormat.ExcelTsvWithHeader);
-            AddMenuItem("📑 Multi-Line List (Rich Table for Word/Slides)", MoleculeSummaryFormat.MultiLine);
-            AddMenuItem("📐 Markdown Table (Notion / GitHub / Obsidian)", MoleculeSummaryFormat.MarkdownTable);
-            AddMenuItem("💻 JSON (for Python / Data Scripts)", MoleculeSummaryFormat.Json);
-            menu.Items.Add(new ToolStripSeparator());
-            AddMenuItem("💬 Compact Single-Line Summary", MoleculeSummaryFormat.CompactOneLine);
-
-            menu.Show(pnlSplitCopy, new Point(0, pnlSplitCopy.Height));
+            if (cboFormat.SelectedIndex >= 0 && cboFormat.SelectedIndex < SummaryFormats.Length)
+                _lastUsedFormat = SummaryFormats[cboFormat.SelectedIndex].Format;
         };
 
-        pnlSplitCopy.Controls.Add(btnCopyAll, 0, 0);
-        pnlSplitCopy.Controls.Add(btnCopyMenu, 1, 0);
+        var btnCopyAll = DialogHelper.CreateStandardButton("Copy All", (int)(92 * dpiScale), btnH, new Padding(0, 0, (int)(8 * dpiScale), 0));
+        var btnClose = DialogHelper.CreateStandardButton("Close", (int)(84 * dpiScale), btnH);
+        btnClose.DialogResult = DialogResult.OK;
+        btnClose.Click += (_, _) => Close();
 
-        pnlButtons.Controls.Add(btnClose);
-        pnlButtons.Controls.Add(pnlSplitCopy);
+        actionFlow.Controls.Add(cboFormat);
+        actionFlow.Controls.Add(btnCopyAll);
+        actionFlow.Controls.Add(btnClose);
 
-        pnlBottom.Controls.Add(_lblStatus);
-        pnlBottom.Controls.Add(pnlButtons);
+        var bottomContainer = DialogHelper.CreateBottomActionBar(dpiScale, _lblStatus, actionFlow);
 
-        // Main content panel containing modern, high-DPI aware DataGridView
-        var pnlContent = new Panel
+        // 3. Standard DataGridView (no owner-draw CellPainting, clean wrapped rows)
+        var contentHost = new Panel
         {
             Dock = DockStyle.Fill,
-            BackColor = Color.FromArgb(249, 250, 251),
-            Padding = new Padding((int)(16 * dpiScale), (int)(12 * dpiScale), (int)(16 * dpiScale), (int)(12 * dpiScale))
-        };
-
-        var pnlGridContainer = new Panel
-        {
-            Dock = DockStyle.Fill,
-            BackColor = Color.FromArgb(229, 231, 235), // Clean 1px border
-            Padding = new Padding(1)
+            Padding = new Padding(pad, (int)(10 * dpiScale), pad, (int)(8 * dpiScale))
         };
 
         var dgv = new DataGridView
         {
             Dock = DockStyle.Fill,
-            BackgroundColor = Color.White,
-            BorderStyle = BorderStyle.None,
-            CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal,
-            GridColor = Color.FromArgb(238, 240, 243),
+            BackgroundColor = SystemColors.Window,
+            BorderStyle = BorderStyle.FixedSingle,
             RowHeadersVisible = false,
             AllowUserToAddRows = false,
             AllowUserToDeleteRows = false,
             AllowUserToResizeRows = false,
-            AllowUserToResizeColumns = true,
             AllowUserToOrderColumns = false,
             MultiSelect = false,
             SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-            EnableHeadersVisualStyles = false,
             AutoGenerateColumns = false,
-            ShowCellToolTips = true,
-            Font = new Font("Segoe UI", 9.25f, FontStyle.Regular)
-        };
-
-        try
-        {
-            typeof(DataGridView)
-                .GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?
-                .SetValue(dgv, true, null);
-        }
-        catch { }
-
-        dgv.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-        dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-        dgv.ColumnHeadersHeight = (int)Math.Max(38, 36 * dpiScale);
-        dgv.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
-        {
-            BackColor = Color.FromArgb(243, 244, 246),
-            ForeColor = Color.FromArgb(55, 65, 81),
-            Font = new Font("Segoe UI", 9.25f, FontStyle.Bold),
-            Alignment = DataGridViewContentAlignment.MiddleLeft,
-            Padding = new Padding(12, 0, 0, 0),
-            SelectionBackColor = Color.FromArgb(243, 244, 246),
-            SelectionForeColor = Color.FromArgb(55, 65, 81)
+            AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells,
+            ShowCellToolTips = true
         };
 
         var colIcon = new DataGridViewImageColumn
         {
             Name = "Icon",
             HeaderText = "",
-            Width = (int)Math.Max(38, 36 * dpiScale),
+            Width = Math.Max(34, (int)(34 * dpiScale)),
             ImageLayout = DataGridViewImageCellLayout.Normal,
             ReadOnly = true,
+            Resizable = DataGridViewTriState.False,
             SortMode = DataGridViewColumnSortMode.NotSortable
         };
         colIcon.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-        colIcon.DefaultCellStyle.BackColor = Color.FromArgb(250, 251, 252);
-        colIcon.DefaultCellStyle.SelectionBackColor = Color.FromArgb(239, 246, 255);
 
         var colProp = new DataGridViewTextBoxColumn
         {
             Name = "Property",
-            HeaderText = "Property / Field",
-            Width = (int)Math.Max(200, 175 * dpiScale),
+            HeaderText = "Property",
+            Width = Math.Max(165, (int)(175 * dpiScale)),
             ReadOnly = true,
             SortMode = DataGridViewColumnSortMode.NotSortable
         };
-        colProp.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        colProp.DefaultCellStyle.Padding = new Padding(8, 0, 8, 0);
-        colProp.DefaultCellStyle.Font = new Font("Segoe UI", 9.25f, FontStyle.Bold);
-        colProp.DefaultCellStyle.ForeColor = Color.FromArgb(55, 65, 81);
-        colProp.DefaultCellStyle.BackColor = Color.FromArgb(250, 251, 252);
-        colProp.DefaultCellStyle.SelectionBackColor = Color.FromArgb(239, 246, 255);
-        colProp.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 58, 138);
+        colProp.DefaultCellStyle.Padding = new Padding(6, 5, 6, 5);
+        colProp.DefaultCellStyle.Font = new Font(Font, FontStyle.Bold);
 
         var colVal = new DataGridViewTextBoxColumn
         {
@@ -373,79 +176,68 @@ public sealed class MoleculeInfoDialog : Form
             ReadOnly = true,
             SortMode = DataGridViewColumnSortMode.NotSortable
         };
-        colVal.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        colVal.DefaultCellStyle.Padding = new Padding(12, 0, 10, 0);
-        colVal.DefaultCellStyle.Font = new Font("Segoe UI", 9.5f, FontStyle.Regular);
-        colVal.DefaultCellStyle.ForeColor = Color.FromArgb(17, 24, 39);
-        colVal.DefaultCellStyle.SelectionBackColor = Color.FromArgb(239, 246, 255);
-        colVal.DefaultCellStyle.SelectionForeColor = Color.FromArgb(17, 24, 39);
+        colVal.DefaultCellStyle.Padding = new Padding(6, 5, 8, 5);
+        colVal.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 
         var colAction = new DataGridViewButtonColumn
         {
             Name = "Action",
             HeaderText = "",
-            Width = (int)Math.Max(88, 80 * dpiScale),
-            FlatStyle = FlatStyle.Flat,
+            Width = Math.Max(76, (int)(78 * dpiScale)),
+            UseColumnTextForButtonValue = false,
+            FlatStyle = FlatStyle.Standard,
+            Resizable = DataGridViewTriState.False,
             SortMode = DataGridViewColumnSortMode.NotSortable
         };
-        colAction.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-        colAction.DefaultCellStyle.Padding = new Padding(6, 4, 6, 4);
-        colAction.DefaultCellStyle.Font = new Font("Segoe UI", 8.5f, FontStyle.Regular);
-        colAction.DefaultCellStyle.ForeColor = Color.FromArgb(31, 41, 55);
-        colAction.DefaultCellStyle.BackColor = Color.FromArgb(243, 244, 246);
-        colAction.DefaultCellStyle.SelectionBackColor = Color.FromArgb(239, 246, 255);
-        colAction.DefaultCellStyle.SelectionForeColor = Color.FromArgb(31, 41, 55);
+        colAction.DefaultCellStyle.Padding = new Padding(4, 3, 4, 3);
 
-        dgv.Columns.Add(colIcon);
-        dgv.Columns.Add(colProp);
-        dgv.Columns.Add(colVal);
-        dgv.Columns.Add(colAction);
-
-        dgv.RowTemplate.Height = (int)Math.Max(38, 36 * dpiScale);
+        dgv.Columns.AddRange(colIcon, colProp, colVal, colAction);
 
         void AddPropertyRow(string propertyName, string displayValue, string copyPayload, bool isCode = false)
         {
             var icon = UiIcons.GetPropertyIcon(propertyName, dpiScale);
-            int rowIdx = dgv.Rows.Add(icon, propertyName, string.IsNullOrWhiteSpace(displayValue) ? "—" : displayValue, "Copy");
+            bool hasPayload = !string.IsNullOrWhiteSpace(copyPayload);
+            int rowIdx = dgv.Rows.Add(icon, propertyName, string.IsNullOrWhiteSpace(displayValue) ? "—" : displayValue, hasPayload ? "Copy" : "");
             var row = dgv.Rows[rowIdx];
             row.Tag = (PropertyName: propertyName, Payload: copyPayload);
 
+            if (!hasPayload)
+                row.Cells[colAction.Index] = new DataGridViewTextBoxCell { Value = "" };
+
             if (isCode)
-            {
-                row.Cells[colVal.Index].Style.Font = new Font("Consolas", 9.5f, FontStyle.Regular);
-            }
+                row.Cells[colVal.Index].Style.Font = new Font("Consolas", 9.0f, FontStyle.Regular);
 
             if (!string.IsNullOrWhiteSpace(displayValue) && displayValue != "—")
-            {
-                row.Cells[colVal.Index].ToolTipText = $"{propertyName}: {displayValue}\n(Double-click or click 'Copy' to copy to clipboard)";
-            }
-
-            if (string.IsNullOrWhiteSpace(copyPayload))
-            {
-                row.Cells[colAction.Index].Value = "";
-            }
+                row.Cells[colVal.Index].ToolTipText = $"{propertyName}: {displayValue}\nDouble-click or press Ctrl+C to copy";
         }
 
         string nameVal = !string.IsNullOrWhiteSpace(_info.CompoundName) ? _info.CompoundName : "(Unregistered or hypothetical compound)";
-        string nameCopy = !string.IsNullOrWhiteSpace(_info.CompoundName) ? _info.CompoundName : "";
-        AddPropertyRow("Substance Name", nameVal, nameCopy);
+        AddPropertyRow("Substance Name", nameVal, _info.CompoundName);
 
         if (!string.IsNullOrWhiteSpace(_info.IupacName) && !string.Equals(_info.IupacName, _info.CompoundName, StringComparison.OrdinalIgnoreCase))
-        {
             AddPropertyRow("IUPAC Name", _info.IupacName, _info.IupacName);
-        }
 
         if (!_info.IsReaction)
         {
-            if (_info.MolecularWeight > 0 || !_info.IsMacromolecule) AddPropertyRow("Molecular Weight", $"{_info.MolecularWeight:F2} g/mol", _info.MolecularWeight.ToString("F2"));
+            if (_info.MolecularWeight > 0 || !_info.IsMacromolecule)
+                AddPropertyRow("Molecular Weight", $"{_info.MolecularWeight:F2} g/mol", _info.MolecularWeight.ToString("F2"));
             AddPropertyRow("Chemical Formula", _info.Formula, _info.Formula);
-            if (!_info.IsMacromolecule && _info.ExactMass > 0)
-                AddPropertyRow("Monoisotopic Mass", $"{_info.ExactMass:F4}", _info.ExactMass.ToString("F4"));
-            if (!_info.IsMacromolecule) AddPropertyRow("LogP / TPSA", $"LogP: {_info.LogP:F2}   |   TPSA: {_info.Tpsa:F1} Å²", $"LogP: {_info.LogP:F2}, TPSA: {_info.Tpsa:F1}");
-            var lipinskiStatus = _info.PassesLipinski ? "Pass" : "Violation";
-            if (!_info.IsMacromolecule) AddPropertyRow("Lipinski Rule of 5", $"{lipinskiStatus} (HBD: {_info.HBondDonors}, HBA: {_info.HBondAcceptors}, RotBonds: {_info.RotatableBonds})", $"{lipinskiStatus} (HBD={_info.HBondDonors}, HBA={_info.HBondAcceptors}, RotBonds={_info.RotatableBonds})");
-            if (!_info.IsMacromolecule) AddPropertyRow("Rings & Aromaticity", $"Rings: {_info.RingCount} (Aromatic: {_info.AromaticRingCount})   |   Heavy Atoms: {_info.HeavyAtomCount}", $"Rings={_info.RingCount}, AromaticRings={_info.AromaticRingCount}, HeavyAtoms={_info.HeavyAtomCount}");
-            if (!_info.IsMacromolecule) AddPropertyRow("3D Complexity (Fsp3)", $"Fsp3: {_info.Fsp3:F2}   |   Chiral Centers: {_info.ChiralCenters}", $"Fsp3={_info.Fsp3:F2}, ChiralCenters={_info.ChiralCenters}");
+            if (!_info.IsMacromolecule)
+            {
+                if (_info.ExactMass > 0)
+                    AddPropertyRow("Monoisotopic Mass", $"{_info.ExactMass:F4}", _info.ExactMass.ToString("F4"));
+                AddPropertyRow("LogP / TPSA", $"LogP: {_info.LogP:F2}   |   TPSA: {_info.Tpsa:F1} Å²", $"LogP: {_info.LogP:F2}, TPSA: {_info.Tpsa:F1}");
+                var lipinskiStatus = _info.PassesLipinski ? "Pass" : "Violation";
+                AddPropertyRow("Lipinski Rule of 5",
+                    $"{lipinskiStatus} (HBD: {_info.HBondDonors}, HBA: {_info.HBondAcceptors}, RotBonds: {_info.RotatableBonds})",
+                    $"{lipinskiStatus} (HBD={_info.HBondDonors}, HBA={_info.HBondAcceptors}, RotBonds={_info.RotatableBonds})");
+                AddPropertyRow("Rings & Aromaticity",
+                    $"Rings: {_info.RingCount} (Aromatic: {_info.AromaticRingCount})   |   Heavy Atoms: {_info.HeavyAtomCount}",
+                    $"Rings={_info.RingCount}, AromaticRings={_info.AromaticRingCount}, HeavyAtoms={_info.HeavyAtomCount}");
+                AddPropertyRow("3D Complexity (Fsp3)",
+                    $"Fsp3: {_info.Fsp3:F2}   |   Chiral Centers: {_info.ChiralCenters}",
+                    $"Fsp3={_info.Fsp3:F2}, ChiralCenters={_info.ChiralCenters}");
+            }
         }
 
         AddPropertyRow("Canonical SMILES", _info.Smiles, _info.Smiles, isCode: true);
@@ -454,271 +246,168 @@ public sealed class MoleculeInfoDialog : Form
         if (!string.IsNullOrWhiteSpace(_info.InChIKey))
             AddPropertyRow("InChIKey", _info.InChIKey, _info.InChIKey, isCode: true);
 
+        _rowResetTimer = new Timer { Interval = 1200 };
+        _rowResetTimer.Tick += (_, _) =>
+        {
+            _rowResetTimer.Stop();
+            if (!dgv.IsDisposed && _copiedRowIndex >= 0 && _copiedRowIndex < dgv.Rows.Count)
+            {
+                if (dgv.Rows[_copiedRowIndex].Cells[colAction.Index] is DataGridViewButtonCell)
+                    dgv.Rows[_copiedRowIndex].Cells[colAction.Index].Value = "Copy";
+            }
+            _copiedRowIndex = -1;
+        };
+
+        void ExecuteSummaryCopy(MoleculeSummaryFormat format)
+        {
+            _lastUsedFormat = format;
+            int idx = Array.FindIndex(SummaryFormats, f => f.Format == format);
+            if (idx >= 0 && cboFormat.SelectedIndex != idx)
+                cboFormat.SelectedIndex = idx;
+
+            string text = _info.FormatClipboardSummary(format);
+            string? html = _info.FormatHtmlForSummary(format);
+            try { SafeClipboard.SetTextAndHtml(text, html); } catch { }
+
+            string displayName = idx >= 0 ? SummaryFormats[idx].DisplayName : "Summary";
+            _lblStatus.ForeColor = Color.FromArgb(22, 101, 52);
+            _lblStatus.Text = $"Copied {displayName} to clipboard.";
+            MoleculeNotification.NotifyCopied($"Molecule Info ({displayName})", _info.SubstanceName ?? _info.Formula ?? "All properties");
+        }
+
         void CopyRow(int rowIndex)
         {
             if (rowIndex < 0 || rowIndex >= dgv.Rows.Count) return;
-            var row = dgv.Rows[rowIndex];
-            if (row.Tag is (string propName, string payload) && !string.IsNullOrEmpty(payload))
-            {
-                try { SafeClipboard.SetText(payload); } catch { }
-                row.Cells[colAction.Index].Value = "✓ Copied";
-                dgv.InvalidateCell(colAction.Index, rowIndex);
-                _lblStatus.Text = $"✓ Copied {propName} to clipboard.";
-                _lblStatus.ForeColor = Color.FromArgb(22, 101, 52);
-                MoleculeNotification.NotifyCopied($"Molecule Info ({propName})", payload);
+            if (dgv.Rows[rowIndex].Tag is not (string propName, string payload) || string.IsNullOrEmpty(payload))
+                return;
 
-                var timer = new Timer { Interval = 1200 };
-                timer.Tick += (s, e) =>
-                {
-                    try
-                    {
-                        timer.Stop();
-                        timer.Dispose();
-                        if (!dgv.IsDisposed && rowIndex < dgv.Rows.Count)
-                        {
-                            row.Cells[colAction.Index].Value = "Copy";
-                            dgv.InvalidateCell(colAction.Index, rowIndex);
-                        }
-                    }
-                    catch { }
-                };
-                timer.Start();
+            try { SafeClipboard.SetText(payload); } catch { }
+
+            if (_copiedRowIndex >= 0 && _copiedRowIndex < dgv.Rows.Count &&
+                dgv.Rows[_copiedRowIndex].Cells[colAction.Index] is DataGridViewButtonCell)
+            {
+                dgv.Rows[_copiedRowIndex].Cells[colAction.Index].Value = "Copy";
             }
+
+            if (dgv.Rows[rowIndex].Cells[colAction.Index] is DataGridViewButtonCell)
+            {
+                dgv.Rows[rowIndex].Cells[colAction.Index].Value = "Copied";
+                _copiedRowIndex = rowIndex;
+                _rowResetTimer.Stop();
+                _rowResetTimer.Start();
+            }
+
+            _lblStatus.ForeColor = Color.FromArgb(22, 101, 52);
+            _lblStatus.Text = $"Copied {propName} to clipboard.";
+            MoleculeNotification.NotifyCopied($"Molecule Info ({propName})", payload);
         }
 
-        dgv.CellContentClick += (s, e) =>
+        btnCopyAll.Click += (_, _) => ExecuteSummaryCopy(_lastUsedFormat);
+
+        dgv.CellContentClick += (_, e) =>
         {
             if (e.RowIndex >= 0 && e.ColumnIndex == colAction.Index)
-            {
                 CopyRow(e.RowIndex);
-            }
         };
-
-        dgv.CellDoubleClick += (s, e) =>
+        dgv.CellDoubleClick += (_, e) =>
         {
             if (e.RowIndex >= 0)
-            {
                 CopyRow(e.RowIndex);
-            }
         };
-
-        dgv.KeyDown += (s, e) =>
+        dgv.KeyDown += (_, e) =>
         {
-            if (e.Control && e.KeyCode == Keys.C)
+            if (((e.Control && e.KeyCode == Keys.C) || e.KeyCode == Keys.Enter || e.KeyCode == Keys.Space) &&
+                dgv.CurrentRow != null)
             {
-                if (dgv.CurrentRow != null)
-                {
-                    CopyRow(dgv.CurrentRow.Index);
-                    e.Handled = true;
-                }
-            }
-            else if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Space)
-            {
-                if (dgv.CurrentRow != null)
-                {
-                    CopyRow(dgv.CurrentRow.Index);
-                    e.Handled = true;
-                }
-            }
-        };
-
-        dgv.CellPainting += (s, e) =>
-        {
-            if (e.RowIndex >= 0 && e.ColumnIndex == colAction.Index)
-            {
-                e.PaintBackground(e.CellBounds, true);
-                string btnText = e.Value?.ToString() ?? "Copy";
-                if (!string.IsNullOrEmpty(btnText))
-                {
-                    int padX = (int)Math.Max(8, 6 * dpiScale);
-                    int padY = (int)Math.Max(5, 4 * dpiScale);
-                    var btnRect = new Rectangle(
-                        e.CellBounds.X + padX,
-                        e.CellBounds.Y + padY,
-                        e.CellBounds.Width - padX * 2,
-                        e.CellBounds.Height - padY * 2);
-
-                    bool isCopied = btnText.Contains("✓");
-                    Color btnBg = isCopied ? Color.FromArgb(220, 252, 231) : Color.FromArgb(243, 244, 246);
-                    Color btnBorder = isCopied ? Color.FromArgb(187, 247, 208) : Color.FromArgb(209, 213, 219);
-                    Color btnFg = isCopied ? Color.FromArgb(22, 101, 52) : Color.FromArgb(55, 65, 81);
-
-                    using (var brush = new SolidBrush(btnBg))
-                        e.Graphics.FillRectangle(brush, btnRect);
-
-                    using (var pen = new Pen(btnBorder, 1f))
-                        e.Graphics.DrawRectangle(pen, btnRect);
-
-                    using (var font = new Font("Segoe UI", 8.75f, isCopied ? FontStyle.Bold : FontStyle.Regular))
-                    {
-                        TextRenderer.DrawText(
-                            e.Graphics,
-                            btnText,
-                            font,
-                            btnRect,
-                            btnFg,
-                            TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-                    }
-                }
+                CopyRow(dgv.CurrentRow.Index);
                 e.Handled = true;
+                e.SuppressKeyPress = true;
             }
         };
 
-        dgv.CellMouseEnter += (s, e) =>
+        _rowMenu = new ContextMenuStrip();
+        _rowMenu.Items.Add("Copy Value", null, (_, _) =>
         {
-            if (e.RowIndex >= 0 && e.ColumnIndex == colAction.Index)
+            if (dgv.CurrentRow != null) CopyRow(dgv.CurrentRow.Index);
+        });
+        _rowMenu.Items.Add("Copy Property & Value", null, (_, _) =>
+        {
+            if (dgv.CurrentRow?.Tag is (string propName, string payload) && !string.IsNullOrEmpty(payload))
             {
-                dgv.Cursor = Cursors.Hand;
+                string combined = $"{propName}: {payload}";
+                try { SafeClipboard.SetText(combined); } catch { }
+                _lblStatus.ForeColor = Color.FromArgb(22, 101, 52);
+                _lblStatus.Text = $"Copied {propName} with label to clipboard.";
+                MoleculeNotification.NotifyCopied("Molecule Property", combined);
             }
-        };
-
-        dgv.CellMouseLeave += (s, e) =>
+        });
+        _rowMenu.Items.Add(new ToolStripSeparator());
+        foreach (var (fmt, label, _) in SummaryFormats)
         {
-            dgv.Cursor = Cursors.Default;
-        };
+            var captured = fmt;
+            _rowMenu.Items.Add($"Copy All ({label})", null, (_, _) => ExecuteSummaryCopy(captured));
+        }
 
-        var rowContextMenu = new ContextMenuStrip { Font = new Font("Segoe UI", 9.25f), ShowImageMargin = false };
-        rowContextMenu.Items.Add(new ToolStripMenuItem("📋 Copy Value", null, (s, e) =>
-        {
-            if (dgv.CurrentRow?.Index is int idx && idx >= 0) CopyRow(idx);
-        }));
-        rowContextMenu.Items.Add(new ToolStripMenuItem("🏷️ Copy Property & Value", null, (s, e) =>
-        {
-            if (dgv.CurrentRow?.Index is int idx && idx >= 0)
-            {
-                var row = dgv.Rows[idx];
-                if (row.Tag is (string propName, string payload))
-                {
-                    string combined = $"{propName}: {payload}";
-                    try { SafeClipboard.SetText(combined); } catch { }
-                    _lblStatus.Text = $"✓ Copied '{combined}' to clipboard.";
-                    _lblStatus.ForeColor = Color.FromArgb(22, 101, 52);
-                    MoleculeNotification.NotifyCopied("Molecule Property", combined);
-                }
-            }
-        }));
-        rowContextMenu.Items.Add(new ToolStripSeparator());
-        rowContextMenu.Items.Add(new ToolStripMenuItem("📊 Copy All (Excel Table)", null, (s, e) => ExecuteCopy(MoleculeSummaryFormat.ExcelTsvWithHeader)));
-        rowContextMenu.Items.Add(new ToolStripMenuItem("📋 Copy All (Excel TSV Row)", null, (s, e) => ExecuteCopy(MoleculeSummaryFormat.ExcelTsvRow)));
-        rowContextMenu.Items.Add(new ToolStripMenuItem("📑 Copy All (Multi-Line)", null, (s, e) => ExecuteCopy(MoleculeSummaryFormat.MultiLine)));
-        rowContextMenu.Items.Add(new ToolStripMenuItem("📐 Copy All (Markdown Table)", null, (s, e) => ExecuteCopy(MoleculeSummaryFormat.MarkdownTable)));
-        rowContextMenu.Items.Add(new ToolStripMenuItem("💻 Copy All (JSON)", null, (s, e) => ExecuteCopy(MoleculeSummaryFormat.Json)));
-
-        dgv.CellMouseDown += (s, e) =>
+        dgv.CellMouseDown += (_, e) =>
         {
             if (e.Button == MouseButtons.Right && e.RowIndex >= 0)
             {
                 dgv.ClearSelection();
                 dgv.Rows[e.RowIndex].Selected = true;
-                dgv.CurrentCell = dgv.Rows[e.RowIndex].Cells[e.ColumnIndex >= 0 ? e.ColumnIndex : 0];
-                rowContextMenu.Show(Cursor.Position);
+                dgv.CurrentCell = dgv.Rows[e.RowIndex].Cells[Math.Max(0, e.ColumnIndex)];
+                _rowMenu.Show(Cursor.Position);
             }
         };
 
-        pnlGridContainer.Controls.Add(dgv);
-        pnlContent.Controls.Add(pnlGridContainer);
+        contentHost.Controls.Add(dgv);
 
-        Controls.Add(pnlContent);
-        Controls.Add(pnlBottom);
-        Controls.Add(pnlHeader);
-        pnlContent.BringToFront();
+        Shown += (_, _) => dgv.ClearSelection();
 
-        AcceptButton = btnCopyAll;
+        Controls.Add(contentHost);
+        Controls.Add(bottomContainer);
+        Controls.Add(headerContainer);
+
         CancelButton = btnClose;
     }
 
-    private static string GetFormatButtonLabel(MoleculeSummaryFormat format) => format switch
+    private static Image? TryRenderPreview(MoleculeInfo info)
     {
-        MoleculeSummaryFormat.ExcelTsvRow => "Copy All (Excel TSV)",
-        MoleculeSummaryFormat.ExcelTsvWithHeader => "Copy All (Excel Table)",
-        MoleculeSummaryFormat.MultiLine => "Copy All (Multi-Line)",
-        MoleculeSummaryFormat.MarkdownTable => "Copy All (Markdown)",
-        MoleculeSummaryFormat.Json => "Copy All (JSON)",
-        _ => "Copy All Summary"
-    };
+        if (info.IsReaction || info.IsMacromolecule || string.IsNullOrWhiteSpace(info.Smiles))
+            return null;
 
-    private void FlashCopied(Button btn, string propName)
+        try
+        {
+            var png = MoleculeRenderer.Render(info.Smiles, new RenderOptions { Background = "white" });
+            if (png is not { Length: > 0 }) return null;
+            using var ms = new MemoryStream(png);
+            using var temp = Image.FromStream(ms);
+            return new Bitmap(temp);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    protected override void Dispose(bool disposing)
     {
-        var origText = btn.Text;
-        var origColor = btn.BackColor;
-        var origForeColor = btn.ForeColor;
-
-        btn.Text = "✓ Copied!";
-        if (origForeColor == Color.White)
+        if (disposing)
         {
-            btn.BackColor = Color.FromArgb(22, 101, 52);
+            _rowResetTimer.Dispose();
+            _rowMenu.Dispose();
+            _previewImage?.Dispose();
+            _previewImage = null;
         }
-        else
-        {
-            btn.BackColor = Color.FromArgb(220, 252, 231);
-            btn.ForeColor = Color.FromArgb(22, 101, 52);
-        }
-
-        if (_lblStatus != null)
-        {
-            _lblStatus.Text = $"✓ Copied {propName.TrimEnd(':')} to clipboard.";
-            _lblStatus.ForeColor = Color.FromArgb(22, 101, 52);
-        }
-
-        var t = new Timer { Interval = 1200 };
-        t.Tick += (s, e) =>
-        {
-            try
-            {
-                t.Stop();
-                t.Dispose();
-                if (!btn.IsDisposed)
-                {
-                    btn.Text = origText;
-                    btn.BackColor = origColor;
-                    btn.ForeColor = origForeColor;
-                }
-            }
-            catch { }
-        };
-        t.Start();
+        base.Dispose(disposing);
     }
 
     public static void ShowModal(MoleculeInfo info, string? title = null, IWin32Window? owner = null)
     {
         if (info == null) return;
-
-        if (System.Threading.Thread.CurrentThread.GetApartmentState() == System.Threading.ApartmentState.STA)
+        DialogHelper.RunOnStaThread(owner, winOwner =>
         {
-            ShowModalInternal(info, title, owner);
-        }
-        else
-        {
-            var hwnd = owner?.Handle ?? IntPtr.Zero;
-            var t = new System.Threading.Thread(() =>
-            {
-                IWin32Window? winOwner = hwnd != IntPtr.Zero ? new Win32Window(hwnd) : null;
-                ShowModalInternal(info, title, winOwner);
-            });
-            t.SetApartmentState(System.Threading.ApartmentState.STA);
-            t.IsBackground = true;
-            t.Start();
-            t.Join();
-        }
-    }
-
-    private static void ShowModalInternal(MoleculeInfo info, string? title, IWin32Window? owner)
-    {
-        using var dlg = new MoleculeInfoDialog(info, title);
-        if (owner != null && owner.Handle != IntPtr.Zero)
-        {
-            dlg.StartPosition = FormStartPosition.CenterParent;
-            try
-            {
-                dlg.ShowDialog(owner);
-                return;
-            }
-            catch
-            {
-                // Fallback to CenterScreen if owner window is invalid or disconnected
-            }
-        }
-        dlg.StartPosition = FormStartPosition.CenterScreen;
-        dlg.ShowDialog();
+            using var dlg = new MoleculeInfoDialog(info, title);
+            DialogHelper.ShowModalDialog(dlg, winOwner);
+        });
     }
 }

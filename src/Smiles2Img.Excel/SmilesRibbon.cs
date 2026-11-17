@@ -299,19 +299,5 @@ public class SmilesRibbon : ExcelRibbon
         => RunMacroSafe(() => LogDisplay.Show());
 
     public void OnAbout(IRibbonControl control)
-    {
-        RunMacroSafe(() =>
-        {
-            try
-            {
-                var hwnd = ExcelDnaUtil.WindowHandle;
-                IWin32Window? owner = hwnd != IntPtr.Zero ? new Win32Window(hwnd) : null;
-                Smiles2Img.Editor.AboutDialog.ShowModal(owner);
-            }
-            catch
-            {
-                Smiles2Img.Editor.AboutDialog.ShowModal();
-            }
-        });
-    }
+        => RunMacroSafe(() => DialogHelper.ShowAbout(ExcelDnaUtil.WindowHandle));
 }

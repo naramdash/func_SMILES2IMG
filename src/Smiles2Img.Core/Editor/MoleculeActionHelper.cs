@@ -267,26 +267,15 @@ public static class MoleculeActionHelper
             var info = getInfo(true);
             if (info == null)
             {
-                MessageBox.Show(
-                    emptyMessage,
-                    "func_SMILES2IMG",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                DialogHelper.ShowInfo(emptyMessage, ownerHwnd);
                 return;
             }
 
-            if (ownerHwnd != IntPtr.Zero)
-                MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties", new Win32Window(ownerHwnd));
-            else
-                MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties");
+            MoleculeInfoDialog.ShowModal(info, "Molecule Info & Chemical Properties", DialogHelper.ToOwner(ownerHwnd));
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while calculating molecule info:\n" + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("An error occurred while calculating molecule info:\n" + ex.Message, ownerHwnd);
         }
     }
 }

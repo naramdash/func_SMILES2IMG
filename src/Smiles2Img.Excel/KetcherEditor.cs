@@ -306,11 +306,9 @@ public static partial class KetcherEditor
 
             if (!MoleculeRenderer.TryRenderStructure(rawInput, RenderOptions.Default, out var pngBytes, out var ket, out var smiles) || pngBytes == null)
             {
-                MessageBox.Show(
+                DialogHelper.ShowInfo(
                     "No valid SMILES or KET structure data found on clipboard (or active cell).\nPlease copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) and try again.",
-                    "func_SMILES2IMG",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                    ExcelDnaUtil.WindowHandle);
                 return;
             }
 
@@ -345,11 +343,7 @@ public static partial class KetcherEditor
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred during quick paste: " + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("An error occurred during quick paste: " + ex.Message, ExcelDnaUtil.WindowHandle);
         }
     }
 
@@ -541,8 +535,7 @@ public static partial class KetcherEditor
                 Multiselect = false
             };
 
-            var hwnd = ExcelDnaUtil.WindowHandle;
-            var dr = hwnd != IntPtr.Zero ? ofd.ShowDialog(new Win32Window(hwnd)) : ofd.ShowDialog();
+            var dr = DialogHelper.ShowCommonDialog(ofd, ExcelDnaUtil.WindowHandle);
             if (dr != DialogResult.OK || string.IsNullOrWhiteSpace(ofd.FileName))
                 return;
 
@@ -555,7 +548,7 @@ public static partial class KetcherEditor
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Error importing SDF file:\n" + ex.Message, "func_SMILES2IMG", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("Error importing SDF file:\n" + ex.Message, ExcelDnaUtil.WindowHandle);
         }
     }
 
@@ -657,8 +650,7 @@ public static partial class KetcherEditor
                 DefaultExt = "sdf"
             };
 
-            var hwnd = ExcelDnaUtil.WindowHandle;
-            var dr = hwnd != IntPtr.Zero ? sfd.ShowDialog(new Win32Window(hwnd)) : sfd.ShowDialog();
+            var dr = DialogHelper.ShowCommonDialog(sfd, ExcelDnaUtil.WindowHandle);
             if (dr != DialogResult.OK || string.IsNullOrWhiteSpace(sfd.FileName))
                 return;
 
@@ -671,7 +663,7 @@ public static partial class KetcherEditor
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Error exporting SDF file:\n" + ex.Message, "func_SMILES2IMG", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("Error exporting SDF file:\n" + ex.Message, ExcelDnaUtil.WindowHandle);
         }
     }
 

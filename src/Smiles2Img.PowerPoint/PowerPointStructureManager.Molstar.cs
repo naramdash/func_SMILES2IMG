@@ -26,11 +26,9 @@ public static partial class PowerPointStructureManager
             var slide = EnsureActiveSlide(app);
             if (slide == null)
             {
-                MessageBox.Show(
+                DialogHelper.ShowInfo(
                     "No active slide found.\nPlease select a slide to insert the 3D structure first.",
-                    "func_SMILES2IMG",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                    GetHwnd(app));
                 return;
             }
 
@@ -42,9 +40,8 @@ public static partial class PowerPointStructureManager
             }
             catch { }
 
-            var hwnd = GetHwnd(app);
             using var form = MolstarForm.Rent("PowerPoint", initialPdb);
-            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
+            var result = DialogHelper.ShowModalDialog(form, GetHwnd(app));
 
             if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))
             {
@@ -53,11 +50,7 @@ public static partial class PowerPointStructureManager
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while opening Mol* 3D Viewer:\n" + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("An error occurred while opening Mol* 3D Viewer:\n" + ex.Message, GetHwnd(app));
         }
     }
 
@@ -70,11 +63,9 @@ public static partial class PowerPointStructureManager
                 var sel = app.ActiveWindow?.Selection;
                 if (sel == null || sel.Type != MSPowerPoint.PpSelectionType.ppSelectionShapes || sel.ShapeRange.Count == 0)
                 {
-                    MessageBox.Show(
+                    DialogHelper.ShowInfo(
                         "No 3D molecular structure selected.\nPlease select a Mol* structure shape or 3D model first.",
-                        "func_SMILES2IMG",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                        GetHwnd(app));
                     return;
                 }
 
@@ -84,11 +75,7 @@ public static partial class PowerPointStructureManager
             var meta = MolstarSessionManager.ParseAltText(targetShape.AlternativeText, targetShape.Title);
             if (meta == null)
             {
-                MessageBox.Show(
-                    "The selected object is not a Mol* 3D structure object.",
-                    "func_SMILES2IMG",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                DialogHelper.ShowInfo("The selected object is not a Mol* 3D structure object.", GetHwnd(app));
                 return;
             }
 
@@ -102,9 +89,8 @@ public static partial class PowerPointStructureManager
                 catch { }
             }
 
-            var hwnd = GetHwnd(app);
             using var form = MolstarForm.Rent("PowerPoint", meta.Pdb, snapshotJson);
-            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
+            var result = DialogHelper.ShowModalDialog(form, GetHwnd(app));
 
             if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))
             {
@@ -113,11 +99,7 @@ public static partial class PowerPointStructureManager
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while editing Mol* 3D structure:\n" + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("An error occurred while editing Mol* 3D structure:\n" + ex.Message, GetHwnd(app));
         }
     }
 

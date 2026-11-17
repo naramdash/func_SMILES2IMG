@@ -27,11 +27,9 @@ public static class ExcelMolstarManager
 
             if (app.ActiveSheet is not Excel.Worksheet sheet)
             {
-                MessageBox.Show(
+                DialogHelper.ShowInfo(
                     "No active worksheet found.\nPlease open a worksheet to insert the 3D structure first.",
-                    "func_SMILES2IMG",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                    ExcelDnaUtil.WindowHandle);
                 return;
             }
 
@@ -47,7 +45,7 @@ public static class ExcelMolstarManager
             catch { }
 
             using var form = MolstarForm.Rent("Excel Worksheet", initialPdb);
-            var result = form.ShowDialog(new Win32Window(ExcelDnaUtil.WindowHandle));
+            var result = DialogHelper.ShowModalDialog(form, ExcelDnaUtil.WindowHandle);
 
             if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))
             {
@@ -56,11 +54,7 @@ public static class ExcelMolstarManager
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while opening Mol* 3D Viewer:\n" + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("An error occurred while opening Mol* 3D Viewer:\n" + ex.Message, ExcelDnaUtil.WindowHandle);
         }
     }
 
@@ -73,11 +67,9 @@ public static class ExcelMolstarManager
                 targetShape = KetcherEditor.GetSelectedShape(app);
                 if (targetShape == null)
                 {
-                    MessageBox.Show(
+                    DialogHelper.ShowInfo(
                         "No 3D molecular structure selected.\nPlease select a Mol* structure shape or 3D model first.",
-                        "func_SMILES2IMG",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                        ExcelDnaUtil.WindowHandle);
                     return;
                 }
             }
@@ -85,11 +77,7 @@ public static class ExcelMolstarManager
             var meta = MolstarSessionManager.ParseAltText(targetShape.AlternativeText, targetShape.Title);
             if (meta == null)
             {
-                MessageBox.Show(
-                    "The selected object is not a Mol* 3D structure object.",
-                    "func_SMILES2IMG",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                DialogHelper.ShowInfo("The selected object is not a Mol* 3D structure object.", ExcelDnaUtil.WindowHandle);
                 return;
             }
 
@@ -107,7 +95,7 @@ public static class ExcelMolstarManager
             }
 
             using var form = MolstarForm.Rent("Excel Worksheet", meta.Pdb, snapshotJson);
-            var result = form.ShowDialog(new Win32Window(ExcelDnaUtil.WindowHandle));
+            var result = DialogHelper.ShowModalDialog(form, ExcelDnaUtil.WindowHandle);
 
             if (result == DialogResult.OK && (form.ResultImageBytes != null || form.ResultGlbBytes != null))
             {
@@ -116,11 +104,7 @@ public static class ExcelMolstarManager
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while editing Mol* 3D structure:\n" + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("An error occurred while editing Mol* 3D structure:\n" + ex.Message, ExcelDnaUtil.WindowHandle);
         }
     }
 

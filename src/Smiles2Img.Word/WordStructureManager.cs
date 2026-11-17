@@ -112,9 +112,8 @@ public static partial class WordStructureManager
 
             GetSelectionTexts(app, out _, out _, out var selText);
             var initialStructure = StructureMetadata.ExtractPreloadForKetcher(selText);
-            var hwnd = GetHwnd(app);
             using var form = KetcherForm.Rent("Word", initialStructure);
-            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
+            var result = DialogHelper.ShowModalDialog(form, GetHwnd(app));
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
             {
@@ -127,11 +126,7 @@ public static partial class WordStructureManager
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while inserting molecule:\n" + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("An error occurred while inserting molecule:\n" + ex.Message, GetHwnd(app));
         }
     }
 
@@ -149,17 +144,14 @@ public static partial class WordStructureManager
             var currentStructure = ExtractStructure(altText, title);
             if (string.IsNullOrEmpty(currentStructure))
             {
-                MessageBox.Show(
+                DialogHelper.ShowInfo(
                     "No molecular structure image selected.\nPlease select a molecular structure picture first.",
-                    "func_SMILES2IMG",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                    GetHwnd(app));
                 return;
             }
 
-            var hwnd = GetHwnd(app);
             using var form = KetcherForm.Rent("Word", currentStructure ?? "");
-            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
+            var result = DialogHelper.ShowModalDialog(form, GetHwnd(app));
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
             {
@@ -180,11 +172,7 @@ public static partial class WordStructureManager
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while editing molecule:\n" + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("An error occurred while editing molecule:\n" + ex.Message, GetHwnd(app));
         }
     }
 
@@ -421,19 +409,13 @@ public static partial class WordStructureManager
             if (SafeClipboard.ContainsText() && TryInsertCandidate(SafeClipboard.GetText()))
                 return;
 
-            MessageBox.Show(
+            DialogHelper.ShowInfo(
                 "No valid SMILES or KET structure data found in selection or clipboard.\nPlease copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) or select text in the document first.",
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+                GetHwnd(app));
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while inserting structure from clipboard:\n" + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("An error occurred while inserting structure from clipboard:\n" + ex.Message, GetHwnd(app));
         }
     }
 

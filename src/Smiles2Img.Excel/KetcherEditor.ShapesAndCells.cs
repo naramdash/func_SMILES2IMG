@@ -5,6 +5,7 @@ using com.epam.indigo;
 using ExcelDna.Integration;
 using ExcelDna.Logging;
 using Microsoft.Office.Core;
+using Smiles2Img.Editor;
 using Smiles2Img.Rendering;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -38,11 +39,7 @@ public static partial class KetcherEditor
                 return;
             }
 
-            MessageBox.Show(
-                "The selected object is not a SMILES or KET molecular structure image.",
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            DialogHelper.ShowInfo("The selected object is not a SMILES or KET molecular structure image.", ExcelDnaUtil.WindowHandle);
             return;
         }
 
@@ -67,8 +64,7 @@ public static partial class KetcherEditor
             if (string.IsNullOrEmpty(currentStructure)) return;
 
             using var form = KetcherForm.Rent("Canvas", currentStructure ?? "");
-            var hwnd = ExcelDnaUtil.WindowHandle;
-            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
+            var result = DialogHelper.ShowModalDialog(form, ExcelDnaUtil.WindowHandle);
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
             {
@@ -82,11 +78,7 @@ public static partial class KetcherEditor
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while editing structure:\n" + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("An error occurred while editing structure:\n" + ex.Message, ExcelDnaUtil.WindowHandle);
         }
     }
 
@@ -97,8 +89,7 @@ public static partial class KetcherEditor
             if (app.ActiveSheet is not Excel.Worksheet sheet) return;
 
             using var form = KetcherForm.Rent("Canvas", "");
-            var hwnd = ExcelDnaUtil.WindowHandle;
-            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
+            var result = DialogHelper.ShowModalDialog(form, ExcelDnaUtil.WindowHandle);
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultKet) || !string.IsNullOrWhiteSpace(form.ResultSmiles)))
             {
@@ -112,11 +103,7 @@ public static partial class KetcherEditor
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while inserting canvas structure:\n" + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("An error occurred while inserting canvas structure:\n" + ex.Message, ExcelDnaUtil.WindowHandle);
         }
     }
 
@@ -389,8 +376,7 @@ public static partial class KetcherEditor
             }
 
             using var form = KetcherForm.Rent(targetCellToWrite.Address, initialSmiles);
-            var hwnd = ExcelDnaUtil.WindowHandle;
-            var result = hwnd != IntPtr.Zero ? form.ShowDialog(new Win32Window(hwnd)) : form.ShowDialog();
+            var result = DialogHelper.ShowModalDialog(form, ExcelDnaUtil.WindowHandle);
 
             if (result == DialogResult.OK && (!string.IsNullOrWhiteSpace(form.ResultSmiles) || !string.IsNullOrWhiteSpace(form.ResultKet)))
             {
@@ -465,11 +451,7 @@ public static partial class KetcherEditor
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "An error occurred while launching editor: " + ex.Message,
-                "func_SMILES2IMG",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
+            DialogHelper.ShowWarning("An error occurred while launching editor: " + ex.Message, ExcelDnaUtil.WindowHandle);
         }
     }
 
@@ -532,11 +514,9 @@ public static partial class KetcherEditor
         escaped = data.Replace("\"", "\"\"");
         if (escaped.Length <= 8000) return true;
 
-        MessageBox.Show(
+        DialogHelper.ShowWarning(
             "The molecular structure exceeds Excel's 8,192-character formula limit.\nConsider simplifying the structure or referencing another cell.",
-            "func_SMILES2IMG",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Warning);
+            ExcelDnaUtil.WindowHandle);
         return false;
     }
 

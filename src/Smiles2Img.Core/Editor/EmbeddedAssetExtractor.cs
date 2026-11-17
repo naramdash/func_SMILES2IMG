@@ -108,20 +108,13 @@ internal static class WebView2HostHelper
 {
     public static void ApplyDpiScaledWindowBounds(Form form, int targetBaseW, int targetBaseH, int minClientW, int minClientH)
     {
-        float dpiScale = 1.0f;
-        try
-        {
-            using var g = form.CreateGraphics();
-            dpiScale = Math.Max(1.0f, g.DpiX / 96.0f);
-        }
-        catch { }
-
+        float dpiScale = DialogHelper.GetDpiScale(form);
         var screen = Screen.FromControl(form) ?? Screen.PrimaryScreen;
         int targetW = Math.Min((int)(targetBaseW * dpiScale), (int)(screen.WorkingArea.Width * 0.94));
         int targetH = Math.Min((int)(targetBaseH * dpiScale), (int)(screen.WorkingArea.Height * 0.94));
         form.ClientSize = new Size(Math.Max(targetW, minClientW), Math.Max(targetH, minClientH));
         form.MinimumSize = new Size(Math.Min(880, screen.WorkingArea.Width), Math.Min(600, screen.WorkingArea.Height));
-        form.StartPosition = FormStartPosition.CenterScreen;
+        form.StartPosition = FormStartPosition.CenterParent;
     }
 
     public static async Task<CoreWebView2Environment> InitializeWebViewCoreAsync(
