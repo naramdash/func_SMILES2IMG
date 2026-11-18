@@ -14,10 +14,6 @@
 
 ## 1. 3단계로 그리기 & 수정하기
 
-<p align="center">
-  <img src="/ketcher-guide.png" alt="실제 구동 중인 EPAM Ketcher 2D 구조·반응식 편집기" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
-
 ### Step 1. 편집기 열기
 * **새로 그리기:** 키보드에서 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>를 누르거나, 상단 **`[SMILES]`** ➔ **`[Insert / Edit (SMILES)]`** (Word·PowerPoint에서는 **`[Insert / Edit Structure]`**) 버튼을 클릭합니다.
 * **기존 분자 고치기:** 엑셀 셀이나 워드·파워포인트에 들어간 분자 그림을 **마우스로 더블클릭**합니다.
@@ -34,6 +30,8 @@
 ---
 
 ## 2. 단일 분자 vs 다단계 반응식 자동 저장 방식
+
+<FeatureMedia id="excel-reactions-ket" />
 
 캔버스에 그린 내용에 따라 가장 적합한 포맷으로 알아서 저장되므로 신경 쓸 필요가 없습니다:
 

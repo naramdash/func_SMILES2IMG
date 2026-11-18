@@ -108,6 +108,8 @@ Filter compound libraries by scaffold or rank analogs against a lead molecule. F
 
 ## 6. 🎨 Complete Background (`[bg]`) & Style (`[style]`) Reference
 
+<FeatureMedia id="excel-style-matrix" />
+
 ### 2nd Argument: Background (`[bg]`)
 | Value | Effect | Example |
 | :--- | :--- | :--- |

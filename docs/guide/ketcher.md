@@ -14,10 +14,6 @@ Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> to draw molecules and mu
 
 ## 1. Draw & Edit in 3 Steps
 
-<p align="center">
-  <img src="/ketcher-guide.png" alt="Live EPAM Ketcher 2D Molecular & Reaction Editor" width="100%" style="border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);" />
-</p>
-
 ### Step 1. Open the Sketcher
 * **Draw a New Structure:** Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>, or click **`[SMILES]`** ➔ **`[Insert / Edit (SMILES)]`** in Excel (or **`[Insert / Edit Structure]`** in Word & PowerPoint) on the top ribbon.
 * **Edit an Existing Structure:** Simply **double-click** any chemical cell in Excel or structure picture in Word / PowerPoint.
@@ -34,6 +30,8 @@ Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> to draw molecules and mu
 ---
 
 ## 2. How Single Molecules vs. Multi-Step Reactions Are Saved
+
+<FeatureMedia id="excel-reactions-ket" />
 
 Ketcher automatically picks the best lossless format based on what you draw:
 

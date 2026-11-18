@@ -41,7 +41,7 @@ public sealed class MoleculeInfoDialog : Form
             this,
             title ?? "Molecule Info & Chemical Properties",
             UiIcons.MoleculeInfoIcon,
-            baseWidth: 880,
+            baseWidth: 1040,
             baseHeight: isCompactEntity ? 420 : 620,
             minWidth: 680,
             minHeight: isCompactEntity ? 340 : 480);
@@ -207,7 +207,7 @@ public sealed class MoleculeInfoDialog : Form
                 row.Cells[colAction.Index] = new DataGridViewTextBoxCell { Value = "" };
 
             if (isCode)
-                row.Cells[colVal.Index].Style.Font = new Font("Consolas", 9.0f, FontStyle.Regular);
+                row.Cells[colVal.Index].Style.Font = new Font("Consolas", 8.5f, FontStyle.Regular);
 
             if (!string.IsNullOrWhiteSpace(displayValue) && displayValue != "—")
                 row.Cells[colVal.Index].ToolTipText = $"{propertyName}: {displayValue}\nDouble-click or press Ctrl+C to copy";

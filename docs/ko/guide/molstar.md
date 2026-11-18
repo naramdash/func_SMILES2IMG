@@ -50,6 +50,8 @@
 
 ## 3. 더블클릭으로 각도 및 스타일 다시 수정하기
 
+<FeatureMedia id="powerpoint-slide-molstar-3d" />
+
 1. Excel, Word, PowerPoint에 삽입된 3D 단백질 모델이나 2D 그림을 선택합니다.
 2. 마우스로 **더블클릭**합니다 (또는 우클릭 ➔ **`Chemical Structure ➔ 3D Structure (Mol*)...`**).
 3. 이전에 작업하던 단백질 구조와 카메라 앵글, 색상 설정이 그대로 복원되어 열립니다.

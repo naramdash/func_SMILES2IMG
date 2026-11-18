@@ -116,44 +116,64 @@ public static class LiveMenuCapture
         int mh = ((mr.B - mr.T) / 2) * 2;
         if (mw <= 0 || mh <= 0) return 0;
 
-        int popupCount = 0;
-        using (var bmp = new Bitmap(mw, mh))
+        var wins = new List<IntPtr>();
+        EnumWindows((h, _) =>
+        {
+            if (h == mainHwnd || !IsWindowVisible(h)) return true;
+            uint p;
+            GetWindowThreadProcessId(h, out p);
+            if (p == pid) wins.Add(h);
+            return true;
+        }, IntPtr.Zero);
+
+        var popupItems = new List<Tuple<IntPtr, RECT>>();
+        int outW = mw;
+        int outH = mh;
+        for (int i = wins.Count - 1; i >= 0; i--)
+        {
+            var sb = new StringBuilder(128);
+            GetClassName(wins[i], sb, 128);
+            string cls = sb.ToString();
+            if (cls.Contains("InputIndicator") || cls.Contains("IME") || cls.Contains("Tooltip")) continue;
+
+            RECT pr;
+            GetWindowRect(wins[i], out pr);
+            int pw = pr.R - pr.L, ph = pr.B - pr.T;
+            if (pw < 80 || ph < 80) continue;
+
+            popupItems.Add(Tuple.Create(wins[i], pr));
+            outW = Math.Max(outW, (((pr.R - mr.L) + 28) / 2) * 2);
+            outH = Math.Max(outH, (((pr.B - mr.T) + 28) / 2) * 2);
+        }
+
+        int popupCount = popupItems.Count;
+        using (var bmp = new Bitmap(outW, outH))
         using (var g = Graphics.FromImage(bmp))
         {
-            var hdc = g.GetHdc();
-            PrintWindow(mainHwnd, hdc, 2);
-            g.ReleaseHdc(hdc);
-            SanitizeTitleBarAccount(bmp);
-
-            var wins = new List<IntPtr>();
-            EnumWindows((h, _) =>
+            g.Clear(Color.FromArgb(38, 38, 38));
+            using (var mainBmp = new Bitmap(mw, mh))
             {
-                if (h == mainHwnd || !IsWindowVisible(h)) return true;
-                uint p;
-                GetWindowThreadProcessId(h, out p);
-                if (p == pid) wins.Add(h);
-                return true;
-            }, IntPtr.Zero);
+                using (var mg = Graphics.FromImage(mainBmp))
+                {
+                    var hdc = mg.GetHdc();
+                    PrintWindow(mainHwnd, hdc, 2);
+                    mg.ReleaseHdc(hdc);
+                }
+                SanitizeTitleBarAccount(mainBmp);
+                g.DrawImage(mainBmp, 0, 0, mw, mh);
+            }
 
-            for (int i = wins.Count - 1; i >= 0; i--)
+            foreach (var item in popupItems)
             {
-                var sb = new StringBuilder(128);
-                GetClassName(wins[i], sb, 128);
-                string cls = sb.ToString();
-                if (cls.Contains("InputIndicator") || cls.Contains("IME") || cls.Contains("Tooltip")) continue;
-
-                RECT pr;
-                GetWindowRect(wins[i], out pr);
+                IntPtr phwnd = item.Item1;
+                RECT pr = item.Item2;
                 int pw = pr.R - pr.L, ph = pr.B - pr.T;
-                if (pw < 80 || ph < 80) continue;
-
-                popupCount++;
                 using (var pbmp = new Bitmap(pw, ph))
                 {
                     using (var pg = Graphics.FromImage(pbmp))
                     {
                         var phdc = pg.GetHdc();
-                        PrintWindow(wins[i], phdc, 2);
+                        PrintWindow(phwnd, phdc, 2);
                         pg.ReleaseHdc(phdc);
                     }
                     g.DrawImage(pbmp, pr.L - mr.L, pr.T - mr.T, pw, ph);
@@ -217,6 +237,23 @@ function Expand-CascadingChemicalMenu([int]$procId) {
     return $true
 }
 
+function Select-RibbonTab([IntPtr]$mainHwnd, [string]$tabName) {
+    try {
+        $AE = [System.Windows.Automation.AutomationElement]
+        $win = $AE::FromHandle($mainHwnd)
+        if (-not $win) { return }
+        $cond = New-Object System.Windows.Automation.AndCondition(
+            (New-Object System.Windows.Automation.PropertyCondition($AE::ControlTypeProperty, [System.Windows.Automation.ControlType]::TabItem)),
+            (New-Object System.Windows.Automation.PropertyCondition($AE::NameProperty, $tabName))
+        )
+        $tab = $win.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $cond)
+        if ($tab) {
+            $tab.GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).Select()
+            Start-Sleep -Milliseconds 450
+        }
+    } catch {}
+}
+
 # 1. WORD CONTEXT MENU
 if ($TargetApp -eq 'All' -or $TargetApp -eq 'Word') {
     Write-Host "[*] Capturing live 3-level Word Context Menu..." -ForegroundColor Cyan
@@ -230,8 +267,9 @@ if ($TargetApp -eq 'All' -or $TargetApp -eq 'Word') {
         $hwnd = [IntPtr]$word.ActiveWindow.Hwnd
         [uint32]$wPid = 0
         [void][LiveMenuCapture]::GetWindowThreadProcessId($hwnd, [ref]$wPid)
-        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 40, 10, 2400, 1800, 0x0040)
+        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 40, 10, 2400, 1920, 0x0040)
         Start-Sleep -Milliseconds 600
+        Select-RibbonTab $hwnd 'SMILES'
 
         $wwg = [LiveMenuCapture]::FindChildByClassPrefix($hwnd, '_WwG')
         $r = New-Object LiveMenuCapture+RECT
@@ -264,6 +302,7 @@ if ($TargetApp -eq 'All' -or $TargetApp -eq 'Excel') {
     $excel = New-Object -ComObject Excel.Application
     $excel.Visible = $true
     $excel.DisplayAlerts = $false
+    try { $excel.ShowSelectionFloaties = $false } catch {}
     try {
         [void]$excel.RegisterXLL($distXll)
         $wb = $excel.Workbooks.Add()
@@ -274,26 +313,32 @@ if ($TargetApp -eq 'All' -or $TargetApp -eq 'Excel') {
         $ws.Range("D1").Value2 = "MW"
         $ws.Range("A2").Value2 = "Aspirin"
         $ws.Range("B2").Value2 = "CC(=O)Oc1ccccc1C(=O)O"
-        $ws.Range("C2").RowHeight = 85
-        $ws.Range("C2").ColumnWidth = 22
-        $ws.Range("B2").ColumnWidth = 26
+        $ws.Range("C2").RowHeight = 72
+        $ws.Range("A3").Value2 = "Caffeine"
+        $ws.Range("B3").Value2 = "Cn1cnc2c1c(=O)n(C)c(=O)n2C"
+        $ws.Range("C3").RowHeight = 72
+        $ws.Range("C2:C3").ColumnWidth = 22
+        $ws.Range("B2").ColumnWidth = 28
         $ws.Range("C2").Formula = "=SMILES2IMG(B2)"
         $ws.Range("D2").Formula = "=SMILES2MW(B2)"
+        $ws.Range("C3").Formula = "=SMILES2IMG(B3)"
+        $ws.Range("D3").Formula = "=SMILES2MW(B3)"
         Start-Sleep -Seconds 2
-        $ws.Range("C2").Select()
+        $ws.Range("C3").Select()
 
         $hwnd = [IntPtr]$excel.Hwnd
         [uint32]$xPid = 0
         [void][LiveMenuCapture]::GetWindowThreadProcessId($hwnd, [ref]$xPid)
-        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 40, 10, 2400, 1720, 0x0040)
+        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 40, 10, 2400, 1920, 0x0040)
         Start-Sleep -Milliseconds 600
+        Select-RibbonTab $hwnd 'SMILES'
 
         $x7 = [LiveMenuCapture]::FindChildByClassPrefix($hwnd, 'EXCEL7')
         $r = New-Object LiveMenuCapture+RECT
         [void][LiveMenuCapture]::GetWindowRect($x7, [ref]$r)
-        # Client coords inside EXCEL7 hitting row 2 / col C near top of sheet
-        $clientX = 290
-        $clientY = 95
+        # Client coords inside EXCEL7 hitting row 3 / col C so any mini-toolbar stays inside Sheet Grid (never overlapping ribbon) and all 3 menu levels fit comfortably
+        $clientX = 320
+        $clientY = 185
         $lpClient = [IntPtr](($clientY -shl 16) -bor ($clientX -band 0xFFFF))
         [void][LiveMenuCapture]::PostMessage($x7, 0x0204, [IntPtr]2, $lpClient) # WM_RBUTTONDOWN
         Start-Sleep -Milliseconds 70
@@ -364,8 +409,9 @@ if ($TargetApp -eq 'All' -or $TargetApp -eq 'PowerPoint') {
         $hwnd = [IntPtr]$ppt.HWND
         [uint32]$pPid = 0
         [void][LiveMenuCapture]::GetWindowThreadProcessId($hwnd, [ref]$pPid)
-        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 40, 10, 2400, 1800, 0x0040)
+        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 40, 10, 2400, 1920, 0x0040)
         Start-Sleep -Milliseconds 600
+        Select-RibbonTab $hwnd 'SMILES'
 
         $mdi = [LiveMenuCapture]::FindChildByClassPrefix($hwnd, 'mdiClass')
         $r = New-Object LiveMenuCapture+RECT

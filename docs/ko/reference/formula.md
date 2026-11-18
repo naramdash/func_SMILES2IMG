@@ -108,6 +108,8 @@
 
 ## 6. 🎨 이미지 배경색(`[background]`) & 스타일 옵션(`[style]`) 전체 규격
 
+<FeatureMedia id="excel-style-matrix" />
+
 ### 두 번째 인수: 배경색 (`[background]`)
 | 입력값 | 효과 | 예시 |
 | :--- | :--- | :--- |

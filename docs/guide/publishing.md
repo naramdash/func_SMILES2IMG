@@ -22,6 +22,8 @@ When submitting a paper to a print journal or switching a presentation to a dark
 * **📘 Word:** Converts structures within your highlighted text/table selection—or across the **entire Word document** if nothing is highlighted.
 * **📙 PowerPoint:** Converts your selected slide shapes—or every chemical structure across the **entire presentation** if no shape is selected.
 
+<FeatureMedia id="word-ch6-publication-finish" />
+
 ---
 
 ## 2. 🖼️ Copy Lossless Vector Graphics for Illustrator & Posters (`Copy SVG`)

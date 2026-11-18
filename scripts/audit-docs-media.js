@@ -73,6 +73,13 @@ if (!fs.existsSync(manifestPath)) {
     checkAsset(entry.mp4, 5000, 'live video (.mp4)');
     checkAsset(entry.vttEn, 40, 'English captions (.en.vtt)');
     checkAsset(entry.vttKo, 40, 'Korean captions (.ko.vtt)');
+
+    if (typeof entry.durationSec !== 'number' || entry.durationSec < 2.5) {
+      issues.push(`[${id}] Video duration too short (${entry.durationSec}s < 2.5s)`);
+    }
+    if ((entry.titleKo && entry.titleKo.includes('\uFFFD')) || (entry.captionKo && entry.captionKo.includes('\uFFFD'))) {
+      issues.push(`[${id}] Korean metadata contains replacement character (\\uFFFD)`);
+    }
   }
 
   // 3. Verify guide markdown pages embed valid <FeatureMedia id="..." /> and zero prohibited terms

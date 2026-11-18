@@ -427,13 +427,19 @@ public static class LiveCaptureEngine
                         if (readyToCount)
                         {
                             idx++;
-                            CaptureCompositeFrame(mainHwnd, officePid, runnerPid, -1, -1, 0f,
-                                Path.Combine(framesDir, string.Format("f_{0:D4}.png", idx)));
+                            string firstPath = Path.Combine(framesDir, string.Format("f_{0:D4}.png", idx));
+                            CaptureCompositeFrame(mainHwnd, officePid, runnerPid, -1, -1, 0f, firstPath);
+                            int capturedIdx = idx;
+                            for (int dup = 0; dup < 2; dup++)
+                            {
+                                idx++;
+                                File.Copy(firstPath, Path.Combine(framesDir, string.Format("f_{0:D4}.png", idx)), true);
+                            }
                             LastModalFrameIndex = idx;
-                            if (firstActiveIdx == 0) firstActiveIdx = idx;
+                            if (firstActiveIdx == 0) firstActiveIdx = capturedIdx;
                             if (!closed)
                             {
-                                LastActiveModalShotFrameIndex = firstActiveIdx + Math.Max(0, ((idx - firstActiveIdx) * 2) / 3);
+                                LastActiveModalShotFrameIndex = firstActiveIdx + Math.Max(0, ((capturedIdx - firstActiveIdx) * 2) / 3);
                             }
 
                             if (!closed && detectedSw.ElapsedMilliseconds >= holdMsBeforeClose)

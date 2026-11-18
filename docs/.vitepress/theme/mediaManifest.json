@@ -15,7 +15,7 @@
                            "capturedAt":  "2026-11-18",
                            "width":  2240,
                            "height":  1260,
-                           "durationSec":  2.4
+                           "durationSec":  3
                        },
     "excel-formula-table":  {
                                 "id":  "excel-formula-table",
@@ -51,7 +51,7 @@
                            "capturedAt":  "2026-11-18",
                            "width":  2240,
                            "height":  1260,
-                           "durationSec":  2.3
+                           "durationSec":  3
                        },
     "excel-style-matrix":  {
                                "id":  "excel-style-matrix",
@@ -69,7 +69,7 @@
                                "capturedAt":  "2026-11-18",
                                "width":  2240,
                                "height":  1260,
-                               "durationSec":  2.7
+                               "durationSec":  3
                            },
     "excel-reactions-ket":  {
                                 "id":  "excel-reactions-ket",
@@ -87,7 +87,7 @@
                                 "capturedAt":  "2026-11-18",
                                 "width":  2240,
                                 "height":  1260,
-                                "durationSec":  2.4
+                                "durationSec":  3.5
                             },
     "excel-ribbon-tools":  {
                                "id":  "excel-ribbon-tools",
@@ -105,7 +105,7 @@
                                "capturedAt":  "2026-11-18",
                                "width":  2240,
                                "height":  1260,
-                               "durationSec":  4.6
+                               "durationSec":  6.1
                            },
     "excel-legacy-float":  {
                                "id":  "excel-legacy-float",
@@ -123,7 +123,7 @@
                                "capturedAt":  "2026-11-18",
                                "width":  2240,
                                "height":  1260,
-                               "durationSec":  2.9
+                               "durationSec":  3
                            },
     "excel-cheminformatics":  {
                                   "id":  "excel-cheminformatics",
@@ -141,7 +141,7 @@
                                   "capturedAt":  "2026-11-18",
                                   "width":  2240,
                                   "height":  1260,
-                                  "durationSec":  2.3
+                                  "durationSec":  3
                               },
     "excel-sar-screening":  {
                                 "id":  "excel-sar-screening",
@@ -159,7 +159,7 @@
                                 "capturedAt":  "2026-11-18",
                                 "width":  2240,
                                 "height":  1260,
-                                "durationSec":  2.3
+                                "durationSec":  3
                             },
     "excel-conversions":  {
                               "id":  "excel-conversions",
@@ -177,7 +177,7 @@
                               "capturedAt":  "2026-11-18",
                               "width":  2240,
                               "height":  1260,
-                              "durationSec":  2
+                              "durationSec":  3
                           },
     "excel-sdf-workflow":  {
                                "id":  "excel-sdf-workflow",
@@ -195,7 +195,7 @@
                                "capturedAt":  "2026-11-18",
                                "width":  2240,
                                "height":  1260,
-                               "durationSec":  2.2
+                               "durationSec":  3
                            },
     "word-ch1-insert-ketcher":  {
                                     "id":  "word-ch1-insert-ketcher",
@@ -213,7 +213,7 @@
                                     "capturedAt":  "2026-11-18",
                                     "width":  2240,
                                     "height":  1260,
-                                    "durationSec":  2.4
+                                    "durationSec":  3.8
                                 },
     "word-ch2-quick-insert":  {
                                   "id":  "word-ch2-quick-insert",
@@ -231,7 +231,7 @@
                                   "capturedAt":  "2026-11-18",
                                   "width":  2240,
                                   "height":  1260,
-                                  "durationSec":  1.9
+                                  "durationSec":  3
                               },
     "word-ch3-compound-table":  {
                                     "id":  "word-ch3-compound-table",
@@ -249,7 +249,7 @@
                                     "capturedAt":  "2026-11-18",
                                     "width":  2240,
                                     "height":  1260,
-                                    "durationSec":  2.1
+                                    "durationSec":  3.2
                                 },
     "word-overview":  {
                           "id":  "word-overview",
@@ -267,7 +267,7 @@
                           "capturedAt":  "2026-11-18",
                           "width":  2240,
                           "height":  1260,
-                          "durationSec":  1.7
+                          "durationSec":  3
                       },
     "word-ch4-reaction-scheme":  {
                                      "id":  "word-ch4-reaction-scheme",
@@ -285,7 +285,7 @@
                                      "capturedAt":  "2026-11-18",
                                      "width":  2240,
                                      "height":  1260,
-                                     "durationSec":  2.4
+                                     "durationSec":  3.8
                                  },
     "word-ch5-edit-and-molstar":  {
                                       "id":  "word-ch5-edit-and-molstar",
@@ -303,7 +303,7 @@
                                       "capturedAt":  "2026-11-18",
                                       "width":  2240,
                                       "height":  1260,
-                                      "durationSec":  2.1
+                                      "durationSec":  3
                                   },
     "word-ch6-publication-finish":  {
                                         "id":  "word-ch6-publication-finish",
@@ -321,7 +321,7 @@
                                         "capturedAt":  "2026-11-18",
                                         "width":  2240,
                                         "height":  1260,
-                                        "durationSec":  2.9
+                                        "durationSec":  3
                                     },
     "powerpoint-slide-candidate-grid":  {
                                             "id":  "powerpoint-slide-candidate-grid",
@@ -339,7 +339,7 @@
                                             "capturedAt":  "2026-11-18",
                                             "width":  2240,
                                             "height":  1260,
-                                            "durationSec":  2.5
+                                            "durationSec":  3
                                         },
     "powerpoint-slide-dark-mode":  {
                                        "id":  "powerpoint-slide-dark-mode",
@@ -357,7 +357,7 @@
                                        "capturedAt":  "2026-11-18",
                                        "width":  2240,
                                        "height":  1260,
-                                       "durationSec":  1.8
+                                       "durationSec":  3
                                    },
     "powerpoint-slide-reaction":  {
                                       "id":  "powerpoint-slide-reaction",
@@ -375,7 +375,7 @@
                                       "capturedAt":  "2026-11-18",
                                       "width":  2240,
                                       "height":  1260,
-                                      "durationSec":  2.1
+                                      "durationSec":  3.8
                                   },
     "powerpoint-slide-molstar-3d":  {
                                         "id":  "powerpoint-slide-molstar-3d",
@@ -393,7 +393,7 @@
                                         "capturedAt":  "2026-11-18",
                                         "width":  2240,
                                         "height":  1260,
-                                        "durationSec":  2.2
+                                        "durationSec":  3
                                     },
     "powerpoint-slide-textbox-quick-insert":  {
                                                   "id":  "powerpoint-slide-textbox-quick-insert",
@@ -411,7 +411,7 @@
                                                   "capturedAt":  "2026-11-18",
                                                   "width":  2240,
                                                   "height":  1260,
-                                                  "durationSec":  1.9
+                                                  "durationSec":  3
                                               },
     "powerpoint-slide-live-qa-info":  {
                                           "id":  "powerpoint-slide-live-qa-info",
@@ -429,7 +429,7 @@
                                           "capturedAt":  "2026-11-18",
                                           "width":  2240,
                                           "height":  1260,
-                                          "durationSec":  2.1
+                                          "durationSec":  3
                                       },
     "powerpoint-slide-batch-style":  {
                                          "id":  "powerpoint-slide-batch-style",
@@ -465,7 +465,7 @@
                                 "capturedAt":  "2026-11-18",
                                 "width":  2240,
                                 "height":  1260,
-                                "durationSec":  1.8
+                                "durationSec":  3
                             },
     "common-ketcher-2d":  {
                               "id":  "common-ketcher-2d",
@@ -483,7 +483,7 @@
                               "capturedAt":  "2026-11-18",
                               "width":  2240,
                               "height":  1260,
-                              "durationSec":  1.4
+                              "durationSec":  4.5
                           },
     "common-molecule-info":  {
                                  "id":  "common-molecule-info",
@@ -501,7 +501,7 @@
                                  "capturedAt":  "2026-11-18",
                                  "width":  2240,
                                  "height":  1260,
-                                 "durationSec":  1.2
+                                 "durationSec":  4
                              },
     "common-about-dialog":  {
                                 "id":  "common-about-dialog",
@@ -519,7 +519,7 @@
                                 "capturedAt":  "2026-11-18",
                                 "width":  2240,
                                 "height":  1260,
-                                "durationSec":  1.5
+                                "durationSec":  4.2
                             },
     "common-molstar-3d":  {
                               "id":  "common-molstar-3d",
@@ -537,6 +537,6 @@
                               "capturedAt":  "2026-11-18",
                               "width":  2240,
                               "height":  1260,
-                              "durationSec":  1
+                              "durationSec":  3.2
                           }
 }

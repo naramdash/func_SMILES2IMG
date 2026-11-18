@@ -322,8 +322,8 @@ function Complete-FeatureClip {
     }
     [LiveCaptureEngine]::VerifyImageDiverse($Clip.ShotPath, 800, 450)
 
-    if ($Clip.FrameIdx -lt 8) {
-        $Clip.Snap(10, -1, -1, 0)
+    if ($Clip.FrameIdx -lt 36) {
+        $Clip.Snap((36 - $Clip.FrameIdx), -1, -1, 0)
     }
 
     $webmPath = Join-Path $Clip.OutDir 'clip.webm'
@@ -552,8 +552,8 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         $ws.Range('A1:F1').Value2 = @('Compound', 'SMILES', '2D Structure (=SMILES2IMG)', 'Formula', 'MW (g/mol)', 'Lipinski Ro5')
         $ws.Range('A1:F1').Font.Bold = $true
         $ws.Range('A1:F1').Interior.Color = 0xD1FAE5
-        $ws.Columns.Item(1).ColumnWidth = 13
-        $ws.Columns.Item(2).ColumnWidth = 28
+        $ws.Columns.Item(1).ColumnWidth = 12
+        $ws.Columns.Item(2).ColumnWidth = 36
         $ws.Columns.Item(3).ColumnWidth = 22
         $ws.Columns.Item(4).ColumnWidth = 11
         $ws.Columns.Item(5).ColumnWidth = 12
@@ -568,7 +568,7 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
             $r = $i + 2
             $ws.Cells.Item($r, 1).Value2 = $rows[$i][0]
             $ws.Cells.Item($r, 2).Value2 = $rows[$i][1]
-            $ws.Rows.Item($r).RowHeight = 62
+            $ws.Rows.Item($r).RowHeight = 52
         }
 
         $c = Start-FeatureClip -Id 'excel-overview' -HostApp 'excel' -MainHwnd $xHwnd -OfficePid $xPid `
@@ -627,7 +627,7 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
             $c.Snap(4, 520, (520 + ($r - 2) * 85))
         }
         Start-Sleep -Seconds 1
-        Select-ExcelCell $excel $ws 'C2' 400
+        Select-ExcelCell $excel $ws 'C3' 400
         $c.CaptureShot(@())
         $c.Snap(8, -1, -1)
         Complete-FeatureClip $c
@@ -646,7 +646,7 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         for ($i = 0; $i -lt $nameInputs.Count; $i++) {
             $r = $i + 2
             $wsName.Cells.Item($r, 1).Value2 = $nameInputs[$i]
-            $wsName.Rows.Item($r).RowHeight = 62
+            $wsName.Rows.Item($r).RowHeight = 52
         }
         $c = Start-FeatureClip -Id 'excel-name-cas' -HostApp 'excel' -MainHwnd $xHwnd -OfficePid $xPid `
             -TitleEn 'Recipe: Render Structures from Chemical Names & CAS Numbers' `
@@ -676,8 +676,9 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         $wsStyle.Range('A1:F1').Font.Bold = $true
         $wsStyle.Range('A1:F1').Interior.Color = 0xEDE9FE
         $wsStyle.Columns.Item(1).ColumnWidth = 20
-        $wsStyle.Columns.Item(2).ColumnWidth = 29
-        for ($col = 3; $col -le 6; $col++) { $wsStyle.Columns.Item($col).ColumnWidth = 17 }
+        $wsStyle.Columns.Item(2).ColumnWidth = 38
+        $wsStyle.Range('B2:B6').Font.Size = 9.5
+        for ($col = 3; $col -le 6; $col++) { $wsStyle.Columns.Item($col).ColumnWidth = 15 }
         $styleMols = @($aspirinSmiles, $caffeineSmiles, $ibuprofenSmiles, $nicotineSmiles)
         $styleDefs = @(
             @{ Label = 'Standard Color'; Bg = ''; Style = '' },
@@ -689,7 +690,7 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         for ($rIdx = 0; $rIdx -lt $styleDefs.Count; $rIdx++) {
             $rowNum = $rIdx + 2
             $sd = $styleDefs[$rIdx]
-            $wsStyle.Rows.Item($rowNum).RowHeight = 52
+            $wsStyle.Rows.Item($rowNum).RowHeight = 44
             $wsStyle.Cells.Item($rowNum, 1).Value2 = $sd.Label
             $wsStyle.Cells.Item($rowNum, 2).NumberFormat = '@'
             $wsStyle.Cells.Item($rowNum, 2).Value2 = "=SMILES2IMG(smiles, `"$($sd.Bg)`", `"$($sd.Style)`")"
@@ -832,15 +833,16 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         $wsChem.Range('A1:K1').Font.Bold = $true
         $wsChem.Range('A1:K1').Interior.Color = 0xDCFCE7
         $wsChem.Columns.Item(1).ColumnWidth = 10
-        $wsChem.Columns.Item(2).ColumnWidth = 17
+        $wsChem.Columns.Item(2).ColumnWidth = 23
+        $wsChem.Range('B2:B5').Font.Size = 8.5
         $wsChem.Columns.Item(3).ColumnWidth = 14
-        $wsChem.Columns.Item(4).ColumnWidth = 9
-        $wsChem.Columns.Item(5).ColumnWidth = 10
-        $wsChem.Columns.Item(6).ColumnWidth = 7
-        $wsChem.Columns.Item(7).ColumnWidth = 7
+        $wsChem.Columns.Item(4).ColumnWidth = 8.5
+        $wsChem.Columns.Item(5).ColumnWidth = 9.5
+        $wsChem.Columns.Item(6).ColumnWidth = 6.5
+        $wsChem.Columns.Item(7).ColumnWidth = 6.5
         $wsChem.Columns.Item(8).ColumnWidth = 6
         $wsChem.Columns.Item(9).ColumnWidth = 8
-        $wsChem.Columns.Item(10).ColumnWidth = 7
+        $wsChem.Columns.Item(10).ColumnWidth = 6.5
         $wsChem.Columns.Item(11).ColumnWidth = 8
         $chemMols = @(
             @('Aspirin', $aspirinSmiles),
@@ -850,7 +852,7 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         )
         for ($i = 0; $i -lt $chemMols.Count; $i++) {
             $r = $i + 2
-            $wsChem.Rows.Item($r).RowHeight = 62
+            $wsChem.Rows.Item($r).RowHeight = 52
             $wsChem.Cells.Item($r, 1).Value2 = $chemMols[$i][0]
             $wsChem.Cells.Item($r, 2).Value2 = $chemMols[$i][1]
         }
@@ -888,14 +890,14 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         $wsSar.Name = 'SARScreening'
         $wsSar.Range('A1:E1').Value2 = @('Compound', 'SMILES', 'Highlight (c1ccccc1)', 'Has Benzene (=SMILES.MATCH)', 'Similarity vs Aspirin')
         $wsSar.Range('A1:E1').Font.Bold = $true
-        $wsSar.Columns.Item(1).ColumnWidth = 12
-        $wsSar.Columns.Item(2).ColumnWidth = 25
-        $wsSar.Columns.Item(3).ColumnWidth = 22
+        $wsSar.Columns.Item(1).ColumnWidth = 11
+        $wsSar.Columns.Item(2).ColumnWidth = 35
+        $wsSar.Columns.Item(3).ColumnWidth = 20
         $wsSar.Columns.Item(4).ColumnWidth = 22
-        $wsSar.Columns.Item(5).ColumnWidth = 20
+        $wsSar.Columns.Item(5).ColumnWidth = 19
         for ($i = 0; $i -lt $chemMols.Count; $i++) {
             $r = $i + 2
-            $wsSar.Rows.Item($r).RowHeight = 62
+            $wsSar.Rows.Item($r).RowHeight = 52
             $wsSar.Cells.Item($r, 1).Value2 = $chemMols[$i][0]
             $wsSar.Cells.Item($r, 2).Value2 = $chemMols[$i][1]
         }
@@ -976,18 +978,18 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         Invoke-ComRetry { $wsSdf.Activate() }
         $sdfRecords = [Smiles2Img.Rendering.SdfManager]::ReadSdfFile($sdfPath, 500)
         $sdfCols = @(
-            @('Name',           $null,              14),
-            @('Structure',      'SMILES2IMG',       14),
-            @('SMILES',         $null,              21),
-            @('Formula',        'SMILES2FORMULA',   10),
-            @('MW (g/mol)',     'SMILES2MW',        10),
-            @('Exact Mass',     'SMILES2EXACTMASS', 10),
-            @('LogP',           'SMILES2LOGP',       7),
-            @('Rings',          'SMILES2RINGS',      6),
-            @('Aromatic Rings', 'SMILES2AROMATIC',   9),
-            @('Fsp3',           'SMILES2FSP3',       7),
-            @('Chiral Centers', 'SMILES2CHIRAL',     9),
-            @('Lipinski',       'SMILES2LIPINSKI',   8)
+            @('Name',           $null,              12.5),
+            @('Structure',      'SMILES2IMG',       11.5),
+            @('SMILES',         $null,              17.0),
+            @('Formula',        'SMILES2FORMULA',    7.5),
+            @('MW (g/mol)',     'SMILES2MW',         9.0),
+            @('Exact Mass',     'SMILES2EXACTMASS',  8.5),
+            @('LogP',           'SMILES2LOGP',       5.0),
+            @('Rings',          'SMILES2RINGS',      5.5),
+            @('Aromatic Rings', 'SMILES2AROMATIC',  11.5),
+            @('Fsp3',           'SMILES2FSP3',       5.5),
+            @('Chiral Centers', 'SMILES2CHIRAL',    11.0),
+            @('Lipinski',       'SMILES2LIPINSKI',   7.5)
         )
         for ($ci = 0; $ci -lt $sdfCols.Count; $ci++) {
             $colNum = $ci + 1
@@ -995,10 +997,12 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
                 $hc = $wsSdf.Cells.Item(1, $colNum)
                 $hc.Value2 = $sdfCols[$ci][0]
                 $hc.Font.Bold = $true
+                $hc.Font.Size = 9.0
                 $hc.Interior.Color = 0xFFE7E0
                 $wsSdf.Columns.Item($colNum).ColumnWidth = $sdfCols[$ci][2]
             }
         }
+        Invoke-ComRetry { $wsSdf.Range('C2:C20').Font.Size = 8.0 }
         $imported = 0
         for ($i = 0; $i -lt $sdfRecords.Count; $i++) {
             $rec = $sdfRecords[$i]
@@ -1006,7 +1010,7 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
             $compName = if (-not [string]::IsNullOrWhiteSpace($rec.Name)) { $rec.Name } else { "Compound #$($i + 1)" }
             $compSmiles = $rec.Smiles
             Invoke-ComRetry {
-                $wsSdf.Rows.Item($row).RowHeight = 60
+                $wsSdf.Rows.Item($row).RowHeight = 52
                 $wsSdf.Cells.Item($row, 1).Value2 = $compName
                 $wsSdf.Cells.Item($row, 3).Value2 = $compSmiles
                 for ($ci = 0; $ci -lt $sdfCols.Count; $ci++) {
@@ -1484,7 +1488,7 @@ if ($Section -eq 'All' -or $Section -eq 'PowerPoint') {
         if ($rxnPic.Height -gt 310) { $rxnPic.Height = 310 }
         $rxnPic.Left = 60 + ((840 - $rxnPic.Width) / 2)
         $rxnPic.Top = 115 + ((370 - $rxnPic.Height) / 2)
-        $rxnPic.Select()
+        try { $ppt.ActiveWindow.Selection.Unselect() } catch {}
         Start-Sleep -Milliseconds 600
         $c.CaptureShot(@())
         $c.Snap(8, -1, -1)
@@ -1508,9 +1512,9 @@ if ($Section -eq 'All' -or $Section -eq 'PowerPoint') {
             $tmpMolP = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "p_mol_$([Guid]::NewGuid().ToString('N')).png")
             [System.IO.File]::WriteAllBytes($tmpMolP, $crn1PptBytes)
             $shp3d = $s3d.Shapes.AddPicture($tmpMolP, 0, -1, 220, 105, 520, 390)
-            $shp3d.Select()
             Remove-Item -LiteralPath $tmpMolP -Force -ErrorAction SilentlyContinue
         }
+        try { $ppt.ActiveWindow.Selection.Unselect() } catch {}
         Start-Sleep -Milliseconds 600
         $c.CaptureShot(@())
         $c.Snap(8, -1, -1)
@@ -1584,7 +1588,7 @@ if ($Section -eq 'All' -or $Section -eq 'PowerPoint') {
 
         # --- 3.8 powerpoint-overview & powerpoint-showcase (captured AFTER all 6 slides exist!) ---
         $sGrid.Select()
-        $sGrid.Shapes.Item(1).Select() # clean non-overlapping corner selection or deselect feel
+        try { $ppt.ActiveWindow.Selection.Unselect() } catch {}
         Start-Sleep -Milliseconds 400
         $cOv = Start-FeatureClip -Id 'powerpoint-overview' -HostApp 'powerpoint' -MainHwnd $pHwnd -OfficePid $pPid `
             -TitleEn 'PowerPoint Overview: Dark Mode Slides, Reactions & 3D Proteins' `
@@ -1632,6 +1636,9 @@ if ($Section -eq 'All' -or $Section -eq 'Common') {
         Start-Sleep -Milliseconds 600
         [void][LiveCaptureEngine]::SelectRibbonTab($wHwnd, 'SMILES')
         Start-Sleep -Milliseconds 500
+        $ptWInsert  = [LiveCaptureEngine]::FindControlRelativeCenter($wHwnd, @('Insert / Edit Structure'))
+        $ptWMolInfo = [LiveCaptureEngine]::FindControlRelativeCenter($wHwnd, @('Molecule Info'))
+        $ptWAbout   = [LiveCaptureEngine]::FindControlRelativeCenter($wHwnd, @('About func_SMILES2IMG'))
 
         # --- 4.1 common-ketcher-2d ---
         $c = Start-FeatureClip -Id 'common-ketcher-2d' -HostApp 'common' -MainHwnd $wHwnd -OfficePid $wPid `
@@ -1639,7 +1646,8 @@ if ($Section -eq 'All' -or $Section -eq 'Common') {
             -TitleKo 'EPAM Ketcher 2D 분자·반응식 편집기 (공통)' `
             -CaptionEn 'Sketch molecules and multi-step reactions 100% offline with Ctrl+Shift+K and double-click editing.' `
             -CaptionKo 'Ctrl+Shift+K 또는 더블클릭으로 오프라인 Ketcher 2D 편집기를 열어 분자와 반응식을 그립니다.'
-        $c.Snap(4, 150, 240)
+        $c.Snap(8, $ptWInsert.X, $ptWInsert.Y)
+        $c.ClickAt($ptWInsert.X, $ptWInsert.Y, 'Click [Insert / Edit Structure] (or press Ctrl+Shift+K) to launch Ketcher.', '리본의 [Insert / Edit Structure] (또는 Ctrl+Shift+K)로 Ketcher를 엽니다.')
         $c.RunWithModal('Ketcher', 2200, {
             Show-LiveKetcherOverHost -OwnerHwnd $wHwnd -Context 'Word' -InitialInput $aspirinSmiles -HoldMs 2200
         }, 'Live WebView2 Ketcher 2D editor running offline inside Office.', '오프라인 WebView2 환경에서 실행 중인 실제 Ketcher 2D 편집기입니다.', @(
@@ -1648,7 +1656,7 @@ if ($Section -eq 'All' -or $Section -eq 'Common') {
             (Join-Path $publicDir 'workflow-ketcher.png'),
             (Join-Path $assetsDir 'workflow-ketcher.png')
         ))
-        $c.Snap(4, -1, -1)
+        $c.Snap(10, -1, -1)
         Complete-FeatureClip $c
 
         # --- 4.3 common-molecule-info ---
@@ -1657,14 +1665,15 @@ if ($Section -eq 'All' -or $Section -eq 'Common') {
             -TitleKo '상세 분자 정보 창 (Molecule Info) & 5가지 서식 내보내기' `
             -CaptionEn 'Inspect 12 property rows with a 2D preview and copy 17-column TSV, Multi-Line, Markdown, or JSON.' `
             -CaptionKo '2D 미리보기와 함께 12개 물성 행을 확인하고 17열 TSV·마크다운·JSON으로 즉시 복사합니다.'
-        $c.Snap(4, 880, 240)
+        $c.Snap(8, $ptWMolInfo.X, $ptWMolInfo.Y)
+        $c.ClickAt($ptWMolInfo.X, $ptWMolInfo.Y, 'Click [Molecule Info] to inspect 12 calculated properties and export formats.', '리본의 [Molecule Info]를 클릭해 12개 물성과 복사 서식을 확인합니다.')
         $c.RunWithModal('Molecule Info', 2200, {
             Show-LiveMoleculeInfoOverHost -OwnerHwnd $wHwnd -SmilesOrKet $aspirinSmiles -HoldMs 2200
         }, 'Live MoleculeInfoDialog with GDI+ property icons and 1-click Copy All format export.', 'GDI+ 벡터 아이콘과 원클릭 복사 버튼을 갖춘 실제 Molecule Info 대화상자입니다.', @(
             (Join-Path $publicDir 'molecule-info-dialog.png'),
             (Join-Path $assetsDir 'molecule-info-dialog.png')
         ))
-        $c.Snap(4, -1, -1)
+        $c.Snap(10, -1, -1)
         Complete-FeatureClip $c
 
         # --- 4.4 common-about-dialog ---
@@ -1673,11 +1682,12 @@ if ($Section -eq 'All' -or $Section -eq 'Common') {
             -TitleKo 'About func_SMILES2IMG 정보 창 & 원클릭 업데이트 확인' `
             -CaptionEn 'Standard 3-tab About dialog showing version v1.8.0, third-party engines, and license notices.' `
             -CaptionKo 'v1.8.0 버전, 내장 엔진 버전, 오픈소스 라이선스와 업데이트 확인을 제공하는 표준 3-탭 정보 창입니다.'
-        $c.Snap(4, 1080, 240)
+        $c.Snap(8, $ptWAbout.X, $ptWAbout.Y)
+        $c.ClickAt($ptWAbout.X, $ptWAbout.Y, 'Click [About func_SMILES2IMG] to view version info and check for updates.', '[About func_SMILES2IMG]를 눌러 버전 정보 및 업데이트 확인을 실행합니다.')
         $c.RunWithModal('About func_SMILES2IMG', 2200, {
             Show-LiveAboutOverHost -OwnerHwnd $wHwnd -HoldMs 2200
         }, 'Inspect Third-Party Components & License Notices or click [Check for Updates].', '외장 엔진 버전·오픈소스 라이선스 확인 및 [Check for Updates]를 바로 실행할 수 있습니다.')
-        $c.Snap(4, -1, -1)
+        $c.Snap(10, -1, -1)
         Complete-FeatureClip $c
 
         $doc.Close($false)
@@ -1701,17 +1711,19 @@ if ($Section -eq 'All' -or $Section -eq 'Common') {
         Start-Sleep -Milliseconds 600
         [void][LiveCaptureEngine]::SelectRibbonTab($pHwndC, 'SMILES')
         Start-Sleep -Milliseconds 500
+        $ptPMolstar = [LiveCaptureEngine]::FindControlRelativeCenter($pHwndC, @('3D Structure (Mol*)'))
 
         $c = Start-FeatureClip -Id 'common-molstar-3d' -HostApp 'common' -MainHwnd $pHwndC -OfficePid $pPidC `
             -TitleEn 'Mol* 3D Macromolecular & Protein Viewer (PDB / GLB)' `
             -TitleKo 'Mol* 3D 단백질 · 고분자 뷰어 (공통)' `
             -CaptionEn 'Load PDB codes like 1CRN or 4HHB, style ribbons/surfaces, and insert rotatable GLB models or PNG figures.' `
             -CaptionKo '1CRN, 4HHB 같은 PDB 코드를 불러와 3D 리본/표면 스타일을 꾸미고 문서에 삽입합니다.'
-        $c.Snap(4, 280, 240)
+        $c.Snap(8, $ptPMolstar.X, $ptPMolstar.Y)
+        $c.ClickAt($ptPMolstar.X, $ptPMolstar.Y, 'Click [3D Structure (Mol*)] on the PowerPoint ribbon to open the 3D viewer.', 'PowerPoint 리본에서 [3D Structure (Mol*)]를 클릭해 3D 뷰어를 엽니다.')
         $c.RunWithModal('Mol*', 2200, {
             [void](Show-LiveMolstarOverHost -OwnerHwnd $pHwndC -Context 'PowerPoint Slide' -PdbId '1CRN' -HoldMs 2200 -AutoApply $false)
         }, 'Live WebGL Mol* 3D viewer displaying Crambin (1CRN) cartoon structure over PowerPoint.', 'PowerPoint 위에서 1CRN 3D 단백질을 실시간 렌더링하는 WebGL Mol* 뷰어입니다.')
-        $c.Snap(4, -1, -1)
+        $c.Snap(10, -1, -1)
         Complete-FeatureClip $c
 
         $presC.Saved = -1
