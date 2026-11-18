@@ -34,7 +34,7 @@ const presetInfo = computed(() => {
         return {
           title: 'Dark Mode (다크 슬라이드·테마용 흰색 선)',
           desc: '결합선과 탄소 골격을 선명한 흰색 잉크로 바꾸고 투명 배경을 유지합니다. 어두운 학회 발표 슬라이드(PPT)나 다크 모드 엑셀에서 흰 네모 테두리 없이 완벽히 어우러집니다.',
-          formula: '=SMILES2IMG(A2, "#1e1e1e", "white")'
+          formula: '=SMILES2IMG(A2, "trans", "white")'
         }
       default:
         return {
@@ -61,7 +61,7 @@ const presetInfo = computed(() => {
         return {
           title: 'Dark Mode (White Ink + Transparent BG)',
           desc: 'Renders bonds in crisp white ink over a transparent background—blending seamlessly into dark PowerPoint slide decks and dark-mode spreadsheets without ugly white boxes.',
-          formula: '=SMILES2IMG(A2, "#1e1e1e", "white")'
+          formula: '=SMILES2IMG(A2, "trans", "white")'
         }
       default:
         return {

@@ -18,21 +18,21 @@ const activeApp = ref<'excel' | 'word' | 'ppt'>('excel')
       </span>
     </div>
 
-    <div class="oat-tabs">
-      <button type="button" :class="{ active: activeApp === 'excel' }" @click="activeApp = 'excel'">
+    <div class="oat-tabs" role="tablist" :aria-label="isKo ? 'Office 앱 선택' : 'Select Office App'">
+      <button type="button" role="tab" :aria-selected="activeApp === 'excel'" :class="{ active: activeApp === 'excel' }" @click="activeApp = 'excel'">
         📗 Microsoft Excel
       </button>
-      <button type="button" :class="{ active: activeApp === 'word' }" @click="activeApp = 'word'">
+      <button type="button" role="tab" :aria-selected="activeApp === 'word'" :class="{ active: activeApp === 'word' }" @click="activeApp = 'word'">
         📘 Microsoft Word
       </button>
-      <button type="button" :class="{ active: activeApp === 'ppt' }" @click="activeApp = 'ppt'">
+      <button type="button" role="tab" :aria-selected="activeApp === 'ppt'" :class="{ active: activeApp === 'ppt' }" @click="activeApp = 'ppt'">
         📙 Microsoft PowerPoint
       </button>
     </div>
 
     <div v-if="activeApp === 'excel'" class="oat-panel">
       <div class="oat-img-wrap">
-        <img :src="withBase('/excel-showcase.png')" alt="func_SMILES2IMG (Excel)" />
+        <img :src="withBase('/excel-showcase.png')" :alt="isKo ? 'Microsoft Excel에서 실행 중인 func_SMILES2IMG 구조식 및 물성 표' : 'func_SMILES2IMG running in Microsoft Excel'" />
       </div>
       <div class="oat-points">
         <div class="oat-point">
@@ -60,7 +60,7 @@ const activeApp = ref<'excel' | 'word' | 'ppt'>('excel')
 
     <div v-else-if="activeApp === 'word'" class="oat-panel">
       <div class="oat-img-wrap">
-        <img :src="withBase('/word-showcase.png')" alt="func_SMILES2IMG (Word)" />
+        <img :src="withBase('/word-showcase.png')" :alt="isKo ? 'Microsoft Word에서 실행 중인 func_SMILES2IMG 논문 원고' : 'func_SMILES2IMG running in Microsoft Word'" />
       </div>
       <div class="oat-points">
         <div class="oat-point">
@@ -88,7 +88,7 @@ const activeApp = ref<'excel' | 'word' | 'ppt'>('excel')
 
     <div v-else class="oat-panel">
       <div class="oat-img-wrap">
-        <img :src="withBase('/powerpoint-showcase.png')" alt="func_SMILES2IMG (PowerPoint)" />
+        <img :src="withBase('/powerpoint-showcase.png')" :alt="isKo ? 'Microsoft PowerPoint 다크 테마 슬라이드에서 실행 중인 func_SMILES2IMG' : 'func_SMILES2IMG running in Microsoft PowerPoint dark slide'" />
       </div>
       <div class="oat-points">
         <div class="oat-point">
@@ -100,7 +100,7 @@ const activeApp = ref<'excel' | 'word' | 'ppt'>('excel')
           <span>{{ isKo ? 'PDB 코드로 단백질·리간드 결합 모델을 넣어 발표 중 실시간으로 360° 회전 시연합니다.' : 'Embed interactive 3D protein models directly onto slides and rotate live during talks.' }}</span>
         </div>
         <div class="oat-point">
-          <strong>📋 {{ isKo ? '완성 슬라이드 갤러리 보고 3단계 따라 만들기' : 'Visual Slide Gallery -> 3-Step Follow-Along' }}</strong>
+          <strong>📋 {{ isKo ? '완성 슬라이드 갤러리 보고 3단계 따라 만들기' : 'Visual Slide Gallery ➔ 3-Step Follow-Along' }}</strong>
           <span>{{ isKo ? '원하는 슬라이드 디자인의 실제 작동 영상을 먼저 보고 3단계로 바로 제작합니다.' : 'Preview live-recorded slide decks first, then follow 3 steps to recreate each layout.' }}</span>
         </div>
       </div>
@@ -143,6 +143,11 @@ const activeApp = ref<'excel' | 'word' | 'ppt'>('excel')
   gap: 8px;
   margin-bottom: 16px;
 }
+@media (max-width: 640px) {
+  .oat-tabs {
+    grid-template-columns: 1fr;
+  }
+}
 .oat-tabs button {
   padding: 10px 12px;
   border-radius: 8px;
@@ -153,6 +158,9 @@ const activeApp = ref<'excel' | 'word' | 'ppt'>('excel')
   font-size: 0.92rem;
   cursor: pointer;
   transition: all 0.15s;
+}
+.oat-tabs button:hover {
+  border-color: var(--vp-c-brand-1);
 }
 .oat-tabs button.active {
   background: var(--vp-c-brand-soft);

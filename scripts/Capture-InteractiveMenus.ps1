@@ -230,14 +230,14 @@ if ($TargetApp -eq 'All' -or $TargetApp -eq 'Word') {
         $hwnd = [IntPtr]$word.ActiveWindow.Hwnd
         [uint32]$wPid = 0
         [void][LiveMenuCapture]::GetWindowThreadProcessId($hwnd, [ref]$wPid)
-        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 40, 10, 2400, 1720, 0x0040)
+        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 40, 10, 2400, 1800, 0x0040)
         Start-Sleep -Milliseconds 600
 
         $wwg = [LiveMenuCapture]::FindChildByClassPrefix($hwnd, '_WwG')
         $r = New-Object LiveMenuCapture+RECT
         [void][LiveMenuCapture]::GetWindowRect($wwg, [ref]$r)
         $cx = [int]($r.L + ($r.R - $r.L) * 0.24)
-        $cy = [int]($r.T + 85)
+        $cy = [int]($r.T + 55)
         $lp = [IntPtr](($cy -shl 16) -bor ($cx -band 0xFFFF))
         [void][LiveMenuCapture]::PostMessage($wwg, 0x007B, $wwg, $lp)
 
@@ -364,16 +364,16 @@ if ($TargetApp -eq 'All' -or $TargetApp -eq 'PowerPoint') {
         $hwnd = [IntPtr]$ppt.HWND
         [uint32]$pPid = 0
         [void][LiveMenuCapture]::GetWindowThreadProcessId($hwnd, [ref]$pPid)
-        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 40, 10, 2400, 1720, 0x0040)
+        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 40, 10, 2400, 1800, 0x0040)
         Start-Sleep -Milliseconds 600
 
         $mdi = [LiveMenuCapture]::FindChildByClassPrefix($hwnd, 'mdiClass')
         $r = New-Object LiveMenuCapture+RECT
         [void][LiveMenuCapture]::GetWindowRect($mdi, [ref]$r)
-        # Convert the PowerPoint picture left-center from Slide points (960x540) to screen pixels
+        # Convert the PowerPoint picture near top-left from Slide points (960x540) to screen pixels so all 3 cascading menus fit cleanly
         $aw = $ppt.ActiveWindow
-        $scrX = [int]$aw.PointsToScreenPixelsX($shp.Left + $shp.Width * 0.20)
-        $scrY = [int]$aw.PointsToScreenPixelsY($shp.Top + $shp.Height * 0.25)
+        $scrX = [int]$aw.PointsToScreenPixelsX($shp.Left + 24)
+        $scrY = [int]$aw.PointsToScreenPixelsY($shp.Top + 24)
         $clientX = $scrX - $r.L
         $clientY = $scrY - $r.T
         $lpClient = [IntPtr](($clientY -shl 16) -bor ($clientX -band 0xFFFF))

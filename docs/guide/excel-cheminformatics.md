@@ -92,7 +92,7 @@
 
 ## Recipe 10: Import & Export 12-Column `.SDF` / `.MOL` Chemical Databases
 
-**Goal:** Open multi-compound `.sdf` libraries directly into a formatted 12-column live-formula Excel sheet (`Name`, `Structure`, `SMILES`, `Formula`, `MW`, `Exact Mass`, `LogP`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`, `Lipinski`) or export worksheet rows back to V2000 `.sdf`.
+**Goal:** Open multi-compound `.sdf` libraries directly into a formatted 12-column live-formula Excel sheet (`Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`, `Lipinski`) or export worksheet rows back to V2000 `.sdf`.
 
 <FeatureMedia id="excel-sdf-workflow" />
 

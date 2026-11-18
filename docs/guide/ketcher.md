@@ -29,7 +29,7 @@ Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> to draw molecules and mu
 
 ### Step 3. Choose Background & Apply (`Ctrl + Enter`)
 * In the top bar, toggle between **`[Background: White]`** (for standard pages and sheets) and **`[Background: Transparent]`** (for dark slides and colored cells).
-* Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (or click **Apply**) to insert the rendered structure straight into your document!
+* Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (or click **`Apply to Cell / Document / Slide`**) to insert the rendered structure straight into your document!
 
 ---
 

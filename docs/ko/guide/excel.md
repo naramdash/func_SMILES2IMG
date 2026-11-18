@@ -20,11 +20,11 @@
 | 입력 방식 | 동작 방식 | 추천 상황 |
 | :--- | :--- | :--- |
 | **1. 셀 수식** | `=SMILES2IMG(A2)`, `=NAME2IMG("Aspirin")`, `=KET2IMG(A2)` | 수백 행의 화합물 표를 정렬·필터와 연동해 일괄 생성할 때 |
-| **2. 상단 `[SMILES]` 리본** | **`[Insert / Edit]`** (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd>) 또는 **`[Paste Structure]`** | 마우스로 직접 그리거나 복사해 둔 SMILES를 즉시 넣을 때 |
+| **2. 상단 `[SMILES]` 리본** | **`[Insert / Edit (SMILES)]`** (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd>) 또는 **`[Paste Structure]`** | 마우스로 직접 그리거나 복사해 둔 SMILES를 즉시 넣을 때 |
 | **3. 마우스 조작** | 셀 **더블클릭** ➔ 제자리 수정 / **우클릭** ➔ `Chemical Structure` | 기존 구조 수정, SVG/물성 복사, 상세 정보 창 열기 |
 
 ::: info 💡 내 엑셀 버전에 맞는 함수 선택 (365 vs `.FLOAT`)
-* **Microsoft 365 / Excel 2024 이상:** `=SMILES2IMG(A2)`, `=NAME2IMG(A2)`, `=KET2IMG(A2)`, `=INCHI2IMG(A2)` — 정렬·필터 시 행과 함께 움직이는 **네이티브 인셀 이미지**로 삽입됩니다.
+* **Microsoft 365 / Excel 2024 이상:** `=SMILES2IMG(B2)`, `=NAME2IMG(A2)`, `=KET2IMG(A2)`, `=INCHI2IMG(C2)` — 정렬·필터 시 행과 함께 움직이는 **네이티브 인셀 이미지**로 삽입됩니다.
 * **Excel 2016 / 2019 / 2021:** 함수 이름 뒤에 **`.FLOAT`**만 붙이세요(`=SMILES2IMG.FLOAT(A2)`, `=NAME2IMG.FLOAT(A2)`) — 셀 크기와 이동에 자동 연동되는 그림 도형(`xlMoveAndSize`)으로 생성됩니다.
 :::
 
@@ -32,18 +32,18 @@
 
 ## 레시피 1: SMILES 목록으로 고화질 구조식 표 만들기
 
-**목표:** A열에 SMILES를 모아두고 옆 열에 수식을 채워 비율이 유지되는 구조식 표를 만듭니다.
+**목표:** A열에 화합물명, B열에 SMILES를 모아두고 C열에 `=SMILES2IMG(B2)` 수식을 채워 비율이 유지되는 구조식 표를 만듭니다.
 
 ```text
-=SMILES2IMG(A2)
+=SMILES2IMG(B2)
 ```
 
 <FeatureMedia id="excel-formula-table" />
 
-1. `A2:A5` 셀에 SMILES 문자열(예: 아스피린 `CC(=O)Oc1ccccc1C(=O)O`)을 입력합니다.
-2. `B2` 셀에 `=SMILES2IMG(A2)`를 입력하고 <kbd>Enter</kbd>를 누릅니다.
-3. **행 높이(`80~100 pt`)**와 **열 너비**를 넓히면 비율이 깨지지 않고 자동으로 커집니다.
-4. 채우기 핸들을 아래로 드래그해 수백 행을 한 번에 채웁니다.
+1. `A2:A5`에 화합물 이름을, `B2:B5` 셀에 SMILES 문자열(예: 아스피린 `CC(=O)Oc1ccccc1C(=O)O`)을 입력합니다.
+2. `C2` 셀에 `=SMILES2IMG(B2)`를 입력하고 <kbd>Enter</kbd>를 누릅니다.
+3. **행 높이(`62~80 pt`)**와 **열 너비**를 넓히면 비율이 깨지지 않고 자동으로 커집니다.
+4. 채우기 핸들을 `C2:C5` 아래로 드래그해 수백 행을 한 번에 채웁니다.
 
 ---
 

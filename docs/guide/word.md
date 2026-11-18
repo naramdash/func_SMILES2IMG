@@ -59,7 +59,7 @@ Chapter 4 adds **Scheme 1** showing salicylic acid + acetic anhydride reacting t
 
 <FeatureMedia id="word-ch4-reaction-scheme" />
 
-* Draw your reaction arrows (`➔`), `+` signs, and catalyst annotations in Ketcher and click **Apply**.
+* Draw your reaction arrows (`➔`), `+` signs, and catalyst annotations in Ketcher and click **`Apply to Document`** (<kbd>Ctrl</kbd>+<kbd>Enter</kbd>).
 * Even after saving, closing, and sharing the `.docx` with co-authors, all atomic coordinates and arrow geometry remain embedded inside the picture so **double-clicking** restores the exact reaction scheme.
 
 ---

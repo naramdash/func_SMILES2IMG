@@ -12,10 +12,10 @@
                            "vttEn":  "/media/excel-overview/captions.en.vtt",
                            "vttKo":  "/media/excel-overview/captions.ko.vtt",
                            "version":  "1.8.0",
-                           "capturedAt":  "2026-11-17",
+                           "capturedAt":  "2026-11-18",
                            "width":  2240,
                            "height":  1260,
-                           "durationSec":  2.8
+                           "durationSec":  2.4
                        },
     "excel-formula-table":  {
                                 "id":  "excel-formula-table",
@@ -30,10 +30,10 @@
                                 "vttEn":  "/media/excel-formula-table/captions.en.vtt",
                                 "vttKo":  "/media/excel-formula-table/captions.ko.vtt",
                                 "version":  "1.8.0",
-                                "capturedAt":  "2026-11-17",
+                                "capturedAt":  "2026-11-18",
                                 "width":  2240,
                                 "height":  1260,
-                                "durationSec":  2.5
+                                "durationSec":  3.2
                             },
     "excel-name-cas":  {
                            "id":  "excel-name-cas",
@@ -48,10 +48,10 @@
                            "vttEn":  "/media/excel-name-cas/captions.en.vtt",
                            "vttKo":  "/media/excel-name-cas/captions.ko.vtt",
                            "version":  "1.8.0",
-                           "capturedAt":  "2026-11-17",
+                           "capturedAt":  "2026-11-18",
                            "width":  2240,
                            "height":  1260,
-                           "durationSec":  2.6
+                           "durationSec":  2.3
                        },
     "excel-style-matrix":  {
                                "id":  "excel-style-matrix",
@@ -66,10 +66,10 @@
                                "vttEn":  "/media/excel-style-matrix/captions.en.vtt",
                                "vttKo":  "/media/excel-style-matrix/captions.ko.vtt",
                                "version":  "1.8.0",
-                               "capturedAt":  "2026-11-17",
+                               "capturedAt":  "2026-11-18",
                                "width":  2240,
                                "height":  1260,
-                               "durationSec":  3.2
+                               "durationSec":  2.7
                            },
     "excel-reactions-ket":  {
                                 "id":  "excel-reactions-ket",
@@ -84,10 +84,10 @@
                                 "vttEn":  "/media/excel-reactions-ket/captions.en.vtt",
                                 "vttKo":  "/media/excel-reactions-ket/captions.ko.vtt",
                                 "version":  "1.8.0",
-                                "capturedAt":  "2026-11-17",
+                                "capturedAt":  "2026-11-18",
                                 "width":  2240,
                                 "height":  1260,
-                                "durationSec":  3.6
+                                "durationSec":  2.4
                             },
     "excel-ribbon-tools":  {
                                "id":  "excel-ribbon-tools",
@@ -102,10 +102,10 @@
                                "vttEn":  "/media/excel-ribbon-tools/captions.en.vtt",
                                "vttKo":  "/media/excel-ribbon-tools/captions.ko.vtt",
                                "version":  "1.8.0",
-                               "capturedAt":  "2026-11-17",
+                               "capturedAt":  "2026-11-18",
                                "width":  2240,
                                "height":  1260,
-                               "durationSec":  4.5
+                               "durationSec":  4.6
                            },
     "excel-legacy-float":  {
                                "id":  "excel-legacy-float",
@@ -120,10 +120,10 @@
                                "vttEn":  "/media/excel-legacy-float/captions.en.vtt",
                                "vttKo":  "/media/excel-legacy-float/captions.ko.vtt",
                                "version":  "1.8.0",
-                               "capturedAt":  "2026-11-17",
+                               "capturedAt":  "2026-11-18",
                                "width":  2240,
                                "height":  1260,
-                               "durationSec":  1.2
+                               "durationSec":  2.9
                            },
     "excel-cheminformatics":  {
                                   "id":  "excel-cheminformatics",
@@ -138,10 +138,10 @@
                                   "vttEn":  "/media/excel-cheminformatics/captions.en.vtt",
                                   "vttKo":  "/media/excel-cheminformatics/captions.ko.vtt",
                                   "version":  "1.8.0",
-                                  "capturedAt":  "2026-11-17",
+                                  "capturedAt":  "2026-11-18",
                                   "width":  2240,
                                   "height":  1260,
-                                  "durationSec":  1.3
+                                  "durationSec":  2.3
                               },
     "excel-sar-screening":  {
                                 "id":  "excel-sar-screening",
@@ -156,10 +156,10 @@
                                 "vttEn":  "/media/excel-sar-screening/captions.en.vtt",
                                 "vttKo":  "/media/excel-sar-screening/captions.ko.vtt",
                                 "version":  "1.8.0",
-                                "capturedAt":  "2026-11-17",
+                                "capturedAt":  "2026-11-18",
                                 "width":  2240,
                                 "height":  1260,
-                                "durationSec":  1.3
+                                "durationSec":  2.3
                             },
     "excel-conversions":  {
                               "id":  "excel-conversions",
@@ -174,10 +174,10 @@
                               "vttEn":  "/media/excel-conversions/captions.en.vtt",
                               "vttKo":  "/media/excel-conversions/captions.ko.vtt",
                               "version":  "1.8.0",
-                              "capturedAt":  "2026-11-17",
+                              "capturedAt":  "2026-11-18",
                               "width":  2240,
                               "height":  1260,
-                              "durationSec":  1.3
+                              "durationSec":  2
                           },
     "excel-sdf-workflow":  {
                                "id":  "excel-sdf-workflow",
@@ -192,10 +192,10 @@
                                "vttEn":  "/media/excel-sdf-workflow/captions.en.vtt",
                                "vttKo":  "/media/excel-sdf-workflow/captions.ko.vtt",
                                "version":  "1.8.0",
-                               "capturedAt":  "2026-11-17",
+                               "capturedAt":  "2026-11-18",
                                "width":  2240,
                                "height":  1260,
-                               "durationSec":  2.1
+                               "durationSec":  2.2
                            },
     "word-ch1-insert-ketcher":  {
                                     "id":  "word-ch1-insert-ketcher",
@@ -210,10 +210,10 @@
                                     "vttEn":  "/media/word-ch1-insert-ketcher/captions.en.vtt",
                                     "vttKo":  "/media/word-ch1-insert-ketcher/captions.ko.vtt",
                                     "version":  "1.8.0",
-                                    "capturedAt":  "2026-11-17",
+                                    "capturedAt":  "2026-11-18",
                                     "width":  2240,
                                     "height":  1260,
-                                    "durationSec":  3.2
+                                    "durationSec":  2.4
                                 },
     "word-ch2-quick-insert":  {
                                   "id":  "word-ch2-quick-insert",
@@ -228,10 +228,10 @@
                                   "vttEn":  "/media/word-ch2-quick-insert/captions.en.vtt",
                                   "vttKo":  "/media/word-ch2-quick-insert/captions.ko.vtt",
                                   "version":  "1.8.0",
-                                  "capturedAt":  "2026-11-17",
+                                  "capturedAt":  "2026-11-18",
                                   "width":  2240,
                                   "height":  1260,
-                                  "durationSec":  2.1
+                                  "durationSec":  1.9
                               },
     "word-ch3-compound-table":  {
                                     "id":  "word-ch3-compound-table",
@@ -241,15 +241,15 @@
                                     "shot":  "/media/word-ch3-compound-table/shot.png",
                                     "webm":  "/media/word-ch3-compound-table/clip.webm",
                                     "mp4":  "/media/word-ch3-compound-table/clip.mp4",
-                                    "captionEn":  "Insert structures inside Word table cells and open Molecule Info to copy TSV rows or properties.",
-                                    "captionKo":  "워드 표 셀 안에 구조식을 넣고 Molecule Info 창에서 화학식·분자량·TSV 행을 복사합니다.",
+                                    "captionEn":  "Insert structures inside Word table cells and open Molecule Info to copy 17-col TSV rows.",
+                                    "captionKo":  "워드 표 셀 안에 구조식을 넣고 Molecule Info 창에서 12개 물성 행과 17열 TSV를 복사합니다.",
                                     "vttEn":  "/media/word-ch3-compound-table/captions.en.vtt",
                                     "vttKo":  "/media/word-ch3-compound-table/captions.ko.vtt",
                                     "version":  "1.8.0",
-                                    "capturedAt":  "2026-11-17",
+                                    "capturedAt":  "2026-11-18",
                                     "width":  2240,
                                     "height":  1260,
-                                    "durationSec":  2.3
+                                    "durationSec":  2.1
                                 },
     "word-overview":  {
                           "id":  "word-overview",
@@ -264,10 +264,10 @@
                           "vttEn":  "/media/word-overview/captions.en.vtt",
                           "vttKo":  "/media/word-overview/captions.ko.vtt",
                           "version":  "1.8.0",
-                          "capturedAt":  "2026-11-17",
+                          "capturedAt":  "2026-11-18",
                           "width":  2240,
                           "height":  1260,
-                          "durationSec":  1.8
+                          "durationSec":  1.7
                       },
     "word-ch4-reaction-scheme":  {
                                      "id":  "word-ch4-reaction-scheme",
@@ -277,15 +277,15 @@
                                      "shot":  "/media/word-ch4-reaction-scheme/shot.png",
                                      "webm":  "/media/word-ch4-reaction-scheme/clip.webm",
                                      "mp4":  "/media/word-ch4-reaction-scheme/clip.mp4",
-                                     "captionEn":  "Insert reaction schemes via KET; arrows and catalyst annotations survive save \u0026 reopen.",
+                                     "captionEn":  "Draw reaction schemes in Ketcher; arrows and catalyst annotations survive save \u0026 reopen.",
                                      "captionKo":  "반응 화살표와 촉매 주석이 포함된 반응식도 AlternativeText KET 데이터로 100% 보존됩니다.",
                                      "vttEn":  "/media/word-ch4-reaction-scheme/captions.en.vtt",
                                      "vttKo":  "/media/word-ch4-reaction-scheme/captions.ko.vtt",
                                      "version":  "1.8.0",
-                                     "capturedAt":  "2026-11-17",
+                                     "capturedAt":  "2026-11-18",
                                      "width":  2240,
                                      "height":  1260,
-                                     "durationSec":  1.2
+                                     "durationSec":  2.4
                                  },
     "word-ch5-edit-and-molstar":  {
                                       "id":  "word-ch5-edit-and-molstar",
@@ -300,10 +300,10 @@
                                       "vttEn":  "/media/word-ch5-edit-and-molstar/captions.en.vtt",
                                       "vttKo":  "/media/word-ch5-edit-and-molstar/captions.ko.vtt",
                                       "version":  "1.8.0",
-                                      "capturedAt":  "2026-11-17",
+                                      "capturedAt":  "2026-11-18",
                                       "width":  2240,
                                       "height":  1260,
-                                      "durationSec":  2.8
+                                      "durationSec":  2.1
                                   },
     "word-ch6-publication-finish":  {
                                         "id":  "word-ch6-publication-finish",
@@ -318,10 +318,10 @@
                                         "vttEn":  "/media/word-ch6-publication-finish/captions.en.vtt",
                                         "vttKo":  "/media/word-ch6-publication-finish/captions.ko.vtt",
                                         "version":  "1.8.0",
-                                        "capturedAt":  "2026-11-17",
+                                        "capturedAt":  "2026-11-18",
                                         "width":  2240,
                                         "height":  1260,
-                                        "durationSec":  3.2
+                                        "durationSec":  2.9
                                     },
     "powerpoint-slide-candidate-grid":  {
                                             "id":  "powerpoint-slide-candidate-grid",
@@ -336,29 +336,11 @@
                                             "vttEn":  "/media/powerpoint-slide-candidate-grid/captions.en.vtt",
                                             "vttKo":  "/media/powerpoint-slide-candidate-grid/captions.ko.vtt",
                                             "version":  "1.8.0",
-                                            "capturedAt":  "2026-11-17",
+                                            "capturedAt":  "2026-11-18",
                                             "width":  2240,
                                             "height":  1260,
-                                            "durationSec":  2.3
+                                            "durationSec":  2.5
                                         },
-    "powerpoint-overview":  {
-                                "id":  "powerpoint-overview",
-                                "host":  "powerpoint",
-                                "titleEn":  "PowerPoint Overview: Dark Mode Slides, Reactions \u0026 3D Proteins",
-                                "titleKo":  "PowerPoint 개요: 다크 모드 슬라이드, 반응식 \u0026 3D 단백질 발표",
-                                "shot":  "/media/powerpoint-overview/shot.png",
-                                "webm":  "/media/powerpoint-overview/clip.webm",
-                                "mp4":  "/media/powerpoint-overview/clip.mp4",
-                                "captionEn":  "Explore the PowerPoint SMILES ribbon tab on a dark presentation deck.",
-                                "captionKo":  "PowerPoint 상단 SMILES 리본 탭과 다크 테마 발표 슬라이드 구성을 확인합니다.",
-                                "vttEn":  "/media/powerpoint-overview/captions.en.vtt",
-                                "vttKo":  "/media/powerpoint-overview/captions.ko.vtt",
-                                "version":  "1.8.0",
-                                "capturedAt":  "2026-11-17",
-                                "width":  2240,
-                                "height":  1260,
-                                "durationSec":  1.8
-                            },
     "powerpoint-slide-dark-mode":  {
                                        "id":  "powerpoint-slide-dark-mode",
                                        "host":  "powerpoint",
@@ -372,10 +354,10 @@
                                        "vttEn":  "/media/powerpoint-slide-dark-mode/captions.en.vtt",
                                        "vttKo":  "/media/powerpoint-slide-dark-mode/captions.ko.vtt",
                                        "version":  "1.8.0",
-                                       "capturedAt":  "2026-11-17",
+                                       "capturedAt":  "2026-11-18",
                                        "width":  2240,
                                        "height":  1260,
-                                       "durationSec":  2
+                                       "durationSec":  1.8
                                    },
     "powerpoint-slide-reaction":  {
                                       "id":  "powerpoint-slide-reaction",
@@ -390,10 +372,10 @@
                                       "vttEn":  "/media/powerpoint-slide-reaction/captions.en.vtt",
                                       "vttKo":  "/media/powerpoint-slide-reaction/captions.ko.vtt",
                                       "version":  "1.8.0",
-                                      "capturedAt":  "2026-11-17",
+                                      "capturedAt":  "2026-11-18",
                                       "width":  2240,
                                       "height":  1260,
-                                      "durationSec":  3
+                                      "durationSec":  2.1
                                   },
     "powerpoint-slide-molstar-3d":  {
                                         "id":  "powerpoint-slide-molstar-3d",
@@ -403,15 +385,15 @@
                                         "shot":  "/media/powerpoint-slide-molstar-3d/shot.png",
                                         "webm":  "/media/powerpoint-slide-molstar-3d/clip.webm",
                                         "mp4":  "/media/powerpoint-slide-molstar-3d/clip.mp4",
-                                        "captionEn":  "Launch [3D Structure (Mol*)], fetch PDB 1CRN, and apply to your slide.",
-                                        "captionKo":  "[3D Structure (Mol*)]로 1CRN 단백질을 불러와 슬라이드에 삽입합니다.",
+                                        "captionEn":  "Launch [3D Structure (Mol*)], fetch PDB 1CRN, and place a transparent figure onto your slide.",
+                                        "captionKo":  "[3D Structure (Mol*)]로 1CRN 단백질을 불러와 슬라이드에 투명하게 삽입합니다.",
                                         "vttEn":  "/media/powerpoint-slide-molstar-3d/captions.en.vtt",
                                         "vttKo":  "/media/powerpoint-slide-molstar-3d/captions.ko.vtt",
                                         "version":  "1.8.0",
-                                        "capturedAt":  "2026-11-17",
+                                        "capturedAt":  "2026-11-18",
                                         "width":  2240,
                                         "height":  1260,
-                                        "durationSec":  2.8
+                                        "durationSec":  2.2
                                     },
     "powerpoint-slide-textbox-quick-insert":  {
                                                   "id":  "powerpoint-slide-textbox-quick-insert",
@@ -426,10 +408,10 @@
                                                   "vttEn":  "/media/powerpoint-slide-textbox-quick-insert/captions.en.vtt",
                                                   "vttKo":  "/media/powerpoint-slide-textbox-quick-insert/captions.ko.vtt",
                                                   "version":  "1.8.0",
-                                                  "capturedAt":  "2026-11-17",
+                                                  "capturedAt":  "2026-11-18",
                                                   "width":  2240,
                                                   "height":  1260,
-                                                  "durationSec":  2.1
+                                                  "durationSec":  1.9
                                               },
     "powerpoint-slide-live-qa-info":  {
                                           "id":  "powerpoint-slide-live-qa-info",
@@ -439,15 +421,15 @@
                                           "shot":  "/media/powerpoint-slide-live-qa-info/shot.png",
                                           "webm":  "/media/powerpoint-slide-live-qa-info/clip.webm",
                                           "mp4":  "/media/powerpoint-slide-live-qa-info/clip.mp4",
-                                          "captionEn":  "Select any slide molecule and click [Molecule Info] to inspect 17 descriptors live.",
+                                          "captionEn":  "Select any slide molecule and click [Molecule Info] to inspect all descriptors live.",
                                           "captionKo":  "발표 도중 구조식 도형을 선택하고 [Molecule Info]를 눌러 분자량·물성을 즉시 확인합니다.",
                                           "vttEn":  "/media/powerpoint-slide-live-qa-info/captions.en.vtt",
                                           "vttKo":  "/media/powerpoint-slide-live-qa-info/captions.ko.vtt",
                                           "version":  "1.8.0",
-                                          "capturedAt":  "2026-11-17",
+                                          "capturedAt":  "2026-11-18",
                                           "width":  2240,
                                           "height":  1260,
-                                          "durationSec":  2.2
+                                          "durationSec":  2.1
                                       },
     "powerpoint-slide-batch-style":  {
                                          "id":  "powerpoint-slide-batch-style",
@@ -462,11 +444,29 @@
                                          "vttEn":  "/media/powerpoint-slide-batch-style/captions.en.vtt",
                                          "vttKo":  "/media/powerpoint-slide-batch-style/captions.ko.vtt",
                                          "version":  "1.8.0",
-                                         "capturedAt":  "2026-11-17",
+                                         "capturedAt":  "2026-11-18",
                                          "width":  2240,
                                          "height":  1260,
-                                         "durationSec":  3.2
+                                         "durationSec":  3
                                      },
+    "powerpoint-overview":  {
+                                "id":  "powerpoint-overview",
+                                "host":  "powerpoint",
+                                "titleEn":  "PowerPoint Overview: Dark Mode Slides, Reactions \u0026 3D Proteins",
+                                "titleKo":  "PowerPoint 개요: 다크 모드 슬라이드, 반응식 \u0026 3D 단백질 발표",
+                                "shot":  "/media/powerpoint-overview/shot.png",
+                                "webm":  "/media/powerpoint-overview/clip.webm",
+                                "mp4":  "/media/powerpoint-overview/clip.mp4",
+                                "captionEn":  "Browse the complete 6-slide presentation deck with dark-mode grids, reactions, and 3D proteins.",
+                                "captionKo":  "다크 모드 그리드, 합성 반응식, 3D 단백질이 모두 담긴 6장 PowerPoint 발표 자료 전체 화면입니다.",
+                                "vttEn":  "/media/powerpoint-overview/captions.en.vtt",
+                                "vttKo":  "/media/powerpoint-overview/captions.ko.vtt",
+                                "version":  "1.8.0",
+                                "capturedAt":  "2026-11-18",
+                                "width":  2240,
+                                "height":  1260,
+                                "durationSec":  1.8
+                            },
     "common-ketcher-2d":  {
                               "id":  "common-ketcher-2d",
                               "host":  "common",
@@ -480,28 +480,10 @@
                               "vttEn":  "/media/common-ketcher-2d/captions.en.vtt",
                               "vttKo":  "/media/common-ketcher-2d/captions.ko.vtt",
                               "version":  "1.8.0",
-                              "capturedAt":  "2026-11-17",
+                              "capturedAt":  "2026-11-18",
                               "width":  2240,
                               "height":  1260,
-                              "durationSec":  2.4
-                          },
-    "common-molstar-3d":  {
-                              "id":  "common-molstar-3d",
-                              "host":  "common",
-                              "titleEn":  "Mol* 3D Macromolecular \u0026 Protein Viewer (PDB / GLB)",
-                              "titleKo":  "Mol* 3D 단백질 · 고분자 뷰어 (공통)",
-                              "shot":  "/media/common-molstar-3d/shot.png",
-                              "webm":  "/media/common-molstar-3d/clip.webm",
-                              "mp4":  "/media/common-molstar-3d/clip.mp4",
-                              "captionEn":  "Load PDB codes like 1CRN or 4HHB, style ribbons/surfaces, and insert rotatable GLB models or PNG figures.",
-                              "captionKo":  "1CRN, 4HHB 같은 PDB 코드를 불러와 3D 리본/표면 스타일을 꾸미고 문서에 삽입합니다.",
-                              "vttEn":  "/media/common-molstar-3d/captions.en.vtt",
-                              "vttKo":  "/media/common-molstar-3d/captions.ko.vtt",
-                              "version":  "1.8.0",
-                              "capturedAt":  "2026-11-17",
-                              "width":  2240,
-                              "height":  1260,
-                              "durationSec":  2.2
+                              "durationSec":  1.4
                           },
     "common-molecule-info":  {
                                  "id":  "common-molecule-info",
@@ -511,12 +493,12 @@
                                  "shot":  "/media/common-molecule-info/shot.png",
                                  "webm":  "/media/common-molecule-info/clip.webm",
                                  "mp4":  "/media/common-molecule-info/clip.mp4",
-                                 "captionEn":  "Inspect 17 properties with a 2D thumbnail preview and copy as TSV, Multi-Line, Markdown, or JSON.",
-                                 "captionKo":  "2D 미리보기와 함께 17가지 물성을 확인하고 TSV·마크다운·JSON으로 즉시 복사합니다.",
+                                 "captionEn":  "Inspect 12 property rows with a 2D preview and copy 17-column TSV, Multi-Line, Markdown, or JSON.",
+                                 "captionKo":  "2D 미리보기와 함께 12개 물성 행을 확인하고 17열 TSV·마크다운·JSON으로 즉시 복사합니다.",
                                  "vttEn":  "/media/common-molecule-info/captions.en.vtt",
                                  "vttKo":  "/media/common-molecule-info/captions.ko.vtt",
                                  "version":  "1.8.0",
-                                 "capturedAt":  "2026-11-17",
+                                 "capturedAt":  "2026-11-18",
                                  "width":  2240,
                                  "height":  1260,
                                  "durationSec":  1.2
@@ -534,9 +516,27 @@
                                 "vttEn":  "/media/common-about-dialog/captions.en.vtt",
                                 "vttKo":  "/media/common-about-dialog/captions.ko.vtt",
                                 "version":  "1.8.0",
-                                "capturedAt":  "2026-11-17",
+                                "capturedAt":  "2026-11-18",
                                 "width":  2240,
                                 "height":  1260,
                                 "durationSec":  1.5
-                            }
+                            },
+    "common-molstar-3d":  {
+                              "id":  "common-molstar-3d",
+                              "host":  "common",
+                              "titleEn":  "Mol* 3D Macromolecular \u0026 Protein Viewer (PDB / GLB)",
+                              "titleKo":  "Mol* 3D 단백질 · 고분자 뷰어 (공통)",
+                              "shot":  "/media/common-molstar-3d/shot.png",
+                              "webm":  "/media/common-molstar-3d/clip.webm",
+                              "mp4":  "/media/common-molstar-3d/clip.mp4",
+                              "captionEn":  "Load PDB codes like 1CRN or 4HHB, style ribbons/surfaces, and insert rotatable GLB models or PNG figures.",
+                              "captionKo":  "1CRN, 4HHB 같은 PDB 코드를 불러와 3D 리본/표면 스타일을 꾸미고 문서에 삽입합니다.",
+                              "vttEn":  "/media/common-molstar-3d/captions.en.vtt",
+                              "vttKo":  "/media/common-molstar-3d/captions.ko.vtt",
+                              "version":  "1.8.0",
+                              "capturedAt":  "2026-11-18",
+                              "width":  2240,
+                              "height":  1260,
+                              "durationSec":  1
+                          }
 }

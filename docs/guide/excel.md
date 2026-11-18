@@ -20,11 +20,11 @@
 | Entry Method | How It Works | Best For |
 | :--- | :--- | :--- |
 | **1. Cell Formulas** | `=SMILES2IMG(A2)`, `=NAME2IMG("Aspirin")`, `=KET2IMG(A2)` | Batch rendering hundreds of rows that sort and filter cleanly |
-| **2. Top `[SMILES]` Ribbon** | Click **`[Insert / Edit]`** (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd>) or **`[Paste Structure]`** | Drawing new molecules/reactions or pasting clipboard SMILES |
+| **2. Top `[SMILES]` Ribbon** | Click **`[Insert / Edit (SMILES)]`** (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd>) or **`[Paste Structure]`** | Drawing new molecules/reactions or pasting clipboard SMILES |
 | **3. Mouse Actions** | **Double-click** any structure cell to edit in place; **Right-click** ➔ `Chemical Structure` | Rapid edits, copy SVG/SMILES, or opening Molecule Info |
 
 ::: info 💡 Microsoft 365 / 2024+ vs. Excel 2016–2021 (`.FLOAT`)
-* **Microsoft 365 / Excel 2024+:** Use `=SMILES2IMG(A2)`, `=NAME2IMG(A2)`, `=KET2IMG(A2)`, `=INCHI2IMG(A2)` for native **in-cell images** that sort and filter with table rows.
+* **Microsoft 365 / Excel 2024+:** Use `=SMILES2IMG(B2)`, `=NAME2IMG(A2)`, `=KET2IMG(A2)`, `=INCHI2IMG(C2)` for native **in-cell images** that sort and filter with table rows.
 * **Excel 2016 / 2019 / 2021:** Append **`.FLOAT`** (`=SMILES2IMG.FLOAT(A2)`, `=NAME2IMG.FLOAT(A2)`) to create cell-anchored floating shapes (`xlMoveAndSize`).
 :::
 
@@ -32,18 +32,18 @@
 
 ## Recipe 1: Turn a SMILES Column into a Scaled Structure Table
 
-**Goal:** Place SMILES strings in Column A and render crisp, aspect-ratio-locked 2D structures in Column B alongside formula and molecular weight columns.
+**Goal:** Keep compound names in Column A and SMILES strings in Column B, then render crisp, aspect-ratio-locked 2D structures in Column C alongside formula and molecular weight columns.
 
 ```text
-=SMILES2IMG(A2)
+=SMILES2IMG(B2)
 ```
 
 <FeatureMedia id="excel-formula-table" />
 
-1. Put SMILES strings in `A2:A5` (e.g., `CC(=O)Oc1ccccc1C(=O)O` for Aspirin).
-2. Type `=SMILES2IMG(A2)` in `B2` and press <kbd>Enter</kbd>.
-3. Increase **row height (e.g. `80–100 pt`)** and **column width**—molecules scale automatically without distortion.
-4. Drag the fill handle down to render hundreds of rows in milliseconds.
+1. Put compound names in `A2:A5` and SMILES strings in `B2:B5` (e.g., `CC(=O)Oc1ccccc1C(=O)O` for Aspirin).
+2. Type `=SMILES2IMG(B2)` in `C2` and press <kbd>Enter</kbd>.
+3. Increase **row height (e.g. `62–80 pt`)** and **column width**—molecules scale automatically without distortion.
+4. Drag the fill handle down (`C2:C5`) to render hundreds of rows in milliseconds.
 
 ---
 

@@ -1,8 +1,8 @@
 WEBVTT
 
-00:00:01.000 --> 00:00:03.000
+00:00:00.833 --> 00:00:01.153
 Open Ketcher 2D editor to draw or inspect the KET reaction scheme.
 
-00:00:01.000 --> 00:00:04.000
-Apply reaction scheme back to cell B2 as =KET2IMG(A2).
+00:00:01.183 --> 00:00:02.420
+Apply the salicylic acid + acetic anhydride reaction back to B2.
 

@@ -13,7 +13,7 @@ hero:
       text: 🚀 Free Install & 1-Min Quickstart
       link: /guide/getting-started
     - theme: alt
-      text: 🛠️ Try in Browser (Formula Generator)
+      text: 🛠️ Try Interactive Formula Builder
       link: /tools/formula-builder
 
 features:
@@ -30,7 +30,7 @@ features:
     title: "Interactive 360° 3D Proteins (Mol*)"
     details: "Enter a 4-letter PDB code or open a local file to embed rotatable 3D protein-ligand complexes directly into PowerPoint slides, Word manuscripts, and Excel."
   - icon: 🎨
-    title: "1-Click ACS Monograph B&W, Dark Mode & SVG"
+    title: "1-Click ACS Monochrome B&W, Dark Mode & SVG"
     details: "Unify every structure in a sheet, paper, or slide deck into ACS black-and-white or dark-mode white ink in one click, copy lossless SVG vectors, or import/export .sdf files."
   - icon: 🛡️
     title: "100% Free, Offline & Confidential"
@@ -49,7 +49,7 @@ Explore all features without typing formulas from scratch. Download the official
 
 <div class="s2i-card-grid" style="margin-top: 16px;">
   <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
-    <div class="s2i-card-title">📥 Download func_SMILES2IMG_Comprehensive_Showcase.xlsx (.xlsx)</div>
+    <div class="s2i-card-title">📥 Download SMILES2IMG_Comprehensive_Showcase.xlsx (.xlsx)</div>
     <p class="s2i-card-desc">0. Quick Guide & Shortcuts · 1. Structure to Image (Name/CAS/SMILES) · 2. Molecular Properties, Lipinski Ro5 & 3D Complexity · 3. Substructure & Similarity · 4. Drawing Styles & Options · 5. Reactions & KET Canvas · 6. Legacy Excel (.FLOAT) · 7. 3D & Ribbon Tools (8 sheets, 100% audited with zero errors)</p>
   </a>
 </div>

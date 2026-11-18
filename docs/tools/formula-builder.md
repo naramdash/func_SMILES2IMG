@@ -85,13 +85,13 @@ Want to explore all formulas above inside a live Excel workbook without typing? 
 
 ## 🔗 Related Guides
 
-<div class="feature-grid-2">
-  <div class="feature-card">
-    <h4>📐 <a href="/reference/formula">Excel Formula Cheat Sheet</a></h4>
-    <p>Full parameter specifications and alias tables for all 40 Excel chemical functions.</p>
-  </div>
-  <div class="feature-card">
-    <h4>📗 <a href="/guide/excel">Microsoft Excel Basics Guide</a></h4>
-    <p>Learn how to build compound tables, resize structure cells, and edit molecules in-place.</p>
-  </div>
+<div class="s2i-card-grid">
+  <a href="../reference/formula" class="s2i-card">
+    <div class="s2i-card-title">📐 Excel Formula Cheat Sheet</div>
+    <p class="s2i-card-desc">Full parameter specifications and alias tables for all 40 Excel chemical functions.</p>
+  </a>
+  <a href="../guide/excel" class="s2i-card">
+    <div class="s2i-card-title">📗 Microsoft Excel Recipe Cookbook</div>
+    <p class="s2i-card-desc">Learn how to build compound tables, resize structure cells, and edit molecules in-place.</p>
+  </a>
 </div>

@@ -68,6 +68,10 @@ function checkLink(relDoc, fullDocPath, url, type) {
   }
 
   if (cleanUrl.startsWith('/')) {
+    if (type === 'HTML') {
+      issues.push(`[${relDoc}] HTML root-relative href="${url}" lacks VitePress base '/func_SMILES2IMG/' (use relative path or withBase)`);
+      return;
+    }
     cleanUrl = cleanUrl.substring(1);
     const inPublic = path.join(publicDir, cleanUrl);
     const inDocs = path.join(docsDir, cleanUrl);

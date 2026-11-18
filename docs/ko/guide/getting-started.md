@@ -6,7 +6,7 @@
 
 ## Step 1. 10초 PowerShell 자동 설치
 
-<QuickInstallBox :hide-quickstart-btn="true" />
+<QuickInstallBox />
 
 ::: tip 🚀 `v1.8.0` 정식 포함 기능
 위 명령어로 설치되는 **`func_SMILES2IMG v1.8.0`**에는 Excel·Word·PowerPoint 통합 `Chemical Structure >` 우클릭 메뉴, 앱 간 물질명·프리로드·비율 고정 통일, 2D 미리보기 표준 Windows Molecule Info/About 창, `=SMILES2HEAVY`~`=SMILES2CHIRAL` 3D 복잡도 함수 5종, 12열 `.sdf` 가져오기가 포함되어 있습니다.
@@ -56,7 +56,7 @@
 수식을 직접 치지 않아도 40종 전체 함수와 예제가 동작하는 **8개 탭 마스터 워크북**을 바로 열어볼 수 있습니다:
 <div style="margin: 10px 0 4px 0;">
   <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card" style="display: block; padding: 12px 16px; border: 1.5px solid var(--vp-c-brand-1); border-radius: 8px; text-decoration: none;">
-    <div style="font-weight: 700; color: var(--vp-c-brand-1); font-size: 1rem;">📥 func_SMILES2IMG_Comprehensive_Showcase.xlsx 다운로드 (.xlsx)</div>
+    <div style="font-weight: 700; color: var(--vp-c-brand-1); font-size: 1rem;">📥 SMILES2IMG_Comprehensive_Showcase.xlsx 다운로드 (.xlsx)</div>
     <div style="color: var(--vp-c-text-2); font-size: 0.88rem; margin-top: 4px;">0. 빠른 시작 · 1. 이름/CAS/SMILES · 2. Lipinski &amp; 3D 복잡도 · 3. 부분구조/유사도 · 4. 스타일 매트릭스 · 5. KET 반응식 · 6. 구형 엑셀(.FLOAT) · 7. 3D &amp; 리본 도구</div>
   </a>
 </div>

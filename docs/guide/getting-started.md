@@ -6,7 +6,7 @@ Install **`func_SMILES2IMG`** in 10 seconds without administrator rights, then j
 
 ## Step 1. 10-Second Auto-Install (PowerShell)
 
-<QuickInstallBox :hide-quickstart-btn="true" />
+<QuickInstallBox />
 
 ::: tip 🚀 What's Included in `v1.8.0`
 Running the command above automatically installs **`func_SMILES2IMG v1.8.0`**, featuring unified `Chemical Structure >` cascading right-click menus across Excel/Word/PowerPoint, cross-host text/name parity & aspect-ratio lock, refreshed Windows Info & About dialogs with 2D preview, `=SMILES2HEAVY`–`=SMILES2CHIRAL` 3D complexity formulas, and 12-column `.sdf` import.
@@ -56,7 +56,7 @@ Paste either formula below into any empty cell (on Excel 2016–2021, append **`
 Explore all capabilities without typing formulas from scratch! Download the official **8-tab master guide workbook**:
 <div style="margin: 10px 0 4px 0;">
   <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card" style="display: block; padding: 12px 16px; border: 1.5px solid var(--vp-c-brand-1); border-radius: 8px; text-decoration: none;">
-    <div style="font-weight: 700; color: var(--vp-c-brand-1); font-size: 1rem;">📥 Download func_SMILES2IMG_Comprehensive_Showcase.xlsx (.xlsx)</div>
+    <div style="font-weight: 700; color: var(--vp-c-brand-1); font-size: 1rem;">📥 Download SMILES2IMG_Comprehensive_Showcase.xlsx (.xlsx)</div>
     <div style="color: var(--vp-c-text-2); font-size: 0.88rem; margin-top: 4px;">0. Quick Guide · 1. Name/CAS/SMILES · 2. Lipinski &amp; 3D Complexity · 3. Substructure &amp; Similarity · 4. Styles Matrix · 5. Reactions &amp; KET · 6. Legacy .FLOAT · 7. 3D &amp; Ribbon Tools</div>
   </a>
 </div>

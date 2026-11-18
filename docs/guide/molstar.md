@@ -26,7 +26,7 @@ Type a 4-letter PDB code (e.g., `1CRN`, `4HHB`, `6LU7`) or open a local structur
    * **Color Schemes:** Color by polymer chain, secondary structure, residue type, or B-factor.
 
 ### Step 3. Insert into Your Document (3D Model vs. 2D Picture)
-Select the output mode in the top toolbar and click **`Apply`** (or press <kbd>Ctrl</kbd> + <kbd>Enter</kbd>):
+Select the output mode in the top toolbar and click **`Apply to Slide`** / **`Apply to Document`** (or press <kbd>Ctrl</kbd> + <kbd>Enter</kbd>):
 
 | Insert Mode | Best For |
 | :--- | :--- |

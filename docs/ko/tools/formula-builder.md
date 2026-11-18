@@ -85,13 +85,13 @@ Excel, Word, PowerPoint 상단 리본의 **`[SMILES]`** ➔ **`[Batch Style]`** 
 
 ## 🔗 관련 가이드 바로가기
 
-<div class="feature-grid-2">
-  <div class="feature-card">
-    <h4>📐 <a href="/ko/reference/formula">전체 엑셀 함수 치트시트</a></h4>
-    <p>40종 전체 엑셀 화학 함수와 인수 규격, 스타일 키워드 전체 목록을 확인하세요.</p>
-  </div>
-  <div class="feature-card">
-    <h4>📗 <a href="/ko/guide/excel">Excel 기초 가이드</a></h4>
-    <p>엑셀 시트에서 수식으로 대량 구조식 표를 만들고 더블클릭으로 편집하는 방법을 알아보세요.</p>
-  </div>
+<div class="s2i-card-grid">
+  <a href="../reference/formula" class="s2i-card">
+    <div class="s2i-card-title">📐 전체 엑셀 함수 치트시트</div>
+    <p class="s2i-card-desc">40종 전체 엑셀 화학 함수와 인수 규격, 스타일 키워드 전체 목록을 확인하세요.</p>
+  </a>
+  <a href="../guide/excel" class="s2i-card">
+    <div class="s2i-card-title">📗 Excel 레시피 북</div>
+    <p class="s2i-card-desc">엑셀 시트에서 수식으로 대량 구조식 표를 만들고 더블클릭으로 편집하는 방법을 알아보세요.</p>
+  </a>
 </div>

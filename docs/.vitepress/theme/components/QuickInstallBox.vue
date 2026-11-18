@@ -5,11 +5,9 @@ import { useData } from 'vitepress'
 const props = withDefaults(
   defineProps<{
     variant?: 'hero' | 'page'
-    hideQuickstartBtn?: boolean
   }>(),
   {
-    variant: 'page',
-    hideQuickstartBtn: false
+    variant: 'page'
   }
 )
 
@@ -386,6 +384,9 @@ async function copyText(text: string, isUninstall = false) {
   background: var(--vp-c-brand-2);
   transform: translateY(-1px);
 }
+.dark .s2i-terminal-copy-btn {
+  color: #0f172a !important;
+}
 .s2i-terminal-copy-btn.success {
   background: #10b981;
 }
@@ -525,6 +526,9 @@ async function copyText(text: string, isUninstall = false) {
 .s2i-page-copy-btn:hover {
   background: var(--vp-c-brand-2);
   transform: translateY(-1px);
+}
+.dark .s2i-page-copy-btn {
+  color: #0f172a !important;
 }
 .s2i-page-copy-btn.success {
   background: #10b981;

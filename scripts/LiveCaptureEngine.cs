@@ -169,6 +169,10 @@ public static class LiveCaptureEngine
         GetWindowText(h, titleSb, 256);
         string title = titleSb.ToString();
 
+        // Skip borderless WinForms CopiedToast banners from polluting Office screenshots/videos
+        if (cls.IndexOf("WindowsForms10", StringComparison.OrdinalIgnoreCase) >= 0 && string.IsNullOrWhiteSpace(title))
+            return false;
+
         // Only include runner-owned windows if they are our actual add-in UI dialogs/viewers
         if (p == runnerPid && p != officePid)
         {
@@ -294,6 +298,77 @@ public static class LiveCaptureEngine
 
     private static volatile bool _recordingModal = false;
     private static ManualResetEvent _modalDone = new ManualResetEvent(true);
+    public static int LastActiveModalShotFrameIndex = 0;
+
+    private static bool IsOverlayRendered(IntPtr oh, string titleSub)
+    {
+        bool isKetcher = !string.IsNullOrEmpty(titleSub) && titleSub.IndexOf("Ketcher", StringComparison.OrdinalIgnoreCase) >= 0;
+        bool isMolstar = !string.IsNullOrEmpty(titleSub) && titleSub.IndexOf("Mol*", StringComparison.OrdinalIgnoreCase) >= 0;
+        if (!isKetcher && !isMolstar) return true;
+
+        RECT r;
+        if (!GetWindowRect(oh, out r)) return false;
+        int w = r.R - r.L, ht = r.B - r.T;
+        if (w < 200 || ht < 200) return false;
+
+        try
+        {
+            using (var bmp = new Bitmap(w, ht))
+            {
+                bool pwOk = false;
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    var hdc = g.GetHdc();
+                    pwOk = PrintWindow(oh, hdc, 2);
+                    g.ReleaseHdc(hdc);
+                }
+                if (!pwOk) return false;
+                if (isKetcher)
+                {
+                    // Require BOTH white Ketcher canvas (brightWhite >= 200, rejecting all-black unrendered frames)
+                    // AND drawn dark/colored chemical ink pixels (darkInk >= 3 inside central canvas).
+                    int brightWhite = 0;
+                    int darkInk = 0;
+                    for (int iy = 0; iy < 36; iy++)
+                    {
+                        int py = (int)(ht * (0.20 + 0.60 * iy / 35.0));
+                        for (int ix = 0; ix < 36; ix++)
+                        {
+                            int px = (int)(w * (0.16 + 0.68 * ix / 35.0));
+                            var c = bmp.GetPixel(px, py);
+                            if (c.R >= 245 && c.G >= 245 && c.B >= 245) brightWhite++;
+                            int mn = Math.Min(c.R, Math.Min(c.G, c.B));
+                            if (mn < 195) darkInk++;
+                        }
+                    }
+                    return brightWhite >= 200 && darkInk >= 3;
+                }
+                else
+                {
+                    // Mol*: sample central 3D viewport (x: 15%..70%, y: 20%..85%) for non-uniform / colored geometry
+                    var quantized = new HashSet<int>();
+                    int vivid = 0;
+                    for (int iy = 0; iy < 14; iy++)
+                    {
+                        int py = (int)(ht * (0.20 + 0.65 * iy / 13.0));
+                        for (int ix = 0; ix < 14; ix++)
+                        {
+                            int px = (int)(w * (0.15 + 0.55 * ix / 13.0));
+                            var c = bmp.GetPixel(px, py);
+                            quantized.Add(((c.R >> 4) << 8) | ((c.G >> 4) << 4) | (c.B >> 4));
+                            if (Math.Max(c.R, Math.Max(c.G, c.B)) - Math.Min(c.R, Math.Min(c.G, c.B)) > 20)
+                                vivid++;
+                        }
+                    }
+                    return quantized.Count >= 8 && vivid >= 2;
+                }
+            }
+        }
+        catch
+        {
+            return true;
+        }
+    }
 
     public static void StartModalSnapLoop(
         IntPtr mainHwnd,
@@ -307,16 +382,19 @@ public static class LiveCaptureEngine
         _recordingModal = true;
         _modalDone.Reset();
         LastModalFrameIndex = startIndex;
+        LastActiveModalShotFrameIndex = 0;
         ThreadPool.QueueUserWorkItem(_ =>
         {
             int idx = startIndex;
+            int firstActiveIdx = 0;
             bool closed = false;
+            bool readyToCount = false;
             var sw = Stopwatch.StartNew();
             IntPtr detectedHwnd = IntPtr.Zero;
             var detectedSw = new Stopwatch();
             try
             {
-                while (_recordingModal && sw.ElapsedMilliseconds < 20000)
+                while (_recordingModal && sw.ElapsedMilliseconds < 32000)
                 {
                     if (detectedHwnd == IntPtr.Zero && !string.IsNullOrEmpty(autoCloseTitleSubstring))
                     {
@@ -335,15 +413,35 @@ public static class LiveCaptureEngine
                         }, IntPtr.Zero);
                     }
 
-                    idx++;
-                    CaptureCompositeFrame(mainHwnd, officePid, runnerPid, -1, -1, 0f,
-                        Path.Combine(framesDir, string.Format("f_{0:D4}.png", idx)));
-                    LastModalFrameIndex = idx;
-
-                    if (detectedHwnd != IntPtr.Zero && !closed && detectedSw.ElapsedMilliseconds >= holdMsBeforeClose)
+                    if (detectedHwnd != IntPtr.Zero)
                     {
-                        closed = true;
-                        PostMessage(detectedHwnd, 0x0010, IntPtr.Zero, IntPtr.Zero); // WM_CLOSE
+                        if (!readyToCount)
+                        {
+                            if (IsOverlayRendered(detectedHwnd, autoCloseTitleSubstring) || detectedSw.ElapsedMilliseconds >= 13000)
+                            {
+                                readyToCount = true;
+                                detectedSw.Restart();
+                            }
+                        }
+
+                        if (readyToCount)
+                        {
+                            idx++;
+                            CaptureCompositeFrame(mainHwnd, officePid, runnerPid, -1, -1, 0f,
+                                Path.Combine(framesDir, string.Format("f_{0:D4}.png", idx)));
+                            LastModalFrameIndex = idx;
+                            if (firstActiveIdx == 0) firstActiveIdx = idx;
+                            if (!closed)
+                            {
+                                LastActiveModalShotFrameIndex = firstActiveIdx + Math.Max(0, ((idx - firstActiveIdx) * 2) / 3);
+                            }
+
+                            if (!closed && detectedSw.ElapsedMilliseconds >= holdMsBeforeClose)
+                            {
+                                closed = true;
+                                PostMessage(detectedHwnd, 0x0010, IntPtr.Zero, IntPtr.Zero); // WM_CLOSE
+                            }
+                        }
                     }
                     Thread.Sleep(85);
                 }

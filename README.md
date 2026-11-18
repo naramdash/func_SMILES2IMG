@@ -104,12 +104,12 @@ func_SMILES2IMG/
 ├── .github/workflows/                  # GitHub Actions workflows
 │   ├── ci.yml                          # Release build + 24 Unit/WebView2 E2E test suites
 │   ├── release.yml                     # Release packaging, installer encoding check & GitHub Release
-│   └── deploy-docs.yml                 # Docs link audit & GitHub Pages deployment
+│   └── deploy-docs.yml                 # Docs link & live-media audits + GitHub Pages deployment
 ├── docs/                               # VitePress documentation source
-│   ├── .vitepress/                     # VitePress config, i18n routing & interactive Vue widgets
-│   ├── public/                         # Static assets (images, icons, sample SDF, showcase XLSX)
-│   ├── guide/                          # English guides (getting started, excel, word, powerpoint, ketcher, molstar, faq)
-│   ├── reference/                      # English reference (formulas & parameter specs)
+│   ├── .vitepress/                     # VitePress config, i18n routing & Vue widgets (FeatureMedia, OfficeAppTabs, QuickInstallBox, FormulaBuilder)
+│   ├── public/                         # Live Office media (/media/<id>/* PNG/WebM/MP4/VTT), showcase XLSX & sample SDF
+│   ├── guide/                          # English guides (Excel cookbook, Word 6-chapter tutorial, PowerPoint slide gallery, Ketcher, Mol*, FAQ)
+│   ├── reference/                      # English reference (40 Excel formula specs)
 │   └── ko/                             # Korean guides & reference (ko/guide/*, ko/reference/*)
 ├── src/
 │   ├── Smiles2Img.Core/                # Shared rendering, Ketcher 2D, Mol* 3D, UI & COM core (net48)
@@ -152,9 +152,14 @@ func_SMILES2IMG/
 │   ├── Test-OfficeE2E.ps1              # Unified Live Word, PowerPoint, and Excel COM/XLL + UI E2E suite
 │   ├── Package-Release.ps1             # Builds Release, strips UTF-8 BOM from installers & creates ZIP archives
 │   ├── Generate-Showcase-Workbook.ps1  # 8-tab comprehensive showcase workbook generator
-│   └── audit-docs-links.js             # Audits internal Markdown links & download assets across docs/
-├── install.ps1                         # Unified Office Suite 1-click installer (clean-install/upgrade summary)
-├── uninstall.ps1                       # Unified Office Suite uninstaller (removal summary report)
+│   ├── Capture-LiveDocsMedia.ps1       # Records live Office screenshots (.png), videos (.webm/.mp4), and captions (.vtt)
+│   ├── Capture-InteractiveMenus.ps1    # Captures 3-level native Office right-click context menus via UIA + PrintWindow
+│   ├── Install-OfficeEnglishPack.ps1   # Configures Office UI to en-US (HKCU + optional admin ODT en-US pack installer)
+│   ├── LiveCaptureEngine.cs            # Per-Monitor DPI-aware multi-HWND compositor & UIA helper for live captures
+│   ├── audit-docs-links.js             # Audits internal Markdown/HTML links & base paths across docs/
+│   └── audit-docs-media.js             # Verifies live PNG/WebM/MP4/VTT coverage & AGENTS.md naming compliance
+├── install.ps1                         # Unified Office add-in 1-click installer (clean-install/upgrade summary)
+├── uninstall.ps1                       # Unified Office add-in uninstaller (removal summary report)
 ├── THIRD_PARTY_NOTICES.md              # Open-source license acknowledgments
 └── README.md                           # Main developer documentation (this file)
 ```
@@ -228,9 +233,10 @@ powershell -NoProfile -STA -ExecutionPolicy Bypass -File tests/Excel-365-Feature
 powershell -NoProfile -STA -ExecutionPolicy Bypass -File tests/Excel-DeepStressTests.ps1
 ```
 
-### 4. Documentation Link Audit & Static Site Build
+### 4. Documentation Audits & Static Site Build
 ```powershell
 node scripts/audit-docs-links.js
+node scripts/audit-docs-media.js
 npm run docs:build
 ```
 

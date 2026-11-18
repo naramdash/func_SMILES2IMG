@@ -48,7 +48,7 @@ Yes! Here is how files behave across platforms:
 * **1-Click Whole-Document Restyle:** In Excel, Word, or PowerPoint, click **`[SMILES]`** ➔ **`[Batch Style]`** on the ribbon to convert all structures in your selection or document to **Publication B&W (ACS style)**, **Dark Mode (White Ink)**, **Standard Color**, or **White Background** in one click.
 * **Per-Formula Styling in Excel (Including Custom Ink Color):**
   - Black & White line art: `=SMILES2IMG(A2, "", "bw")`
-  - Dark Mode: `=SMILES2IMG(A2, "#1a1a1a", "white")`
+  - Dark Mode (White Ink + Transparent BG): `=SMILES2IMG(A2, "trans", "white")`
   - Custom bond/atom ink color: `=SMILES2IMG(A2, "", "ink=#1e40af")`
 
 ### Q. Can I copy lossless vector graphics (`.svg`) for Adobe Illustrator or ChemDraw?
@@ -57,7 +57,7 @@ Yes! Select any molecule cell or picture and click **`[SMILES]`** ➔ **`[Copy S
 ### Q. Can I open or save `.sdf` chemical database files in Excel?
 Yes! Click **`[SMILES]`** ➔ **`[SDF File]`** on the Excel ribbon:
 * **`Import SDF File (.sdf)...`:** Reads any multi-compound `.sdf` file and generates a 12-column medicinal chemistry worksheet (`Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`, `Lipinski`) powered by live Excel formulas.
-* **`Export Worksheet to SDF...`:** Exports your worksheet compounds back to a standard V2000 `.sdf` file.
+* **`Export Sheet to SDF (.sdf)...`:** Exports your worksheet compounds back to a standard V2000 `.sdf` file.
 
 ### Q. How do I copy Molecular Weight, Formula, LogP, and Lipinski info into a table at once?
 **Right-click** any molecule ➔ **`Chemical Structure`** ➔ **`Copy Molecule Info`** and choose your format:
@@ -92,15 +92,15 @@ Click **`[SMILES]`** ➔ **`[About func_SMILES2IMG]`** on the ribbon to open the
 
 ## 🔗 Related Guides
 
-<div class="feature-grid-2">
-  <div class="feature-card">
-    <h4>🚀 <a href="/guide/getting-started">Install & 1-Minute Quickstart</a></h4>
-    <p>One-line PowerShell installer and offline manual setup instructions for corporate networks.</p>
-  </div>
-  <div class="feature-card">
-    <h4>🛠️ <a href="/tools/formula-builder">Formula Generator & Style Simulator</a></h4>
-    <p>Click options to preview rendered structures in real time and copy the ready-to-use Excel formula.</p>
-  </div>
+<div class="s2i-card-grid">
+  <a href="./getting-started" class="s2i-card">
+    <div class="s2i-card-title">🚀 Install &amp; 1-Minute Quickstart</div>
+    <p class="s2i-card-desc">One-line PowerShell installer and offline manual setup instructions for corporate networks.</p>
+  </a>
+  <a href="../tools/formula-builder" class="s2i-card">
+    <div class="s2i-card-title">🛠️ Formula Generator &amp; Style Simulator</div>
+    <p class="s2i-card-desc">Click options to preview rendered structures in real time and copy the ready-to-use Excel formula.</p>
+  </a>
 </div>
 
 

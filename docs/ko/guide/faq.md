@@ -48,7 +48,7 @@
 * **클릭 한 번으로 문서 전체 변환:** Excel, Word, PowerPoint 상단 리본에서 **`[SMILES]`** ➔ **`[Batch Style]`** 버튼을 클릭하면 선택한 영역이나 문서 전체의 모든 구조식을 **논문용 흑백**(`Publication B&W`), **다크 모드**(`Dark Mode`), **표준 컬러**(`Standard Color`), **흰색 배경**(`White Background`)으로 즉시 통일할 수 있습니다.
 * **엑셀 수식에서 개별 지정 (커스텀 선 색상 포함):**
   - 흑백 선화: `=SMILES2IMG(A2, "", "bw")`
-  - 다크 모드: `=SMILES2IMG(A2, "#1a1a1a", "white")`
+  - 다크 모드 (투명 배경 + 흰색 선): `=SMILES2IMG(A2, "trans", "white")`
   - 원하는 브랜드/테마 선 색상 지정: `=SMILES2IMG(A2, "", "ink=#1e40af")`
 
 ### Q. Adobe Illustrator나 ChemDraw에 붙여넣을 수 있게 벡터(`.svg`)로 복사할 수 있나요?
@@ -57,7 +57,7 @@
 ### Q. 엑셀에서 `.sdf` 화학 데이터 파일을 열거나 저장할 수 있나요?
 네! 엑셀 상단 **`[SMILES]`** ➔ **`[SDF File]`** 메뉴를 누르세요:
 * **`Import SDF File (.sdf)...`:** `.sdf` 파일을 읽어 새 시트에 12개 핵심 의약화학·3D 복잡도 열(`Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`, `Lipinski`)을 갖춘 라이브 수식 표를 자동으로 만들어 줍니다.
-* **`Export Worksheet to SDF...`:** 시트의 화합물 목록을 표준 V2000 `.sdf` 파일로 내보냅니다.
+* **`Export Sheet to SDF (.sdf)...`:** 시트의 화합물 목록을 표준 V2000 `.sdf` 파일로 내보냅니다.
 
 ### Q. 분자량, 화학식, LogP, Lipinski 정보를 표로 한 번에 복사하려면 어떻게 하나요?
 분자 셀이나 그림을 **우클릭** ➔ **`Chemical Structure`** ➔ **`Copy Molecule Info`** 메뉴에서 원하는 서식을 고르세요:
@@ -92,15 +92,15 @@
 
 ## 🔗 관련 가이드 바로가기
 
-<div class="feature-grid-2">
-  <div class="feature-card">
-    <h4>🚀 <a href="/ko/guide/getting-started">설치 및 1분 첫걸음</a></h4>
-    <p>10초 원클릭 설치 명령어와 오프라인 기업망 수동 설치 방법을 확인하세요.</p>
-  </div>
-  <div class="feature-card">
-    <h4>🛠️ <a href="/ko/tools/formula-builder">엑셀 함수 표현 생성기</a></h4>
-    <p>마우스 클릭만으로 옵션을 조합해 실시간 미리보기를 확인하고 수식을 복사하세요.</p>
-  </div>
+<div class="s2i-card-grid">
+  <a href="./getting-started" class="s2i-card">
+    <div class="s2i-card-title">🚀 설치 및 1분 첫걸음</div>
+    <p class="s2i-card-desc">10초 원클릭 설치 명령어와 오프라인 기업망 수동 설치 방법을 확인하세요.</p>
+  </a>
+  <a href="../tools/formula-builder" class="s2i-card">
+    <div class="s2i-card-title">🛠️ 엑셀 함수 표현 생성기</div>
+    <p class="s2i-card-desc">마우스 클릭만으로 옵션을 조합해 실시간 미리보기를 확인하고 수식을 복사하세요.</p>
+  </a>
 </div>
 
 

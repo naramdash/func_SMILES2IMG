@@ -26,7 +26,7 @@
    * **배색 변경:** 사슬(Chain)별, 2차 구조별, 아미노산 잔기 특성별 색상 지정
 
 ### Step 3. 문서에 삽입하기 (3D 모델 vs 2D 이미지)
-창 상단 툴바에서 삽입 모드를 고르고 **`Apply`** 버튼(또는 <kbd>Ctrl</kbd> + <kbd>Enter</kbd>)을 누릅니다:
+창 상단 툴바에서 삽입 모드를 고르고 **`Apply to Slide`** / **`Apply to Document`** 버튼(또는 <kbd>Ctrl</kbd> + <kbd>Enter</kbd>)을 누릅니다:
 
 | 삽입 방식 | 특징 및 추천 용도 |
 | :--- | :--- |

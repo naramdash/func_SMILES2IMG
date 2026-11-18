@@ -92,7 +92,7 @@
 
 ## 레시피 10: 12열 `.SDF` / `.MOL` 화학 DB 가져오기 & 내보내기
 
-**목표:** 외부 `.sdf` 화합물 라이브러리를 열어 12개 의약화학·3D 복잡도 열(`Name`, `Structure`, `SMILES`, `Formula`, `MW`, `Exact Mass`, `LogP`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`, `Lipinski`)을 갖춘 라이브 시트를 생성하고 다시 `.sdf`로 저장합니다.
+**목표:** 외부 `.sdf` 화합물 라이브러리를 열어 12개 의약화학·3D 복잡도 열(`Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`, `Lipinski`)을 갖춘 라이브 시트를 생성하고 다시 `.sdf`로 저장합니다.
 
 <FeatureMedia id="excel-sdf-workflow" />
 

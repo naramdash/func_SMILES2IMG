@@ -134,6 +134,7 @@ public sealed class MoleculeInfoDialog : Form
             BackgroundColor = SystemColors.Window,
             BorderStyle = BorderStyle.FixedSingle,
             RowHeadersVisible = false,
+            ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize,
             AllowUserToAddRows = false,
             AllowUserToDeleteRows = false,
             AllowUserToResizeRows = false,
@@ -144,6 +145,7 @@ public sealed class MoleculeInfoDialog : Form
             AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells,
             ShowCellToolTips = true
         };
+        dgv.ColumnHeadersDefaultCellStyle.Padding = new Padding(6, 5, 6, 5);
 
         var colIcon = new DataGridViewImageColumn
         {
