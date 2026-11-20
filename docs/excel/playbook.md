@@ -1,0 +1,30 @@
+# Excel Playbook
+
+Practice all 40 Excel chemical formulas, medicinal chemistry screening tables, SMARTS scaffold highlighting, KET reaction schemes, and offline reference sheets directly inside Microsoft Excel—no web documentation required.
+
+<PlaybookPreview app="excel" />
+
+::: tip How to Use This Playbook
+1. Make sure **`func_SMILES2IMG`** is installed ([Installation](/guide/install)).
+2. Download <a href="/func_SMILES2IMG/examples/func_SMILES2IMG_Excel_Playbook.xlsx" download="func_SMILES2IMG_Excel_Playbook.xlsx"><strong>func_SMILES2IMG_Excel_Playbook.xlsx (.xlsx)</strong></a> and open it directly in **Microsoft Excel**.
+3. Start on **`0. Start Here`**—edit any SMILES or SMARTS input cell (`$B$3`), **double-click** rendered structure cells to reopen **Ketcher 2D**, or copy the stoichiometry and hit-to-lead sheets directly into your own workbooks.
+:::
+
+## Sheet-by-Sheet Breakdown (10 Tabs)
+
+| Sheet Tab | What You Can Practice & Copy | Key Formulas / Features |
+| :--- | :--- | :--- |
+| **`0. Start Here`** | 3-minute interactive sandbox & 10-tab learning roadmap | Top 10 live formulas & shortcuts |
+| **`1. Structure Rendering`** | Render 2D structures from common names, CAS numbers, SMILES, and IUPAC InChI | `=NAME2IMG`, `=SMILES2IMG`, `=INCHI2IMG`, `=NAME2SMILES` |
+| **`2. Properties & Lipinski`** | 18-column medicinal chemistry screening table + live `AVERAGE` / `COUNTIF` KPI row | `=SMILES2FORMULA`, `=SMILES2MW`, `=SMILES2LOGP`, `=SMILES2HEAVY`, `=SMILES2FSP3`, `=SMILES2LIPINSKI` |
+| **`3. SAR & Similarity`** | Editable query SMARTS (`$B$3`), red scaffold highlighting, Tanimoto rank & 12-group SMARTS dictionary | `=SMILES.MATCH`, `=SMILES.SIMILARITY`, `=SMILES2IMG(..., "hl:...")` |
+| **`4. Notation Conversions`** | Cross-notation standardization & automatic duplicate detection via `InChIKey` | `=SMILES2INCHI`, `=SMILES2INCHIKEY`, `=INCHI2SMILES`, `=INCHI2MW` |
+| **`5. Styles & Transforms`** | 16 presets: ACS B&W, Dark Mode, custom ink, NMR numbers, stereo, flip & rotation | `"bw"`, `"white"`, `"ink=#1E40AF"`, `"num"`, `"stereo"`, `"flip rot90"` |
+| **`6. Reactions & KET`** | Real Aspirin & Paracetamol synthesis reaction schemes and single-molecule KET canvases | `=KET2IMG`, `=KET2FORMULA`, `=KET2MW`, double-click Ketcher editing |
+| **`7. Real-World Workflows`** | Copy-ready Organic Stoichiometry Scale-Up calculator (`mg` & `% yield`) + Hit-to-Lead MPO Triage | Live `=SMILES2MW(C6)*H6` scaling & `IF(AND(...))` candidate scoring |
+| **`8. Legacy Excel (.FLOAT)`** | Cell-anchored floating picture shapes for Excel 2016, 2019, and 2021 compatibility | `=SMILES2IMG.FLOAT`, `=NAME2IMG.FLOAT` |
+| **`9. Ribbon, SDF & Ref`** | Complete `[SMILES]` Ribbon & 3-level context menu map, `.sdf` 12-col guide, all 40 UDFs & error fixes | Full offline desktop reference (`#N/A`, `#VALUE!`, `#NAME?`) |
+
+## Other Office Playbooks
+
+See all three self-contained files in [Interactive Playbooks](/guide/playbooks), or jump directly to the [Word Playbook](/word/playbook) or [PowerPoint Playbook](/powerpoint/playbook).

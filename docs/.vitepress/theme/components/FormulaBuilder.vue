@@ -244,10 +244,10 @@ async function copyFormula() {
 </script>
 
 <template>
-  <div class="s2i-widget fb-root">
-    <div class="s2i-widget-header">
-      <div class="s2i-widget-title">
-        <span>🧪 {{ isKo ? '인터랙티브 엑셀 수식 생성기 (클릭해서 조합해 보세요!)' : 'Interactive Excel Formula Builder (Click to Customize!)' }}</span>
+  <div class="fb-root">
+    <div class="fb-header">
+      <div class="fb-title">
+        <span>{{ isKo ? '인터랙티브 엑셀 수식 생성기' : 'Interactive Excel Formula Builder' }}</span>
       </div>
       <div class="fb-presets">
         <span class="fb-preset-label">{{ isKo ? '빠른 프리셋:' : 'Quick Presets:' }}</span>
@@ -498,6 +498,28 @@ async function copyFormula() {
 </template>
 
 <style scoped>
+.fb-root {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background: var(--vp-c-bg-soft);
+  padding: 16px;
+  margin: 16px 0 24px;
+}
+.fb-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+.fb-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
 .fb-presets {
   display: flex;
   align-items: center;

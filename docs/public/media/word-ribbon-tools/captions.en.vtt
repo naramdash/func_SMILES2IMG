@@ -1,0 +1,11 @@
+WEBVTT
+
+00:00:00.833 --> 00:00:01.803
+Insert / Edit Structure (Ctrl+Shift+K) and 3D Structure (Mol*).
+
+00:00:01.833 --> 00:00:02.803
+Paste Structure converts selected SMILES or clipboard data in 0.1s.
+
+00:00:02.833 --> 00:00:04.033
+Copy SVG, Molecule Info, Batch Style, and About func_SMILES2IMG.
+

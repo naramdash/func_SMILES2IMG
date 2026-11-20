@@ -47,6 +47,17 @@ public static class LiveCaptureEngine
     {
         ShowWindow(hwnd, 9); // SW_RESTORE
         SetWindowPos(hwnd, IntPtr.Zero, x, y, w, h, 0x0040);
+        try
+        {
+            using (var tmp = new Bitmap(16, 16))
+            using (var g = Graphics.FromImage(tmp))
+            {
+                var hdc = g.GetHdc();
+                PrintWindow(hwnd, hdc, 0);
+                g.ReleaseHdc(hdc);
+            }
+        }
+        catch { }
     }
 
     public static bool SelectRibbonTab(IntPtr mainHwnd, string tabName)
@@ -102,13 +113,13 @@ public static class LiveCaptureEngine
     {
         int w = bmp.Width;
         if (w < 900 || bmp.Height < 120) return;
-        Color sample = bmp.GetPixel(Math.Min(240, w / 5), 22);
+        Color sample = bmp.GetPixel(Math.Max(10, w - 860), 45);
         using (var br = new SolidBrush(sample))
         using (var g = Graphics.FromImage(bmp))
         {
-            int boxW = 495;
-            int boxX = Math.Max(0, w - 730);
-            g.FillRectangle(br, boxX, 8, boxW, 68);
+            int boxW = 570;
+            int boxX = Math.Max(0, w - 800);
+            g.FillRectangle(br, boxX, 4, boxW, 86);
         }
     }
 

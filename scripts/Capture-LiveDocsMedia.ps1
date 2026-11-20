@@ -122,6 +122,7 @@ function Format-VttTime([double]$sec) {
 
 function Select-ExcelCell($excelObj, $sheetObj, [string]$cellAddr, [int]$waitMs = 380) {
     [void](Invoke-ComRetry { $sheetObj.Activate() })
+    try { if ($excelObj.ActiveWindow.Zoom -ne 85) { $excelObj.ActiveWindow.Zoom = 85 } } catch {}
     [void](Invoke-ComRetry { $sheetObj.Range($cellAddr).Select() })
     try { [void]$excelObj.Calculate() } catch {}
     Start-Sleep -Milliseconds $waitMs
@@ -333,13 +334,13 @@ function Complete-FeatureClip {
 
     $inputPattern = Join-Path $Clip.FramesDir 'f_%04d.png'
     & $ffmpeg -hide_banner -loglevel error -y -framerate $Clip.Fps -i $inputPattern `
-        -vf "scale=1280:720:flags=lanczos,format=yuv420p" `
-        -c:v libx264 -preset medium -crf 22 -movflags +faststart $mp4Path
+        -vf "scale=1920:1080:flags=lanczos,format=yuv420p" `
+        -c:v libx264 -preset medium -crf 23 -movflags +faststart $mp4Path
     if ($LASTEXITCODE -ne 0) { throw "FFmpeg MP4 encoding failed for $($Clip.Id)" }
 
     & $ffmpeg -hide_banner -loglevel error -y -framerate $Clip.Fps -i $inputPattern `
-        -vf "scale=1280:720:flags=lanczos,format=yuv420p" `
-        -c:v libvpx-vp9 -b:v 0 -crf 33 -row-mt 1 $webmPath
+        -vf "scale=1920:1080:flags=lanczos,format=yuv420p" `
+        -c:v libvpx-vp9 -b:v 0 -crf 34 -row-mt 1 $webmPath
     if ($LASTEXITCODE -ne 0) { throw "FFmpeg WebM encoding failed for $($Clip.Id)" }
 
     $dur = 0.0
@@ -529,7 +530,7 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         [void]$excel.RegisterXLL($distXll)
         $xHwnd = [IntPtr]$excel.Hwnd
         $xPid = [LiveCaptureEngine]::GetPidForHwnd($xHwnd)
-        [LiveCaptureEngine]::SetMainWindowSize($xHwnd, 40, 20, 2240, 1260)
+        [LiveCaptureEngine]::SetMainWindowSize($xHwnd, 8, 8, 2768, 1556)
         Start-Sleep -Milliseconds 700
         [void][LiveCaptureEngine]::SelectRibbonTab($xHwnd, 'SMILES')
         Start-Sleep -Milliseconds 600
@@ -547,6 +548,7 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
 
         # --- 1.1 excel-overview ---
         $wb = $excel.Workbooks.Add()
+        try { $excel.ActiveWindow.Zoom = 85 } catch {}
         $ws = $wb.ActiveSheet
         $ws.Name = 'Compounds'
         $ws.Range('A1:F1').Value2 = @('Compound', 'SMILES', '2D Structure (=SMILES2IMG)', 'Formula', 'MW (g/mol)', 'Lipinski Ro5')
@@ -775,14 +777,12 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         $c.ClickAt($ptBatch.X, $ptBatch.Y, 'Click Batch Style -> Publication B&W to restyle the sheet in 1 click.', 'Batch Style -> Publication B&W로 시트 전체를 흑백 변환합니다.')
         [void]$excel.Run('BatchStyleBwCommand')
         Start-Sleep -Seconds 2
+        $c.CaptureShot(@())
         $c.Snap(6, 520, 520)
         $c.ClickAt($ptAbout.X, $ptAbout.Y, 'Open About func_SMILES2IMG to verify version v1.8.0 and update status.', 'About func_SMILES2IMG 창에서 v1.8.0 버전과 라이선스를 확인합니다.')
         $c.RunWithModal('About func_SMILES2IMG', 2200, {
             Show-LiveAboutOverHost -OwnerHwnd $xHwnd -HoldMs 2200
-        }, 'Inspect Third-Party Components, License Notices & Check for Updates.', '구성요소·라이선스 전문·업데이트 확인을 실행할 수 있습니다.', @(
-            (Join-Path $publicDir 'about-dialog.png'),
-            (Join-Path $assetsDir 'about-dialog.png')
-        ))
+        }, 'Inspect Third-Party Components, License Notices & Check for Updates.', '구성요소·라이선스 전문·업데이트 확인을 실행할 수 있습니다.')
         $c.Snap(5, -1, -1)
         Complete-FeatureClip $c
         # Restore color on sheet 1
@@ -1062,10 +1062,10 @@ if ($Section -eq 'All' -or $Section -eq 'Word') {
         $doc.PageSetup.BottomMargin = 36
         $doc.PageSetup.LeftMargin = 48
         $doc.PageSetup.RightMargin = 48
-        $word.ActiveWindow.View.Zoom.Percentage = 90
+        $word.ActiveWindow.View.Zoom.Percentage = 85
         $wHwnd = [IntPtr]$word.ActiveWindow.Hwnd
         $wPid = [LiveCaptureEngine]::GetPidForHwnd($wHwnd)
-        [LiveCaptureEngine]::SetMainWindowSize($wHwnd, 40, 20, 2240, 1260)
+        [LiveCaptureEngine]::SetMainWindowSize($wHwnd, 8, 8, 2768, 1556)
         Start-Sleep -Milliseconds 700
         [void][LiveCaptureEngine]::SelectRibbonTab($wHwnd, 'SMILES')
         Start-Sleep -Milliseconds 600
@@ -1333,6 +1333,37 @@ if ($Section -eq 'All' -or $Section -eq 'Word') {
         $c.Snap(6, -1, -1)
         Complete-FeatureClip $c
 
+        # --- 2.7 Word Ribbon Tools Tour ---
+        $ptAboutW = [LiveCaptureEngine]::FindControlRelativeCenter($wHwnd, @('About func_SMILES2IMG'))
+        [void]$wordObj.ExecuteRibbonAction('OnBatchStyleColorTrans')
+        Start-Sleep -Milliseconds 600
+        $doc.Range($p1.Range.Start, $p1.Range.Start).Select()
+        $word.ActiveWindow.ScrollIntoView($p1.Range, $true)
+        $word.ActiveWindow.VerticalPercentScrolled = 0
+        Start-Sleep -Milliseconds 400
+        $c = Start-FeatureClip -Id 'word-ribbon-tools' -HostApp 'word' -MainHwnd $wHwnd -OfficePid $wPid `
+            -TitleEn 'Word Ribbon: [SMILES] Insert, Copy SVG, Molecule Info & Batch Style' `
+            -TitleKo 'Word 리본: [SMILES] 구조 삽입 · SVG 복사 · 물성 · 일괄 스타일' `
+            -CaptionEn 'Explore every command on the Microsoft Word [SMILES] ribbon tab.' `
+            -CaptionKo 'Microsoft Word 상단 [SMILES] 리본 탭의 주요 도구를 한눈에 확인합니다.'
+        $c.Snap(4, $ptInsert.X, $ptInsert.Y)
+        $c.MoveTo($ptInsert.X, $ptInsert.Y, 6)
+        $c.AddCue(1.2, 'Insert / Edit Structure (Ctrl+Shift+K) and 3D Structure (Mol*).', 'Insert / Edit Structure (Ctrl+Shift+K)와 3D Structure (Mol*)로 2D·3D 구조를 삽입합니다.')
+        $c.MoveTo($ptMolstar.X, $ptMolstar.Y, 6)
+        $c.MoveTo($ptPaste.X, $ptPaste.Y, 6)
+        $c.AddCue(1.2, 'Paste Structure converts selected SMILES or clipboard data in 0.1s.', 'Paste Structure로 선택 텍스트나 클립보드 SMILES를 0.1초 만에 변환합니다.')
+        $c.MoveTo($ptCopySvg.X, $ptCopySvg.Y, 6)
+        $c.MoveTo($ptMolInfo.X, $ptMolInfo.Y, 6)
+        $c.AddCue(1.2, 'Copy SVG, Molecule Info, Batch Style, and About func_SMILES2IMG.', 'Copy SVG, Molecule Info, Batch Style, About func_SMILES2IMG를 바로 실행합니다.')
+        $c.MoveTo($ptBatch.X, $ptBatch.Y, 6)
+        $c.MoveTo($ptAboutW.X, $ptAboutW.Y, 6)
+        $c.CaptureShot(@(
+            (Join-Path $publicDir 'word-ribbon-guide.png'),
+            (Join-Path $assetsDir 'word-ribbon-guide.png')
+        ))
+        $c.Snap(6, -1, -1)
+        Complete-FeatureClip $c
+
         $doc.Close($false)
     } finally {
         try { $word.Quit() } catch {}
@@ -1359,10 +1390,29 @@ if ($Section -eq 'All' -or $Section -eq 'PowerPoint') {
         $pres.PageSetup.SlideHeight = 540
         $pHwnd = [IntPtr]$ppt.HWND
         $pPid = [LiveCaptureEngine]::GetPidForHwnd($pHwnd)
-        [LiveCaptureEngine]::SetMainWindowSize($pHwnd, 40, 20, 2240, 1260)
+        try { $ppt.ActiveWindow.WindowState = 1 } catch {} # ppWindowNormal
+        [LiveCaptureEngine]::SetMainWindowSize($pHwnd, 8, 8, 2768, 1556)
         Start-Sleep -Milliseconds 700
         [void][LiveCaptureEngine]::SelectRibbonTab($pHwnd, 'SMILES')
         Start-Sleep -Milliseconds 600
+
+        function Reset-PowerPointSlideZoom {
+            try {
+                # Flush WM_PRINT once so PowerPoint DirectX viewport syncs to resized HiDPI bounds even when display is idle
+                $tmpBmp = New-Object System.Drawing.Bitmap(16, 16)
+                $tmpG = [System.Drawing.Graphics]::FromImage($tmpBmp)
+                $tmpHdc = $tmpG.GetHdc()
+                [void][LiveCaptureEngine]::PrintWindow($pHwnd, $tmpHdc, 0)
+                $tmpG.ReleaseHdc($tmpHdc)
+                $tmpG.Dispose()
+                $tmpBmp.Dispose()
+                Start-Sleep -Milliseconds 250
+                $ppt.ActiveWindow.ViewType = 9 # ppViewNormal
+                $ppt.ActiveWindow.Panes.Item(2).Activate()
+                $ppt.ActiveWindow.View.ZoomToFit = -1
+                Start-Sleep -Milliseconds 250
+            } catch {}
+        }
 
         $ptInsert  = [LiveCaptureEngine]::FindControlRelativeCenter($pHwnd, @('Insert / Edit Structure'))
         $ptMolstar = [LiveCaptureEngine]::FindControlRelativeCenter($pHwnd, @('3D Structure (Mol*)'))
@@ -1392,6 +1442,7 @@ if ($Section -eq 'All' -or $Section -eq 'PowerPoint') {
         # --- 3.1 powerpoint-slide-candidate-grid ---
         $sGrid = New-DarkSlide $pres 'Lead Compound Candidates - Dark Slide Screening' 'Inserted via func_SMILES2IMG PowerPoint Add-in • Transparent Dark Mode White Ink'
         $sGrid.Select()
+        Reset-PowerPointSlideZoom
         $cards = @(
             @{ Name = 'Aspirin'; Formula = 'C9H8O4'; Smiles = $aspirinSmiles },
             @{ Name = 'Caffeine'; Formula = 'C8H10N4O2'; Smiles = $caffeineSmiles },
@@ -1589,6 +1640,7 @@ if ($Section -eq 'All' -or $Section -eq 'PowerPoint') {
         # --- 3.8 powerpoint-overview & powerpoint-showcase (captured AFTER all 6 slides exist!) ---
         $sGrid.Select()
         try { $ppt.ActiveWindow.Selection.Unselect() } catch {}
+        Reset-PowerPointSlideZoom
         Start-Sleep -Milliseconds 400
         $cOv = Start-FeatureClip -Id 'powerpoint-overview' -HostApp 'powerpoint' -MainHwnd $pHwnd -OfficePid $pPid `
             -TitleEn 'PowerPoint Overview: Dark Mode Slides, Reactions & 3D Proteins' `
@@ -1632,7 +1684,7 @@ if ($Section -eq 'All' -or $Section -eq 'Common') {
         $pIntro.Range.Font.Bold = 1
         $wHwnd = [IntPtr]$word.ActiveWindow.Hwnd
         $wPid = [LiveCaptureEngine]::GetPidForHwnd($wHwnd)
-        [LiveCaptureEngine]::SetMainWindowSize($wHwnd, 40, 20, 2240, 1260)
+        [LiveCaptureEngine]::SetMainWindowSize($wHwnd, 8, 8, 2768, 1556)
         Start-Sleep -Milliseconds 600
         [void][LiveCaptureEngine]::SelectRibbonTab($wHwnd, 'SMILES')
         Start-Sleep -Milliseconds 500
@@ -1686,7 +1738,10 @@ if ($Section -eq 'All' -or $Section -eq 'Common') {
         $c.ClickAt($ptWAbout.X, $ptWAbout.Y, 'Click [About func_SMILES2IMG] to view version info and check for updates.', '[About func_SMILES2IMG]를 눌러 버전 정보 및 업데이트 확인을 실행합니다.')
         $c.RunWithModal('About func_SMILES2IMG', 2200, {
             Show-LiveAboutOverHost -OwnerHwnd $wHwnd -HoldMs 2200
-        }, 'Inspect Third-Party Components & License Notices or click [Check for Updates].', '외장 엔진 버전·오픈소스 라이선스 확인 및 [Check for Updates]를 바로 실행할 수 있습니다.')
+        }, 'Inspect Third-Party Components & License Notices or click [Check for Updates].', '외장 엔진 버전·오픈소스 라이선스 확인 및 [Check for Updates]를 바로 실행할 수 있습니다.', @(
+            (Join-Path $publicDir 'about-dialog.png'),
+            (Join-Path $assetsDir 'about-dialog.png')
+        ))
         $c.Snap(10, -1, -1)
         Complete-FeatureClip $c
 
@@ -1707,7 +1762,7 @@ if ($Section -eq 'All' -or $Section -eq 'Common') {
         $sC.Background.Fill.ForeColor.RGB = 0x2A170F
         $pHwndC = [IntPtr]$pptC.HWND
         $pPidC = [LiveCaptureEngine]::GetPidForHwnd($pHwndC)
-        [LiveCaptureEngine]::SetMainWindowSize($pHwndC, 40, 20, 2240, 1260)
+        [LiveCaptureEngine]::SetMainWindowSize($pHwndC, 8, 8, 2768, 1556)
         Start-Sleep -Milliseconds 600
         [void][LiveCaptureEngine]::SelectRibbonTab($pHwndC, 'SMILES')
         Start-Sleep -Milliseconds 500
@@ -1761,11 +1816,14 @@ if ($Section -eq 'All' -or $Section -eq 'Finalize') {
     Join-ClipList @('word-overview', 'word-ch1-insert-ketcher', 'word-ch2-quick-insert', 'word-ch3-compound-table', 'word-ch4-reaction-scheme', 'word-ch5-edit-and-molstar', 'word-ch6-publication-finish') (Join-Path $assetsVideosDir 'word-guide-video.mp4')
     Join-ClipList @('powerpoint-overview', 'powerpoint-slide-candidate-grid', 'powerpoint-slide-dark-mode', 'powerpoint-slide-molstar-3d', 'powerpoint-slide-textbox-quick-insert', 'powerpoint-slide-batch-style') (Join-Path $assetsVideosDir 'powerpoint-guide-video.mp4')
 
-    # Generate live hero-demo.gif from real Excel + Ketcher MP4 clips using FFmpeg palettegen/paletteuse
+    # Generate live hero demo media from real Excel + Ketcher MP4 clips:
+    # - VitePress docs: hero-demo.webm (VP9 crf 34) + hero-demo-poster.webp (first frame)
+    # - GitHub README: assets/hero-demo.webp (Animated WebP)
     $heroSrc1 = Join-Path $mediaRoot 'excel-overview\clip.mp4'
     $heroSrc2 = Join-Path $mediaRoot 'excel-reactions-ket\clip.mp4'
-    $heroPublicGif = Join-Path $publicDir 'hero-demo.gif'
-    $heroAssetsGif = Join-Path $assetsDir 'hero-demo.gif'
+    $heroPublicWebm = Join-Path $publicDir 'hero-demo.webm'
+    $heroPublicPoster = Join-Path $publicDir 'hero-demo-poster.webp'
+    $heroAssetsWebp = Join-Path $assetsDir 'hero-demo.webp'
     $heroConcatTxt = Join-Path ([System.IO.Path]::GetTempPath()) ("hero_" + [Guid]::NewGuid().ToString('N') + ".txt")
     $heroClipLines = @()
     if (Test-Path $heroSrc1) { $heroClipLines += "file '$($heroSrc1.Replace('\','/'))'" }
@@ -1775,11 +1833,19 @@ if ($Section -eq 'All' -or $Section -eq 'Finalize') {
         $heroJoined = Join-Path ([System.IO.Path]::GetTempPath()) ("hero_joined_" + [Guid]::NewGuid().ToString('N') + ".mp4")
         & $ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i $heroConcatTxt -c copy $heroJoined
         & $ffmpeg -hide_banner -loglevel error -y -i $heroJoined `
-            -vf "fps=10,scale=920:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=128[p];[s1][p]paletteuse=dither=bayer:bayer_scale=4" `
-            $heroPublicGif
-        Copy-Item -LiteralPath $heroPublicGif -Destination $heroAssetsGif -Force
+            -vf "scale=1280:-2:flags=lanczos" `
+            -c:v libvpx-vp9 -b:v 0 -crf 34 -row-mt 1 -an `
+            $heroPublicWebm
+        & $ffmpeg -hide_banner -loglevel error -y -i $heroJoined `
+            -frames:v 1 -vf "scale=1280:-2:flags=lanczos" `
+            -c:v libwebp -q:v 80 `
+            $heroPublicPoster
+        & $ffmpeg -hide_banner -loglevel error -y -i $heroJoined `
+            -vf "scale=1280:-1:flags=lanczos" `
+            -c:v libwebp_anim -lossless 0 -compression_level 6 -q:v 80 -preset default -loop 0 `
+            $heroAssetsWebp
         Remove-Item -LiteralPath $heroConcatTxt, $heroJoined -Force -ErrorAction SilentlyContinue
-        Write-Host "  [OK] Generated live hero-demo.gif ($([int]((Get-Item $heroPublicGif).Length/1KB)) KB)" -ForegroundColor Green
+        Write-Host "  [OK] Generated live hero-demo.webm ($([int]((Get-Item $heroPublicWebm).Length/1KB)) KB), hero-demo-poster.webp ($([int]((Get-Item $heroPublicPoster).Length/1KB)) KB), assets/hero-demo.webp ($([int]((Get-Item $heroAssetsWebp).Length/1KB)) KB)" -ForegroundColor Green
     }
 }
 

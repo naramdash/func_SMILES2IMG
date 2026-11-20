@@ -142,25 +142,52 @@ Office Fluent UI (RibbonX XML)에서 아이콘(`imageMso`)을 변경할 때 아�
 
 ---
 
-## 4. 릴리스 및 배포 절차 (Release Checklist)
+## 4. 기능 추가·변경 시 문서 및 Office 예제 파일(Playbook) 필수 동기화 규칙
+
+기능(Excel 수식, 리본/우클릭 메뉴, Ketcher 2D / Mol\* 3D 옵션, Batch Style 프리셋, Molecule Info 복사 서식, `.sdf` 입출력 등)을 추가하거나 변경할 때는 **코드만 수정하고 끝내지 말고, 웹 문서와 3종 공식 오피스 예제 파일(Playbook)을 반드시 함께 동기화**하십시오.
+
+### 필수 동기화 대상
+1. **웹 문서 (영문·한국어 쌍)**: `docs/` 및 `docs/ko/` 하위 해당 가이드 페이지, `README.md`
+2. **자체 완결형(Self-Contained) Office Playbook 3종** *(웹 문서를 별도로 열지 않아도 파일 단독으로 핵심 기능과 실전 활용 사례를 학습·실습할 수 있어야 함)*:
+   - **Excel (10개 탭)**: `examples/func_SMILES2IMG_Excel_Playbook.xlsx` ← [Generate-Excel-Playbook.ps1](scripts/Generate-Excel-Playbook.ps1)
+   - **Word (6페이지 실습 원고)**: `examples/func_SMILES2IMG_Word_Playbook.docx` ← [Generate-Word-Playbook.ps1](scripts/Generate-Word-Playbook.ps1)
+   - **PowerPoint (8슬라이드 실습 덱)**: `examples/func_SMILES2IMG_PowerPoint_Playbook.pptx` ← [Generate-PowerPoint-Playbook.ps1](scripts/Generate-PowerPoint-Playbook.ps1)
+   - 위 3개 파일은 웹사이트 다운로드용 `docs/public/examples/`에도 항상 동일하게 복사·동기화합니다.
+
+### 재생성 및 검증 커맨드
+```powershell
+# Excel · Word · PowerPoint 3종 공식 Playbook 일괄 재생성, 수식 0오류/메타데이터 검증 및 docs/public/examples/ 동기화
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Generate-All-Playbooks.ps1
+```
+
+- **검증 기준**:
+  - Excel Playbook: 전체 10개 시트 셀 전수 검사 기준 수식 오류(`#REF!`, `#NAME?`, `#VALUE!`, `#N/A`, `#DIV/0!`) **0건**, `.FLOAT` 도형 및 임베드 PNG 포함.
+  - Word / PowerPoint Playbook: 실제 COM 애드인으로 삽입된 `SMILES:` / `KET:` / `MOLSTAR:` 메타데이터(`AlternativeText`, `Shape.Tags`, `CustomXMLParts`)가 포함되어 더블클릭 편집과 `Batch Style`이 즉시 동작해야 함.
+
+---
+
+## 5. 릴리스 및 배포 절차 (Release Checklist)
 
 버전을 올리거나 미리보기(preview) 릴리스를 발행할 때는 다음 파일들을 **동시에** 수정해야 합니다:
 
 1. `Directory.Build.props`: `<Version>X.Y.Z-preview.N</Version>`
 2. `package.json`: `"version": "X.Y.Z-preview.N"`
-3. `README.md`: 설치 가이드 및 버전 번호
+3. `README.md`: 설치 가이드, Playbook 다운로드 링크 및 버전 번호
 4. `docs/.vitepress/config.mts`: 최신 버전 뱃지 및 릴리스 노트 링크
 5. `docs/index.md` & `docs/ko/index.md`
-6. `docs/guide/getting-started.md` & `docs/ko/guide/getting-started.md`: 프리뷰 안내 콜아웃 및 버전 번호
+6. `docs/guide/install.md` & `docs/ko/guide/install.md`: 프리뷰 안내 콜아웃 및 버전 번호
 7. `install.ps1` & `uninstall.ps1`: 기본 폴백 버전(`"vX.Y.Z-preview.N"`), COM 어셈블리 폴백(`Version=X.Y.Z.0`), `Get-InstalledFileVersion` 프리뷰 파싱
 8. (`Indigo.Net`, `Microsoft.Web.WebView2` 등 의존성 변경 시) `src/Smiles2Img.Core/Editor/AboutDialog.cs`, `THIRD_PARTY_NOTICES.md`, `README.md` 동기화
+9. **공식 Office Playbook 3종 재생성**: `scripts/Generate-All-Playbooks.ps1` 실행하여 새 버전 번호와 신규 기능을 `examples/` 및 `docs/public/examples/`에 반영
 
 ### 검증 및 배포 커맨드:
 ```powershell
-# 1. Release 빌드·패키징 + 전체 Unit/WebView2 UI 테스트 + 문서 링크 검증
+# 1. Release 빌드·패키징 + 3종 Office Playbook 재생성 + Unit/WebView2 테스트 + 문서 링크/미디어 검증
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Package-Release.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Generate-All-Playbooks.ps1
 dotnet run --project tests -c Release
 node scripts/audit-docs-links.js
+node scripts/audit-docs-media.js
 
 # (선택) 로컬 Office(Word/PowerPoint/Excel)까지 포함한 전체 25개 스위트 E2E 검증
 dotnet run --project tests -c Release -- --full

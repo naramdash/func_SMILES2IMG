@@ -1,0 +1,11 @@
+WEBVTT
+
+00:00:00.833 --> 00:00:01.803
+Insert / Edit Structure (Ctrl+Shift+K)와 3D Structure (Mol*)로 2D·3D 구조를 삽입합니다.
+
+00:00:01.833 --> 00:00:02.803
+Paste Structure로 선택 텍스트나 클립보드 SMILES를 0.1초 만에 변환합니다.
+
+00:00:02.833 --> 00:00:04.033
+Copy SVG, Molecule Info, Batch Style, About func_SMILES2IMG를 바로 실행합니다.
+

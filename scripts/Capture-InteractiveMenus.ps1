@@ -96,15 +96,15 @@ public static class LiveMenuCapture
     {
         int w = bmp.Width;
         if (w < 900 || bmp.Height < 120) return;
-        // Sample the Office title bar background left of the search bar (x=240, y=22)
-        Color sample = bmp.GetPixel(240, 22);
+        // Sample clean Office title bar strip just right of the Search bar
+        Color sample = bmp.GetPixel(Math.Max(10, w - 860), 45);
         using (var br = new SolidBrush(sample))
         using (var g = Graphics.FromImage(bmp))
         {
-            // Cover top-right account avatar & upgrade pill before window controls (Min/Max/Close)
-            int boxW = 495;
-            int boxX = Math.Max(0, w - 730);
-            g.FillRectangle(br, boxX, 8, boxW, 68);
+            // Cover top-right account avatar & upgrade pill seamlessly before window controls (Max/Close)
+            int boxW = 570;
+            int boxX = Math.Max(0, w - 800);
+            g.FillRectangle(br, boxX, 4, boxW, 86);
         }
     }
 
@@ -134,7 +134,10 @@ public static class LiveMenuCapture
             var sb = new StringBuilder(128);
             GetClassName(wins[i], sb, 128);
             string cls = sb.ToString();
-            if (cls.Contains("InputIndicator") || cls.Contains("IME") || cls.Contains("Tooltip")) continue;
+            bool isOfficePopup = cls.StartsWith("Net UI", StringComparison.OrdinalIgnoreCase) ||
+                                 cls.IndexOf("MsoCommandBar", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                 cls == "#32768";
+            if (!isOfficePopup) continue;
 
             RECT pr;
             GetWindowRect(wins[i], out pr);
@@ -267,7 +270,7 @@ if ($TargetApp -eq 'All' -or $TargetApp -eq 'Word') {
         $hwnd = [IntPtr]$word.ActiveWindow.Hwnd
         [uint32]$wPid = 0
         [void][LiveMenuCapture]::GetWindowThreadProcessId($hwnd, [ref]$wPid)
-        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 40, 10, 2400, 1920, 0x0040)
+        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 8, 8, 2768, 1556, 0x0040)
         Start-Sleep -Milliseconds 600
         Select-RibbonTab $hwnd 'SMILES'
 
@@ -306,6 +309,7 @@ if ($TargetApp -eq 'All' -or $TargetApp -eq 'Excel') {
     try {
         [void]$excel.RegisterXLL($distXll)
         $wb = $excel.Workbooks.Add()
+        try { $excel.ActiveWindow.Zoom = 85 } catch {}
         $ws = $wb.ActiveSheet
         $ws.Range("A1").Value2 = "Compound"
         $ws.Range("B1").Value2 = "SMILES"
@@ -329,7 +333,7 @@ if ($TargetApp -eq 'All' -or $TargetApp -eq 'Excel') {
         $hwnd = [IntPtr]$excel.Hwnd
         [uint32]$xPid = 0
         [void][LiveMenuCapture]::GetWindowThreadProcessId($hwnd, [ref]$xPid)
-        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 40, 10, 2400, 1920, 0x0040)
+        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 8, 8, 2768, 1556, 0x0040)
         Start-Sleep -Milliseconds 600
         Select-RibbonTab $hwnd 'SMILES'
 
@@ -409,7 +413,7 @@ if ($TargetApp -eq 'All' -or $TargetApp -eq 'PowerPoint') {
         $hwnd = [IntPtr]$ppt.HWND
         [uint32]$pPid = 0
         [void][LiveMenuCapture]::GetWindowThreadProcessId($hwnd, [ref]$pPid)
-        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 40, 10, 2400, 1920, 0x0040)
+        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 8, 8, 2768, 1556, 0x0040)
         Start-Sleep -Milliseconds 600
         Select-RibbonTab $hwnd 'SMILES'
 

@@ -17,13 +17,15 @@ if (-not (Test-Path $langReg)) { New-Item -Path $langReg -Force | Out-Null }
 Set-ItemProperty -Path $langReg -Name 'UILanguage' -Value 1033 -Type DWord
 Set-ItemProperty -Path $langReg -Name 'HelpLanguage' -Value 1033 -Type DWord
 Set-ItemProperty -Path $langReg -Name 'InstallLanguage' -Value 1033 -Type DWord
-Set-ItemProperty -Path $langReg -Name 'UILanguageTag' -Value 'en-US' -Type String
-Set-ItemProperty -Path $langReg -Name 'HelpLanguageTag' -Value 'en-US' -Type String
+Set-ItemProperty -Path $langReg -Name 'UILanguageTag' -Value 'en-us' -Type String
+Set-ItemProperty -Path $langReg -Name 'HelpLanguageTag' -Value 'en-us' -Type String
 Set-ItemProperty -Path $langReg -Name 'PreferredUILanguage' -Value 'en-US' -Type String
 Set-ItemProperty -Path $langReg -Name 'PreferredEditingLanguage' -Value 'en-US' -Type String
-Set-ItemProperty -Path $langReg -Name 'UIFallbackLanguages' -Value 'x-none;en-us' -Type String
-Set-ItemProperty -Path $langReg -Name 'HelpFallbackLanguages' -Value 'x-none;en-us' -Type String
+# Note: in Microsoft 365, 'x-none' means "Match Microsoft Windows"; 'en-us' MUST come first!
+Set-ItemProperty -Path $langReg -Name 'UIFallbackLanguages' -Value 'en-us;x-none;ko-kr' -Type String
+Set-ItemProperty -Path $langReg -Name 'HelpFallbackLanguages' -Value 'en-us;x-none;ko-kr' -Type String
 Set-ItemProperty -Path $langReg -Name 'UISnapshotLanguages' -Value 'en-us' -Type String
+Set-ItemProperty -Path $langReg -Name 'FollowSystemUILanguage' -Value 0 -Type DWord
 Set-ItemProperty -Path $langReg -Name 'FollowSystemUI' -Value 0 -Type DWord
 Write-Host "[+] Updated HKCU Office LanguageResources to en-US (1033)" -ForegroundColor Green
 

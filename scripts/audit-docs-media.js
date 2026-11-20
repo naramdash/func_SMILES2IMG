@@ -116,8 +116,13 @@ if (!fs.existsSync(manifestPath)) {
     }
 
     const isFeatureGuide =
-      (rel.startsWith('guide/') || rel.startsWith('ko/guide/')) &&
-      !rel.endsWith('faq.md');
+      /^(ko\/)?(guide|excel|word|powerpoint|editor)\//.test(rel) &&
+      rel !== 'guide/index.md' &&
+      rel !== 'ko/guide/index.md' &&
+      !rel.includes('/troubleshooting/') &&
+      !rel.endsWith('faq.md') &&
+      !rel.endsWith('formula-builder.md') &&
+      !/playbooks?\.md$/.test(rel);
     if (isFeatureGuide && fmMatches.length === 0) {
       issues.push(`[${rel}] Guide page has no <FeatureMedia> live screenshot + video components`);
     }

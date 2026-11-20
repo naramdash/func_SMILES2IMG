@@ -1,106 +1,48 @@
-# 자주 묻는 질문 (FAQ) 및 문제 해결
+# 자주 묻는 질문 (FAQ)
 
-사용 중 자주 겪는 궁금증과 오류를 **설치·실행**, **엑셀 수식**, **스타일·벡터·파일 연동**, **보안 및 업데이트** 4가지 영역으로 나누어 정리했습니다.
+스타일 변환, 벡터 SVG 복사, `.sdf` 파일 연동, 물성 표 복사, 업데이트 등 자주 묻는 활용 질문 모음입니다. 공통 오류는 [설치 보안 차단](/ko/guide/troubleshooting/install), [리본 탭 미표시](/ko/guide/troubleshooting/ribbon-tab), [문서 공유](/ko/guide/troubleshooting/document-sharing)에서, 앱별 오류는 [Excel](/ko/excel/troubleshooting/formula-errors), [Word](/ko/word/troubleshooting/double-click), [PowerPoint](/ko/powerpoint/troubleshooting/dark-slides), [Editor](/ko/editor/troubleshooting/webview2-loading) 트러블슈팅에서 확인하세요.
 
----
-
-## 1. 🛡️ 설치 및 실행 문제
-
-### Q. Windows 11에서 "파일 형식과 확장명이 일치하지 않습니다" 경고가 뜨거나 엑셀 수식이 `#NAME?`으로 나옵니다.
-* **원인:** Windows 11의 **스마트 앱 컨트롤**(Smart App Control) 기능이 오픈소스 추가 기능 실행을 차단했기 때문입니다.
-* **안심하세요:** 스마트 앱 컨트롤을 꺼도 **Microsoft Defender 백신**(실시간 바이러스 감시)은 100% 그대로 정상 작동합니다.
-* **10초 해결법:**
-  1. Windows **설정** (<kbd>Win</kbd> + <kbd>I</kbd>) ➔ **개인 정보 및 보안** ➔ **Windows 보안**으로 이동합니다.
-  2. **앱 및 브라우저 컨트롤** ➔ **스마트 앱 컨트롤 설정**을 클릭합니다.
-  3. 설정을 **'꺼짐(Off)'** 상태로 변경한 뒤 Excel을 다시 시작합니다.
-
-### Q. 수동으로 받은 `.xll` 파일을 열 때 엑셀이 차단합니다.
-인터넷에서 직접 다운로드한 파일은 Windows가 보안 잠금을 걸어둡니다. `.xll` 파일을 우클릭 ➔ **속성** ➔ 하단 **[차단 해제]**(Unblock)에 체크하고 **[확인]** 버튼을 누르거나, 차단 해제를 자동으로 해주는 **[10초 원클릭 설치](./getting-started)** 명령어를 실행하세요.
-
----
-
-## 2. 📗 엑셀 수식 및 화면 표시 질문
-
-### Q. `=SMILES2IMG`와 `=SMILES2IMG.FLOAT` 중 무엇을 써야 하나요?
-* **Microsoft 365 또는 Excel 2024 이상:** `=SMILES2IMG(A2)`를 쓰세요. 셀 내부에 진짜 인셀 이미지로 들어가 정렬·필터와 완벽히 연동됩니다.
-* **Excel 2016, 2019, 2021:** 구버전 엑셀에는 인셀 이미지 기능이 없으므로 뒤에 `.FLOAT`를 붙인 `=SMILES2IMG.FLOAT(A2)`를 쓰세요. 셀 위치와 크기에 맞춰 자동으로 따라 움직이는 그림 도형으로 생성됩니다.
-
-### Q. 수식 결과가 `#VALUE!` 오류로 나옵니다. 왜 그런가요?
-1. 참조한 셀에 올바른 SMILES 문자열이 들어있는지 확인하세요 (괄호나 고리 번호가 안 닫힌 경우 오류가 납니다).
-2. 병합된 셀을 참조할 때는 가장 왼쪽 위(좌상단) 셀 주소를 지정했는지 확인하세요.
-3. **정확한 원인 확인하기:** 상단 리본에서 **`[SMILES]`** ➔ **`[Diagnostics]`** (설정 및 진단) 버튼을 클릭하면 어떤 화학 문법이 틀렸는지 정확한 파서 오류 메시지를 볼 수 있습니다.
-
-### Q. 셀 안의 분자 그림이 너무 작게 보입니다.
-분자 그림은 가로세로 비율이 찌그러지지 않도록 셀 크기에 맞춰 자동 조절됩니다. 해당 셀의 **행 높이**(예: 80~120 pt)와 **열 너비**를 넓혀 주시면 그림이 선명하고 큼직하게 커집니다.
-
-### Q. 이 추가 기능이 설치되지 않은 동료나 Mac 사용자에게 문서를 보내도 구조식이 보이나요?
-네! 프로그램별로 아래와 같이 동작합니다:
-* **Word (`.docx`) 및 PowerPoint (`.pptx`):** 2D 구조식은 **표준 고해상도 PNG 그림**으로, 3D 단백질은 **표준 `.glb` 3D 모델**로 문서에 직접 저장됩니다. 따라서 추가 기능이 없는 Windows PC, **Mac**, 아이패드, 웹 오피스에서 열거나 PDF로 인쇄해도 **100% 깨짐 없이 그대로 보입니다.** (나중에 추가 기능이 설치된 PC에서 다시 열면 Alt Text 메타데이터 덕분에 더블클릭 재편집도 그대로 작동합니다!)
-* **Excel (`.xlsx`):**
-  - `.FLOAT` 수식으로 생성된 그림 도형과 이미 계산된 수식 결과값(분자량, 화학식, 인셀 이미지 캐시)은 다른 PC에서 열어도 화면에 표시됩니다.
-  - **외부 공유 시 꿀팁:** 추가 기능이 없는 동료가 실수로 수식 셀을 더블클릭하거나 전체 재계산(<kbd>F9</kbd>)을 누르면 `#NAME?`이 뜰 수 있으므로, 최종 배포용 엑셀 파일은 수식 열을 복사(<kbd>Ctrl</kbd> + <kbd>C</kbd>) ➔ **값으로 붙여넣기**를 하거나 **PDF로 저장**해서 전달하는 것이 가장 안전합니다.
-
----
-
-## 3. 🎨 논문용 스타일 · 벡터(SVG) · 파일 연동 질문
+## 1. 논문용 스타일 · 벡터(SVG)
 
 ### Q. 논문 투고용 흑백(ACS 스타일), 다크 모드, 또는 원하는 선 색상으로 바꿀 수 있나요?
-* **클릭 한 번으로 문서 전체 변환:** Excel, Word, PowerPoint 상단 리본에서 **`[SMILES]`** ➔ **`[Batch Style]`** 버튼을 클릭하면 선택한 영역이나 문서 전체의 모든 구조식을 **논문용 흑백**(`Publication B&W`), **다크 모드**(`Dark Mode`), **표준 컬러**(`Standard Color`), **흰색 배경**(`White Background`)으로 즉시 통일할 수 있습니다.
+* **클릭 한 번으로 문서 전체 변환:** Excel, Word, PowerPoint 상단 리본에서 **`[SMILES]` ➔ `[Batch Style]`** 메뉴를 클릭하면 선택한 영역이나 문서 전체의 구조식을 **논문용 흑백**(`Publication B&W`), **다크 모드**(`Dark Mode`), **표준 컬러**(`Standard Color`), **흰색 배경**(`White Background`)으로 즉시 통일합니다.
 * **엑셀 수식에서 개별 지정 (커스텀 선 색상 포함):**
   - 흑백 선화: `=SMILES2IMG(A2, "", "bw")`
   - 다크 모드 (투명 배경 + 흰색 선): `=SMILES2IMG(A2, "trans", "white")`
   - 원하는 브랜드/테마 선 색상 지정: `=SMILES2IMG(A2, "", "ink=#1e40af")`
 
-### Q. Adobe Illustrator나 ChemDraw에 붙여넣을 수 있게 벡터(`.svg`)로 복사할 수 있나요?
-네! 분자 셀이나 그림을 선택하고 상단 리본 **`[SMILES]`** ➔ **`[Copy SVG]`** (또는 우클릭 ➔ **`Chemical Structure`** ➔ **`Copy Vector SVG`**) 메뉴를 클릭하세요. 아무리 확대해도 깨지지 않는 벡터 그래픽으로 복사되어 Illustrator, Inkscape 등에 바로 붙여넣을 수 있습니다.
+### Q. Adobe Illustrator나 Inkscape용 벡터(`.svg`)로 복사할 수 있나요?
+네! 분자 셀이나 그림을 선택하고 상단 리본 **`[SMILES]` ➔ `[Copy SVG]`** (또는 우클릭 ➔ **`Chemical Structure` ➔ `Copy Vector SVG`**)를 클릭하면 확대해도 깨지지 않는 벡터 그래픽으로 복사되어 바로 붙여넣을 수 있습니다.
+
+## 2. `.sdf` 파일 & 분자 물성 표 복사
 
 ### Q. 엑셀에서 `.sdf` 화학 데이터 파일을 열거나 저장할 수 있나요?
-네! 엑셀 상단 **`[SMILES]`** ➔ **`[SDF File]`** 메뉴를 누르세요:
-* **`Import SDF File (.sdf)...`:** `.sdf` 파일을 읽어 새 시트에 12개 핵심 의약화학·3D 복잡도 열(`Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`, `Lipinski`)을 갖춘 라이브 수식 표를 자동으로 만들어 줍니다.
+네! 엑셀 상단 **`[SMILES]` ➔ `[SDF File]`** 메뉴를 사용하세요:
+* **`Import SDF File (.sdf)...`:** `.sdf` 파일을 읽어 새 시트에 12개 의약화학·3D 복잡도 열(`Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`, `Lipinski`)을 갖춘 라이브 수식 표를 자동 생성합니다.
 * **`Export Sheet to SDF (.sdf)...`:** 시트의 화합물 목록을 표준 V2000 `.sdf` 파일로 내보냅니다.
 
-### Q. 분자량, 화학식, LogP, Lipinski 정보를 표로 한 번에 복사하려면 어떻게 하나요?
-분자 셀이나 그림을 **우클릭** ➔ **`Chemical Structure`** ➔ **`Copy Molecule Info`** 메뉴에서 원하는 서식을 고르세요:
-* **`Copy All Summary (Text)`:** **머리글(Header) + 데이터** 2줄 표로 복사되어 빈 시트나 워드에 새 표를 만들 때 씁니다.
-* **`Copy as Excel Row (TSV Columns)`:** **데이터 행만** 17개 칸으로 복사되어 기존 엑셀/워드 표의 아래 행에 이어 붙일 때 씁니다.
-* **`Copy as Multi-Line List`:** 파워포인트 슬라이드 텍스트 상자에 글머리 기호(불릿)로 붙여넣기 좋습니다.
-* **`Copy as Markdown Table` / JSON:** 노션(Notion), GitHub, 연구노트 등에 바로 붙여넣을 수 있습니다 (**`Detailed Molecule Info Window...`** 하단 드롭다운에서 서식을 고른 뒤 **`[Copy All]`**을 누르거나 개별 행을 더블클릭해 복사할 수도 있습니다).
+### Q. 분자량, 화학식, LogP, Lipinski 정보를 표로 한 번에 복사하려면?
+분자 셀이나 그림을 **우클릭 ➔ `Chemical Structure` ➔ `Copy Molecule Info`** 메뉴에서 원하는 서식을 고르세요:
+* **`Copy All Summary (Text)`:** **머리글(Header) + 데이터** 2줄 표로 복사되어 새 표를 만들 때 적합합니다.
+* **`Copy as Excel Row (TSV Columns)`:** **데이터 행만** 17개 칸으로 복사되어 기존 표 아래에 이어 붙일 때 씁니다.
+* **`Copy as Multi-Line List`:** PowerPoint 슬라이드 텍스트 상자에 글머리 기호로 붙여넣기 좋습니다.
+* **`Copy as Markdown Table` / JSON:** Notion, GitHub, 연구노트용 (`Detailed Molecule Info Window...` 하단 드롭다운에서 서식 선택 후 **`[Copy All]`** 또는 개별 행 더블클릭 복사 가능).
 
----
+## 3. 보안 · 호환성 · 업데이트
 
-## 4. 🔒 보안(오프라인) 및 업데이트 질문
+### Q. 그린 구조식이 외부 서버로 전송되나요?
+**아니요. 핵심 2D 렌더링, 2D 편집, 모든 물성·SAR 계산은 내 PC에서 로컬로 처리됩니다.** 인터넷은 미캐시 PubChem 이름/CAS 조회, Mol\* PDB 코드 다운로드, 업데이트 확인을 직접 호출할 때만 선택적으로 사용됩니다. 자세한 내용은 [로컬 우선 보안 & 문서 공유](/ko/guide/#privacy)를 참고하세요.
 
-### Q. 내가 그린 신약 후보 물질이나 구조식이 외부 서버로 전송되나요?
-**절대 전송되지 않습니다. 100% 오프라인으로 내 PC 안에서만 작동합니다.**  
-화학 렌더링 엔진(EPAM Indigo), 2D 스케처(Ketcher), 3D 단백질 뷰어(Mol\*)가 모두 내 컴퓨터에 설치되어 인터넷 없이도 작동합니다. 특허 출원 전 화합물이나 기업 기밀 구조도 외부 유출 걱정 없이 안전하게 다룰 수 있습니다. *(유일하게 인터넷을 쓰는 기능은 내장 사전에 없는 화합물의 영문 일반명을 PubChem에서 처음 조회할 때뿐이며, 한 번 조회된 이름은 내 PC에 영구 캐싱됩니다.)*
+### Q. `=SMILES2IMG`와 `=SMILES2IMG.FLOAT` 중 무엇을 써야 하나요?
+* **Microsoft 365 / Excel 2024 이상:** 셀 안 네이티브 이미지로 정렬·필터와 연동되는 `=SMILES2IMG(A2)`를 사용하세요.
+* **Excel 2016 / 2019 / 2021:** 뒤에 `.FLOAT`를 붙인 `=SMILES2IMG.FLOAT(A2)`를 사용하면 셀 크기에 맞춰 움직이는 그림 도형으로 생성됩니다.
 
 ### Q. 새 버전 업데이트는 어떻게 하나요?
-오피스 상단 **`[SMILES]`** ➔ **`[About func_SMILES2IMG]`** 창(개요·구성요소·라이선스 전문 3-탭 UI)에서 **`[Check for Updates]`** 버튼을 누르거나, 처음 설치할 때 사용한 PowerShell 한 줄 명령어를 다시 실행하면 최신 버전으로 자동 업그레이드됩니다:
+상단 리본 **`[SMILES]` ➔ `[About func_SMILES2IMG]`** 창에서 **`[Check for Updates]`** 버튼을 누르거나, [10초 PowerShell 설치 명령](/ko/guide/install)을 다시 실행하면 최신 버전으로 자동 업그레이드됩니다:
 
 <FeatureMedia id="common-about-dialog" />
 
-### Q. 기존 상용·오픈소스 도구(ChemDraw for Excel, JChem for Office, Chem4Word)와 무엇이 다른가요?
-| 비교 항목 | **func_SMILES2IMG (본 프로젝트)** | **ChemDraw / JChem for Office** | **Chem4Word** |
-| :--- | :--- | :--- | :--- |
-| **라이선스 및 비용** | **100% 무료 · 오픈소스 (MIT)** | 유료 상용 구독 라이선스 필요 | 무료 오픈소스 |
-| **지원 오피스 앱** | **Excel + Word + PowerPoint 통합** | Excel + Word + PowerPoint | Word 전용 |
-| **엑셀 구조식 방식** | **네이티브 인셀 이미지(`=SMILES2IMG`)** 및 `.FLOAT` 도형 (별도 시트 변환 불필요) | 전용 시트 변환(Convert Worksheet) 또는 전용 객체 필요 | 미지원 |
-| **3D 단백질 뷰어** | **Mol\* 내장 (360° 회전 `.glb` 모델 & 2D 캡처)** | 별도 3D 프로그램 필요 | 미지원 |
-| **설치 권한** | **관리자 권한 불필요** (10초 유저 영역 설치) | 관리자(Admin) 설치 및 라이선스 인증 필요 | 설치 마법사 실행 |
+## 관련 가이드
 
----
-
-## 🔗 관련 가이드 바로가기
-
-<div class="s2i-card-grid">
-  <a href="./getting-started" class="s2i-card">
-    <div class="s2i-card-title">🚀 설치 및 1분 첫걸음</div>
-    <p class="s2i-card-desc">10초 원클릭 설치 명령어와 오프라인 기업망 수동 설치 방법을 확인하세요.</p>
-  </a>
-  <a href="../tools/formula-builder" class="s2i-card">
-    <div class="s2i-card-title">🛠️ 엑셀 함수 표현 생성기</div>
-    <p class="s2i-card-desc">마우스 클릭만으로 옵션을 조합해 실시간 미리보기를 확인하고 수식을 복사하세요.</p>
-  </a>
-</div>
-
-
+- [**설치 가이드 (10초 셋업)**](/ko/guide/install) — PowerShell 1줄 자동 설치, 오프라인 기업망 수동 설치 및 업데이트/제거 방법
+- [**클릭으로 만드는 수식 생성기**](/ko/excel/formula-builder) — 마우스 클릭만으로 옵션을 조합해 실시간 미리보기를 확인하고 수식을 복사하세요.

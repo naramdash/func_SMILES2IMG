@@ -12,9 +12,9 @@
                            "vttEn":  "/media/excel-overview/captions.en.vtt",
                            "vttKo":  "/media/excel-overview/captions.ko.vtt",
                            "version":  "1.8.0",
-                           "capturedAt":  "2026-11-18",
-                           "width":  2240,
-                           "height":  1260,
+                           "capturedAt":  "2026-11-19",
+                           "width":  2768,
+                           "height":  1556,
                            "durationSec":  3
                        },
     "excel-formula-table":  {
@@ -30,9 +30,9 @@
                                 "vttEn":  "/media/excel-formula-table/captions.en.vtt",
                                 "vttKo":  "/media/excel-formula-table/captions.ko.vtt",
                                 "version":  "1.8.0",
-                                "capturedAt":  "2026-11-18",
-                                "width":  2240,
-                                "height":  1260,
+                                "capturedAt":  "2026-11-19",
+                                "width":  2768,
+                                "height":  1556,
                                 "durationSec":  3.2
                             },
     "excel-name-cas":  {
@@ -48,9 +48,9 @@
                            "vttEn":  "/media/excel-name-cas/captions.en.vtt",
                            "vttKo":  "/media/excel-name-cas/captions.ko.vtt",
                            "version":  "1.8.0",
-                           "capturedAt":  "2026-11-18",
-                           "width":  2240,
-                           "height":  1260,
+                           "capturedAt":  "2026-11-19",
+                           "width":  2768,
+                           "height":  1556,
                            "durationSec":  3
                        },
     "excel-style-matrix":  {
@@ -66,9 +66,9 @@
                                "vttEn":  "/media/excel-style-matrix/captions.en.vtt",
                                "vttKo":  "/media/excel-style-matrix/captions.ko.vtt",
                                "version":  "1.8.0",
-                               "capturedAt":  "2026-11-18",
-                               "width":  2240,
-                               "height":  1260,
+                               "capturedAt":  "2026-11-19",
+                               "width":  2768,
+                               "height":  1556,
                                "durationSec":  3
                            },
     "excel-reactions-ket":  {
@@ -84,10 +84,10 @@
                                 "vttEn":  "/media/excel-reactions-ket/captions.en.vtt",
                                 "vttKo":  "/media/excel-reactions-ket/captions.ko.vtt",
                                 "version":  "1.8.0",
-                                "capturedAt":  "2026-11-18",
-                                "width":  2240,
-                                "height":  1260,
-                                "durationSec":  3.5
+                                "capturedAt":  "2026-11-19",
+                                "width":  2768,
+                                "height":  1556,
+                                "durationSec":  3
                             },
     "excel-ribbon-tools":  {
                                "id":  "excel-ribbon-tools",
@@ -102,10 +102,10 @@
                                "vttEn":  "/media/excel-ribbon-tools/captions.en.vtt",
                                "vttKo":  "/media/excel-ribbon-tools/captions.ko.vtt",
                                "version":  "1.8.0",
-                               "capturedAt":  "2026-11-18",
-                               "width":  2240,
-                               "height":  1260,
-                               "durationSec":  6.1
+                               "capturedAt":  "2026-11-19",
+                               "width":  2768,
+                               "height":  1556,
+                               "durationSec":  5.8
                            },
     "excel-legacy-float":  {
                                "id":  "excel-legacy-float",
@@ -120,9 +120,9 @@
                                "vttEn":  "/media/excel-legacy-float/captions.en.vtt",
                                "vttKo":  "/media/excel-legacy-float/captions.ko.vtt",
                                "version":  "1.8.0",
-                               "capturedAt":  "2026-11-18",
-                               "width":  2240,
-                               "height":  1260,
+                               "capturedAt":  "2026-11-19",
+                               "width":  2768,
+                               "height":  1556,
                                "durationSec":  3
                            },
     "excel-cheminformatics":  {
@@ -138,9 +138,9 @@
                                   "vttEn":  "/media/excel-cheminformatics/captions.en.vtt",
                                   "vttKo":  "/media/excel-cheminformatics/captions.ko.vtt",
                                   "version":  "1.8.0",
-                                  "capturedAt":  "2026-11-18",
-                                  "width":  2240,
-                                  "height":  1260,
+                                  "capturedAt":  "2026-11-19",
+                                  "width":  2768,
+                                  "height":  1556,
                                   "durationSec":  3
                               },
     "excel-sar-screening":  {
@@ -156,9 +156,9 @@
                                 "vttEn":  "/media/excel-sar-screening/captions.en.vtt",
                                 "vttKo":  "/media/excel-sar-screening/captions.ko.vtt",
                                 "version":  "1.8.0",
-                                "capturedAt":  "2026-11-18",
-                                "width":  2240,
-                                "height":  1260,
+                                "capturedAt":  "2026-11-19",
+                                "width":  2768,
+                                "height":  1556,
                                 "durationSec":  3
                             },
     "excel-conversions":  {
@@ -174,9 +174,9 @@
                               "vttEn":  "/media/excel-conversions/captions.en.vtt",
                               "vttKo":  "/media/excel-conversions/captions.ko.vtt",
                               "version":  "1.8.0",
-                              "capturedAt":  "2026-11-18",
-                              "width":  2240,
-                              "height":  1260,
+                              "capturedAt":  "2026-11-19",
+                              "width":  2768,
+                              "height":  1556,
                               "durationSec":  3
                           },
     "excel-sdf-workflow":  {
@@ -192,9 +192,9 @@
                                "vttEn":  "/media/excel-sdf-workflow/captions.en.vtt",
                                "vttKo":  "/media/excel-sdf-workflow/captions.ko.vtt",
                                "version":  "1.8.0",
-                               "capturedAt":  "2026-11-18",
-                               "width":  2240,
-                               "height":  1260,
+                               "capturedAt":  "2026-11-19",
+                               "width":  2768,
+                               "height":  1556,
                                "durationSec":  3
                            },
     "word-ch1-insert-ketcher":  {
@@ -210,10 +210,10 @@
                                     "vttEn":  "/media/word-ch1-insert-ketcher/captions.en.vtt",
                                     "vttKo":  "/media/word-ch1-insert-ketcher/captions.ko.vtt",
                                     "version":  "1.8.0",
-                                    "capturedAt":  "2026-11-18",
-                                    "width":  2240,
-                                    "height":  1260,
-                                    "durationSec":  3.8
+                                    "capturedAt":  "2026-11-19",
+                                    "width":  2768,
+                                    "height":  1556,
+                                    "durationSec":  3
                                 },
     "word-ch2-quick-insert":  {
                                   "id":  "word-ch2-quick-insert",
@@ -228,9 +228,9 @@
                                   "vttEn":  "/media/word-ch2-quick-insert/captions.en.vtt",
                                   "vttKo":  "/media/word-ch2-quick-insert/captions.ko.vtt",
                                   "version":  "1.8.0",
-                                  "capturedAt":  "2026-11-18",
-                                  "width":  2240,
-                                  "height":  1260,
+                                  "capturedAt":  "2026-11-19",
+                                  "width":  2768,
+                                  "height":  1556,
                                   "durationSec":  3
                               },
     "word-ch3-compound-table":  {
@@ -246,10 +246,10 @@
                                     "vttEn":  "/media/word-ch3-compound-table/captions.en.vtt",
                                     "vttKo":  "/media/word-ch3-compound-table/captions.ko.vtt",
                                     "version":  "1.8.0",
-                                    "capturedAt":  "2026-11-18",
-                                    "width":  2240,
-                                    "height":  1260,
-                                    "durationSec":  3.2
+                                    "capturedAt":  "2026-11-19",
+                                    "width":  2768,
+                                    "height":  1556,
+                                    "durationSec":  3
                                 },
     "word-overview":  {
                           "id":  "word-overview",
@@ -264,9 +264,9 @@
                           "vttEn":  "/media/word-overview/captions.en.vtt",
                           "vttKo":  "/media/word-overview/captions.ko.vtt",
                           "version":  "1.8.0",
-                          "capturedAt":  "2026-11-18",
-                          "width":  2240,
-                          "height":  1260,
+                          "capturedAt":  "2026-11-19",
+                          "width":  2768,
+                          "height":  1556,
                           "durationSec":  3
                       },
     "word-ch4-reaction-scheme":  {
@@ -282,10 +282,10 @@
                                      "vttEn":  "/media/word-ch4-reaction-scheme/captions.en.vtt",
                                      "vttKo":  "/media/word-ch4-reaction-scheme/captions.ko.vtt",
                                      "version":  "1.8.0",
-                                     "capturedAt":  "2026-11-18",
-                                     "width":  2240,
-                                     "height":  1260,
-                                     "durationSec":  3.8
+                                     "capturedAt":  "2026-11-19",
+                                     "width":  2768,
+                                     "height":  1556,
+                                     "durationSec":  3
                                  },
     "word-ch5-edit-and-molstar":  {
                                       "id":  "word-ch5-edit-and-molstar",
@@ -300,9 +300,9 @@
                                       "vttEn":  "/media/word-ch5-edit-and-molstar/captions.en.vtt",
                                       "vttKo":  "/media/word-ch5-edit-and-molstar/captions.ko.vtt",
                                       "version":  "1.8.0",
-                                      "capturedAt":  "2026-11-18",
-                                      "width":  2240,
-                                      "height":  1260,
+                                      "capturedAt":  "2026-11-19",
+                                      "width":  2768,
+                                      "height":  1556,
                                       "durationSec":  3
                                   },
     "word-ch6-publication-finish":  {
@@ -318,11 +318,29 @@
                                         "vttEn":  "/media/word-ch6-publication-finish/captions.en.vtt",
                                         "vttKo":  "/media/word-ch6-publication-finish/captions.ko.vtt",
                                         "version":  "1.8.0",
-                                        "capturedAt":  "2026-11-18",
-                                        "width":  2240,
-                                        "height":  1260,
+                                        "capturedAt":  "2026-11-19",
+                                        "width":  2768,
+                                        "height":  1556,
                                         "durationSec":  3
                                     },
+    "word-ribbon-tools":  {
+                              "id":  "word-ribbon-tools",
+                              "host":  "word",
+                              "titleEn":  "Word Ribbon: [SMILES] Insert, Copy SVG, Molecule Info \u0026 Batch Style",
+                              "titleKo":  "Word 리본: [SMILES] 구조 삽입 · SVG 복사 · 물성 · 일괄 스타일",
+                              "shot":  "/media/word-ribbon-tools/shot.png",
+                              "webm":  "/media/word-ribbon-tools/clip.webm",
+                              "mp4":  "/media/word-ribbon-tools/clip.mp4",
+                              "captionEn":  "Explore every command on the Microsoft Word [SMILES] ribbon tab.",
+                              "captionKo":  "Microsoft Word 상단 [SMILES] 리본 탭의 주요 도구를 한눈에 확인합니다.",
+                              "vttEn":  "/media/word-ribbon-tools/captions.en.vtt",
+                              "vttKo":  "/media/word-ribbon-tools/captions.ko.vtt",
+                              "version":  "1.8.0",
+                              "capturedAt":  "2026-11-19",
+                              "width":  2768,
+                              "height":  1556,
+                              "durationSec":  4.3
+                          },
     "powerpoint-slide-candidate-grid":  {
                                             "id":  "powerpoint-slide-candidate-grid",
                                             "host":  "powerpoint",
@@ -336,9 +354,9 @@
                                             "vttEn":  "/media/powerpoint-slide-candidate-grid/captions.en.vtt",
                                             "vttKo":  "/media/powerpoint-slide-candidate-grid/captions.ko.vtt",
                                             "version":  "1.8.0",
-                                            "capturedAt":  "2026-11-18",
-                                            "width":  2240,
-                                            "height":  1260,
+                                            "capturedAt":  "2026-11-19",
+                                            "width":  2768,
+                                            "height":  1556,
                                             "durationSec":  3
                                         },
     "powerpoint-slide-dark-mode":  {
@@ -354,9 +372,9 @@
                                        "vttEn":  "/media/powerpoint-slide-dark-mode/captions.en.vtt",
                                        "vttKo":  "/media/powerpoint-slide-dark-mode/captions.ko.vtt",
                                        "version":  "1.8.0",
-                                       "capturedAt":  "2026-11-18",
-                                       "width":  2240,
-                                       "height":  1260,
+                                       "capturedAt":  "2026-11-19",
+                                       "width":  2768,
+                                       "height":  1556,
                                        "durationSec":  3
                                    },
     "powerpoint-slide-reaction":  {
@@ -372,10 +390,10 @@
                                       "vttEn":  "/media/powerpoint-slide-reaction/captions.en.vtt",
                                       "vttKo":  "/media/powerpoint-slide-reaction/captions.ko.vtt",
                                       "version":  "1.8.0",
-                                      "capturedAt":  "2026-11-18",
-                                      "width":  2240,
-                                      "height":  1260,
-                                      "durationSec":  3.8
+                                      "capturedAt":  "2026-11-19",
+                                      "width":  2768,
+                                      "height":  1556,
+                                      "durationSec":  3
                                   },
     "powerpoint-slide-molstar-3d":  {
                                         "id":  "powerpoint-slide-molstar-3d",
@@ -390,9 +408,9 @@
                                         "vttEn":  "/media/powerpoint-slide-molstar-3d/captions.en.vtt",
                                         "vttKo":  "/media/powerpoint-slide-molstar-3d/captions.ko.vtt",
                                         "version":  "1.8.0",
-                                        "capturedAt":  "2026-11-18",
-                                        "width":  2240,
-                                        "height":  1260,
+                                        "capturedAt":  "2026-11-19",
+                                        "width":  2768,
+                                        "height":  1556,
                                         "durationSec":  3
                                     },
     "powerpoint-slide-textbox-quick-insert":  {
@@ -408,9 +426,9 @@
                                                   "vttEn":  "/media/powerpoint-slide-textbox-quick-insert/captions.en.vtt",
                                                   "vttKo":  "/media/powerpoint-slide-textbox-quick-insert/captions.ko.vtt",
                                                   "version":  "1.8.0",
-                                                  "capturedAt":  "2026-11-18",
-                                                  "width":  2240,
-                                                  "height":  1260,
+                                                  "capturedAt":  "2026-11-19",
+                                                  "width":  2768,
+                                                  "height":  1556,
                                                   "durationSec":  3
                                               },
     "powerpoint-slide-live-qa-info":  {
@@ -426,9 +444,9 @@
                                           "vttEn":  "/media/powerpoint-slide-live-qa-info/captions.en.vtt",
                                           "vttKo":  "/media/powerpoint-slide-live-qa-info/captions.ko.vtt",
                                           "version":  "1.8.0",
-                                          "capturedAt":  "2026-11-18",
-                                          "width":  2240,
-                                          "height":  1260,
+                                          "capturedAt":  "2026-11-19",
+                                          "width":  2768,
+                                          "height":  1556,
                                           "durationSec":  3
                                       },
     "powerpoint-slide-batch-style":  {
@@ -444,9 +462,9 @@
                                          "vttEn":  "/media/powerpoint-slide-batch-style/captions.en.vtt",
                                          "vttKo":  "/media/powerpoint-slide-batch-style/captions.ko.vtt",
                                          "version":  "1.8.0",
-                                         "capturedAt":  "2026-11-18",
-                                         "width":  2240,
-                                         "height":  1260,
+                                         "capturedAt":  "2026-11-19",
+                                         "width":  2768,
+                                         "height":  1556,
                                          "durationSec":  3
                                      },
     "powerpoint-overview":  {
@@ -462,9 +480,9 @@
                                 "vttEn":  "/media/powerpoint-overview/captions.en.vtt",
                                 "vttKo":  "/media/powerpoint-overview/captions.ko.vtt",
                                 "version":  "1.8.0",
-                                "capturedAt":  "2026-11-18",
-                                "width":  2240,
-                                "height":  1260,
+                                "capturedAt":  "2026-11-19",
+                                "width":  2768,
+                                "height":  1556,
                                 "durationSec":  3
                             },
     "common-ketcher-2d":  {
@@ -480,10 +498,10 @@
                               "vttEn":  "/media/common-ketcher-2d/captions.en.vtt",
                               "vttKo":  "/media/common-ketcher-2d/captions.ko.vtt",
                               "version":  "1.8.0",
-                              "capturedAt":  "2026-11-18",
-                              "width":  2240,
-                              "height":  1260,
-                              "durationSec":  4.5
+                              "capturedAt":  "2026-11-19",
+                              "width":  2768,
+                              "height":  1556,
+                              "durationSec":  3
                           },
     "common-molecule-info":  {
                                  "id":  "common-molecule-info",
@@ -498,10 +516,10 @@
                                  "vttEn":  "/media/common-molecule-info/captions.en.vtt",
                                  "vttKo":  "/media/common-molecule-info/captions.ko.vtt",
                                  "version":  "1.8.0",
-                                 "capturedAt":  "2026-11-18",
-                                 "width":  2240,
-                                 "height":  1260,
-                                 "durationSec":  4
+                                 "capturedAt":  "2026-11-19",
+                                 "width":  2768,
+                                 "height":  1556,
+                                 "durationSec":  3
                              },
     "common-about-dialog":  {
                                 "id":  "common-about-dialog",
@@ -516,10 +534,10 @@
                                 "vttEn":  "/media/common-about-dialog/captions.en.vtt",
                                 "vttKo":  "/media/common-about-dialog/captions.ko.vtt",
                                 "version":  "1.8.0",
-                                "capturedAt":  "2026-11-18",
-                                "width":  2240,
-                                "height":  1260,
-                                "durationSec":  4.2
+                                "capturedAt":  "2026-11-19",
+                                "width":  2768,
+                                "height":  1556,
+                                "durationSec":  3
                             },
     "common-molstar-3d":  {
                               "id":  "common-molstar-3d",
@@ -534,9 +552,9 @@
                               "vttEn":  "/media/common-molstar-3d/captions.en.vtt",
                               "vttKo":  "/media/common-molstar-3d/captions.ko.vtt",
                               "version":  "1.8.0",
-                              "capturedAt":  "2026-11-18",
-                              "width":  2240,
-                              "height":  1260,
-                              "durationSec":  3.2
+                              "capturedAt":  "2026-11-19",
+                              "width":  2768,
+                              "height":  1556,
+                              "durationSec":  3
                           }
 }

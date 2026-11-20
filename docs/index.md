@@ -3,53 +3,67 @@ layout: home
 
 hero:
   name: "func_SMILES2IMG"
-  text: "Stop Copy-Pasting Chemical Structures into Excel"
-  tagline: "Type a compound name or SMILES to auto-render 2D structures, molecular weights, and Lipinski Rule of 5 across hundreds of rows. Double-click to sketch in 2D or rotate 3D proteins — 100% free and offline in Excel, Word & PowerPoint."
-  image:
-    src: /hero-demo.gif
-    alt: func_SMILES2IMG — Auto-render chemical structures in Excel and double-click to edit in Ketcher 2D
+  text: "Chemical Structures in Excel"
+  tagline: "Render 2D structures and calculate molecular properties across spreadsheets with simple Excel formulas. Free, open-source, and runs locally in Excel, Word, and PowerPoint."
   actions:
     - theme: brand
-      text: 🚀 Free Install & 1-Min Quickstart
-      link: /guide/getting-started
+      text: Get Started
+      link: /guide/
     - theme: alt
-      text: 🛠️ Try Interactive Formula Builder
-      link: /tools/formula-builder
+      text: View on GitHub
+      link: https://github.com/naramdash/func_SMILES2IMG
 
 features:
-  - icon: ⚡
-    title: "Auto-Render Structures Across Hundreds of Rows"
-    details: "Turn chemical names, CAS numbers, or SMILES into crisp in-cell structure images with a single formula like =NAME2IMG(\"Aspirin\") — just type once and drag down."
-  - icon: ✏️
-    title: "Double-Click Any Cell to Sketch in 2D"
-    details: "No switching back and forth to external drawing software. Double-click any cell or structure image to draw molecules and multi-step reaction schemes in place."
-  - icon: 🔬
-    title: "Spreadsheet Property Calculation & SAR Screening"
-    details: "Compute Molecular Weight, Exact Mass, LogP, TPSA, Lipinski Rule of 5 pass/fail, and substructure matches locally in your sheet with zero lag (0ms)."
-  - icon: 🧬
-    title: "Interactive 360° 3D Proteins (Mol*)"
-    details: "Enter a 4-letter PDB code or open a local file to embed rotatable 3D protein-ligand complexes directly into PowerPoint slides, Word manuscripts, and Excel."
-  - icon: 🎨
-    title: "1-Click ACS Monochrome B&W, Dark Mode & SVG"
-    details: "Unify every structure in a sheet, paper, or slide deck into ACS black-and-white or dark-mode white ink in one click, copy lossless SVG vectors, or import/export .sdf files."
-  - icon: 🛡️
-    title: "100% Free, Offline & Confidential"
-    details: "All chemical rendering and property calculations happen locally on your PC. Proprietary drug candidates and unpublished structures never leave your machine."
+  - icon:
+      src: /icons/molecule.svg
+      alt: Chemical Structure Rendering
+      width: '28'
+      height: '28'
+    title: "Structure Rendering"
+    details: "Turn SMILES, chemical names, CAS numbers, or InChI into crisp 2D structures directly inside cells with simple formulas."
+    link: /excel/
+  - icon:
+      src: /icons/pill.svg
+      alt: Properties & Lipinski Drug-Likeness
+      width: '28'
+      height: '28'
+    title: "Properties & Lipinski Ro5"
+    details: "Calculate Molecular Weight, Formula, Exact Mass, LogP, TPSA, and Lipinski Rule of 5 locally across hundreds of rows."
+    link: /excel/properties
+  - icon:
+      src: /icons/database.svg
+      alt: Conversion, SAR Screening & SDF Database
+      width: '28'
+      height: '28'
+    title: "Conversion, SAR & .sdf I/O"
+    details: "Convert between Name, CAS, SMILES, and InChIKey, run substructure/similarity screening, or import/export .sdf files."
+    link: /excel/formulas
+  - icon:
+      src: /icons/excel.svg
+      alt: Microsoft Excel
+      width: '28'
+      height: '28'
+    title: "Microsoft Excel"
+    details: "In-cell formulas, 40 chemical functions, double-click 2D editing, and full support for Excel 365 & 2016–2021."
+    link: /excel/
+  - icon:
+      src: /icons/word.svg
+      alt: Microsoft Word
+      width: '28'
+      height: '28'
+    title: "Microsoft Word"
+    details: "Insert inline structures into prose and compound tables, apply 1-click ACS B&W batch styles, and copy lossless SVG."
+    link: /word/
+  - icon:
+      src: /icons/powerpoint.svg
+      alt: Microsoft PowerPoint
+      width: '28'
+      height: '28'
+    title: "Microsoft PowerPoint"
+    details: "Build dark-mode transparent structures, convert slide textboxes in 0.1s, and embed rotatable 3D protein models."
+    link: /powerpoint/
 ---
 
-## ⚡ 10-Second Quick Install (Excel · Word · PowerPoint)
+## Playbooks
 
-<QuickInstallBox />
-
----
-
-## 📊 Download Live Interactive Master Showcase Workbook (8 Tabs)
-
-Explore all features without typing formulas from scratch. Download the official **8-tab interactive master Excel workbook** containing working live in-cell structures, Lipinski screening, substructure matching, styling matrix, and reaction canvases:
-
-<div class="s2i-card-grid" style="margin-top: 16px;">
-  <a href="/func_SMILES2IMG/SMILES2IMG_Comprehensive_Showcase.xlsx" download="SMILES2IMG_Comprehensive_Showcase.xlsx" class="s2i-card">
-    <div class="s2i-card-title">📥 Download SMILES2IMG_Comprehensive_Showcase.xlsx (.xlsx)</div>
-    <p class="s2i-card-desc">0. Quick Guide & Shortcuts · 1. Structure to Image (Name/CAS/SMILES) · 2. Molecular Properties, Lipinski Ro5 & 3D Complexity · 3. Substructure & Similarity · 4. Drawing Styles & Options · 5. Reactions & KET Canvas · 6. Legacy Excel (.FLOAT) · 7. 3D & Ribbon Tools (8 sheets, 100% audited with zero errors)</p>
-  </a>
-</div>
+<PlaybookPreview />
