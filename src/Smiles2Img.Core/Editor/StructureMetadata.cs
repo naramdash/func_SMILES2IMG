@@ -161,6 +161,33 @@ public static class StructureMetadata
         return (left, top, newWidth, newHeight);
     }
 
+    /// <summary>
+    /// Computes centered, aspect-ratio-preserving bounds inside a slide when converting a PowerPoint
+    /// TextBox in-place, expanding thin single-line TextBoxes into a readable target box clamped to the slide.
+    /// </summary>
+    public static (float Left, float Top, float Width, float Height) FitTextBoxReplacementBounds(
+        float boxLeft, float boxTop, float boxWidth, float boxHeight, float slideWidth, float slideHeight, byte[] pngBytes)
+    {
+        if (boxWidth >= 90f && boxHeight >= 75f)
+            return FitReplacementBounds(boxLeft, boxTop, boxWidth, boxHeight, pngBytes);
+
+        float cx = boxLeft + boxWidth / 2f;
+        float cy = boxTop + boxHeight / 2f;
+        float targetWidth = Math.Min(Math.Max(boxWidth, 160f), Math.Min(240f, Math.Max(120f, slideWidth - 24f)));
+        float targetHeight = Math.Min(Math.Max(boxHeight, 88f), Math.Min(130f, Math.Max(80f, slideHeight - 24f)));
+
+        var (left, top, width, height) = FitReplacementBounds(
+            cx - targetWidth / 2f,
+            cy - targetHeight / 2f,
+            targetWidth,
+            targetHeight,
+            pngBytes);
+
+        left = Math.Max(12f, Math.Min(left, Math.Max(12f, slideWidth - width - 12f)));
+        top = Math.Max(12f, Math.Min(top, Math.Max(12f, slideHeight - height - 12f)));
+        return (left, top, width, height);
+    }
+
     public static (float Width, float Height) GetScaledDimensions(
         byte[] pngBytes, float defaultWidth = 300f, float defaultHeight = 200f, float scale = 1.0f, float minWidth = 0f, float maxWidth = float.MaxValue)
     {

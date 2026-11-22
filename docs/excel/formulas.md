@@ -1,143 +1,122 @@
-# 40 Excel Formula & Style Keyword Cheat Sheet
+# All 40 Excel Functions
 
-Don't memorize option keywords! **Copy one of the Top 5 essential formulas below**, or **click options in the interactive generator widget** to build and preview your custom formula in one click.
+Every **`func_SMILES2IMG`** formula follows a unified **`=<INPUT>2<OUTPUT>`** design: pick a function prefix matching your **input** (`SMILES`, `NAME`, `INCHI`, or `KET`) and a suffix matching the **cell output** you need—whether a crisp 2D structure graphic, a quantitative property, a SAR screening flag, or a converted identifier string.
 
-## ⭐ Top 5 Ready-to-Copy Formulas (90% of Daily Lab Use)
-
-Paste any of these 5 formulas directly into Excel (on Excel 2016–2021, append **`.FLOAT`** to `...2IMG` functions):
-
-```text
-=NAME2IMG("Aspirin")
-```
-```text
-=SMILES2IMG(A2)
-```
-```text
-=SMILES2IMG(A2, "", "bw")
-```
-```text
-=SMILES2MW(A2)
-```
-```text
-=SMILES2LIPINSKI(A2)
-```
-
-::: tip Interactive Formula Builder
-Want to click options visually and preview the rendered structure before copying? Open the [Interactive Formula Builder](/excel/formula-builder).
+::: tip Two Shared Pipelines Across All 40 Functions
+* **Structure Image Output (`8` functions):** `=SMILES2IMG`, `=NAME2IMG`, `=INCHI2IMG`, and `=KET2IMG` (plus their `.FLOAT` equivalents) share the identical 4-argument signature `(input, [bg], [style], [transform])` and the same EPAM Indigo renderer. Only the 1st argument's input notation varies.
+* **Scalar Output (`32` functions):** Property, Lipinski/ADME, SAR, and identifier conversion functions return native Excel numbers, booleans (`TRUE`/`FALSE`), or strings—ready for `IF`, `FILTER`, `SORT`, `XLOOKUP`, and stoichiometry math (`MW × mmol`). All `SMILES2*` descriptor functions also auto-detect InChI and single-molecule KET cells.
 :::
 
-## 1. 🖼️ Render 2D Structure Images (`...2IMG`)
+## ⭐ Top 5 Ready-to-Copy Formulas
 
-Embed high-resolution 2D chemical structures or multi-step reaction schemes directly into cells.
+Click **Copy All** and paste into cell **`A1`** to populate inputs (`A2:A5`) alongside live formulas (`B2:B6`), or copy any row individually (on Excel 2016–2021, append **`.FLOAT`** to `...2IMG` functions):
 
-| Your Input Data | Formula (Microsoft 365 / Excel 2024+) | For Excel 2016 / 2019 / 2021 | Example |
-| :--- | :--- | :--- | :--- |
-| **SMILES String** | `=SMILES2IMG(cell, [bg], [style], [transform])` | `=SMILES2IMG.FLOAT(...)` | `=SMILES2IMG(A2)` |
-| **Chemical Name or CAS #** | `=NAME2IMG(name_or_cas, [bg], [style], [transform])` | `=NAME2IMG.FLOAT(...)` | `=NAME2IMG("Aspirin")` |
-| **Reaction Scheme (KET)** | `=KET2IMG(cell, [bg], [style], [transform])` | `=KET2IMG.FLOAT(...)` | `=KET2IMG(A2)` |
-| **InChI String** | `=INCHI2IMG(cell, [bg], [style], [transform])` | `=INCHI2IMG.FLOAT(...)` | `=INCHI2IMG(A2)` |
+<FormulaTable
+  title="Top 5 Ready-to-Copy Lab Sheet"
+  :columns='["SMILES / Input", "Formula"]'
+  :rows='[
+    { input: "CCO", formula: "=SMILES2IMG(A2)", desc: "2D IUPAC color structure from SMILES in A2", out: "2D Ethanol" },
+    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2IMG(A3, \"\", \"bw\")", desc: "ACS journal monochrome B&W structure from A3", out: "B&W Aspirin" },
+    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2MW(A4)", desc: "Molecular weight in g/mol (0ms offline)", out: "180.16" },
+    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2LIPINSKI(A5)", desc: "Lipinski Rule of 5 drug-likeness", out: "PASS" },
+    { input: "", formula: "=NAME2IMG(\"Aspirin\")", desc: "Standalone 2D structure from name or CAS #", out: "2D Aspirin" }
+  ]'
+/>
 
-::: tip 💡 Shorthand Syntax Tips
-* **Default Color + Transparent BG:** Only the 1st argument is required: `=SMILES2IMG(A2)`.
-* **Quick B&W Shortcut:** Pass `"bw"` (or `FALSE`) directly in the 2nd argument to get monochrome line art with a transparent background (`=SMILES2IMG(A2, "bw")`).
-* **Flexible Delimiters:** Combine multiple style tokens in the 3rd argument using spaces (` `), commas (`,`), pipes (`|`), semicolons (`;`), or plus signs (`+`)—e.g., `"bw num stereo"` or `"bw, num, stereo"`.
-:::
+## 🗺️ Guide Map by Category
 
-## 2. 🏷️ Get Name, Formula, MW & Exact Mass
-
-Except for online common-name lookup (`=SMILES2NAME`), all property functions run in **0ms purely offline**.
-
-| What You Want | SMILES Formula | For InChI / KET Input | Example Output (`A2` = Aspirin) | Description |
-| :--- | :--- | :--- | :--- | :--- |
-| **Substance Name** | `=SMILES2NAME(A2)` | `=INCHI2NAME(A2)`<br>`=KET2NAME(A2)` | `"Aspirin"` | Common name via IUPAC / PubChem (with local disk cache) |
-| **Chemical Formula** | `=SMILES2FORMULA(A2)` | `=INCHI2FORMULA(A2)`<br>`=KET2FORMULA(A2)` | `"C9H8O4"` | Standard Hill-notation molecular formula |
-| **Molecular Weight (MW)** | `=SMILES2MW(A2)` | `=INCHI2MW(A2)`<br>`=KET2MW(A2)` | `180.16` | Standard average molecular weight in g/mol (2 decimals) |
-| **Monoisotopic Exact Mass** | `=SMILES2EXACTMASS(A2)` | `=INCHI2EXACTMASS(A2)`<br>`=KET2EXACTMASS(A2)` | `180.0423` | Exact monoisotopic mass in Da for HRMS/LC-MS (4 decimals) |
-
-## 3. 💊 Drug-Likeness (Lipinski Ro5) & ADME Properties
-
-Evaluate oral bioavailability and physicochemical descriptors directly in your spreadsheet. Accepts SMILES, InChI, or KET inputs automatically.
-
-| What You Want | Formula | Example Output | Lipinski Cutoff & Description |
-| :--- | :--- | :--- | :--- |
-| **Lipinski Rule of 5** | `=SMILES2LIPINSKI(A2)` | `"PASS"` / `"FAIL"` | Evaluates all 4 rules (MW ≤ 500, LogP ≤ 5, HBD ≤ 5, HBA ≤ 10) |
-| **LogP (Lipophilicity)** | `=SMILES2LOGP(A2)` | `1.31` | Wildman-Crippen octanol-water partition coefficient (≤ 5.0) |
-| **Polar Surface Area (TPSA)** | `=SMILES2TPSA(A2)` | `63.60` | Topological Polar Surface Area in Å² (≤ 140 oral, ≤ 90 CNS/BBB) |
-| **H-Bond Donors (HBD)** | `=SMILES2HBD(A2)` | `1` | Count of `-OH` and `-NH` hydrogen bond donors (≤ 5) |
-| **H-Bond Acceptors (HBA)** | `=SMILES2HBA(A2)` | `4` | Count of nitrogen (`N`) and oxygen (`O`) acceptors (≤ 10) |
-| **Rotatable Bonds** | `=SMILES2ROTBONDS(A2)` | `3` | Count of rotatable single bonds (≤ 10 recommended) |
-| **Heavy Atom Count** | `=SMILES2HEAVY(A2)` | `13` | Count of non-hydrogen heavy atoms (`countHeavyAtoms`) |
-| **Ring Count (SSSR)** | `=SMILES2RINGS(A2)` | `1` | Total number of rings (Smallest Set of Smallest Rings) |
-| **Aromatic Ring Count** | `=SMILES2AROMATIC(A2)` | `1` | Count of aromatic rings (≤ 3 recommended for solubility) |
-| **Fraction Csp³ (Fsp³)** | `=SMILES2FSP3(A2)` | `0.11` | Fraction of sp³ hybridized carbons (`0.00` to `1.00`, ≥ 0.25 for 3D character) |
-| **Chiral Centers** | `=SMILES2CHIRAL(A2)` | `0` | Count of defined tetrahedral stereocenters (`@` / `@@`) |
-
-## 4. 🔍 Substructure Search & Similarity (SAR Screening)
-
-Filter compound libraries by scaffold or rank analogs against a lead molecule. For a copy-and-paste dictionary of 12 common SMARTS functional groups, see the **[Substructure & Similarity (SAR) Guide](/excel/sar)**.
-
-| Goal | Formula | Example Output | How It Works |
-| :--- | :--- | :--- | :--- |
-| **Substructure Match** | `=SMILES.MATCH(target, "query")` | `TRUE` / `FALSE` | Returns `TRUE` if `target` contains the SMILES/SMARTS substructure `query` |
-| **2D Fingerprint Similarity** | `=SMILES.SIMILARITY(mol1, mol2, [metric])` | `0.0` to `1.0` | Computes 2D similarity score (`"tanimoto"` default, `"tversky"`, or `"euclid-sub"`) |
-
-## 5. 🔄 Convert Between Name, CAS, SMILES & InChI
-
-| Conversion | Formula | Example Output |
+| Sidebar Category | Included Functions (`40` Total) | Pages |
 | :--- | :--- | :--- |
-| **Name or CAS # ➔ SMILES** | `=NAME2SMILES("50-78-2")` or `=NAME2SMILES("Aspirin")` | `"CC(=O)Oc1ccccc1C(=O)O"` |
-| **SMILES / KET ➔ InChI** | `=SMILES2INCHI(A2)` / `=KET2INCHI(A2)` | `"InChI=1S/C9H8O4/c1-6(10)..."` |
-| **InChI ➔ SMILES** | `=INCHI2SMILES(A2)` | `"CC(=O)Oc1ccccc1C(=O)O"` |
-| **SMILES / InChI / KET ➔ InChIKey** | `=SMILES2INCHIKEY(A2)` / `=INCHI2INCHIKEY(A2)` / `=KET2INCHIKEY(A2)` | `"BSYNRYMUTXBXSQ-UHFFFAOYSA-N"` |
+| **Structure Images** | `SMILES2IMG`, `NAME2IMG`, `INCHI2IMG`, `KET2IMG` (+ 4 `.FLOAT`) | [SMILES, InChI](/excel/structures) · [Names, Solvents, CAS](/excel/name-cas) · [Reaction Schemes (KET)](/excel/reactions) · [Styles & Highlights](/excel/styles-reactions) |
+| **Properties & ADME** | `*2FORMULA`, `*2MW`, `*2EXACTMASS`, `*2NAME` (×3) + 11 ADME/3D descriptors | [Formula, MW, Exact Mass](/excel/properties) · [Lipinski, ADME, 3D](/excel/lipinski-adme) |
+| **SAR & Identifiers** | `=SMILES.MATCH`, `=SMILES.SIMILARITY`, `=NAME2SMILES`, `*2INCHI`, `INCHI2SMILES`, `*2INCHIKEY` | [Substructure & Similarity](/excel/sar) · [Identifier Conversion](/excel/data-sdf) |
+| **Sheet Tools & 3D** | Multi-compound `.sdf` I/O, `[Batch Style]`, 17-col TSV & 3D `Mol*` | [SDF Import & Export](/excel/sdf) · [Batch Style, TSV, 3D](/excel/tools-export) · [Ribbon & Context Menus](/excel/ribbon) |
 
-## 6. 🎨 Complete Background (`[bg]`) & Style (`[style]`) Reference
+## 1. Structure Image Functions (`8`)
+
+All 4 input formats share `(input, [bg], [style], [transform])` ([SMILES, InChI](/excel/structures) · [Names, Solvents, CAS](/excel/name-cas) · [Reaction Schemes (KET)](/excel/reactions)):
+
+| Input Notation (`Arg 1`) | Microsoft 365 / Excel 2024+ | Excel 2016–2021 | Example |
+| :--- | :--- | :--- | :--- |
+| **SMILES** *(auto-detects KET)* | `=SMILES2IMG(cell, [bg], [style], [transform])` | `=SMILES2IMG.FLOAT(...)` | `=SMILES2IMG(A2)` |
+| **Name or CAS #** | `=NAME2IMG(name_or_cas, [bg], [style], [transform])` | `=NAME2IMG.FLOAT(...)` | `=NAME2IMG("Aspirin")` |
+| **IUPAC InChI** | `=INCHI2IMG(cell, [bg], [style], [transform])` | `=INCHI2IMG.FLOAT(...)` | `=INCHI2IMG(A2)` |
+| **Reaction / Canvas (KET)** | `=KET2IMG(cell, [bg], [style], [transform])` | `=KET2IMG.FLOAT(...)` | `=KET2IMG(A2)` |
+
+::: tip Shorthand Tips
+* **Minimal Call:** Only the 1st argument is required: `=SMILES2IMG(A2)`.
+* **2-Arg B&W Shortcut:** Pass `"bw"` (or `FALSE`) in the 2nd argument to render transparent black-and-white art immediately: `=SMILES2IMG(A2, "bw")`.
+* **Delimiters:** Separate multiple `[style]` tokens with spaces, commas, pipes (`|`), semicolons (`;`), or `+`.
+:::
+
+## 2. Formula, MW, Exact Mass, Name (`12`)
+
+Except for online common-name lookups (`*2NAME`, cached locally after 1 query), all property calculations run **0ms purely offline** ([Formula, MW, Exact Mass](/excel/properties)):
+
+| Output | SMILES Input | InChI / KET Input | Type | Aspirin (`A2`) |
+| :--- | :--- | :--- | :---: | :--- |
+| **Substance Name** | `=SMILES2NAME(A2)` | `=INCHI2NAME(A2)` · `=KET2NAME(A2)` | `String` | `"Aspirin"` |
+| **Chemical Formula (Hill)** | `=SMILES2FORMULA(A2)` | `=INCHI2FORMULA(A2)` · `=KET2FORMULA(A2)` | `String` | `"C9H8O4"` |
+| **Molecular Weight (MW)** | `=SMILES2MW(A2)` | `=INCHI2MW(A2)` · `=KET2MW(A2)` | `Double` | `180.16` |
+| **Monoisotopic Exact Mass** | `=SMILES2EXACTMASS(A2)` | `=INCHI2EXACTMASS(A2)` · `=KET2EXACTMASS(A2)` | `Double` | `180.0423` |
+
+## 3. Lipinski Ro5, ADME, 3D Descriptors (`11`)
+
+Every descriptor function accepts SMILES, InChI, or single-molecule KET cells automatically ([Lipinski, ADME, 3D](/excel/lipinski-adme)):
+
+| Descriptor | Formula | Type | Aspirin | MedChem Guideline |
+| :--- | :--- | :---: | :---: | :--- |
+| **Lipinski Rule of 5** | `=SMILES2LIPINSKI(A2)` | `String` | `"PASS"` | MW ≤ 500, LogP ≤ 5, HBD ≤ 5, HBA ≤ 10 |
+| **LogP (Crippen)** | `=SMILES2LOGP(A2)` | `Double` | `1.31` | ≤ 5.0 recommended |
+| **TPSA (Å²)** | `=SMILES2TPSA(A2)` | `Double` | `63.60` | ≤ 140 Å² oral; ≤ 90 Å² CNS BBB |
+| **H-Bond Donors** | `=SMILES2HBD(A2)` | `Integer` | `1` | ≤ 5 (`-OH`, `-NH`) |
+| **H-Bond Acceptors** | `=SMILES2HBA(A2)` | `Integer` | `4` | ≤ 10 (`N`, `O` acceptors) |
+| **Rotatable Bonds** | `=SMILES2ROTBONDS(A2)` | `Integer` | `3` | ≤ 10 recommended |
+| **Heavy Atoms** | `=SMILES2HEAVY(A2)` | `Integer` | `13` | Non-hydrogen atoms |
+| **Total Rings (SSSR)** | `=SMILES2RINGS(A2)` | `Integer` | `1` | Smallest Set of Smallest Rings |
+| **Aromatic Rings** | `=SMILES2AROMATIC(A2)` | `Integer` | `1` | ≤ 3 recommended |
+| **Fraction Csp³ (Fsp³)** | `=SMILES2FSP3(A2)` | `Double` | `0.11` | ≥ 0.25 (`0.00–1.00`) |
+| **Chiral Centers** | `=SMILES2CHIRAL(A2)` | `Integer` | `0` | Defined tetrahedral stereocenters |
+
+## 4. SAR Screening & Similarity (`2`)
+
+Both SAR functions accept SMILES, InChI, or KET inputs ([Substructure & Similarity](/excel/sar)):
+
+| Output | Formula | Type | Result | How It Works |
+| :--- | :--- | :---: | :---: | :--- |
+| **Substructure Match** | `=SMILES.MATCH(target, "query")` | `Boolean` | `TRUE` / `FALSE` | Checks if `target` contains the SMILES/SMARTS pattern `query` |
+| **2D Fingerprint Similarity** | `=SMILES.SIMILARITY(mol1, mol2, [metric])` | `Double` | `0.0–1.0` | Computes 2D similarity (`"tanimoto"`, `"tversky"`, or `"euclid-sub"`) |
+
+## 5. Identifier Conversions (`7`)
+
+Standardize Chemical Name, CAS #, Canonical SMILES, IUPAC InChI, and 27-character InChIKey ([Identifier Conversion](/excel/data-sdf)):
+
+| Conversion | Formula | Type | Example Output |
+| :--- | :--- | :---: | :--- |
+| **Name or CAS # ➔ SMILES** | `=NAME2SMILES("50-78-2")` / `=NAME2SMILES("Aspirin")` | `String` | `"CC(=O)Oc1ccccc1C(=O)O"` |
+| **SMILES / KET ➔ InChI** | `=SMILES2INCHI(A2)` · `=KET2INCHI(A2)` | `String` | `"InChI=1S/C9H8O4/..."` |
+| **InChI ➔ Canonical SMILES** | `=INCHI2SMILES(A2)` | `String` | `"CC(=O)Oc1ccccc1C(=O)O"` |
+| **SMILES / InChI / KET ➔ InChIKey** | `=SMILES2INCHIKEY(A2)` · `=INCHI2INCHIKEY(A2)` · `=KET2INCHIKEY(A2)` | `String` | `"BSYNRYMUTXBXSQ-UHFFFAOYSA-N"` |
+
+## 6. Shared Background (`[bg]`) & Style (`[style]`) Tokens
+
+All 8 `...2IMG` and `...2IMG.FLOAT` functions share these exact styling parameters ([Styles & Highlights](/excel/styles-reactions)):
 
 <FeatureMedia id="excel-style-matrix" />
 
-### 2nd Argument: Background (`[bg]`)
-
-| Value | Effect | Example |
-| :--- | :--- | :--- |
-| `""` or `"trans"` / `"transparent"` | Transparent alpha background (default) | `=SMILES2IMG(A2, "")` |
-| `"white"` | Solid opaque white background box | `=SMILES2IMG(A2, "white")` |
-| `"#RRGGBB"` or CSS color name | Custom background fill (`"#1e1e1e"`, `"yellow"`, etc.) | `=SMILES2IMG(A2, "#1e1e1e", "white")` |
-
-### 3rd Argument: Style, Label & Geometry Tokens (`[style]`)
-
-| Category | Primary Token | Accepted Aliases | Effect |
+| Parameter | Token / Value | Accepted Aliases | Effect |
 | :--- | :--- | :--- | :--- |
-| **Color Mode** | `color` | `colour`, `cpk`, `true` | Standard IUPAC element colors (default) |
-| **Monochrome** | `bw` | `mono`, `monochrome`, `black`, `gray`, `grayscale` | High-contrast ACS journal & patent black-and-white line art |
-| **Bond Ink Color** | `white` / `ink=#HEX` | `light`, `line=#HEX`, `base=#HEX` | Crisp white bonds for dark mode, or **any custom brand/slide ink color** (`"ink=#1e40af"`, `"line=navy"`) |
-| **Substructure Highlight** | `hl:<smarts>` | `highlight:<smarts>`, `hl=<smarts>`, `highlight=<smarts>` | Highlights matching SMILES/SMARTS substructure in color |
-| **Atom Numbers** | `num` | `number`, `numbers`, `idx`, `index`, `atom-num`, `atom-ids` | Displays 1-based atom index numbers for NMR/MS |
-| **Stereochemistry** | `stereo` | `chiral`, `abs`, `ext`, `stereochemistry` | Displays CIP stereochemistry labels (*R/S*, *E/Z*) |
-| **Explicit Hydrogens** | `h` | `hydrogen`, `hydrogens`, `unfoldh`, `all-h` | Unfolds and displays all explicit hydrogen atoms (`H`) |
-| **Carbon Symbols** | `all-c` | `carbon`, `carbons`, `c` | Explicitly displays `C` symbols on all carbon vertices |
-| **Mirror Flip** | `flip` / `flipy` | `flipx` (horizontal), `flipy` (vertical) | Mirrors molecular coordinates horizontally (`flip`) or vertically (`flipy`) |
-| **Rotation** | `rot90` / `rot180` / `rot270` | *(Also accepted in 4th `[transform]` argument)* | Rotates structure clockwise by 90°, 180°, or 270° |
+| **Background `[bg]`** | `""` / `"trans"` · `"white"` · `#RRGGBB` | `"transparent"`, CSS color names | Transparent canvas, opaque white box, or custom background fill |
+| **Color / Monochrome** | `color` · `bw` | `cpk`, `mono`, `black`, `grayscale` | Standard IUPAC element coloring or ACS B&W line art |
+| **Custom Ink** | `white` · `ink=#HEX` | `light`, `line=#HEX`, `base=#HEX` | White bonds for dark mode or custom hex/CSS ink color |
+| **Highlight** | `hl:<smarts>` | `highlight:<smarts>`, `hl=<smarts>` | Colors atoms/bonds matching a SMILES/SMARTS pattern |
+| **Labels** | `num` · `stereo` · `h` · `all-c` | `idx`, `chiral`, `unfoldh`, `carbon` | Atom numbers, CIP *R/S*/*E/Z*, explicit `-H`, explicit `C` labels |
+| **Transforms** | `flip` · `flipy` · `rot90`/`180`/`270` | `flipx` *(also accepted in 4th arg)* | Horizontal/vertical mirror flip and clockwise rotation |
 
-## 7. 📊 Return Data Types & Excel Error Code Reference
+## 7. Status & Error Code Quick Reference
 
-### Return Data Types (Formula Math & Logic Compatibility)
-
-| Function Group | Excel Return Type | Formula & Math Usage Example |
-| :--- | :--- | :--- |
-| `=SMILES2MW`, `=SMILES2EXACTMASS`, `=SMILES2LOGP`, `=SMILES2TPSA`, `=SMILES2FSP3`, `=SMILES.SIMILARITY` | **Numeric (`Double`)** | `=SMILES2MW(A2) * 5.0` (stoichiometry mass), `=SMILES2FSP3(A2) >= 0.25` |
-| `=SMILES2HBD`, `=SMILES2HBA`, `=SMILES2ROTBONDS`, `=SMILES2HEAVY`, `=SMILES2RINGS`, `=SMILES2AROMATIC`, `=SMILES2CHIRAL` | **Numeric (`Integer`)** | `=SMILES2HBD(A2) + SMILES2HBA(A2)`, `=SMILES2AROMATIC(A2) <= 3` |
-| `=SMILES.MATCH` | **Boolean (`TRUE / FALSE`)** | `=IF(SMILES.MATCH(A2, "c1ccccc1"), "Aromatic", "Aliphatic")` |
-| `=SMILES2LIPINSKI`, `=SMILES2FORMULA`, `=SMILES2NAME`, `=NAME2SMILES`, `=SMILES2INCHI` | **Text (`String`)** | `=IF(SMILES2LIPINSKI(A2)="PASS", "Candidate", "Exclude")` |
-| `=SMILES2IMG`, `=NAME2IMG`, `=KET2IMG`, `=INCHI2IMG` | **In-Cell Picture (`.FLOAT` = Shape)** | Scales automatically with cell height/width and sorts with table rows |
-
-### Understanding Excel Status & Error Codes (`#N/A`, `#VALUE!`, `#NAME?`)
-
-| Displayed Code | Meaning & Cause | How to Resolve |
+| Code | Meaning | Resolution |
 | :---: | :--- | :--- |
-| **`#N/A`** *(briefly ~0.1s)* | **Normal Async Rendering in Progress:** Shown momentarily (~0.1s) while generating a new structure image or resolving an uncached name from PubChem, then **automatically updates to the final image or value**. | Wait a fraction of a second—no action needed. |
-| **`#VALUE!`** | **Invalid Chemical Syntax or Empty Reference:** The referenced cell is empty, or the SMILES/InChI string contains a chemical syntax error (e.g., unclosed ring number or parenthesis). | Click **`[SMILES]`** ➔ **`[Diagnostics]`** on the ribbon to view the exact parser error message. |
-| **`#NAME?`** | **Add-In Not Loaded or Excel Version Mismatch:** Either the add-in is not active, or `=SMILES2IMG` was typed on Excel 2016–2021 instead of `=SMILES2IMG.FLOAT`. | Run the [10-Second Quick Install](/guide/install), or append `.FLOAT` on Excel 2016–2021. |
-
-## 🚀 Continue Exploring
-
-- [**Formula Generator & Style Simulator**](/excel/formula-builder) — Click options to preview rendered structures in real time and copy the formula
-- [**Substructure & Similarity (SAR)**](/excel/sar) — 12 common SMARTS functional groups, Tanimoto similarity, and Excel IF/Filter rules
+| **`#N/A`** *(~0.1s)* | Async rendering or uncached PubChem resolution in progress. | Updates automatically in a moment—no action needed. |
+| **`#VALUE!`** | Empty input cell or malformed SMILES/InChI syntax. | Click **`[SMILES]` ➔ `[Diagnostics]`** for exact parser details. |
+| **`#NAME?`** | Add-in inactive, or `=SMILES2IMG` typed on Excel 2016–2021. | Check [Installation](/guide/install) or append **`.FLOAT`**. |

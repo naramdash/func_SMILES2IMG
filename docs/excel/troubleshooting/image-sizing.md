@@ -23,5 +23,5 @@ Older perpetual Excel versions do not support native in-cell image formulas (`=S
 
 ## Related Guides
 
-- [**Excel Formula Errors**](/excel/troubleshooting/formula-errors) — Resolve #NAME?, #VALUE!, #N/A, and Diagnostics parser errors.
-- [**Excel Recipes 1–5**](/excel/) — Structure tables, Name/CAS lookup, styles, and .FLOAT mode walkthroughs.
+- [**Formula Errors**](/excel/troubleshooting/formula-errors) — Resolve `#NAME?`, `#VALUE!`, `#N/A`, and `Diagnostics` parser errors
+- [**Legacy Excel (.FLOAT)**](/excel/legacy-float) · [**SMILES, InChI**](/excel/structures) — Structure tables and cell-anchored floating shape guides

@@ -291,7 +291,7 @@ function Register-OfficeComAddIn {
 # Register Word COM Add-in
 $wordDllPath = Join-Path $suiteDir 'Smiles2Img.Word.dll'
 if (Test-Path $wordDllPath) {
-    $wordAssembly = try { [System.Reflection.AssemblyName]::GetAssemblyName($wordDllPath).FullName } catch { "Smiles2Img.Word, Version=1.8.0.0, Culture=neutral, PublicKeyToken=null" }
+    $wordAssembly = try { [System.Reflection.AssemblyName]::GetAssemblyName($wordDllPath).FullName } catch { "Smiles2Img.Word, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null" }
     Register-OfficeComAddIn `
         -ProgId "Smiles2Img.Word.AddIn" `
         -Clsid "{41A5C1F0-559A-46E0-B9C0-8B35A0F1D910}" `
@@ -306,7 +306,7 @@ if (Test-Path $wordDllPath) {
 # Register PowerPoint COM Add-in
 $pptDllPath = Join-Path $suiteDir 'Smiles2Img.PowerPoint.dll'
 if (Test-Path $pptDllPath) {
-    $pptAssembly = try { [System.Reflection.AssemblyName]::GetAssemblyName($pptDllPath).FullName } catch { "Smiles2Img.PowerPoint, Version=1.8.0.0, Culture=neutral, PublicKeyToken=null" }
+    $pptAssembly = try { [System.Reflection.AssemblyName]::GetAssemblyName($pptDllPath).FullName } catch { "Smiles2Img.PowerPoint, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null" }
     Register-OfficeComAddIn `
         -ProgId "Smiles2Img.PowerPoint.AddIn" `
         -Clsid "{A755973C-21FB-494A-A3C5-086AFFB7C2AC}" `
@@ -343,7 +343,7 @@ foreach ($candidate in $installedCandidateFiles) {
     }
 }
 if (-not $installedVersion) {
-    $installedVersion = if ($tag -ne 'latest') { $tag } else { "v1.8.0" }
+    $installedVersion = if ($tag -ne 'latest') { $tag } else { "v1.8.1" }
 }
 
 # -------------------------------------------------------------

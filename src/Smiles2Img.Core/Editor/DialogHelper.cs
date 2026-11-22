@@ -319,15 +319,15 @@ public static class DialogHelper
         MessageBox.Show(message, AppTitle, MessageBoxButtons.OK, icon);
     }
 
-    public static void ShowAbout(IntPtr ownerHwnd = default)
+    public static void ShowAbout(IntPtr ownerHwnd = default, string? appName = null)
     {
         try
         {
-            AboutDialog.ShowModal(ToOwner(ownerHwnd));
+            AboutDialog.ShowModal(ToOwner(ownerHwnd), appName);
         }
         catch
         {
-            AboutDialog.ShowModal();
+            AboutDialog.ShowModal(null, appName);
         }
     }
 

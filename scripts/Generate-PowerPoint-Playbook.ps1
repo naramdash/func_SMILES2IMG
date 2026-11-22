@@ -23,7 +23,7 @@ $coreDll = (Resolve-Path (Join-Path $repoRoot 'dist\x64\PowerPoint\Smiles2Img.Co
 [System.Reflection.Assembly]::LoadFrom($coreDll) | Out-Null
 [Smiles2Img.Rendering.NativeIndigo]::Initialize((Split-Path $coreDll -Parent))
 
-$addinVersion = '1.8.0'
+$addinVersion = '1.8.1'
 try {
     $propsXml = [xml](Get-Content (Join-Path $repoRoot 'Directory.Build.props') -Raw)
     if ($propsXml.Project.PropertyGroup.Version) { $addinVersion = [string]$propsXml.Project.PropertyGroup.Version }
@@ -273,9 +273,9 @@ try {
     $s1.NotesPage.Shapes.Placeholders.Item(2).TextFrame.TextRange.Text = "Welcome to the func_SMILES2IMG PowerPoint Playbook! Start by double-clicking the Caffeine molecule on the right side of Slide 1 to open EPAM Ketcher 2D directly inside PowerPoint."
 
     # =========================================================================
-    # SLIDE 2: Complete [SMILES] Ribbon, Right-Click Menu & Shortcuts Reference
+    # SLIDE 2: Complete [SMILES] Ribbon & Right-Click Menu Reference
     # =========================================================================
-    Write-Host '[2/8] Building Slide 2: Complete Ribbon & Shortcuts Cheat Sheet...' -ForegroundColor Yellow
+    Write-Host '[2/8] Building Slide 2: Complete Ribbon & Menu Cheat Sheet...' -ForegroundColor Yellow
     $s2 = New-DarkSlide $pres 'Slide 2 · Quick Reference' 'PowerPoint [SMILES] Ribbon & 3-Level Context Menu' 'Everything you need on one slide — no web documentation required' `
         'Use Slide 2 as your built-in command cheat sheet. Every command on the top [SMILES] Ribbon tab is also accessible via Right-Click -> Chemical Structure >.'
 
@@ -286,8 +286,8 @@ try {
     $tbl.Columns.Item(3).Width = 175
     $tbl.Columns.Item(4).Width = 358
     $s2Data = @(
-        @('Group / Menu',      'Command',                  'Shortcut / Access',          'Action in Microsoft PowerPoint'),
-        @('Insert Structure',  'Insert / Edit Structure',  'Ctrl+Shift+K / Double-Click','Open Ketcher 2D to sketch or re-edit selected molecule/reaction in place'),
+        @('Group / Menu',      'Command',                  'How to Access',              'Action in Microsoft PowerPoint'),
+        @('Insert Structure',  'Insert / Edit Structure',  'Ribbon / Double-Click',      'Open Ketcher 2D to sketch or re-edit selected molecule/reaction in place'),
         @('Insert Structure',  '3D Structure (Mol*)',      'Ribbon -> [SMILES]',         'Load PDB ID (1CRN, 4HHB, 6LU7) or local .pdb/.cif as 3D GLB or 2D PNG'),
         @('Insert Structure',  'Paste Structure',          'Ribbon / Right-Click',       'Convert selected TextBox (SMILES/InChI/Name) or clipboard in 0.1s'),
         @('Structure Tools',   'Copy SMILES / InChI / KET','Ribbon / Right-Click',       'Extract exact chemical identifier or lossless KET JSON from any slide shape'),

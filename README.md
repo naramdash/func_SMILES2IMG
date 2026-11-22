@@ -19,10 +19,10 @@
 
 ---
 
-## 📖 User Documentation & Interactive Web Tools
+## 📖 User Documentation
 
-* 🇰🇷 **[한국어 공식 가이드 및 1분 시작하기](https://naramdash.github.io/func_SMILES2IMG/ko/)** · **[🛠️ 웹 수식 생성기 체험](https://naramdash.github.io/func_SMILES2IMG/ko/excel/formula-builder)**
-* 🇺🇸 **[English Documentation & 1-Min Quickstart](https://naramdash.github.io/func_SMILES2IMG/)** · **[🛠️ Interactive Formula Generator](https://naramdash.github.io/func_SMILES2IMG/excel/formula-builder)**
+* 🇰🇷 **[한국어 공식 가이드 및 1분 시작하기](https://naramdash.github.io/func_SMILES2IMG/ko/)**
+* 🇺🇸 **[English Documentation & 1-Min Quickstart](https://naramdash.github.io/func_SMILES2IMG/)**
 * 📊 **[📥 Download Self-Contained Excel Playbook (.xlsx)](https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/examples/func_SMILES2IMG_Excel_Playbook.xlsx)** — 10-tab interactive workbook with live formulas, Lipinski & 3D complexity KPIs, SMARTS dictionary, stoichiometry & hit-to-lead workflows, KET reactions, `.FLOAT`, and all 40 functions.
 * 📝 **[📥 Download Self-Contained Word Playbook (.docx)](https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/examples/func_SMILES2IMG_Word_Playbook.docx)** — 6-page hands-on manuscript with live double-click-editable structures, journal SAR table, KET synthesis schemes, Mol\* 3D `1CRN` figure, and 1-click ACS B&W exercise.
 * 🎨 **[📥 Download Self-Contained PowerPoint Playbook (.pptx)](https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/examples/func_SMILES2IMG_PowerPoint_Playbook.pptx)** — 8-slide dark-mode interactive deck with 0.1s TextBox conversion lab, 4-card screening grid, KET mechanism slide, Mol\* 3D target, live Q&A `Molecule Info`, and speaker notes.
@@ -34,7 +34,7 @@
 Open **PowerShell** and run this single command to automatically install, configure security, and register the add-in across Microsoft Office (Excel, Word, PowerPoint):
 
 ```powershell
-# Latest stable release (v1.8.0)
+# Latest stable release (v1.8.1)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
@@ -108,10 +108,10 @@ func_SMILES2IMG/
 │   ├── release.yml                     # Release packaging, installer encoding check & GitHub Release
 │   └── deploy-docs.yml                 # Docs link & live-media audits + GitHub Pages deployment
 ├── docs/                               # VitePress documentation source
-│   ├── .vitepress/                     # VitePress config, i18n routing & minimal Vue components (FeatureMedia, QuickInstallBox, FormulaBuilder, SidebarToggle)
+│   ├── .vitepress/                     # VitePress config, i18n routing & minimal Vue components (FeatureMedia, FormulaTable, QuickInstallBox, PlaybookPreview, ImageLightbox, SidebarToggle)
 │   ├── public/                         # Live Office media (/media/<id>/* PNG/WebM/MP4/VTT), showcase XLSX & sample SDF
 │   ├── guide/                          # English Guide (/guide/, /guide/faq)
-│   ├── excel/                          # English Excel (/excel/, cheminformatics, formulas, formula-builder)
+│   ├── excel/                          # English Excel (/excel/, structures, properties, sar, formulas)
 │   ├── word/ & powerpoint/ & editor/   # English Word, PowerPoint, and shared Editor (Ketcher, Mol*, publishing)
 │   └── ko/                             # Korean mirror (ko/guide, ko/excel, ko/word, ko/powerpoint, ko/editor)
 ├── src/

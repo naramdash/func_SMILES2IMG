@@ -1,36 +1,56 @@
-# Properties & Lipinski Ro5
+# Formula, MW, Exact Mass
 
-Compute physicochemical descriptors, HRMS monoisotopic exact mass, Lipinski Rule of 5 compliance, and 3D complexity metrics locally in Excel with zero latency.
+Compute standard Hill chemical formulas, average molecular weights (`MW`), HRMS monoisotopic exact masses, and substance names locally in **0ms**—and plug native numeric outputs straight into organic synthesis ELN stoichiometry calculators and LC-MS / HRMS adduct tables.
 
-```text
-=SMILES2MW(A2)
-=SMILES2EXACTMASS(A2)
-=SMILES2LIPINSKI(A2)
-=SMILES2FSP3(A2)
-```
+<FormulaTable
+  title="Formula, Mass, Name Sheet (0ms Offline)"
+  :columns='["SMILES", "Formula"]'
+  :rows='[
+    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2FORMULA(A2)", desc: "Standard Hill molecular formula", out: "C9H8O4" },
+    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2MW(A3)", desc: "Average molecular weight (g/mol, numeric)", out: "180.16" },
+    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2EXACTMASS(A4)", desc: "Monoisotopic HRMS exact mass (4 decimals)", out: "180.0423" },
+    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2NAME(A5)", desc: "IUPAC / PubChem substance name (cached)", out: "Aspirin" }
+  ]'
+/>
 
 <FeatureMedia id="excel-cheminformatics" />
 
-## Physicochemical & Drug-Likeness Formulas
+## 1. Core Identity & Mass Functions (`12` Total Across SMILES / InChI / KET)
 
-| Descriptor | Formula | MedChem Rule | Aspirin (`A2`) | Notes |
-| :--- | :--- | :---: | :---: | :--- |
-| **Chemical Formula** | `=SMILES2FORMULA(A2)` | — | `C9H8O4` | Standard Hill notation |
-| **Molecular Weight** | `=SMILES2MW(A2)` | **≤ 500** g/mol | `180.16` | Numeric `double` for stoichiometry |
-| **Exact Mass (HRMS)** | `=SMILES2EXACTMASS(A2)` | — | `180.0423` | `[M+H]+` = `+1.0073`, `[M+Na]+` = `+22.9892` |
-| **LogP / TPSA** | `=SMILES2LOGP(A2)` / `=SMILES2TPSA(A2)` | **≤ 5.0** / **≤ 140 Å²** | `1.31` / `63.60` | CNS BBB ≤ 90 Å² |
-| **HBD / HBA / RotB** | `=SMILES2HBD` / `HBA` / `ROTBONDS` | **≤ 5** / **≤ 10** / **≤ 10** | `1` / `4` / `3` | Oral bioavailability descriptors |
-| **Lipinski Pass/Fail** | `=SMILES2LIPINSKI(A2)` | — | `PASS` | Combined 4-rule evaluation |
-| **Heavy / Rings / Arom** | `=SMILES2HEAVY` / `RINGS` / `AROMATIC` | **Arom ≤ 3** | `13` / `1` / `1` | Developability & scaffold tracking |
-| **3D Fsp³ / Chiral** | `=SMILES2FSP3(A2)` / `=SMILES2CHIRAL(A2)` | **Fsp³ ≥ 0.25** | `0.11` / `0` | "Escape from Flatland" metrics |
+All four descriptors work seamlessly with SMILES, InChI, and single-molecule KET cells via a single `(input)` argument (`=INCHI2*` and `=KET2*` delegate directly to the same parser):
 
-::: tip Using InChI or KET Input?
-Replace `SMILES2` with `INCHI2` or `KET2` (e.g. `=INCHI2MW(A2)`, `=KET2EXACTMASS(A2)`).
-:::
+| Property Output | SMILES Input | InChI / KET Input | Aspirin (`A2`) | Execution & Output Type |
+| :--- | :--- | :--- | :---: | :--- |
+| **Chemical Formula** | `=SMILES2FORMULA(A2)` | `=INCHI2FORMULA(A2)` · `=KET2FORMULA(A2)` | `C9H8O4` | **0ms Offline** · Standard Hill notation (`String`) |
+| **Molecular Weight (MW)** | `=SMILES2MW(A2)` | `=INCHI2MW(A2)` · `=KET2MW(A2)` | `180.16` | **0ms Offline** · Numeric `Double` in g/mol (2 decimals) |
+| **Exact Mass (HRMS)** | `=SMILES2EXACTMASS(A2)` | `=INCHI2EXACTMASS(A2)` · `=KET2EXACTMASS(A2)` | `180.0423` | **0ms Offline** · Monoisotopic mass in Da (4 decimals) |
+| **Substance Name** | `=SMILES2NAME(A2)` | `=INCHI2NAME(A2)` · `=KET2NAME(A2)` | `Aspirin` | PubChem / IUPAC lookup with local disk cache (`String`) |
 
-## Combining with Excel `IF` / `AND` Rules
+## 2. Template 1: Organic Synthesis Stoichiometry Calculator (ELN)
 
-| Screening Rule | Copy-Paste Formula (`A2` = SMILES) |
-| :--- | :--- |
-| **CNS BBB Candidate (`TPSA ≤ 90`, `MW ≤ 450`)** | `=IF(AND(SMILES2TPSA(A2)<=90, SMILES2MW(A2)<=450), "CNS Candidate", "Standard")` |
-| **3D-Rich Lead (`Fsp3 ≥ 0.25`, `Arom ≤ 3`)** | `=IF(AND(SMILES2FSP3(A2)>=0.25, SMILES2AROMATIC(A2)<=3), "Escape Flatland", "Flat")` |
+Because `=SMILES2MW` returns a genuine numeric `Double`, you can multiply it directly by a `mmol` cell to build an automated reagent weighing table (`mass = MW × mmol`):
+
+| Col A (Reagent) | Col B (`=NAME2SMILES(A2)`) | Col C (`=SMILES2IMG(B2)`) | Col D (`=SMILES2MW(B2)`) | Col E (Eq.) | Col F (`mmol`) | Col G (`=D2*F2` mg) |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| `Salicylic Acid` | `O=C(O)c1ccccc1O` | *(2D structure)* | `138.12` | `1.0` | `5.0` | **`690.6 mg`** |
+| `Acetic Anhydride` | `CC(=O)OC(=O)C` | *(2D structure)* | `102.09` | `1.5` | `=$F$2*E3` (`7.5`) | **`765.7 mg`** |
+
+To calculate theoretical yield (`mg`) of your product row (column `B4`), multiply the limiting reagent's `mmol` (`$F$2`), equivalents, and `=SMILES2MW(B4)` directly.
+
+## 3. Template 2: LC-MS & HRMS Calculated Ion Mass (*m/z*)
+
+Use `=SMILES2EXACTMASS(A2)` (accurate to 4 decimal places) to compute calculated exact *m/z* values for common mass spectrometry adducts automatically:
+
+| MS Ion / Adduct | Copy-Ready Excel Formula (`A2` = Structure) | Aspirin (`C9H8O4`) |
+| :--- | :--- | :---: |
+| **Neutral Exact Mass (`M`)** | `=SMILES2EXACTMASS(A2)` | `180.0423` |
+| **`[M + H]+`** *(ESI Positive)* | `=ROUND(SMILES2EXACTMASS(A2) + 1.007276, 4)` | `181.0496` |
+| **`[M + NH4]+`** | `=ROUND(SMILES2EXACTMASS(A2) + 18.033823, 4)` | `198.0761` |
+| **`[M + Na]+`** | `=ROUND(SMILES2EXACTMASS(A2) + 22.989218, 4)` | `203.0315` |
+| **`[M - H]-`** *(ESI Negative)* | `=ROUND(SMILES2EXACTMASS(A2) - 1.007276, 4)` | `179.0350` |
+
+## Related Guides
+
+- [**Lipinski, ADME, 3D**](/excel/lipinski-adme) — Screen ADME drug-likeness, hydrogen bonds, rings, `Fsp3`, and stereocenters
+- [**Identifier Conversion**](/excel/data-sdf) — Convert between Name/CAS, Canonical SMILES, InChI, and `InChIKey`
+- [**Playbook (.xlsx)**](/excel/playbook) — Open tabs `2. Properties & Lipinski` and `7. Real-World Workflows` to copy these live tables directly

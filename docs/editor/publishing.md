@@ -7,7 +7,7 @@ next:
   link: /editor/troubleshooting/webview2-loading
 ---
 
-# 1-Click ACS Journal B&W, Vector SVG & Property Table Export
+# 1-Click ACS Journal B&W, Vector SVG, Property Table Export
 
 Convert every chemical structure in an Excel sheet, Word manuscript, or PowerPoint deck into **ACS Black & White** or **Dark Mode** in a single click—and copy lossless **SVG vectors** straight into Adobe Illustrator.
 
@@ -143,5 +143,5 @@ Inside the **Detailed Molecule Info Window**, select **JSON** from the format dr
 
 ## 🚀 Continue Exploring
 
-- [**Formula & Option Reference**](/excel/formulas) — Interactive Excel formula builder and complete cheat sheet of all 40 chemical functions
+- [**All 40 Excel Functions**](/excel/formulas) — Complete parameter catalog, data types, and shared rendering options for all 40 chemical functions
 - [**FAQ & Troubleshooting**](/guide/faq) — Quick answers for installation, Excel formulas, styling, SVG copy, and local-first privacy

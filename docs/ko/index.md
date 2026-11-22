@@ -66,6 +66,8 @@ features:
 
 ## Playbooks
 
+단계별 기능 학습과 실무 연구·보고서 예제를 함께 담은 오피스 파일입니다.
+
 <PlaybookPreview />
 
 

@@ -3,7 +3,7 @@ prev:
   text: 2D Sketcher & Reaction Schemes
   link: /editor/
 next:
-  text: ACS B&W Batch Style, SVG & Property Tables
+  text: ACS B&W Batch Style, SVG, Property Tables
   link: /editor/publishing
 ---
 
@@ -63,4 +63,4 @@ Not sure which code to test first? Try any of these 4 classic structures:
 ## 🚀 Continue Exploring
 
 - [**PowerPoint Presentations**](/powerpoint/) — Rotate 3D protein models live during slide shows and style dark-mode structures
-- [**Ketcher 2D Sketcher**](/editor/) — Press Ctrl+Shift+K to draw small-molecule ligands and multi-step reaction schemes
+- [**Ketcher 2D Sketcher**](/editor/) — Draw small-molecule ligands and multi-step reaction schemes directly inside Office

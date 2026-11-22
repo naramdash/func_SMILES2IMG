@@ -11,8 +11,8 @@ Install **`func_SMILES2IMG`** across Microsoft Excel, Word, and PowerPoint in 10
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
-::: tip What's Included in `v1.8.0`
-Running the command above automatically detects your Office bitness (32-bit vs. 64-bit), downloads **`func_SMILES2IMG v1.8.0`**, unblocks files (`Unblock-File`), and registers the add-in in HKCU for Excel, Word, and PowerPoint—featuring unified `Chemical Structure >` context menus, 40 Excel functions, Ketcher 2D, Mol\* 3D, and 12-column `.sdf` import.
+::: tip What's Included in `v1.8.1`
+Running the command above automatically detects your Office bitness (32-bit vs. 64-bit), downloads **`func_SMILES2IMG v1.8.1`**, unblocks files (`Unblock-File`), and registers the add-in in HKCU for Excel, Word, and PowerPoint—featuring unified `Chemical Structure >` context menus, 40 Excel functions, Ketcher 2D, Mol\* 3D, and 12-column `.sdf` import.
 :::
 
 ## 2. Restart Office & Verify the `[SMILES]` Ribbon Tab

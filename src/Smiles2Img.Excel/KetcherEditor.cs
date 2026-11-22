@@ -10,7 +10,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 namespace Smiles2Img;
 
 /// <summary>
-/// Manages Excel event hooks, keyboard shortcuts, and ribbon/context-menu commands
+/// Manages Excel event hooks and ribbon/context-menu commands
 /// for the embedded EPAM Ketcher molecular editor.
 /// </summary>
 public static partial class KetcherEditor
@@ -80,7 +80,7 @@ public static partial class KetcherEditor
         Ket = 3
     }
 
-    [ExcelCommand(ShortCut = "^+K", MenuName = "SMILES2IMG", MenuText = "Insert/Edit Structure (SMILES2IMG) (Ctrl+Shift+K)")]
+    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Insert/Edit Structure (SMILES2IMG)")]
     public static void OpenKetcherCommand() => OpenKetcherWithPreference(StructureFormatPreference.Smiles);
 
     [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Insert/Edit Structure (INCHI2IMG)")]
@@ -291,23 +291,27 @@ public static partial class KetcherEditor
 
             string? rawInput = SafeClipboard.ContainsText() ? SafeClipboard.GetText()?.Trim() : null;
 
+            byte[]? pngBytes = null;
+            string? ket = null;
+            string? smiles = null;
+            bool rendered = !string.IsNullOrEmpty(rawInput) &&
+                MoleculeActionHelper.TryRenderQuickInsertInput(rawInput, RenderOptions.Default, out pngBytes, out ket, out smiles);
+
             // Fallback to current cell plain text if clipboard doesn't have valid structure
-            if (app.ActiveCell is Excel.Range activeCell)
+            if (!rendered && app.ActiveCell is Excel.Range activeCell)
             {
                 string cellFormula = Convert.ToString((object?)activeCell.Formula) ?? "";
                 string cellVal = Convert.ToString((object?)activeCell.Value2)?.Trim() ?? "";
-                if (!cellFormula.StartsWith("=", StringComparison.Ordinal) && !string.IsNullOrEmpty(cellVal) &&
-                    (IsLikelySmiles(cellVal) || MoleculeRenderer.IsInchi(cellVal) || MoleculeRenderer.IsKet(cellVal)))
+                if (!cellFormula.StartsWith("=", StringComparison.Ordinal) && !string.IsNullOrEmpty(cellVal))
                 {
-                    if (string.IsNullOrEmpty(rawInput) || !MoleculeRenderer.TryRenderStructure(rawInput, RenderOptions.Default, out _, out _, out _))
-                        rawInput = cellVal;
+                    rendered = MoleculeActionHelper.TryRenderQuickInsertInput(cellVal, RenderOptions.Default, out pngBytes, out ket, out smiles);
                 }
             }
 
-            if (!MoleculeRenderer.TryRenderStructure(rawInput, RenderOptions.Default, out var pngBytes, out var ket, out var smiles) || pngBytes == null)
+            if (!rendered || pngBytes == null)
             {
                 DialogHelper.ShowInfo(
-                    "No valid SMILES or KET structure data found on clipboard (or active cell).\nPlease copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) and try again.",
+                    "No valid SMILES, InChI, KET, or chemical name/CAS found on clipboard (or active cell).\nPlease copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) or compound name (e.g. Aspirin) and try again.",
                     ExcelDnaUtil.WindowHandle);
                 return;
             }

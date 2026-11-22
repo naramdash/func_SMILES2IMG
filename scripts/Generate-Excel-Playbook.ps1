@@ -46,7 +46,7 @@ $coreDll = (Resolve-Path (Join-Path $repoRoot 'dist\x64\Word\Smiles2Img.Core.dll
 [System.Reflection.Assembly]::LoadFrom($coreDll) | Out-Null
 [Smiles2Img.Rendering.NativeIndigo]::Initialize((Split-Path $coreDll -Parent))
 
-$addinVersion = '1.8.0'
+$addinVersion = '1.8.1'
 try {
     $propsXml = [xml](Get-Content (Join-Path $repoRoot 'Directory.Build.props') -Raw)
     if ($propsXml.Project.PropertyGroup.Version) { $addinVersion = [string]$propsXml.Project.PropertyGroup.Version }
@@ -332,7 +332,7 @@ try {
     Add-SectionHeader $s0 17 7 'B. Playbook Roadmap — What Each Tab Teaches (Click Any Tab Below to Jump In)'
     $mapHeaders = @('Tab', 'Sheet Name', 'Level', 'Primary Goal', 'Key Functions / Tools Demonstrated', 'Hands-On Exercise Included', 'Best For')
     $mapRows = @(
-        @('0', '0. Start Here',            'Beginner',     'Instant orientation & live sandbox',           'Top 10 formulas + shortcuts',                     'Edit Col C & double-click Col E',           'First-time users'),
+        @('0', '0. Start Here',            'Beginner',     'Instant orientation & live sandbox',           'Top 10 formulas + double-click edit',             'Edit Col C & double-click Col E',           'First-time users'),
         @('1', '1. Structure Rendering',   'Beginner',     'Render from Name, CAS, SMILES & InChI',        '=NAME2IMG, =SMILES2IMG, =INCHI2IMG',              'Drag down across 12 compound rows',         'Catalogs & inventories'),
         @('2', '2. Properties & Lipinski', 'Intermediate', '18-col medicinal chemistry screening table',   'All 14 property & 3D complexity UDFs + KPIs',     'Live COUNTIF & AVERAGE dashboard',          'Drug discovery & ADMET'),
         @('3', '3. SAR & Similarity',      'Intermediate', 'Substructure highlighting & Tanimoto rank',    '=SMILES.MATCH, hl:SMARTS, =SMILES.SIMILARITY',    'Edit Query B3 + built-in 12-group SMARTS',  'SAR & hit expansion'),
@@ -786,24 +786,24 @@ try {
     $s9 = $sheets[9]
     Set-BannerAndCallout $s9 6 `
         "9. Complete Offline Desktop Reference — [SMILES] Ribbon, .SDF Database I/O & All 40 Excel Functions" `
-        'Everything you need in one tab: exact v1.8.0 Ribbon buttons, 3-level right-click menu, 12-column .sdf export/import guide, all 40 functions, and #N/A / #VALUE! / #NAME? fixes.' `
+        "Everything you need in one tab: exact v$addinVersion Ribbon buttons, 3-level right-click menu, 12-column .sdf export/import guide, all 40 functions, and #N/A / #VALUE! / #NAME? fixes." `
         0x3B291E
 
     Add-SectionHeader $s9 4 6 'A. Excel [SMILES] Ribbon Tab, 3-Level Right-Click Menu & .SDF Database Workflow'
-    $r9Headers = @('Ribbon Group', 'Exact Button / Menu Label', 'Shortcut / Access', 'Primary Action', 'Output / Export Options', 'Tips & Cross-App Notes')
+    $r9Headers = @('Ribbon Group', 'Exact Button / Menu Label', 'How to Access', 'Primary Action', 'Output / Export Options', 'Tips & Cross-App Notes')
     $r9Widths  = @(18, 28, 22, 34, 32, 42)
     $r9Rows = @(
-        @('Insert Structure', 'Insert / Edit (SMILES)',     'Ctrl+Shift+K / Double-Click', 'Opens EPAM Ketcher 2D editor',                    'Inserts =SMILES2IMG or =KET2IMG',          'Double-click any molecule cell to edit in 0.05s'),
+        @('Insert Structure', 'Insert / Edit (SMILES)',     'Ribbon / Double-Click',       'Opens EPAM Ketcher 2D editor',                    'Inserts =SMILES2IMG or =KET2IMG',          'Double-click any molecule cell to edit in 0.05s'),
         @('Insert Structure', 'Insert / Edit (InChI)',      'Ribbon -> [SMILES]',          'Opens Ketcher / inserts IUPAC InChI formula',     'Inserts =INCHI2IMG(...)',                  'Best for regulatory & PubChem InChI tables'),
         @('Insert Structure', 'Insert / Edit (KET)',        'Ribbon -> [SMILES]',          'Inserts lossless KET reaction / canvas formula',  'Inserts =KET2IMG(...)',                    'Preserves reaction arrows, +, and labels'),
         @('Insert Structure', '3D Structure (Mol*)',        'Ribbon -> [SMILES]',          'Opens Mol* 3D protein viewer (PDB / local file)', '3D Model (.glb) or Transparent 2D PNG',    'Try PDB IDs: 1CRN, 4HHB, 6LU7, 1BNA'),
-        @('Insert Structure', 'Paste Structure',            'Ctrl+Shift+V',                'Converts clipboard SMILES/InChI/KET/Name in 0.1s','Instant structure without opening editor', 'Works in Excel, Word & PowerPoint'),
+        @('Insert Structure', 'Paste Structure',            'Ribbon or Right-Click',       'Converts clipboard SMILES/InChI/KET/Name in 0.1s','Instant structure without opening editor', 'Works in Excel, Word & PowerPoint'),
         @('Structure Tools',  'Copy SMILES / InChI / KET',  'Ribbon or Right-Click',       'Extracts exact identifier from selected cell',    'Plain text onto clipboard',                'Right-click -> Chemical Structure > ...'),
         @('Structure Tools',  'Copy SVG',                   'Ribbon or Right-Click',       'Copies lossless vector SVG graphics',             'Paste into Illustrator / Inkscape',        'Crisp at any poster/journal DPI'),
         @('Structure Tools',  'Molecule Info',              'Ribbon or Right-Click',       'Inspects 17 descriptors + 2D preview dialog',     'Summary, 17-col TSV, List, Markdown, JSON','Double-click any row to copy single value'),
         @('Structure Tools',  'Batch Style',                'Ribbon -> Batch Style',       '1-click restyle across selection or entire sheet','Color, ACS B&W, White BG, Dark Mode',      'Instant switch before journal submission'),
         @('Structure Tools',  'SDF File (Import / Export)', 'Ribbon -> SDF File',          'Imports .sdf into 12-col live formula table',     'Exports sheet rows back to V2000 .sdf',    'Export Tab 2 to .sdf, then re-import it!'),
-        @('Diagnostics/About','Diagnostics & About',        'Ribbon -> [SMILES]',          'Inspects Indigo parser errors & checks updates',  'Logs, 3rd-party licenses, version check',  'Open Diagnostics if you see #VALUE!')
+        @('Diagnostics/About','Diagnostics, Docs & About',  'Ribbon -> [SMILES]',          'Inspects Indigo logs, opens /excel/ docs, updates', 'Logs, Online Docs, 3rd-party notices',   'Open Diagnostics on #VALUE!; Online Docs for guides')
     )
     Add-StyledTable $s9 5 $r9Headers $r9Rows @{} 0x475569 $r9Widths 30 @(1,2,3,4,5,6) @()
 

@@ -234,6 +234,156 @@
   color: var(--s2i-ppt);
 }
 
+/* Always Show Language Switcher in Top Navbar (All Viewports, Not Hidden Inside `···`) */
+:root .vpi-languages {
+  --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M2.2 4.2h5.2c0 2.6-1.4 6.2-5 7.8M10.4 2.5v10.5M10.4 7.5h2.3M22 22l-5-10-5 10M14 18h6'/%3E%3C/svg%3E");
+}
+
+.VPNavBar .VPNavBarTranslations .option-icon {
+  font-size: 18px;
+}
+
+/* First-Visit Language Mismatch Indicator (Red Pulsing Wave Dot on `가A`) */
+@keyframes s2i-lang-wave {
+  0% {
+    transform: scale(1);
+    opacity: 0.78;
+  }
+  70%,
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+html.s2i-lang-hint-active .VPNavBar .VPNavBarTranslations .text {
+  position: relative;
+}
+
+html.s2i-lang-hint-active .VPNavBar .VPNavBarTranslations .text::before,
+html.s2i-lang-hint-active .VPNavBar .VPNavBarTranslations .text::after {
+  content: '';
+  position: absolute;
+  top: calc(50% - 11px);
+  left: 14px;
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+html.s2i-lang-hint-active .VPNavBar .VPNavBarTranslations .text::before {
+  background-color: rgba(239, 68, 68, 0.65);
+  animation: s2i-lang-wave 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+html.s2i-lang-hint-active .VPNavBar .VPNavBarTranslations .text::after {
+  background-color: #ef4444;
+  box-shadow: 0 0 0 1.5px var(--vp-nav-bg-color);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.s2i-lang-hint-active .VPNavBar .VPNavBarTranslations .text::before {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+.VPNavBar .content-body .VPNavBarTranslations {
+  display: flex;
+  align-items: center;
+}
+
+.VPNavBar.screen-open {
+  z-index: 1;
+}
+
+.VPNavBarExtra .VPMenu .group.translations {
+  display: none;
+}
+
+.VPNavBarExtra .VPMenu .group.translations + .group {
+  border-top: 0;
+  padding-top: 0;
+}
+
+@media (max-width: 767px) {
+  .VPNavBar .content-body .menu + .VPNavBarTranslations::before {
+    display: none;
+  }
+
+  .VPNavBar .VPNavBarTranslations .button {
+    padding: 0 8px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1159px) {
+  .VPNavBar .content-body .s2i-sidebar-toggle {
+    margin-left: 12px;
+  }
+
+  .VPNavBar .VPNavBarSearch {
+    padding-left: 12px;
+  }
+
+  .VPNavBar .s2i-sidebar-toggle + .VPNavBarSearch {
+    padding-left: 8px;
+  }
+
+  .VPNavBarSearch .DocSearch-Button {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .VPNavBarSearch .DocSearch-Button .DocSearch-Search-Icon {
+    top: 0;
+    margin-right: 0;
+    width: 15px;
+    height: 15px;
+  }
+
+  .VPNavBarSearch .DocSearch-Button .DocSearch-Button-Placeholder,
+  .VPNavBarSearch .DocSearch-Button .DocSearch-Button-Keys {
+    display: none;
+  }
+
+  .VPNavBar .VPNavBarMenu .VPNavBarMenuLink,
+  .VPNavBar .VPNavBarMenu .VPNavBarMenuGroup .button {
+    padding: 0 8px;
+  }
+
+  .VPNavBar .content-body .menu + .VPNavBarTranslations::before {
+    margin-left: 4px;
+    margin-right: 4px;
+  }
+
+  .VPNavBar .VPNavBarTranslations .button {
+    padding: 0 8px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 879px) {
+  .VPNavBar:not(.has-sidebar) .wrapper {
+    padding: 0 16px;
+  }
+
+  .VPNavBar .VPNavBarMenu .VPNavBarMenuLink,
+  .VPNavBar .VPNavBarMenu .VPNavBarMenuGroup .button {
+    padding: 0 6px;
+    font-size: 13px;
+  }
+
+  .VPNavBar .VPNavBarMenu .VPNavBarMenuGroup .button .text {
+    font-size: 13px;
+  }
+
+  .VPNavBar .s2i-nav-app {
+    gap: 4px;
+  }
+}
+
 /* Sidebar Cross-Route Shortcut Indicator */
 .s2i-sb-jump {
   display: inline-flex;
@@ -254,128 +404,50 @@
   transform: translateX(2px);
 }
 
-/* Inline App Label (Icon + Brand Color) in Tables */
-.s2i-app-label {
+/* Top-level category-style jump link (e.g. "Guide" in app sidebars) */
+.VPSidebarItem:has(> .item .s2i-sb-cat-jump) {
+  padding-bottom: 10px; /* match collapsed category rows */
+}
+
+.s2i-sb-cat-jump {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.s2i-sb-cat-jump .s2i-sb-jump-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 1px; /* centers icon where the 32px caret (margin-right:-7px) centers */
+  color: var(--vp-c-text-3);
+  opacity: 1;
+}
+
+.s2i-sb-app {
+  gap: 6px;
+}
+
+.s2i-sb-app img,
+.s2i-sb-group-icon img {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.s2i-sb-group-icon {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  font-weight: 600;
+  gap: 6px;
+}
+
+.s2i-nowrap {
   white-space: nowrap;
 }
 
-.s2i-app-label img {
-  width: 17px;
-  height: 17px;
-  flex-shrink: 0;
-  display: inline-block;
-  margin: 0;
-}
-
-.s2i-app-excel { color: var(--s2i-excel); }
-.s2i-app-word { color: var(--s2i-word); }
-.s2i-app-ppt { color: var(--s2i-ppt); }
-
-/* Section Heading App Prefix (Icon + Brand Color up to App Name) */
-.s2i-app-heading {
-  display: inline;
-}
-
-.vp-doc .s2i-app-heading img {
-  display: inline-block;
-  width: 22px;
-  height: 22px;
-  margin: 0 8px 0 0;
-  vertical-align: -0.18em;
-}
-
-/* Playbooks Overview Navigation Cards */
-.s2i-pb-toc {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 20px 0 24px;
-}
-
-.vp-doc .s2i-pb-toc-card {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 13px 15px;
-  border-radius: 12px;
-  border: 1px solid var(--vp-c-divider);
-  background-color: var(--vp-c-bg-soft);
-  text-decoration: none;
-  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
-}
-
-.vp-doc .s2i-pb-toc-card:hover {
-  text-decoration: none;
-  transform: translateY(-1px);
-}
-
-.s2i-pb-toc-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 1.3;
-}
-
-.vp-doc .s2i-pb-toc-head img {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-  display: inline-block;
-  margin: 0;
-}
-
-.s2i-pb-toc-arrow {
-  margin-left: auto;
-  font-size: 14px;
-  color: var(--vp-c-text-3);
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.vp-doc .s2i-pb-toc-card:hover .s2i-pb-toc-arrow {
-  transform: translateX(3px);
-}
-
-.s2i-pb-toc-meta {
-  font-size: 12.5px;
-  line-height: 1.4;
-  color: var(--vp-c-text-2);
-}
-
-.vp-doc .s2i-pb-toc-excel .s2i-pb-toc-head { color: var(--s2i-excel); }
-.vp-doc .s2i-pb-toc-excel:hover {
-  border-color: var(--s2i-excel-border);
-  background-color: var(--s2i-excel-bg);
-}
-.vp-doc .s2i-pb-toc-excel:hover .s2i-pb-toc-arrow { color: var(--s2i-excel); }
-
-.vp-doc .s2i-pb-toc-word .s2i-pb-toc-head { color: var(--s2i-word); }
-.vp-doc .s2i-pb-toc-word:hover {
-  border-color: var(--s2i-word-border);
-  background-color: var(--s2i-word-bg);
-}
-.vp-doc .s2i-pb-toc-word:hover .s2i-pb-toc-arrow { color: var(--s2i-word); }
-
-.vp-doc .s2i-pb-toc-ppt .s2i-pb-toc-head { color: var(--s2i-ppt); }
-.vp-doc .s2i-pb-toc-ppt:hover {
-  border-color: var(--s2i-ppt-border);
-  background-color: var(--s2i-ppt-bg);
-}
-.vp-doc .s2i-pb-toc-ppt:hover .s2i-pb-toc-arrow { color: var(--s2i-ppt); }
-
-@media (max-width: 720px) {
-  .s2i-pb-toc {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* File-Download Icon Prefix for All Download Links Site-Wide */
-.vp-doc a[download]:not(.s2i-pb-dl-btn)::before {
+/* File-Download Icon Prefix for Documentation Download Links */
+.vp-doc a[download]:not(:where(.vp-raw, .vp-raw *))::before {
   content: '';
   display: inline-block;
   width: 15px;
@@ -385,4 +457,14 @@
   background-color: currentColor;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z'/%3E%3Cpath d='M14 2v4a2 2 0 0 0 2 2h4'/%3E%3Cpath d='M12 18v-6'/%3E%3Cpath d='m9 15 3 3 3-3'/%3E%3C/svg%3E") no-repeat center / contain;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z'/%3E%3Cpath d='M14 2v4a2 2 0 0 0 2 2h4'/%3E%3Cpath d='M12 18v-6'/%3E%3Cpath d='m9 15 3 3 3-3'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+/* Click-to-Zoom Cursor for All Documentation Images (Excludes Small Icons & Linked Images) */
+.vp-doc img:not([aria-hidden="true"]):not(.s2i-no-zoom),
+.VPHome .VPHomeHero .image-src {
+  cursor: zoom-in;
+}
+
+.vp-doc a img {
+  cursor: pointer;
 }

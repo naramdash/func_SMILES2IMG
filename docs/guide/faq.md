@@ -45,4 +45,4 @@ Click **`[SMILES]` ➔ `[About func_SMILES2IMG]`** on the ribbon and press **`[C
 ## Related Guides
 
 - [**Installation & Setup**](/guide/install) — One-line PowerShell installer, offline manual ZIP setup, and update/uninstall commands.
-- [**Interactive Formula Builder**](/excel/formula-builder) — Click options to preview rendered structures in real time and copy the ready-to-use Excel formula.
+- [**All 40 Excel Functions**](/excel/formulas) — Full parameter catalog, return data types, and shared styling tokens.

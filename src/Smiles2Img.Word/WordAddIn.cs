@@ -98,8 +98,8 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnInsertMolstar"" />
           <button id=""btnQuickInsert""
                   label=""Paste Structure""
-                  screentip=""Paste Structure from Clipboard""
-                  supertip=""Convert SMILES or KET directly into a molecular structure image without opening the editor.""
+                  screentip=""Paste Structure from Selection or Clipboard""
+                  supertip=""Convert highlighted or clipboard SMILES, InChI, KET, or chemical names/CAS (e.g. Aspirin) directly into a molecular structure image without opening the editor.""
                   imageMso=""Paste""
                   size=""large""
                   onAction=""OnQuickInsert"" />
@@ -143,15 +143,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
     "btnWordBatchStyleWhiteBg",
     "btnWordBatchStyleDark")}
         </group>
-        <group id=""grpWordAbout"" label=""About"">
-          <button id=""btnWordAbout""
-                  label=""About func_SMILES2IMG""
-                  screentip=""About func_SMILES2IMG""
-                  supertip=""Displays creator info, GitHub repository link, and open-source third-party licenses.""
-                  imageMso=""Info""
-                  size=""large""
-                  onAction=""OnAbout"" />
-        </group>
+{RibbonXmlBuilder.BuildRibbonAboutGroup("grpWordAbout", "btnWordOpenDocs", "btnWordAbout", "Word")}
       </tab>
     </tabs>
   </ribbon>
@@ -329,6 +321,9 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
         if (wordApp != null) WordStructureManager.CopySelectedMarkdown(wordApp);
     }
 
+    public void OnOpenDocs(IRibbonControl control)
+        => DialogHelper.OpenUrl(AboutDialog.GetDocsUrl("Word"));
+
     public void OnAbout(IRibbonControl control)
     {
         IntPtr hwnd = IntPtr.Zero;
@@ -338,6 +333,6 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
                 hwnd = (IntPtr)wordApp.ActiveWindow.Hwnd;
         }
         catch { }
-        DialogHelper.ShowAbout(hwnd);
+        DialogHelper.ShowAbout(hwnd, "Word");
     }
 }

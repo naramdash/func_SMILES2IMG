@@ -1,25 +1,32 @@
-# Dark Slide Backgrounds
+# Dark Slides & Grouped Shapes
 
-Fixes for unwanted white boxes behind structures on dark PowerPoint templates and low-contrast dark bonds.
+Fixes when a 2D chemical structure shows an opaque white rectangle or dark invisible bonds on dark slide themes, when grouped candidate cards are skipped by `Batch Style`, or when switching dark conference slides back to white handouts.
 
-## 1. Remove White Background Boxes in 1 Click
+## 1. White Box Background or Invisible Dark Lines on Dark Slides {#dark-slides}
 
-If a structure was inserted with an opaque white background onto a dark slide template:
+Standard copy-pasted screenshots leave glaring white boxes over dark navy/slate presentation templates, while transparent images with black bonds disappear over dark backgrounds.
 
-1. Select the structure shape on the slide (or select nothing to convert **every chemical structure across the entire deck**).
-2. Click **`[SMILES]` ➔ `[Batch Style]` ➔ `[Dark Mode]`** on the PowerPoint ribbon.
-3. All targeted structures immediately switch to **alpha-transparent backgrounds + crisp white ink bonds**.
+* **Fix Existing Slide or Whole Deck in 1 Click:** Select the structure shape—or click empty slide background (nothing selected) to convert the **entire presentation deck**—and click **`[SMILES]` ➔ `[Batch Style]` ➔ `[Dark Mode (White Ink)]`**.
+* **Insert Transparently From the Start:** Before pressing <kbd>Ctrl</kbd> + <kbd>Enter</kbd>, set Ketcher's top bar to **`[Background: Transparent]`** (or Mol\*'s **`BG: Transparent`**) so no opaque rectangle is generated.
 
-## 2. Insert Transparent Structures Directly from Ketcher & Mol\*
+## 2. Grouped Cards Skipped by Batch Style {#grouped-shapes}
 
-* **Ketcher 2D:** Before pressing <kbd>Ctrl</kbd> + <kbd>Enter</kbd>, switch the top bar toggle to **`[Background: Transparent]`**.
-* **Mol\* 3D (2D Picture Mode):** Toggle **`BG: Transparent`** in the Mol\* top toolbar before clicking **`Apply to Slide`** so protein renders sit seamlessly over any slide gradient.
+* **Why shapes get skipped:** `Batch Style` iterates over top-level slide shapes (`slide.Shapes`) and intentionally avoids mutating PowerPoint Groups (`Ctrl+G`) so card layouts and textboxes inside a group never detach or reorder.
+* **Fix:** Select the grouped SAR card ➔ press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>G</kbd> (**Ungroup**) ➔ run **`[SMILES]` ➔ `[Batch Style]`** ➔ re-group (<kbd>Ctrl</kbd> + <kbd>G</kbd>) once styling is unified.
 
-## 3. Switching Back to Light Slides
+## 3. Switching Dark Slides Back to a Bright Template or Handout
 
-If you reuse slides in a light-background template later, click **`[SMILES]` ➔ `[Batch Style]` ➔ `[Standard Color]`** (transparent BG + standard CPK colors) or **`[Publication B&W]`** (transparent BG + pure black line art).
+You never need to redraw dark-mode structures when reusing conference slides inside a bright lab-meeting deck or printing monochrome handouts:
+
+* **Light Templates:** Click empty slide canvas ➔ **`[SMILES]` ➔ `[Batch Style]` ➔ `[Standard Color (Transparent)]`** restores IUPAC heteroatom colors with alpha transparency.
+* **Print Handouts / B&W PDFs:** Save a duplicate `.pptx` and run **`[Batch Style]` ➔ `[Publication B&W (ACS Monochrome)]`** to convert every slide structure to high-contrast black line art in 1 second.
+
+::: tip Animated Shapes Tip
+If a structure has slide Entrance animations applied, wait until chemical edits are finished before adding animations, or re-apply the animation after `Batch Style` replaces the picture object.
+:::
 
 ## Related Guides
 
-- [**3D Models & Double-Click**](/powerpoint/troubleshooting/3d-models) — Troubleshoot 3D .glb model playback and double-click editing on slides.
-- [**PowerPoint Visual Slide Gallery**](/powerpoint/) — Preview dark-mode decks, synthesis slides, and 3D protein presentations.
+- [**3D Models & Double-Click**](/powerpoint/troubleshooting/3d-editing) — Fix `.glb` size/compatibility limits, double-click editing, and podium PC checks
+- [**2. Dark Mode, Cards, Deck Restyle**](/powerpoint/dark-mode) — Transparent 4-card candidate SAR grid layout and full `Batch Style` guide
+- [**Ribbon & Context Menus**](/powerpoint/reference) — Complete PowerPoint `[SMILES]` ribbon map and 5 slide context menus

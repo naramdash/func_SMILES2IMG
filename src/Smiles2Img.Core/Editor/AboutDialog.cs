@@ -95,10 +95,26 @@ public sealed class AboutDialog : Form
     private const string RepoUrl = "https://github.com/naramdash/func_SMILES2IMG";
     private const string DocsUrl = "https://naramdash.github.io/func_SMILES2IMG/";
 
+    public string TargetDocsUrl { get; }
+
     private readonly Image? _logoBitmap;
+
+    public static string GetDocsUrl(string? appName = null)
+    {
+        if (string.Equals(appName, "Excel", StringComparison.OrdinalIgnoreCase))
+            return DocsUrl + "excel/";
+        if (string.Equals(appName, "Word", StringComparison.OrdinalIgnoreCase))
+            return DocsUrl + "word/";
+        if (string.Equals(appName, "PowerPoint", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(appName, "Ppt", StringComparison.OrdinalIgnoreCase))
+            return DocsUrl + "powerpoint/";
+        return DocsUrl;
+    }
 
     public AboutDialog(string? appName = null)
     {
+        TargetDocsUrl = GetDocsUrl(appName);
+
         float dpiScale = DialogHelper.ConfigureStandardForm(
             this,
             "About func_SMILES2IMG",
@@ -166,8 +182,12 @@ public sealed class AboutDialog : Form
         var btnOpenGitHub = DialogHelper.CreateStandardButton("Open GitHub", (int)(105 * dpiScale), btnH, new Padding(0, 0, (int)(8 * dpiScale), 0));
         btnOpenGitHub.Click += (_, _) => DialogHelper.OpenUrl(RepoUrl);
 
+        var btnOpenDocs = DialogHelper.CreateStandardButton("Open Docs", (int)(100 * dpiScale), btnH, new Padding(0, 0, (int)(8 * dpiScale), 0));
+        btnOpenDocs.Click += (_, _) => DialogHelper.OpenUrl(TargetDocsUrl);
+
         rightActions.Controls.Add(btnClose);
         rightActions.Controls.Add(btnOpenGitHub);
+        rightActions.Controls.Add(btnOpenDocs);
 
         var bottomContainer = DialogHelper.CreateBottomActionBar(dpiScale, leftActions, rightActions);
 
@@ -181,7 +201,7 @@ public sealed class AboutDialog : Form
         var tabControl = new TabControl { Dock = DockStyle.Fill };
 
         var tabOverview = new TabPage("Overview & Author") { UseVisualStyleBackColor = true, Padding = new Padding(pad) };
-        BuildOverviewTab(tabOverview, dpiScale);
+        BuildOverviewTab(tabOverview, dpiScale, TargetDocsUrl);
 
         var tabComponents = new TabPage("Third-Party Components") { UseVisualStyleBackColor = true, Padding = new Padding(pad) };
         BuildComponentsTab(tabComponents, dpiScale);
@@ -257,7 +277,7 @@ public sealed class AboutDialog : Form
         }
     }
 
-    private static void BuildOverviewTab(TabPage tab, float dpiScale)
+    private static void BuildOverviewTab(TabPage tab, float dpiScale, string docsUrl)
     {
         var metaGrid = new TableLayoutPanel
         {
@@ -300,7 +320,7 @@ public sealed class AboutDialog : Form
         AddRow("Author:", new Label { Text = "KimJuho (naramdash)", AutoSize = true, UseMnemonic = false });
         AddRow("License:", new Label { Text = "MIT License (Free & Open Source)", AutoSize = true, UseMnemonic = false });
         AddRow("Repository:", CreateLink(RepoUrl));
-        AddRow("Documentation:", CreateLink(DocsUrl));
+        AddRow("Documentation:", CreateLink(docsUrl));
 
         var grpCapabilities = new GroupBox
         {
@@ -565,11 +585,11 @@ public sealed class AboutDialog : Form
                 return "v" + v;
             }
             var ver = asm.GetName().Version;
-            return ver != null ? $"v{ver.Major}.{ver.Minor}.{ver.Build}" : "v1.8.0";
+            return ver != null ? $"v{ver.Major}.{ver.Minor}.{ver.Build}" : "v1.8.1";
         }
         catch
         {
-            return "v1.8.0";
+            return "v1.8.1";
         }
     }
 
@@ -608,11 +628,11 @@ public sealed class AboutDialog : Form
         base.Dispose(disposing);
     }
 
-    public static void ShowModal(IWin32Window? owner = null)
+    public static void ShowModal(IWin32Window? owner = null, string? appName = null)
     {
         try
         {
-            using var dlg = new AboutDialog();
+            using var dlg = new AboutDialog(appName);
             DialogHelper.ShowModalDialog(dlg, owner);
         }
         catch

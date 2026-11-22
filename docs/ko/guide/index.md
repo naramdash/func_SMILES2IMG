@@ -1,17 +1,18 @@
 # 소개 (Introduction)
 
-`func_SMILES2IMG`는 **Microsoft Excel, Word, PowerPoint**에서 화학 2D 구조식과 3D 단백질 모델을 바로 다루는 무료·오픈소스 추가 기능입니다.
+`func_SMILES2IMG`는 **Microsoft Excel, Word, PowerPoint** 안에서 편집 가능한 2D 화학 구조식, 분자 물성 계산, 3D 단백질 모델을 바로 다루는 무료·오픈소스(MIT) 추가 기능입니다.
 
-엑셀 셀에 화합물 이름, CAS 번호, SMILES를 입력하면 수백 행의 2D 구조식과 분자 물성이 자동으로 그려지며, Word와 PowerPoint에서도 내장 **Ketcher 2D** 편집기와 **Mol\* 3D** 단백질 뷰어로 더블클릭 제자리 편집을 할 수 있습니다.
+외부 드로잉 툴에서 정적 이미지를 매번 캡처해 붙여넣는 대신, Excel에서는 수식 한 줄로 수백 행의 구조식과 물성을 자동 생성하고 Word·PowerPoint에서는 더블클릭으로 구조식을 제자리에서 수정할 수 있습니다. 핵심 렌더링과 계산은 모두 **내 PC에서 로컬로 실행**됩니다.
 
-## Microsoft Office 앱별 핵심 기능
+## Microsoft Office 앱별 활용
 
-| Office 앱 | 주요 기능 | 가이드 |
+| Office 앱 | 주요 활용 | 가이드 |
 | :--- | :--- | :--- |
-| **Microsoft Excel** | 셀 안 구조식 수식(`=SMILES2IMG`, `=NAME2IMG`), 40개 물성·Lipinski·SAR 함수, `.sdf` 입출력, 더블클릭 2D 편집 | [Excel 레시피 북](/ko/excel/) |
-| **Microsoft Word** | 논문 본문 및 화합물 표 인라인 구조식, 열 너비 유지 더블클릭 수정, 원클릭 ACS 흑백 변환, 벡터 SVG 복사 | [Word 튜토리얼](/ko/word/) |
-| **Microsoft PowerPoint** | 투명 배경 다크 모드 흰색 선화, 텍스트 상자 0.1초 변환, 발표 중 360° 회전 3D 단백질 모델(`.glb`) | [PowerPoint 갤러리](/ko/powerpoint/) |
-| **공통 에디터** | 3개 앱 모두에서 공통 작동하는 오프라인 **Ketcher 2D** 편집기(`Ctrl+Shift+K`) 및 **Mol\* 3D** 단백질 뷰어 | [Editor 가이드](/ko/editor/) |
+| <AppBadge app="excel" /> | 화합물명·CAS·SMILES·InChI를 셀 안 2D 구조식(`=SMILES2IMG`, `=NAME2IMG`)으로 자동 렌더링하고, 40개 물성·Lipinski·SAR 함수 계산과 `.sdf` 입출력을 한 번에 처리합니다. | <span class="s2i-nowrap">[개요 보기 →](/ko/excel/)</span> |
+| <AppBadge app="word" /> | 논문 본문과 화합물 SAR 표에 인라인 구조식을 배치하고, `Molecule Info`로 물성을 오타 없이 복사하며, 클릭 한 번의 ACS 학술지 흑백 변환과 벡터 SVG 복사를 지원합니다. | <span class="s2i-nowrap">[개요 보기 →](/ko/word/)</span> |
+| <AppBadge app="powerpoint" /> | 슬라이드 텍스트 상자를 0.1초 만에 투명 다크 모드 구조식으로 변환하고, 발표 중 360° 회전하는 3D 단백질(`.glb`) 삽입과 덱 전체 `Batch Style` 전환을 지원합니다. | <span class="s2i-nowrap">[개요 보기 →](/ko/powerpoint/)</span> |
+
+세 앱 모두 오프라인 **[Ketcher 2D](/ko/editor/)** 편집기와 **[Mol\* 3D](/ko/editor/molstar)** 단백질 뷰어가 내장되어 있어, 삽입된 구조식이나 반응식을 더블클릭하면 레이아웃을 깨뜨리지 않고 즉시 수정할 수 있습니다.
 
 ![Microsoft Excel에서 실행 중인 func_SMILES2IMG](/excel-showcase.png)
 
@@ -50,4 +51,5 @@
 ## 다음 단계
 
 - [**설치 (10초 원클릭 셋업)**](/ko/guide/install) — 관리자 권한 없이 PowerShell 한 줄로 Excel · Word · PowerPoint 전체에 자동 설치합니다.
-- [**시작하기 (1분 첫 분자 그리기)**](/ko/guide/getting-started) — Excel, Word, PowerPoint에서 첫 구조식을 만들어 보고 8개 탭 샘플 워크북을 받아보세요.
+- [**시작하기 (1분 첫 분자 그리기)**](/ko/guide/getting-started) — Excel, Word, PowerPoint에서 첫 구조식을 만들어 보세요.
+- [**예제 파일 (Playbooks)**](/ko/guide/playbooks) — Excel(10개 탭) · Word(6페이지) · PowerPoint(8슬라이드) 자체 완결형 공식 Playbook을 받아보세요.

@@ -100,6 +100,11 @@ internal static class UiAndRibbonUnitTests
         foreach (var (hostName, doc) in new[] { ("Excel", excelDoc), ("Word", wordDoc), ("PowerPoint", pptDoc) })
         {
             Check(doc.Descendants().Any(e => e.Name.LocalName == "button" &&
+                                             (string?)e.Attribute("onAction") == "OnOpenDocs" &&
+                                             (string?)e.Attribute("label") == "Online Docs" &&
+                                             (string?)e.Attribute("imageMso") == "TableOfContentsGallery"),
+                $"{hostName}: Online Docs button is present in About group");
+            Check(doc.Descendants().Any(e => e.Name.LocalName == "button" &&
                                              (string?)e.Attribute("onAction") == "OnAbout" &&
                                              (string?)e.Attribute("label") == "About func_SMILES2IMG"),
                 $"{hostName}: About button label is 'About func_SMILES2IMG'");
@@ -132,9 +137,27 @@ internal static class UiAndRibbonUnitTests
         Check(UiIcons.GetPropertyIcon("Rings & Aromaticity") != null, "UiIcons.GetPropertyIcon('Rings & Aromaticity') valid");
         Check(UiIcons.GetPropertyIcon("3D Complexity (Fsp3)") != null, "UiIcons.GetPropertyIcon('3D Complexity (Fsp3)') valid");
 
-        using (var aboutDlg = new AboutDialog())
+        Check(AboutDialog.GetDocsUrl("Excel") == "https://naramdash.github.io/func_SMILES2IMG/excel/", "GetDocsUrl routes Excel to /excel/");
+        Check(AboutDialog.GetDocsUrl("Word") == "https://naramdash.github.io/func_SMILES2IMG/word/", "GetDocsUrl routes Word to /word/");
+        Check(AboutDialog.GetDocsUrl("PowerPoint") == "https://naramdash.github.io/func_SMILES2IMG/powerpoint/", "GetDocsUrl routes PowerPoint to /powerpoint/");
+        Check(AboutDialog.GetDocsUrl(null) == "https://naramdash.github.io/func_SMILES2IMG/", "GetDocsUrl defaults to root docs URL");
+
+        using (var aboutDlg = new AboutDialog("Excel"))
         {
             Check(aboutDlg is not null && !string.IsNullOrWhiteSpace(aboutDlg.Text), "AboutDialog instantiated with window title");
+            Check(aboutDlg!.TargetDocsUrl == "https://naramdash.github.io/func_SMILES2IMG/excel/", "AboutDialog stores host-specific TargetDocsUrl");
+            Check(FindButton(aboutDlg, "Open Docs") != null, "AboutDialog contains 'Open Docs' action button");
+        }
+
+        static System.Windows.Forms.Button? FindButton(System.Windows.Forms.Control root, string text)
+        {
+            foreach (System.Windows.Forms.Control child in root.Controls)
+            {
+                if (child is System.Windows.Forms.Button btn && btn.Text == text) return btn;
+                var nested = FindButton(child, text);
+                if (nested != null) return nested;
+            }
+            return null;
         }
 
         var ccoInfo = MoleculeRenderer.TryGetMoleculeInfo("CCO", resolvePubChem: false)!;

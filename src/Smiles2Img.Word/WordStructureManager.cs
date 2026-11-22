@@ -386,7 +386,7 @@ public static partial class WordStructureManager
             {
                 var candidate = CleanWordText(raw);
                 if (candidate == null ||
-                    !MoleculeRenderer.TryRenderStructure(candidate, RenderOptions.Default, out var png, out var ket, out var smiles) ||
+                    !MoleculeActionHelper.TryRenderQuickInsertInput(candidate, RenderOptions.Default, out var png, out var ket, out var smiles) ||
                     png == null)
                 {
                     return false;
@@ -410,7 +410,7 @@ public static partial class WordStructureManager
                 return;
 
             DialogHelper.ShowInfo(
-                "No valid SMILES or KET structure data found in selection or clipboard.\nPlease copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) or select text in the document first.",
+                "No valid SMILES, InChI, KET, or chemical name/CAS found in selection or clipboard.\nPlease copy or highlight a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) or compound name (e.g. Aspirin) first.",
                 GetHwnd(app));
         }
         catch (Exception ex)

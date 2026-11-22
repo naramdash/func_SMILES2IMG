@@ -1,46 +1,45 @@
-# Structure Tables & Name/CAS
+# SMILES & InChI Structure Images
 
-Turn columns of SMILES strings, common chemical names, lab solvents, or CAS Registry Numbers into scaled 2D structures directly inside Excel cells.
+Render high-resolution 2D molecular structures directly inside Excel cells from **SMILES strings (`=SMILES2IMG`)** or **IUPAC InChI strings (`=INCHI2IMG`)**—scaling sharply with row height and sorting cleanly alongside table rows.
 
-## 1. SMILES Column to Structure Table (`=SMILES2IMG`)
-
-Keep compound names in Column A and SMILES strings in Column B, then render crisp, aspect-ratio-locked 2D structures in Column C:
-
-```text
-=SMILES2IMG(B2)
-```
+<FormulaTable
+  title="SMILES & InChI Rendering Sheet"
+  :columns='["Compound", "SMILES / InChI", "Formula"]'
+  :rows='[
+    { cells: ["Ethanol", "CCO", "=SMILES2IMG(B2)"], desc: "Render in-cell 2D structure from SMILES (Col B)", out: "2D Ethanol" },
+    { cells: ["Ethanol", "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3", "=INCHI2IMG(B3)"], desc: "Render in-cell 2D structure from IUPAC InChI (Col B)", out: "2D Ethanol" }
+  ]'
+/>
 
 <FeatureMedia id="excel-formula-table" />
 
-1. Enter compound names in `A2:A5` and SMILES strings in `B2:B5` (e.g. `CC(=O)Oc1ccccc1C(=O)O` for Aspirin).
-2. Type `=SMILES2IMG(B2)` in `C2` and press <kbd>Enter</kbd>.
-3. Increase **row height (`62–80 pt`)** and **column width**—structures scale cleanly without distortion.
-4. Drag the fill handle down to render hundreds of rows automatically.
+## 1. Unified Image Syntax (`SMILES` & `InChI`)
 
-## 2. Chemical Names, Solvents & CAS Numbers (`=NAME2IMG`)
+Both formulas share the exact same **4-argument signature `(input, [background], [style], [transform])`** and run 100% offline in 0ms:
 
-Skip looking up SMILES manually by passing common names, lab solvent abbreviations (`THF`, `DMSO`, `DCM`), or CAS numbers directly:
+| Input Column | Modern Excel (365 / 2024+) | Legacy Excel (2016–2021) | Notes |
+| :--- | :--- | :--- | :--- |
+| **SMILES String** | `=SMILES2IMG(B2, [bg], [style], [transform])` | `=SMILES2IMG.FLOAT(...)` | Also auto-detects single-molecule/reaction KET JSON |
+| **IUPAC InChI** (`InChI=1S/...`) | `=INCHI2IMG(C2, [bg], [style], [transform])` | `=INCHI2IMG.FLOAT(...)` | Renders standard PubChem/ChEMBL/NIST InChI strings directly |
 
-```text
-=NAME2IMG("Aspirin")
-=NAME2IMG("50-78-2")
-=NAME2SMILES("Ibuprofen")
-```
+## 2. Build a Multi-Row Structure Table
 
-<FeatureMedia id="excel-name-cas" />
+1. Enter compound names in column `A` and SMILES strings in column `B` (e.g., Aspirin `CC(=O)Oc1ccccc1C(=O)O`).
+2. Type `=SMILES2IMG(B2)` (or `=INCHI2IMG(B2)`) in `C2` and press <kbd>Enter</kbd> (on Excel 2016–2021, append **`.FLOAT`**).
+3. Set **row height** (`62–80 pt` recommended) and widen column `C`—the structure scales while locking bond aspect ratio and stays locked to its row when filtering or sorting.
+4. Drag the fill handle down to render hundreds of compounds at once.
 
-::: details Built-In 0ms Offline Dictionary (Solvents, Drugs, Biomolecules & CAS)
-Common lab solvents, drugs, biomolecules, and CAS numbers resolve **locally in 0ms**. Uncached compounds are looked up once via PubChem and cached locally on disk for future offline use:
-* **Lab Solvents:** `THF` (`109-99-9`), `DMSO` (`67-68-5`), `DMF` (`68-12-2`), `DCM` (`75-09-2`), `Acetonitrile` (`75-05-8`), `Ethyl Acetate` (`141-78-6`), `Acetone`, `Ethanol`, `Methanol`, `Pyridine`, `Toluene`, `Benzene`
-* **Pharmaceuticals:** `Aspirin` (`50-78-2`), `Caffeine` (`58-08-2`), `Acetaminophen` (`Paracetamol`, `103-90-2`), `Ibuprofen` (`15687-27-1`), `Naproxen`, `Penicillin G`, `Amoxicillin`, `Artemisinin`, `Paclitaxel`
-* **Biomolecules:** `Glucose`, `Vitamin C`, `Citric Acid`, `Glycine`, `Alanine`, `Dopamine`, `Serotonin`, `Epinephrine`
-:::
+## 3. Sketch, Convert in 0.1s & Double-Click to Edit
 
-::: details ELN Stoichiometry Example Using `=SMILES2MW`
-Because `=SMILES2MW` returns a true Excel number (`double`), multiply it directly by `mmol` to calculate reagent mass (`mg`):
+| Action | How to Do It | Result |
+| :--- | :--- | :--- |
+| **Draw a Molecule** | Select a cell ➔ **`[SMILES]` ➔ `[Insert / Edit (SMILES)]`** (or `InChI`) ➔ sketch in Ketcher ➔ <kbd>Ctrl</kbd> + <kbd>Enter</kbd> | Writes `=SMILES2IMG("...")` (or `=INCHI2IMG(...)`) directly into the cell |
+| **0.1s Instant Convert** | Copy a SMILES/InChI string or select a text cell ➔ **`[SMILES]` ➔ `[Paste Structure]`** | Converts clipboard or cell text immediately without opening the editor |
+| **In-Place Re-Editing** | **Double-click** any rendered structure cell or `.FLOAT` picture | Reopens **Ketcher 2D** in `0.05s` with the molecule preloaded |
 
-| Col A (Name) | Col B (`=NAME2SMILES(A2)`) | Col C (`=SMILES2IMG(B2)`) | Col D (`=SMILES2MW(B2)`) | Col E (Equiv) | Col F (`mmol`) | Col G (`=D2*F2` mg) |
-| :--- | :--- | :--- | :---: | :---: | :---: | :---: |
-| `Salicylic Acid` | `O=C(O)c1ccccc1O` | *(2D structure)* | `138.12` | `1.0` | `5.0` | **`690.6 mg`** |
-| `Acetic Anhydride` | `CC(=O)OC(=O)C` | *(2D structure)* | `102.09` | `1.5` | `=$F$2*E3` (`7.5`) | **`765.7 mg`** |
-:::
+## Related Guides
+
+- [**Names, Solvents, CAS**](/excel/name-cas) — Render `Aspirin`, `THF`, `HATU`, or `"50-78-2"` directly with `=NAME2IMG`
+- [**Reaction Schemes (KET)**](/excel/reactions) — Store multi-step reactions cleanly inside cells with `=KET2IMG`
+- [**Styles & Highlights**](/excel/styles-reactions) — Customize `[bg]`, `[style]` (`"bw"`, `"hl:..."`, `"num stereo"`), and `[transform]`
+- [**Legacy Excel (.FLOAT)**](/excel/legacy-float) — Cell-anchored shapes for Excel 2016, 2019, and 2021

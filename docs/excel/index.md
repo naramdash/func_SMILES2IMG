@@ -1,30 +1,49 @@
 # Excel Overview
 
-Use **`func_SMILES2IMG`** in Microsoft Excel to render 2D chemical structures inside cells, compute molecular properties and Lipinski drug-likeness across hundreds of rows locally, screen libraries with SMARTS, and import/export `.sdf` chemical databases.
+Use **`func_SMILES2IMG`** in Microsoft Excel to render crisp 2D chemical structures inside cells, compute molecular properties and Lipinski drug-likeness across hundreds of rows locally in 0ms, screen compound libraries with SMARTS, and import/export `.sdf` chemical databases.
 
 <FeatureMedia id="excel-overview" />
 
 ::: tip Download the 10-Tab Self-Contained Excel Playbook
-Explore all 40 formulas, real-world lab templates, and offline reference tables directly inside Excel—no web docs needed:  
-<a href="/func_SMILES2IMG/examples/func_SMILES2IMG_Excel_Playbook.xlsx" download="func_SMILES2IMG_Excel_Playbook.xlsx"><strong>func_SMILES2IMG_Excel_Playbook.xlsx</strong></a> · [See 10-tab breakdown & previews →](/excel/playbook)
+Practice all 40 formulas, organic stoichiometry calculators, SAR dashboards, and offline reference tables directly inside Excel—no web documentation needed:  
+<a href="/func_SMILES2IMG/examples/func_SMILES2IMG_Excel_Playbook.xlsx" download="func_SMILES2IMG_Excel_Playbook.xlsx"><strong>func_SMILES2IMG_Excel_Playbook.xlsx</strong></a> · [See 10-tab breakdown & recommended tracks →](/excel/playbook)
 :::
 
-## 3 Ways to Work with Structures in Excel
+## 30-Second Quick Start
+
+Click **Copy All** and paste into cell **`A1`** in Excel (or click any row to copy its input + formula; on **Excel 2016–2021**, append `.FLOAT`—e.g., `=SMILES2IMG.FLOAT(A2)`):
+
+<FormulaTable
+  title="30-Second Quick Start Sheet"
+  :columns='["SMILES / Input", "Formula"]'
+  :rows='[
+    { input: "CCO", formula: "=SMILES2IMG(A2)", desc: "Render 2D structure from SMILES in A2", out: "2D Ethanol" },
+    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2MW(A3)", desc: "Calculate molecular weight (0ms offline)", out: "180.16" },
+    { input: "", formula: "=NAME2IMG(\"Aspirin\")", desc: "Standalone 2D structure from Name or CAS #", out: "2D Aspirin" }
+  ]'
+/>
+
+Increase **row height** (`62–80 pt`) and **column width** to scale the molecule cleanly with locked aspect ratio. **Double-click** any rendered cell to reopen the offline **Ketcher 2D** editor in `0.05s`.
+
+## 3 Ways to Work in Excel
 
 | Method | How It Works | Best For |
 | :--- | :--- | :--- |
-| **Cell Formulas** | `=SMILES2IMG(A2)`, `=NAME2IMG("Aspirin")`, `=KET2IMG(A2)` | Batch rendering hundreds of rows that sort and filter cleanly |
-| **Top `[SMILES]` Ribbon** | **`[Insert / Edit (SMILES)]`** (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd>) or **`[Paste Structure]`** | Sketching molecules/reactions or pasting clipboard structures |
-| **Mouse Actions** | **Double-click** any structure cell to edit; **Right-click** ➔ `Chemical Structure` | Fast in-place edits, SVG copy, or opening Molecule Info |
+| **Cell Formulas** | `=SMILES2IMG(B2)`, `=NAME2IMG(A2)`, `=SMILES2MW(B2)` | Automated tables of hundreds of rows that sort and filter cleanly |
+| **Top `[SMILES]` Ribbon** | **`[Insert / Edit]`**, **`[Paste Structure]`**, **`[3D Structure (Mol*)]`** | Sketching molecules/reactions, 0.1s clipboard conversion, or 3D PDB models |
+| **Mouse Actions** | **Double-click** to edit in-place; **Right-click** ➔ `Chemical Structure` | Fast structure edits, vector SVG copy, or opening `Molecule Info` |
 
 ::: info Microsoft 365 / Excel 2024+ vs. Excel 2016–2021 (`.FLOAT`)
-* **Microsoft 365 / Excel 2024+:** Use `=SMILES2IMG(B2)`, `=NAME2IMG(A2)`, `=KET2IMG(A2)`, `=INCHI2IMG(C2)` for native **in-cell images** that sort and filter with table rows.
-* **Excel 2016 / 2019 / 2021:** Append **`.FLOAT`** (`=SMILES2IMG.FLOAT(A2)`, `=NAME2IMG.FLOAT(A2)`) to create cell-anchored floating shapes (`xlMoveAndSize`). See [Legacy Excel (.FLOAT)](/excel/legacy-float).
+* **Microsoft 365 / Excel 2024+:** `=SMILES2IMG(B2)`, `=NAME2IMG(A2)`, `=KET2IMG(A2)`, `=INCHI2IMG(C2)` create native **in-cell images** that sort and filter with table rows.
+* **Excel 2016 / 2019 / 2021:** Append **`.FLOAT`** (`=SMILES2IMG.FLOAT(A2)`) to create cell-anchored floating shapes (`xlMoveAndSize`). All property and SAR formulas (`=SMILES2MW`, `=SMILES.MATCH`, etc.) work identically on every Excel version without `.FLOAT`. See [Legacy Excel (.FLOAT)](/excel/legacy-float).
 :::
 
-## Where to Go Next
+## Explore by Section
 
-- [**Structure Tables & Name/CAS**](/excel/structures) — Render columns from SMILES, compound names, solvents, and CAS numbers
-- [**Styles, Highlighting & Reactions**](/excel/styles-reactions) — ACS monochrome, Dark Mode, SMARTS highlights, NMR atom numbers, and `=KET2IMG`
-- [**Properties & Lipinski Ro5**](/excel/properties) — Molecular weight, exact mass, LogP, TPSA, rings, Fsp3, and chiral centers
-- [**40 Formulas Reference**](/excel/formulas) — Complete parameter and return-type cheat sheet
+| Section | Pages | Key Formulas & Ribbon Tools |
+| :--- | :--- | :--- |
+| **Getting Started** | [**Playbook (.xlsx)**](/excel/playbook) · [**Use Cases**](/excel/use-cases) · [**All 40 Functions**](/excel/formulas) | Unified `=<INPUT>2<OUTPUT>` map, 6 lab scenarios & 10-tab workbook |
+| **Structure Images** | [**SMILES, InChI**](/excel/structures) · [**Names, Solvents, CAS**](/excel/name-cas) · [**Reaction Schemes (KET)**](/excel/reactions) · [**Styles & Highlights**](/excel/styles-reactions) | `=SMILES2IMG`, `=NAME2IMG`, `=INCHI2IMG`, `=KET2IMG`, `.FLOAT` |
+| **Properties & ADME** | [**Formula, MW, Exact Mass**](/excel/properties) · [**Lipinski, ADME, 3D**](/excel/lipinski-adme) | `=SMILES2MW`, `=SMILES2EXACTMASS`, `=SMILES2LIPINSKI`, `=SMILES2FSP3` |
+| **SAR & Identifiers** | [**Substructure & Similarity**](/excel/sar) · [**Identifier Conversion**](/excel/data-sdf) | `=SMILES.MATCH`, `=SMILES.SIMILARITY`, `=NAME2SMILES`, `=SMILES2INCHIKEY` |
+| **Sheet Tools & 3D** | [**SDF Import & Export**](/excel/sdf) · [**Batch Style, TSV, 3D**](/excel/tools-export) · [**Ribbon & Context Menus**](/excel/ribbon) | `[SDF File]`, `[Batch Style]`, `[Copy TSV]`, `[3D Structure (Mol*)]` |

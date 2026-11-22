@@ -21,7 +21,7 @@ public class SmilesRibbon : ExcelRibbon
         <group id=""grpInsertMolecules"" label=""Insert Structure"">
           <button id=""btnInsertMolecule""
                   label=""Insert / Edit (SMILES)""
-                  screentip=""Insert / Edit Structure (SMILES2IMG) (Ctrl+Shift+K)""
+                  screentip=""Insert / Edit Structure (SMILES2IMG)""
                   supertip=""Opens Ketcher editor to sketch chemical structures and insert them into the active cell as formulas (=SMILES2IMG).""
                   imageMso=""PensGallery""
                   size=""large""
@@ -49,8 +49,8 @@ public class SmilesRibbon : ExcelRibbon
                   onAction=""OnInsertMolstar"" />
           <button id=""btnQuickInsert""
                   label=""Paste Structure""
-                  screentip=""Paste Structure from Clipboard""
-                  supertip=""Instantly converts clipboard SMILES or KET data into a structure image without opening the editor.""
+                  screentip=""Paste Structure from Clipboard or Cell""
+                  supertip=""Instantly converts clipboard or active-cell SMILES, InChI, KET, or chemical names/CAS (e.g. Aspirin) into a structure formula without opening the editor.""
                   imageMso=""Paste""
                   size=""large""
                   onAction=""OnQuickInsert"" />
@@ -118,15 +118,7 @@ public class SmilesRibbon : ExcelRibbon
                   size=""large""
                   onAction=""OnShowDiagnostics"" />
         </group>
-        <group id=""grpAbout"" label=""About"">
-          <button id=""btnAbout""
-                  label=""About func_SMILES2IMG""
-                  screentip=""About func_SMILES2IMG""
-                  supertip=""Displays creator info, GitHub repository link, and open-source third-party licenses.""
-                  imageMso=""Info""
-                  size=""large""
-                  onAction=""OnAbout"" />
-        </group>
+{RibbonXmlBuilder.BuildRibbonAboutGroup("grpAbout", "btnOpenDocs", "btnAbout", "Excel")}
       </tab>
     </tabs>
   </ribbon>
@@ -298,6 +290,9 @@ public class SmilesRibbon : ExcelRibbon
     public void OnShowDiagnostics(IRibbonControl control)
         => RunMacroSafe(() => LogDisplay.Show());
 
+    public void OnOpenDocs(IRibbonControl control)
+        => RunDirectSafe(() => DialogHelper.OpenUrl(AboutDialog.GetDocsUrl("Excel")));
+
     public void OnAbout(IRibbonControl control)
-        => RunMacroSafe(() => DialogHelper.ShowAbout(ExcelDnaUtil.WindowHandle));
+        => RunMacroSafe(() => DialogHelper.ShowAbout(ExcelDnaUtil.WindowHandle, "Excel"));
 }

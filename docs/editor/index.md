@@ -9,7 +9,7 @@ next:
 
 # Draw 2D Structures & Reaction Schemes (Ketcher)
 
-Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> to draw molecules and multi-step reaction schemes from scratch, or **double-click any existing structure** in Excel, Word, or PowerPoint to reopen and edit it in place in 0.05 seconds.
+Draw molecules and multi-step reaction schemes from scratch from the **`[SMILES]`** ribbon tab, or **double-click any existing structure** in Excel, Word, or PowerPoint to reopen and edit it in place in 0.05 seconds.
 
 <FeatureMedia id="common-ketcher-2d" />
 
@@ -22,7 +22,7 @@ Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> to draw molecules and mu
 ## 1. Draw & Edit in 3 Steps
 
 ### Step 1. Open the Sketcher
-* **Draw a New Structure:** Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>, or click **`[SMILES]`** ➔ **`[Insert / Edit (SMILES)]`** in Excel (or **`[Insert / Edit Structure]`** in Word & PowerPoint) on the top ribbon.
+* **Draw a New Structure:** Click **`[SMILES]`** ➔ **`[Insert / Edit (SMILES)]`** in Excel (or **`[Insert / Edit Structure]`** in Word & PowerPoint) on the top ribbon.
 * **Edit an Existing Structure:** Simply **double-click** any chemical cell in Excel or structure picture in Word / PowerPoint.
 
 ### Step 2. Sketch Molecules or Reaction Schemes
@@ -47,11 +47,11 @@ Ketcher automatically picks the best lossless format based on what you draw:
 | **Word / PPT Picture** | High-DPI image + embedded SMILES metadata | High-DPI image + embedded KET JSON metadata |
 | **Double-Click Re-Edit** | Restores the exact molecule | Restores every arrow angle, reagent label, and coordinate |
 
-## 3. Essential Shortcuts
+## 3. Essential Actions & Editor Shortcuts
 
-| Shortcut / Action | Function | Description |
+| Action / Shortcut | Function | Description |
 | :--- | :--- | :--- |
-| <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> | **Open Sketcher** | Open Ketcher for the selected cell or cursor position |
+| **Ribbon `[Insert / Edit]`** | **Open Sketcher** | Open Ketcher for the selected cell or cursor position |
 | **Double-Click** | **Edit In-Place** | Reopen any existing molecule or reaction scheme to edit |
 | <kbd>Ctrl</kbd> + <kbd>Enter</kbd> | **Apply to Document** | Insert the drawing into Excel/Word/PowerPoint and close |
 | <kbd>Ctrl</kbd> + <kbd>Z</kbd> / <kbd>Y</kbd> | **Undo / Redo** | Undo or redo recent bond/atom edits |
@@ -60,4 +60,4 @@ Ketcher automatically picks the best lossless format based on what you draw:
 ## 🚀 Continue Exploring
 
 - [**Mol\* 3D Protein & Crystal Viewer**](/editor/molstar) — Load PDB structures (e.g., 1CRN, 6LU7) and capture 3D protein ribbons & binding pockets
-- [**Publishing, SVG & Property Tables**](/editor/publishing) — Convert drawn molecules to ACS B&W or copy lossless SVG vectors for Illustrator
+- [**Publishing, SVG, Property Tables**](/editor/publishing) — Convert drawn molecules to ACS B&W or copy lossless SVG vectors for Illustrator

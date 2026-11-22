@@ -26,5 +26,5 @@ Microsoft Excel에서 `func_SMILES2IMG` 수식이 반환하는 오류·상태 �
 
 ## 관련 가이드
 
-- [**이미지 크기 · .FLOAT 모드**](/ko/excel/troubleshooting/image-sizing) — 작아 보이는 구조식 셀 크기 조절 및 Excel 2016~2021 .FLOAT 도형 관리
-- [**40개 전체 수식 & 스타일 사전**](/ko/excel/formulas) — 정확한 수식 인자, 반환 데이터 형식, 유효한 스타일 키워드를 확인하세요.
+- [**이미지 크기 · .FLOAT**](/ko/excel/troubleshooting/image-sizing) — 작아 보이는 구조식 셀 크기 조절 및 Excel 2016~2021 `.FLOAT` 도형 관리
+- [**40개 함수 전체 개요**](/ko/excel/formulas) — 정확한 수식 인자, 반환 데이터 형식 및 공용 스타일 키워드 확인

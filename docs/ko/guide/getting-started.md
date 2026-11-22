@@ -24,7 +24,7 @@
 ## 2. Microsoft Word — 본문 & 화합물 표 삽입
 
 1. 본문이나 화합물 요약 표 안의 원하는 위치에 커서를 둡니다.
-2. 상단 **`[SMILES]` ➔ `[Insert / Edit Structure]`** (또는 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>)로 Ketcher 편집기를 엽니다.
+2. 상단 리본에서 **`[SMILES]` ➔ `[Insert / Edit Structure]`** 를 클릭해 Ketcher 편집기를 엽니다.
 3. 구조식이나 반응식을 그린 뒤 <kbd>Ctrl</kbd> + <kbd>Enter</kbd>를 누르면 인라인 그림으로 삽입됩니다. 나중에 그림을 **더블클릭**해 수정해도 표 열 너비가 깨지지 않습니다.
 
 <FeatureMedia id="word-overview" />
@@ -37,7 +37,7 @@
 
 ## 4. 앱별 전용 가이드로 계속하기
 
-- [**Microsoft Excel — 실무 레시피 북**](/ko/excel/) — 구조식 표, 이름/CAS 변환, Lipinski 약물성, SAR 스크리닝 레시피와 40개 함수 사전
-- [**Microsoft Word — 6장 논문 튜토리얼**](/ko/word/) — 실제 연구 논문 원고 1편을 서론 삽입부터 투고용 ACS 흑백 통일까지 완성해 나갑니다
-- [**Microsoft PowerPoint — 슬라이드 갤러리**](/ko/powerpoint/) — 다크 모드 투명 구조식, 반응 메커니즘, 360° 회전 3D 단백질 슬라이드를 보고 따라 합니다
-- [**Editor — Ketcher 2D · Mol\* 3D · 출력**](/ko/editor/) — 2D 구조·반응식 편집기, 3D 단백질 뷰어, ACS 흑백 일괄 변환 및 벡터 SVG 복사 가이드
+- [**Excel 가이드**](/ko/excel/) — 구조식 표, 이름·CAS 조회, Lipinski 약물성, SAR 스크리닝, `.sdf` 입출력 및 40개 함수 사전
+- [**Word 가이드**](/ko/word/) — 논문 본문 인라인 구조식, 화합물 SAR 표, KET 합성 반응식, Mol\* 3D 그림 및 ACS 흑백 변환
+- [**PowerPoint 가이드**](/ko/powerpoint/) — 다크 모드 투명 구조식, 텍스트 상자 0.1초 변환, 반응 메커니즘 및 360° 회전 3D 단백질 슬라이드
+- **[Editor — Ketcher 2D · Mol\* 3D · 출력](/ko/editor/)** — 2D 구조·반응식 편집기, 3D 단백질 뷰어, ACS 흑백 일괄 변환 및 벡터 SVG 복사 가이드

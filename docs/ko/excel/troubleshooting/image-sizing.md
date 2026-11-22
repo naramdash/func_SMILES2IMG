@@ -23,5 +23,5 @@
 
 ## 관련 가이드
 
-- [**엑셀 수식 오류**](/ko/excel/troubleshooting/formula-errors) — #NAME?, #VALUE!, #N/A 및 Diagnostics 파서 오류 해결
-- [**Excel 레시피 1~5**](/ko/excel/) — 구조식 표, 이름/CAS 조회, 스타일, .FLOAT 모드 실무 예제
+- [**수식 오류**](/ko/excel/troubleshooting/formula-errors) — `#NAME?`, `#VALUE!`, `#N/A` 및 `Diagnostics` 파서 오류 해결
+- [**구버전 Excel (.FLOAT)**](/ko/excel/legacy-float) · [**SMILES · InChI**](/ko/excel/structures) — 구조식 표 만들기 및 셀 고정 부동 도형 안내

@@ -137,8 +137,8 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                   onAction=""OnInsertMolstar"" />
           <button id=""btnQuickInsert""
                   label=""Paste Structure""
-                  screentip=""Paste Structure from Clipboard""
-                  supertip=""Convert SMILES or KET directly into a molecular structure image without opening the editor.""
+                  screentip=""Paste Structure from TextBox or Clipboard""
+                  supertip=""Convert selected TextBox or clipboard SMILES, InChI, KET, or chemical names/CAS (e.g. Aspirin) directly into a molecular structure image without opening the editor.""
                   imageMso=""Paste""
                   size=""large""
                   onAction=""OnQuickInsert"" />
@@ -182,15 +182,7 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
     "btnPptBatchWhiteBg",
     "btnPptBatchDark")}
         </group>
-        <group id=""grpPptAbout"" label=""About"">
-          <button id=""btnPptAbout""
-                  label=""About func_SMILES2IMG""
-                  screentip=""About func_SMILES2IMG""
-                  supertip=""Displays creator info, GitHub repository link, and open-source third-party licenses.""
-                  imageMso=""Info""
-                  size=""large""
-                  onAction=""OnAbout"" />
-        </group>
+{RibbonXmlBuilder.BuildRibbonAboutGroup("grpPptAbout", "btnPptOpenDocs", "btnPptAbout", "PowerPoint")}
       </tab>
     </tabs>
   </ribbon>
@@ -380,6 +372,9 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
         PowerPointStructureManager.EditSelectedMolstar(pptApp);
     }
 
+    public void OnOpenDocs(IRibbonControl control)
+        => DialogHelper.OpenUrl(AboutDialog.GetDocsUrl("PowerPoint"));
+
     public void OnAbout(IRibbonControl control)
     {
         IntPtr hwnd = IntPtr.Zero;
@@ -389,6 +384,6 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 hwnd = (IntPtr)pptApp.HWND;
         }
         catch { }
-        DialogHelper.ShowAbout(hwnd);
+        DialogHelper.ShowAbout(hwnd, "PowerPoint");
     }
 }

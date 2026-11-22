@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { useData, withBase } from 'vitepress'
 import manifestData from '../mediaManifest.json'
+import { openLightbox } from '../lightbox'
 
 interface MediaEntry {
   id: string
@@ -33,7 +34,6 @@ const props = withDefaults(
 const { lang } = useData()
 const isKo = computed(() => lang.value.startsWith('ko'))
 const mode = ref<'video' | 'screenshot'>(props.initialTab)
-const zoomOpen = ref(false)
 
 const manifest = manifestData as Record<string, MediaEntry>
 const entry = computed<MediaEntry | null>(() => manifest[props.id] ?? null)
@@ -47,10 +47,21 @@ const displayCaption = computed(() => {
   if (isKo.value) return props.captionKo ?? entry.value?.captionKo ?? displayTitle.value
   return props.captionEn ?? entry.value?.captionEn ?? displayTitle.value
 })
+
+function openShotLightbox() {
+  if (!entry.value) return
+  openLightbox([
+    {
+      src: withBase(entry.value.shot),
+      alt: displayTitle.value,
+      caption: displayCaption.value
+    }
+  ])
+}
 </script>
 
 <template>
-  <figure v-if="entry" class="s2i-figure">
+  <figure v-if="entry" class="s2i-figure vp-raw">
     <video
       v-if="mode === 'video'"
       class="s2i-media"
@@ -73,7 +84,7 @@ const displayCaption = computed(() => {
       type="button"
       class="s2i-img-btn"
       :title="isKo ? '클릭해서 확대' : 'Click to enlarge'"
-      @click="zoomOpen = true"
+      @click="openShotLightbox"
     >
       <img :src="withBase(entry.shot)" :alt="displayTitle" loading="lazy" class="s2i-media" />
     </button>
@@ -90,10 +101,6 @@ const displayCaption = computed(() => {
         </button>
       </span>
     </figcaption>
-
-    <div v-if="zoomOpen" class="s2i-lightbox" @click="zoomOpen = false">
-      <img :src="withBase(entry.shot)" :alt="displayTitle" />
-    </div>
   </figure>
 </template>
 
@@ -156,23 +163,5 @@ const displayCaption = computed(() => {
 
 .s2i-sep {
   color: var(--vp-c-divider);
-}
-
-.s2i-lightbox {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(0, 0, 0, 0.82);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  cursor: zoom-out;
-}
-
-.s2i-lightbox img {
-  max-width: 94vw;
-  max-height: 88vh;
-  border-radius: 8px;
 }
 </style>

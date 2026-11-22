@@ -1,17 +1,18 @@
 # Introduction
 
-**`func_SMILES2IMG`** is a free, open-source chemical structure and 3D macromolecule add-in suite for **Microsoft Excel, Word, and PowerPoint**.
+**`func_SMILES2IMG`** brings live, editable 2D chemical structures, molecular descriptors, and 3D protein models directly into **Microsoft Excel, Word, and PowerPoint**.
 
-Write a compound name, CAS number, or SMILES directly in an Excel cell to render 2D structures and compute molecular properties across hundreds of rows—or double-click any structure in Word and PowerPoint to edit in place with the built-in **Ketcher 2D** sketcher and **Mol\* 3D** protein viewer.
+Instead of copy-pasting static screenshots from external drawing tools, write simple formulas in Excel to render hundreds of rows at once, or insert structures in Word and PowerPoint that stay editable on double-click. Core rendering and property calculations run **locally on your PC**—free and open-source under the MIT license.
 
 ## What You Can Do Across Microsoft Office
 
-| Office App | Highlights | Guide |
+| Office App | What You Can Do | Guide |
 | :--- | :--- | :--- |
-| **Microsoft Excel** | In-cell structure formulas (`=SMILES2IMG`, `=NAME2IMG`), 40 property/Lipinski/SAR functions, `.sdf` import/export, double-click 2D editing | [Excel Cookbook](/excel/) |
-| **Microsoft Word** | Inline structures in prose and compound tables, aspect-ratio-locked double-click re-editing, 1-click ACS B&W batch styling, vector SVG copy | [Word Tutorial](/word/) |
-| **Microsoft PowerPoint** | Transparent white-ink Dark Mode structures, 0.1s textbox conversion, interactive 360°-rotatable 3D protein models (`.glb`) | [PowerPoint Gallery](/powerpoint/) |
-| **Shared Editors** | Built-in offline **Ketcher 2D** sketcher (`Ctrl+Shift+K`) and **Mol\* 3D** macromolecular viewer across all three apps | [Editor Guides](/editor/) |
+| <AppBadge app="excel" /> | Render compound names, CAS numbers, SMILES, or InChI into live in-cell 2D structures (`=SMILES2IMG`, `=NAME2IMG`), run 40 property, Lipinski, and SAR formulas across tables, and import/export `.sdf` files. | <span class="s2i-nowrap">[Overview →](/excel/)</span> |
+| <AppBadge app="word" /> | Insert crisp inline structures into manuscripts and fixed-width SAR tables, copy descriptors without typos via `Molecule Info`, switch the whole document to ACS B&W in one click, and copy lossless Vector SVG. | <span class="s2i-nowrap">[Overview →](/word/)</span> |
+| <AppBadge app="powerpoint" /> | Convert slide textboxes into transparent dark-mode structures in 0.1s, embed 360°-rotatable 3D proteins (`.glb`), and switch deck themes instantly with 1-click `Batch Style`. | <span class="s2i-nowrap">[Overview →](/powerpoint/)</span> |
+
+All three apps include the built-in offline **[Ketcher 2D](/editor/)** sketcher and **[Mol\* 3D](/editor/molstar)** macromolecular viewer—double-click any inserted structure or reaction scheme to re-edit it in place without disturbing your layout.
 
 ![func_SMILES2IMG running in Microsoft Excel](/excel-showcase.png)
 
@@ -50,4 +51,5 @@ Internet access is used **only when you explicitly invoke** one of these optiona
 ## Next Steps
 
 - [**Installation (10-Second Setup)**](/guide/install) — Install across Excel, Word, and PowerPoint in one PowerShell line—no admin rights required.
-- [**Getting Started (First Molecule)**](/guide/getting-started) — Render your first structure in Excel, Word, or PowerPoint and download the 8-tab master workbook.
+- [**Getting Started (First Molecule)**](/guide/getting-started) — Render your first structure in Excel, Word, or PowerPoint in under a minute.
+- [**Interactive Playbooks**](/guide/playbooks) — Download the self-contained Excel (10 tabs), Word (6 pages), and PowerPoint (8 slides) playbooks.

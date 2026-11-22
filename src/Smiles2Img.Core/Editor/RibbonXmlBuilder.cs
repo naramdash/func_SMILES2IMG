@@ -6,6 +6,30 @@ namespace Smiles2Img.Editor;
 /// </summary>
 public static class RibbonXmlBuilder
 {
+    public static string BuildRibbonAboutGroup(
+        string groupId,
+        string docsBtnId,
+        string aboutBtnId,
+        string appDisplayName)
+    {
+        return $@"        <group id=""{groupId}"" label=""About"">
+          <button id=""{docsBtnId}""
+                  label=""Online Docs""
+                  screentip=""Open {appDisplayName} Online Documentation""
+                  supertip=""Opens the official func_SMILES2IMG {appDisplayName} guide, interactive playbooks, and troubleshooting reference in your web browser.""
+                  imageMso=""TableOfContentsGallery""
+                  size=""large""
+                  onAction=""OnOpenDocs"" />
+          <button id=""{aboutBtnId}""
+                  label=""About func_SMILES2IMG""
+                  screentip=""About func_SMILES2IMG""
+                  supertip=""Displays creator info, online documentation, GitHub repository link, and open-source third-party licenses.""
+                  imageMso=""Info""
+                  size=""large""
+                  onAction=""OnAbout"" />
+        </group>";
+    }
+
     public static string BuildRibbonMoleculeInfoMenu(string appTag)
     {
         return $@"          <menu id=""menuRibbon{appTag}MoleculeInfo""

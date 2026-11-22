@@ -59,6 +59,59 @@ public static class MoleculeActionHelper
             ?? MoleculeRenderer.TryConvertToKet(PubChemResolver.ResolveNameToSmiles(selectedText));
     }
 
+    private static bool LooksLikeChemicalNameOrCas(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input) || input.Length < 2 || input.Length > 160)
+            return false;
+        if (input.IndexOf('\r') >= 0 || input.IndexOf('\n') >= 0)
+            return false;
+        if (input.StartsWith("{", StringComparison.Ordinal) ||
+            input.StartsWith("=", StringComparison.Ordinal) ||
+            input.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+            input.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        var tokens = input.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
+        return tokens.Length is >= 1 and <= 6;
+    }
+
+    /// <summary>
+    /// Renders quick-insert input from SMILES, InChI, KET, or chemical name/CAS (with offline dictionary + optional PubChem lookup).
+    /// </summary>
+    public static bool TryRenderQuickInsertInput(
+        string? rawInput,
+        RenderOptions? options,
+        out byte[]? pngBytes,
+        out string? ket,
+        out string? smiles,
+        bool resolvePubChem = true)
+    {
+        pngBytes = null;
+        ket = null;
+        smiles = null;
+        if (string.IsNullOrWhiteSpace(rawInput))
+            return false;
+
+        var trimmed = rawInput!.Trim();
+        if (MoleculeRenderer.TryRenderStructure(trimmed, options, out pngBytes, out ket, out smiles) &&
+            pngBytes != null)
+        {
+            return true;
+        }
+
+        if (!LooksLikeChemicalNameOrCas(trimmed))
+            return false;
+
+        var resolved = resolvePubChem
+            ? PubChemResolver.ResolveNameToSmiles(trimmed)
+            : PubChemResolver.ResolveNameToSmilesOffline(trimmed);
+        if (string.IsNullOrWhiteSpace(resolved))
+            return false;
+
+        return MoleculeRenderer.TryRenderStructure(resolved, options, out pngBytes, out ket, out smiles) &&
+               pngBytes != null;
+    }
+
     public static MoleculeInfo? TryResolveMolstarInfo(string? altText, string? title, bool resolvePubChem)
     {
         if (!StructureMetadata.IsMolstar(altText, title))

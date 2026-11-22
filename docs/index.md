@@ -66,4 +66,6 @@ features:
 
 ## Playbooks
 
+Step-by-step feature walkthroughs and real lab & reporting examples inside Office.
+
 <PlaybookPreview />

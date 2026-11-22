@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useData } from 'vitepress'
+import { copyToClipboard } from '../clipboard'
+
+defineProps<{
+  inline?: boolean
+}>()
 
 const { lang } = useData()
 const isKo = computed(() => lang.value.startsWith('ko'))
@@ -17,32 +22,18 @@ const copyLabel = computed(() =>
 )
 
 async function copyInstall() {
-  try {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(psInstallCommand)
-    } else {
-      const el = document.createElement('textarea')
-      el.value = psInstallCommand
-      el.style.position = 'fixed'
-      el.style.left = '-9999px'
-      document.body.appendChild(el)
-      el.select()
-      document.execCommand('copy')
-      document.body.removeChild(el)
-    }
+  if (await copyToClipboard(psInstallCommand)) {
     copied.value = true
     if (copiedTimer) clearTimeout(copiedTimer)
     copiedTimer = setTimeout(() => {
       copied.value = false
     }, 2000)
-  } catch (err) {
-    console.error('Failed to copy', err)
   }
 }
 </script>
 
 <template>
-  <div class="s2i-hero-qib-wrap">
+  <div class="s2i-hero-qib-wrap vp-raw" :class="{ 'is-inline': inline }">
     <div class="s2i-hero-qib">
       <div class="s2i-terminal-body">
         <span class="s2i-ps-brand">
@@ -70,6 +61,15 @@ async function copyInstall() {
 .s2i-hero-qib-wrap {
   padding: 0 24px;
   margin-bottom: 16px;
+}
+
+.s2i-hero-qib-wrap.is-inline {
+  padding: 0;
+  margin: 12px 0 16px;
+}
+
+.s2i-hero-qib-wrap.is-inline .s2i-hero-qib {
+  max-width: none;
 }
 
 @media (min-width: 640px) {

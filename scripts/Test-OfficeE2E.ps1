@@ -309,11 +309,16 @@ try {
     }
     Write-Host "  [PASS] PowerPoint In-Process OnCopyAllSummary copied 17-column TSV header + row" -ForegroundColor Green
 
-    # Test 2E: Live Modal UI Popup inside PowerPoint (OnCopyMoleculeInfo -> MoleculeInfoDialog)
+    # Test 2E: Live Modal UI Popup inside PowerPoint (OnCopyMoleculeInfo -> MoleculeInfoDialog & OnAbout -> AboutDialog)
     $slide.Shapes.Item(2).Select()
     [OfficeE2EWindow]::StartModalDialogCloser("Molecule Info")
     [void]$pptObj.ExecuteRibbonAction("OnCopyMoleculeInfo")
     if (-not [OfficeE2EWindow]::DialogDetected) { throw "PowerPoint OnCopyMoleculeInfo modal UI dialog did not appear on screen!" }
+    Write-Host "  [PASS] PowerPoint Live Modal UI Popup: '$([OfficeE2EWindow]::LastDetectedTitle)' ($([OfficeE2EWindow]::LastDetectedWidth)x$([OfficeE2EWindow]::LastDetectedHeight) px)" -ForegroundColor Green
+
+    [OfficeE2EWindow]::StartModalDialogCloser("func_SMILES2IMG")
+    [void]$pptObj.ExecuteRibbonAction("OnAbout")
+    if (-not [OfficeE2EWindow]::DialogDetected) { throw "PowerPoint OnAbout modal UI dialog did not appear on screen!" }
     Write-Host "  [PASS] PowerPoint Live Modal UI Popup: '$([OfficeE2EWindow]::LastDetectedTitle)' ($([OfficeE2EWindow]::LastDetectedWidth)x$([OfficeE2EWindow]::LastDetectedHeight) px)" -ForegroundColor Green
 
     # Test 2F: Cross-Host Parity Checks in PowerPoint (LockAspectRatio + TextBox 'Aspirin' fallback & 'CCO' QuickInsert)
@@ -348,7 +353,7 @@ try {
     [void][Smiles2Img.Editor.SafeClipboard]::SetText("not-a-molecule")
     $beforeQuickShapes = $slide.Shapes.Count
     [void]$pptObj.ExecuteRibbonAction("OnQuickInsert")
-    if ($slide.Shapes.Count -le $beforeQuickShapes) { throw "PowerPoint OnQuickInsert on TextBox 'CCO' failed to insert shape!" }
+    if ($slide.Shapes.Count -ne $beforeQuickShapes) { throw "PowerPoint OnQuickInsert on TextBox 'CCO' expected in-place replacement (count=$beforeQuickShapes), got $($slide.Shapes.Count)!" }
     $quickInsertedPptShape = $slide.Shapes.Item($slide.Shapes.Count)
     if ($quickInsertedPptShape.Tags.Item("SMILES") -ne "CCO") { throw "PowerPoint TextBox QuickInsert expected SMILES 'CCO', got '$($quickInsertedPptShape.Tags.Item("SMILES"))'" }
     Write-Host "  [PASS] PowerPoint Cross-Host Parity: LockAspectRatio=msoTrue, TextBox 'Aspirin' Copy* & TextBox 'CCO' QuickInsert verified" -ForegroundColor Green

@@ -121,7 +121,6 @@ if (!fs.existsSync(manifestPath)) {
       rel !== 'ko/guide/index.md' &&
       !rel.includes('/troubleshooting/') &&
       !rel.endsWith('faq.md') &&
-      !rel.endsWith('formula-builder.md') &&
       !/playbooks?\.md$/.test(rel);
     if (isFeatureGuide && fmMatches.length === 0) {
       issues.push(`[${rel}] Guide page has no <FeatureMedia> live screenshot + video components`);

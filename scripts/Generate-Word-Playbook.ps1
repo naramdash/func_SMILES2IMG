@@ -23,7 +23,7 @@ $coreDll = (Resolve-Path (Join-Path $repoRoot 'dist\x64\Word\Smiles2Img.Core.dll
 [System.Reflection.Assembly]::LoadFrom($coreDll) | Out-Null
 [Smiles2Img.Rendering.NativeIndigo]::Initialize((Split-Path $coreDll -Parent))
 
-$addinVersion = '1.8.0'
+$addinVersion = '1.8.1'
 try {
     $propsXml = [xml](Get-Content (Join-Path $repoRoot 'Directory.Build.props') -Raw)
     if ($propsXml.Project.PropertyGroup.Version) { $addinVersion = [string]$propsXml.Project.PropertyGroup.Version }
@@ -362,10 +362,10 @@ try {
 
     Add-ChapterHeading $doc '0.' 'Microsoft Word [SMILES] Ribbon & 3-Level Right-Click Menu Reference' $false
 
-    $ribbonHeaders = @('Ribbon Group / Menu', 'Command', 'Shortcut / Access', 'What It Does in Microsoft Word')
+    $ribbonHeaders = @('Ribbon Group / Menu', 'Command', 'How to Access', 'What It Does in Microsoft Word')
     $ribbonWidths  = @(108, 126, 95, 175)
     $ribbonRows = @(
-        @('Insert Structure', 'Insert / Edit Structure', 'Ctrl+Shift+K / Double-Click', 'Opens EPAM Ketcher 2D to draw molecules or reaction schemes, or re-edit selected figure in place.'),
+        @('Insert Structure', 'Insert / Edit Structure', 'Ribbon / Double-Click', 'Opens EPAM Ketcher 2D to draw molecules or reaction schemes, or re-edit selected figure in place.'),
         @('Insert Structure', '3D Structure (Mol*)',     'Ribbon -> [SMILES]',          'Opens Mol* 3D viewer to load PDB IDs (1CRN, 4HHB, 6LU7) or local .pdb/.cif files as 2D PNG or 3D GLB.'),
         @('Insert Structure', 'Paste Structure',         'Ribbon or Right-Click',       'Converts selected text (SMILES, InChI, KET, or compound name) or clipboard into an inline structure in 0.1s.'),
         @('Structure Tools',  'Copy SMILES / InChI / KET','Ribbon or Right-Click',      'Extracts the exact SMILES, IUPAC InChI, or lossless KET JSON from any selected structure picture.'),
@@ -373,7 +373,7 @@ try {
         @('Structure Tools',  'Molecule Info',           'Ribbon or Right-Click',       'Displays 17 descriptors + 2D preview; copies Summary, 17-col TSV, Multi-Line List, Markdown, or JSON.'),
         @('Structure Tools',  'Batch Style',             'Ribbon -> Batch Style',       '1-click document-wide restyle: Standard Color, Publication B&W (ACS), White Background, or Dark Mode.'),
         @('Right-Click Menu', 'Chemical Structure > ...','Right-Click Text / Picture',  '3-level cascading menu exposing Insert/Edit, Mol* 3D, Paste Structure, Copy SVG, and Copy Molecule Info.'),
-        @('About',            'About func_SMILES2IMG',   'Ribbon -> [SMILES]',          'Shows installed version, built-in engine versions, open-source licenses, and Check for Updates.')
+        @('About',            'Online Docs · About',     'Ribbon -> [SMILES]',          'Online Docs opens /word/ guides in browser; About shows version, engines, licenses, and updates.')
     )
     Add-StyledWordTable $doc $ribbonHeaders $ribbonRows $ribbonWidths 0x6E760F 8.5 2.5 | Out-Null
 

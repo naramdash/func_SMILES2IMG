@@ -26,5 +26,5 @@ Excel displays `#VALUE!` when the formula ran, but the input could not be parsed
 
 ## Related Guides
 
-- [**Image Sizing & .FLOAT Mode**](/excel/troubleshooting/image-sizing) — Resize small structure cells cleanly and handle Excel 2016–2021 .FLOAT shapes.
-- [**40 Formula & Style Cheat Sheet**](/excel/formulas) — Verify exact formula signatures, return data types, and style keywords.
+- [**Image Sizing & .FLOAT**](/excel/troubleshooting/image-sizing) — Resize small structure cells cleanly and handle Excel 2016–2021 `.FLOAT` shapes
+- [**All 40 Functions**](/excel/formulas) — Verify exact formula signatures, return data types, and style keywords

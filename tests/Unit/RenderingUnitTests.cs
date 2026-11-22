@@ -361,6 +361,56 @@ internal static class RenderingUnitTests
         Check(Smiles2Img.Editor.MoleculeActionHelper.ResolveStructureOrText(null, null, "Aspirin", resolvePubChem: false) == "CC(=O)Oc1ccccc1C(=O)O",
             "ResolveStructureOrText resolves fallback text consistently");
 
+        foreach (var (quickInput, expectedSmiles, expectKet) in new[]
+        {
+            ("Aspirin", "CC(=O)Oc1ccccc1C(=O)O", false),
+            ("Paracetamol", "CC(=O)Nc1ccc(O)cc1", false),
+            ("50-78-2", "CC(=O)Oc1ccccc1C(=O)O", false),
+            ("THF", "C1CCOC1", false),
+            ("c1ccccc1", "c1ccccc1", false),
+            (SampleKet, "CO", true)
+        })
+        {
+            Check(Smiles2Img.Editor.MoleculeActionHelper.TryRenderQuickInsertInput(
+                      quickInput, RenderOptions.Default, out var qPng, out var qKet, out var qSmiles, resolvePubChem: false)
+                  && qPng != null && qPng.Length > 100
+                  && qSmiles == expectedSmiles
+                  && (!expectKet || qKet == SampleKet),
+                $"TryRenderQuickInsertInput renders '{quickInput}'");
+        }
+
+        foreach (var rejectedInput in new[]
+        {
+            "",
+            "   ",
+            "This is a long regular prose sentence with many words.",
+            "https://example.com/aspirin",
+            "http://example.com"
+        })
+        {
+            Check(!Smiles2Img.Editor.MoleculeActionHelper.TryRenderQuickInsertInput(
+                      rejectedInput, RenderOptions.Default, out _, out _, out _, resolvePubChem: false),
+                $"TryRenderQuickInsertInput rejects '{rejectedInput}'");
+        }
+
+        var largeFit = StructureMetadata.FitTextBoxReplacementBounds(50f, 60f, 300f, 200f, 960f, 540f, png);
+        Check(largeFit.Left >= 50f && largeFit.Top >= 60f
+              && largeFit.Left + largeFit.Width <= 350.01f
+              && largeFit.Top + largeFit.Height <= 260.01f
+              && largeFit.Width > 0f && largeFit.Height > 0f,
+            "FitTextBoxReplacementBounds keeps large TextBox replacement inside original bounds");
+
+        var thinFit = StructureMetadata.FitTextBoxReplacementBounds(56f, 188f, 416f, 42f, 960f, 540f, png);
+        var thinCx = thinFit.Left + thinFit.Width / 2f;
+        var thinCy = thinFit.Top + thinFit.Height / 2f;
+        Check(thinFit.Height >= 70f && thinFit.Height <= 130f
+              && Math.Abs(thinCx - 264f) <= 2f
+              && Math.Abs(thinCy - 209f) <= 2f
+              && thinFit.Left >= 12f && thinFit.Top >= 12f
+              && thinFit.Left + thinFit.Width <= 948f
+              && thinFit.Top + thinFit.Height <= 528f,
+            $"FitTextBoxReplacementBounds expands thin single-line TextBox cleanly (h={thinFit.Height}, cx={thinCx}, cy={thinCy})");
+
         PassSuite("Unit: StructureMetadata, Format Conversions & MolstarSessionManager GZip Round-Trip");
     }
 

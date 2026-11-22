@@ -16,22 +16,22 @@ New-Item -ItemType Directory -Path $examplesDir, $publicExamplesDir -Force | Out
 
 if ($Target -eq 'All' -or $Target -eq 'Excel') {
     & (Join-Path $PSScriptRoot 'Generate-Excel-Playbook.ps1')
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    if ($LASTEXITCODE -and $LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 
 if ($Target -eq 'All' -or $Target -eq 'Word') {
     & (Join-Path $PSScriptRoot 'Generate-Word-Playbook.ps1')
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    if ($LASTEXITCODE -and $LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 
 if ($Target -eq 'All' -or $Target -eq 'PowerPoint') {
     & (Join-Path $PSScriptRoot 'Generate-PowerPoint-Playbook.ps1')
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    if ($LASTEXITCODE -and $LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 
 if ($Target -eq 'All') {
     & (Join-Path $PSScriptRoot 'Generate-Playbook-Previews.ps1')
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    if ($LASTEXITCODE -and $LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 
 Write-Host "`n=== All func_SMILES2IMG Office Playbooks Ready ===" -ForegroundColor Cyan

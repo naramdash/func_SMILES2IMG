@@ -24,7 +24,7 @@ Prefer practicing hands-on directly inside Excel, Word, or PowerPoint? Visit [In
 ## 2. Microsoft Word — Insert & Re-Edit in Place
 
 1. Place your cursor in prose or inside a compound summary table.
-2. Click **`[SMILES]` ➔ `[Insert / Edit Structure]`** (or press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>).
+2. Click **`[SMILES]` ➔ `[Insert / Edit Structure]`** on the top ribbon.
 3. Sketch your molecule or reaction in Ketcher and press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to insert inline. **Double-click** it anytime later to modify in place without breaking table column widths.
 
 <FeatureMedia id="word-overview" />
@@ -37,7 +37,7 @@ Insert alpha-transparent white-ink structures onto dark presentation templates, 
 
 ## 4. Pick Your Dedicated App Guide
 
-- [**Microsoft Excel — Recipe Cookbook**](/excel/) — Structure tables, Name/CAS lookup, Lipinski/SAR screening, .sdf I/O, and 40 formula specs
-- [**Microsoft Word — 6-Chapter Tutorial**](/word/) — Build one complete research manuscript from prose figures and tables to ACS B&W submission
-- [**Microsoft PowerPoint — Slide Gallery**](/powerpoint/) — Dark-mode structure cards, synthesis slides, and 360° rotatable 3D proteins
-- [**Editor — Ketcher 2D, Mol\* 3D & Export**](/editor/) — Master the 2D sketcher, 3D protein viewer, ACS B&W Batch Style, and lossless SVG copy
+- [**Excel Guide**](/excel/) — Structure tables, Name/CAS lookup, Lipinski/SAR screening, `.sdf` I/O, and all 40 formulas
+- [**Word Guide**](/word/) — Inline manuscript structures, fixed-width SAR tables, KET reaction schemes, Mol\* 3D figures, and ACS B&W submission
+- [**PowerPoint Guide**](/powerpoint/) — Dark-mode structure cards, 0.1s TextBox conversion, synthesis slides, and 360°-rotatable 3D proteins
+- **[Editor — Ketcher 2D, Mol\* 3D, Export](/editor/)** — Master the 2D sketcher, 3D protein viewer, ACS B&W Batch Style, and lossless SVG copy

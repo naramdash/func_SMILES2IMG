@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using Smiles2Img.Editor;
 using Smiles2Img.Notifications;
 using Smiles2Img.Rendering;
+using MsoShapeType = Microsoft.Office.Core.MsoShapeType;
 using MsoTriState = Microsoft.Office.Core.MsoTriState;
 using MSPowerPoint = Microsoft.Office.Interop.PowerPoint;
 
@@ -129,23 +130,23 @@ public static partial class PowerPointStructureManager
         catch { }
     }
 
-    private static void InsertMoleculeAsPicture(MSPowerPoint.Application app, MSPowerPoint.Slide slide, string? ket, string smiles, byte[] pngBytes)
+    private static (float Width, float Height) GetSlideDimensions(MSPowerPoint.Application app)
+    {
+        try
+        {
+            return (app.ActivePresentation.PageSetup.SlideWidth, app.ActivePresentation.PageSetup.SlideHeight);
+        }
+        catch
+        {
+            return (960f, 540f);
+        }
+    }
+
+    private static void InsertMoleculeAsPictureAt(
+        MSPowerPoint.Slide slide, string? ket, string smiles, byte[] pngBytes, float left, float top, float width, float height)
     {
         StructureMetadata.WithTempFile(pngBytes, "structure", "png", tempFile =>
         {
-            float slideWidth = 960f;
-            float slideHeight = 540f;
-            try
-            {
-                slideWidth = app.ActivePresentation.PageSetup.SlideWidth;
-                slideHeight = app.ActivePresentation.PageSetup.SlideHeight;
-            }
-            catch { }
-
-            var (width, height) = StructureMetadata.GetScaledDimensions(pngBytes, 240f, 180f, scale: 0.75f);
-            float left = Math.Max(50f, (slideWidth - width) / 2f);
-            float top = Math.Max(50f, (slideHeight - height) / 2f);
-
             var shape = slide.Shapes.AddPicture(
                 FileName: tempFile,
                 LinkToFile: MsoTriState.msoFalse,
@@ -158,6 +159,15 @@ public static partial class PowerPointStructureManager
             ApplyShapeMetadata(shape, ket, smiles);
             shape.Select();
         });
+    }
+
+    private static void InsertMoleculeAsPicture(MSPowerPoint.Application app, MSPowerPoint.Slide slide, string? ket, string smiles, byte[] pngBytes)
+    {
+        var (slideWidth, slideHeight) = GetSlideDimensions(app);
+        var (width, height) = StructureMetadata.GetScaledDimensions(pngBytes, 240f, 180f, scale: 0.75f);
+        float left = Math.Max(50f, (slideWidth - width) / 2f);
+        float top = Math.Max(50f, (slideHeight - height) / 2f);
+        InsertMoleculeAsPictureAt(slide, ket, smiles, pngBytes, left, top, width, height);
     }
 
     private static void ReplaceShape(MSPowerPoint.Shape oldShape, string? newKet, string newSmiles, byte[] pngBytes, bool selectNew = true)
@@ -400,6 +410,23 @@ public static partial class PowerPointStructureManager
         }
     }
 
+    private static bool IsReplaceableTextShape(MSPowerPoint.Shape? shape)
+    {
+        if (shape == null) return false;
+        try
+        {
+            if (!string.IsNullOrEmpty(ExtractStructure(shape)) || !string.IsNullOrEmpty(ExtractSmiles(shape)))
+                return false;
+            if (shape.HasTextFrame != MsoTriState.msoTrue)
+                return false;
+            return shape.Type is MsoShapeType.msoTextBox or MsoShapeType.msoAutoShape or MsoShapeType.msoPlaceholder;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     public static void QuickInsertFromClipboard(MSPowerPoint.Application app)
     {
         try
@@ -413,11 +440,29 @@ public static partial class PowerPointStructureManager
                 return;
             }
 
-            GetSelectedShapeOrText(app, out _, out var selectedText);
+            bool isShapeSelection = false;
+            try
+            {
+                isShapeSelection = app.ActiveWindow?.Selection?.Type == MSPowerPoint.PpSelectionType.ppSelectionShapes;
+            }
+            catch { }
+
+            GetSelectedShapeOrText(app, out var selectedShape, out var selectedText);
             if (!string.IsNullOrWhiteSpace(selectedText) &&
-                MoleculeRenderer.TryRenderStructure(selectedText, RenderOptions.Default, out var selPng, out var selKet, out var selSmiles) &&
+                MoleculeActionHelper.TryRenderQuickInsertInput(selectedText, RenderOptions.Default, out var selPng, out var selKet, out var selSmiles) &&
                 selPng != null)
             {
+                if (isShapeSelection && IsReplaceableTextShape(selectedShape))
+                {
+                    var (slideWidth, slideHeight) = GetSlideDimensions(app);
+                    var (left, top, width, height) = StructureMetadata.FitTextBoxReplacementBounds(
+                        selectedShape!.Left, selectedShape.Top, selectedShape.Width, selectedShape.Height,
+                        slideWidth, slideHeight, selPng);
+                    selectedShape.Delete();
+                    InsertMoleculeAsPictureAt(slide, selKet, selSmiles ?? "", selPng, left, top, width, height);
+                    return;
+                }
+
                 InsertMoleculeAsPicture(app, slide, selKet, selSmiles ?? "", selPng);
                 return;
             }
@@ -425,7 +470,7 @@ public static partial class PowerPointStructureManager
             if (SafeClipboard.ContainsText())
             {
                 var clipText = SafeClipboard.GetText()?.Trim();
-                if (MoleculeRenderer.TryRenderStructure(clipText, RenderOptions.Default, out var clipPng, out var clipKet, out var clipSmiles) && clipPng != null)
+                if (MoleculeActionHelper.TryRenderQuickInsertInput(clipText, RenderOptions.Default, out var clipPng, out var clipKet, out var clipSmiles) && clipPng != null)
                 {
                     InsertMoleculeAsPicture(app, slide, clipKet, clipSmiles ?? "", clipPng);
                     return;
@@ -433,7 +478,7 @@ public static partial class PowerPointStructureManager
             }
 
             DialogHelper.ShowInfo(
-                "No valid SMILES or KET structure data found in clipboard or selected text.\nPlease copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) first.",
+                "No valid SMILES, InChI, KET, or chemical name/CAS found in clipboard or selected text.\nPlease select a TextBox or copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) or compound name (e.g. Aspirin) first.",
                 GetHwnd(app));
         }
         catch (Exception ex)

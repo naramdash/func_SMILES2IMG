@@ -1348,7 +1348,7 @@ if ($Section -eq 'All' -or $Section -eq 'Word') {
             -CaptionKo 'Microsoft Word 상단 [SMILES] 리본 탭의 주요 도구를 한눈에 확인합니다.'
         $c.Snap(4, $ptInsert.X, $ptInsert.Y)
         $c.MoveTo($ptInsert.X, $ptInsert.Y, 6)
-        $c.AddCue(1.2, 'Insert / Edit Structure (Ctrl+Shift+K) and 3D Structure (Mol*).', 'Insert / Edit Structure (Ctrl+Shift+K)와 3D Structure (Mol*)로 2D·3D 구조를 삽입합니다.')
+        $c.AddCue(1.2, 'Insert / Edit Structure (Ketcher 2D) and 3D Structure (Mol*).', 'Insert / Edit Structure(Ketcher 2D)와 3D Structure(Mol*)로 2D·3D 구조를 삽입합니다.')
         $c.MoveTo($ptMolstar.X, $ptMolstar.Y, 6)
         $c.MoveTo($ptPaste.X, $ptPaste.Y, 6)
         $c.AddCue(1.2, 'Paste Structure converts selected SMILES or clipboard data in 0.1s.', 'Paste Structure로 선택 텍스트나 클립보드 SMILES를 0.1초 만에 변환합니다.')
@@ -1696,10 +1696,10 @@ if ($Section -eq 'All' -or $Section -eq 'Common') {
         $c = Start-FeatureClip -Id 'common-ketcher-2d' -HostApp 'common' -MainHwnd $wHwnd -OfficePid $wPid `
             -TitleEn 'EPAM Ketcher 2D Molecular & Reaction Sketcher' `
             -TitleKo 'EPAM Ketcher 2D 분자·반응식 편집기 (공통)' `
-            -CaptionEn 'Sketch molecules and multi-step reactions 100% offline with Ctrl+Shift+K and double-click editing.' `
-            -CaptionKo 'Ctrl+Shift+K 또는 더블클릭으로 오프라인 Ketcher 2D 편집기를 열어 분자와 반응식을 그립니다.'
+            -CaptionEn 'Sketch molecules and multi-step reactions 100% offline with ribbon launch and double-click editing.' `
+            -CaptionKo '리본 버튼 또는 더블클릭으로 오프라인 Ketcher 2D 편집기를 열어 분자와 반응식을 그립니다.'
         $c.Snap(8, $ptWInsert.X, $ptWInsert.Y)
-        $c.ClickAt($ptWInsert.X, $ptWInsert.Y, 'Click [Insert / Edit Structure] (or press Ctrl+Shift+K) to launch Ketcher.', '리본의 [Insert / Edit Structure] (또는 Ctrl+Shift+K)로 Ketcher를 엽니다.')
+        $c.ClickAt($ptWInsert.X, $ptWInsert.Y, 'Click [Insert / Edit Structure] on the [SMILES] ribbon to launch Ketcher.', '리본의 [Insert / Edit Structure] 버튼으로 Ketcher를 엽니다.')
         $c.RunWithModal('Ketcher', 2200, {
             Show-LiveKetcherOverHost -OwnerHwnd $wHwnd -Context 'Word' -InitialInput $aspirinSmiles -HoldMs 2200
         }, 'Live WebView2 Ketcher 2D editor running offline inside Office.', '오프라인 WebView2 환경에서 실행 중인 실제 Ketcher 2D 편집기입니다.', @(

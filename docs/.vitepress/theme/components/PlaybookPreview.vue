@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useData, withBase } from 'vitepress'
+import { openLightbox } from '../lightbox'
 
 type AppId = 'excel' | 'word' | 'ppt'
 
@@ -179,7 +180,6 @@ const isKo = computed(() => lang.value.startsWith('ko'))
 
 const activeId = ref<AppId>(props.app ?? 'excel')
 const slideIndex = ref(0)
-const zoomOpen = ref(false)
 
 watch(
   () => props.app,
@@ -223,23 +223,23 @@ function onStageKeydown(e: KeyboardEvent) {
   }
 }
 
-function onWindowKeydown(e: KeyboardEvent) {
-  if (!zoomOpen.value) return
-  if (e.key === 'Escape') {
-    zoomOpen.value = false
-  } else if (e.key === 'ArrowLeft') {
-    prevSlide()
-  } else if (e.key === 'ArrowRight') {
-    nextSlide()
-  }
+function openSlideLightbox() {
+  const slides = activeTab.value.slides.map((s) => {
+    const caption = isKo.value ? s.captionKo : s.captionEn
+    return {
+      src: withBase(s.img),
+      alt: caption,
+      caption
+    }
+  })
+  openLightbox(slides, slideIndex.value, (idx) => {
+    slideIndex.value = idx
+  })
 }
-
-onMounted(() => window.addEventListener('keydown', onWindowKeydown))
-onUnmounted(() => window.removeEventListener('keydown', onWindowKeydown))
 </script>
 
 <template>
-  <div class="s2i-pb" :class="[`is-${activeTab.id}`, { 'is-single': Boolean(props.app) }]">
+  <div class="s2i-pb vp-raw" :class="[`is-${activeTab.id}`, { 'is-single': Boolean(props.app) }]">
     <div v-if="!props.app" class="s2i-pb-tabs" role="tablist" :aria-label="isKo ? 'Playbook 앱 선택' : 'Select Playbook app'">
       <button
         v-for="tab in tabs"
@@ -267,7 +267,7 @@ onUnmounted(() => window.removeEventListener('keydown', onWindowKeydown))
         type="button"
         class="s2i-pb-img-wrap"
         :title="isKo ? '클릭해서 크게 보기' : 'Click to enlarge'"
-        @click="zoomOpen = true"
+        @click="openSlideLightbox"
       >
         <img
           :key="activeSlide.img"
@@ -348,14 +348,6 @@ onUnmounted(() => window.removeEventListener('keydown', onWindowKeydown))
           <span>{{ isKo ? `${activeTab.ext} 다운로드` : `Download ${activeTab.ext}` }}</span>
         </a>
       </div>
-    </div>
-
-    <div v-if="zoomOpen" class="s2i-pb-lightbox" @click="zoomOpen = false">
-      <img
-        :src="withBase(activeSlide.img)"
-        :alt="isKo ? activeSlide.captionKo : activeSlide.captionEn"
-        @click.stop="zoomOpen = false"
-      />
     </div>
   </div>
 </template>
@@ -615,7 +607,7 @@ onUnmounted(() => window.removeEventListener('keydown', onWindowKeydown))
   border-radius: 8px;
   font-size: 13.5px;
   font-weight: 600;
-  text-decoration: none !important;
+  text-decoration: none;
   white-space: nowrap;
   border: 1px solid transparent;
   transition: background-color 0.16s ease, border-color 0.16s ease, filter 0.16s ease;
@@ -649,26 +641,6 @@ onUnmounted(() => window.removeEventListener('keydown', onWindowKeydown))
 
 .s2i-pb-dl-btn:hover {
   filter: brightness(1.08);
-}
-
-/* Zoom Lightbox */
-.s2i-pb-lightbox {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(0, 0, 0, 0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  cursor: zoom-out;
-}
-
-.s2i-pb-lightbox img {
-  max-width: 94vw;
-  max-height: 88vh;
-  border-radius: 8px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
 }
 
 @media (max-width: 767px) {
