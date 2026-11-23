@@ -23,7 +23,7 @@ Windows 11 스마트 앱 컨트롤 경고, 수동 다운로드 `.xll` / `.zip` �
 ## 3. 사내 보안망 · 오프라인 환경
 
 * **GitHub 직접 접속이 막힌 경우:** [오프라인 수동 ZIP 설치](/ko/guide/install#offline-zip) 절차를 따르세요.
-* **오프라인 완전 지원 기능:** 핵심 2D 렌더링(`=SMILES2IMG`, `=KET2IMG`, `=INCHI2IMG`), 모든 물성·Lipinski·SAR 계산, 내장 용매/의약품/CAS 사전, Ketcher 2D 편집, `.sdf` 입출력, Batch Style, SVG 복사는 인터넷 없이 100% 로컬로 작동합니다.
+* **오프라인 완전 지원 기능:** 핵심 2D 렌더링(`=SMILES2IMG`, `=KET2IMG`, `=INCHI2IMG`), 모든 물성·3D·SAR 계산, 내장 용매/의약품/CAS 사전, Ketcher 2D 편집, `.sdf` 가져오기, Batch Style, SVG 복사는 인터넷 없이 100% 로컬로 작동합니다.
 * **인터넷 필요 기능:** 내장 사전에 없는 PubChem 이름/CAS 조회, Mol\* 4자리 PDB 코드 다운로드, **`[Check for Updates]`** 버튼.
 
 ## 관련 트러블슈팅

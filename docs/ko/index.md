@@ -24,19 +24,19 @@ features:
     link: /ko/excel/
   - icon:
       src: /icons/pill.svg
-      alt: 물성 및 Lipinski 약물성 산출
+      alt: 물리화학적 물성 및 3D 복잡도 산출
       width: '28'
       height: '28'
-    title: "물성 · 약물성(Lipinski) 산출"
-    details: "분자량, 화학식, 정밀질량, LogP, TPSA, Lipinski Rule of 5 통과 여부를 수백 행에 걸쳐 로컬에서 즉시 산출합니다."
+    title: "물리화학적 물성 · 3D 지표"
+    details: "분자량, 화학식, 정밀질량, LogP, TPSA, 중원자 수, 고리 수, Fsp3를 수백 행에 걸쳐 로컬에서 즉시 산출합니다."
     link: /ko/excel/properties
   - icon:
       src: /icons/database.svg
-      alt: 표기법 변환, SAR 검색 및 SDF 데이터베이스
+      alt: 표기법 변환, SAR 검색 및 SDF 가져오기
       width: '28'
       height: '28'
     title: "표기법 변환 · SAR · .sdf 연동"
-    details: "이름·CAS·SMILES·InChIKey 상호 변환, 부분구조·유사도 검색, .sdf 파일 가져오기/내보내기까지 한 번에 처리합니다."
+    details: "이름·CAS·SMILES·KET·InChI·InChIKey 상호 변환, SMARTS 부분구조 검색, .sdf 파일 가져오기를 한 번에 처리합니다."
     link: /ko/excel/formulas
   - icon:
       src: /icons/excel.svg
@@ -44,7 +44,7 @@ features:
       width: '28'
       height: '28'
     title: "Microsoft Excel"
-    details: "셀 안 구조식 수식, 40개 화학 함수, 더블클릭 제자리 편집을 지원하며 Excel 365 및 2016~2021과 모두 호환됩니다."
+    details: "셀 안 구조식 수식, SMILES·InChI·KET 통합 49개 화학 함수, 더블클릭 제자리 편집과 Excel 2016~365 호환을 지원합니다."
     link: /ko/excel/
   - icon:
       src: /icons/word.svg

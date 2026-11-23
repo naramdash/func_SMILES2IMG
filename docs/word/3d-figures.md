@@ -13,7 +13,7 @@ Embed publication-grade 3D protein, nucleic acid, and ligand-pocket figures dire
 2. Click **`[SMILES]` ➔ `[3D Structure (Mol*)]`** on the Word ribbon (or right-click ➔ **`Chemical Structure` ➔ `3D Structure (Mol*)...`**).
 3. Load a structure in either of two ways:
    * **Public PDB Fetch:** Type a 4-character PDB ID (e.g., `1CRN`, `4HHB`, `6LU7`, `1BNA`) and click **`Fetch`**.
-   * **Offline Local File:** Click **`Open File...`** to load `.pdb`, `.cif`, `.bcif`, `.sdf`, `.mol`, or `.mol2` files without sending data over the network.
+   * **Offline Local File:** Click **`Open File...`** to load `.pdb`, `.cif`, `.bcif`, `.ent`, `.mol`, `.sdf`, `.molj`, or `.molx` files without sending data over the network.
 4. Adjust your representation (**Cartoon**, **Surface**, **Ball & Stick** pocket residues), coloring, and background (**`White`** or **`Transparent`**), select your output mode on the top bar, and press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (**`Apply to Document`**).
 
 ## 2. Choose Between `2D Picture` and `3D Model (GLB)`

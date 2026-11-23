@@ -132,18 +132,18 @@ try {
     Write-Host "  -> PASS: Generated in-cell image (${($img2.Width)}x${($img2.Height)}, $($img2.Length) bytes)" -ForegroundColor Green
 
     # Test Case 3: The Ultimate Full-Option Formula
-    Write-Host "`n[Test 3] Ultimate Full-Option Formula: =SMILES2IMG(A4, 'white', 'bw num stereo h all-c', 'flip rot90')" -ForegroundColor Yellow
+    Write-Host "`n[Test 3] Ultimate Full-Option Formula: =SMILES2IMG(A4, 'white', 'bw num stereo h all-c', 'rot90')" -ForegroundColor Yellow
     $sheet.Range('A4').Value2 = 'Cn1cnc2c1c(=O)n(C)c(=O)n2C'  # Caffeine
-    $sheet.Range('B4').Formula = '=SMILES2IMG(A4, "white", "bw num stereo h all-c", "flip rot90")'
+    $sheet.Range('B4').Formula = '=SMILES2IMG(A4, "white", "bw num stereo h all-c", "rot90")'
     Invoke-Excel { $excel.Calculate() }
     Wait-ForResult { (Get-CellRichImage 'B4') -ne $null } "In-cell image for B4 (Ultimate Full-Option)"
     $img3 = Get-CellRichImage 'B4'
     Write-Host "  -> PASS: Generated in-cell image (${($img3.Width)}x${($img3.Height)}, $($img3.Length) bytes)" -ForegroundColor Green
 
     # Test Case 4: Full-Option Dark Mode
-    Write-Host "`n[Test 4] Full-Option Dark Mode: =SMILES2IMG(A5, '#1a1a1a', 'white stereo num h', 'flip')" -ForegroundColor Yellow
+    Write-Host "`n[Test 4] Full-Option Dark Mode: =SMILES2IMG(A5, '#1a1a1a', 'white stereo num h', 'rot180')" -ForegroundColor Yellow
     $sheet.Range('A5').Value2 = 'C1=CC=C2C(=C1)C(=O)NS2(=O)=O'  # Saccharin
-    $sheet.Range('B5').Formula = '=SMILES2IMG(A5, "#1a1a1a", "white stereo num h", "flip")'
+    $sheet.Range('B5').Formula = '=SMILES2IMG(A5, "#1a1a1a", "white stereo num h", "rot180")'
     Invoke-Excel { $excel.Calculate() }
     Wait-ForResult { (Get-CellRichImage 'B5') -ne $null } "In-cell image for B5 (Dark mode full option)"
     $img4 = Get-CellRichImage 'B5'
@@ -152,7 +152,7 @@ try {
     # Test Case 5: SMILES2IMG.FLOAT with Ultimate Full-Option Formula
     Write-Host "`n[Test 5] SMILES2IMG.FLOAT with Full-Option Formula" -ForegroundColor Yellow
     $sheet.Range('A6').Value2 = 'CC(=O)NC1=CC=C(O)C=C1'  # Acetaminophen
-    $sheet.Range('C6').Formula = '=SMILES2IMG.FLOAT(A6, "white", "bw num stereo h all-c", "flip rot90")'
+    $sheet.Range('C6').Formula = '=SMILES2IMG.FLOAT(A6, "white", "bw num stereo h all-c", "rot90")'
     Invoke-Excel { $excel.Calculate() }
     Wait-ForResult { $sheet.Shapes.Count -ge 1 } "Floating shape for C6"
     $shape = $sheet.Shapes.Item(1)
@@ -182,7 +182,7 @@ try {
     Invoke-Excel { $excel.CalculateFull() }
     
     # Verify formulas and images survived reload
-    if ($sheet.Range('B4').Formula -ne '=SMILES2IMG(A4, "white", "bw num stereo h all-c", "flip rot90")') {
+    if ($sheet.Range('B4').Formula -ne '=SMILES2IMG(A4, "white", "bw num stereo h all-c", "rot90")') {
         throw "Formula in B4 did not match after reopen."
     }
     $reloadedImg = Get-CellRichImage 'B4'
@@ -191,23 +191,21 @@ try {
     }
     Write-Host "  -> PASS: Saved workbook successfully reopened with intact formulas & RichValue images!" -ForegroundColor Green
 
-    # Test Case 8: Structural Complexity Descriptors (SMILES2HEAVY, SMILES2RINGS, SMILES2AROMATIC, SMILES2FSP3, SMILES2CHIRAL)
-    Write-Host "`n[Test 8] Structural Complexity Descriptors: HEAVY, RINGS, AROMATIC, FSP3, CHIRAL" -ForegroundColor Yellow
+    # Test Case 8: Structural Complexity Descriptors (SMILES2HEAVY, SMILES2RINGS, SMILES2AROMATIC, SMILES2FSP3)
+    Write-Host "`n[Test 8] Structural Complexity Descriptors: HEAVY, RINGS, AROMATIC, FSP3" -ForegroundColor Yellow
     Invoke-Excel { $sheet.Range('D2').Formula = '=SMILES2HEAVY(A2)' }
     Invoke-Excel { $sheet.Range('E2').Formula = '=SMILES2RINGS(A4)' }
     Invoke-Excel { $sheet.Range('F2').Formula = '=SMILES2AROMATIC(A4)' }
     Invoke-Excel { $sheet.Range('G2').Formula = '=SMILES2FSP3(A2)' }
-    Invoke-Excel { $sheet.Range('H2').Formula = '=SMILES2CHIRAL(A3)' }
     Invoke-Excel { $excel.Calculate() }
     $vHeavy = Invoke-Excel { $sheet.Range('D2').Value2 }
     $vRings = Invoke-Excel { $sheet.Range('E2').Value2 }
     $vArom  = Invoke-Excel { $sheet.Range('F2').Value2 }
     $vFsp3  = Invoke-Excel { $sheet.Range('G2').Value2 }
-    $vChiral = Invoke-Excel { $sheet.Range('H2').Value2 }
-    if ($vHeavy -ne 13 -or $vRings -ne 2 -or $vArom -ne 2 -or [Math]::Abs($vFsp3 - 0.11) -gt 0.01 -or $vChiral -ne 1) {
-        throw "Descriptor mismatch: Heavy=$vHeavy, Rings=$vRings, Arom=$vArom, Fsp3=$vFsp3, Chiral=$vChiral"
+    if ($vHeavy -ne 13 -or $vRings -ne 2 -or $vArom -ne 2 -or [Math]::Abs($vFsp3 - 0.11) -gt 0.01) {
+        throw "Descriptor mismatch: Heavy=$vHeavy, Rings=$vRings, Arom=$vArom, Fsp3=$vFsp3"
     }
-    Write-Host "  -> PASS: Heavy=$vHeavy, Rings=$vRings, Arom=$vArom, Fsp3=$vFsp3, Chiral=$vChiral" -ForegroundColor Green
+    Write-Host "  -> PASS: Heavy=$vHeavy, Rings=$vRings, Arom=$vArom, Fsp3=$vFsp3" -ForegroundColor Green
 
     Write-Host "`n=======================================================" -ForegroundColor Cyan
     Write-Host " ALL EXCEL DESKTOP 365 TESTS PASSED SUCCESSFULLY! " -ForegroundColor Green

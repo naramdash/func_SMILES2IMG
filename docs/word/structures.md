@@ -12,7 +12,7 @@ Sketch 2D chemical structures and multi-step reaction schemes directly in Micros
 | **Typed text you want to modify before inserting** | Highlight `Aspirin` or a SMILES string ➔ click **`[Insert / Edit Structure]`** | **Preloads** that exact molecule straight into Ketcher 2D so you can modify substituents immediately |
 
 ::: tip Power Tip: Preload Text Directly Into Ketcher
-You do not have to insert first and double-click later. Whenever a chemical name, CAS number, or SMILES string is already typed in your draft, highlight it and click **`[Insert / Edit Structure]`**—Ketcher opens with that molecule pre-drawn on the canvas.
+You do not have to insert first and double-click later. Whenever a chemical name, valid CAS number, or SMILES string is already typed in your draft, highlight it and click **`[Insert / Edit Structure]`**—Ketcher opens with that molecule pre-drawn on the canvas. *(Ambiguous short English words are safely skipped during preloading so ordinary prose never preloads unintended molecules.)*
 :::
 
 ## 2. Sketching Inline Structures & `0.1s` Text Conversion
@@ -29,7 +29,7 @@ You do not have to insert first and double-click later. Whenever a chemical name
 
 <FeatureMedia id="word-ch2-quick-insert" />
 
-* **Supports SMILES, InChI, KET, Names & CAS:** Common drugs, solvents, and bioactives (`Aspirin`, `Caffeine`, `Paracetamol`, `THF`, `50-78-2`) resolve offline in `0ms` from the built-in dictionary; other compound names resolve automatically via PubChem and cache locally to disk for offline reuse.
+* **Supports SMILES, InChI, KET, Names & CAS:** Common drugs, solvents, and bioactives (`Aspirin`, `Caffeine`, `Paracetamol`, `THF`, `50-78-2`) resolve offline in `0ms` from the built-in dictionary; unknown names and valid CAS numbers resolve via PubChem and cache locally on disk for **30 days** (`%LOCALAPPDATA%\Smiles2Img`). Invalid CAS check digits are rejected in `0ms`, and compound names or ambiguous short English words show a quick confirmation dialog on **`[Paste Structure]`**.
 * **Replaces Highlighted Text In-Place:** Highlighting `Aspirin` or a SMILES string in prose or a table cell and clicking **`[Paste Structure]`** swaps the text directly for the rendered structure.
 
 ### Inline vs. Floating Pictures in Word

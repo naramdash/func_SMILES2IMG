@@ -38,7 +38,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
             wordEvents = (MSWord.ApplicationEvents4_Event)wordApp;
             wordEvents.WindowBeforeDoubleClick += WordStructureManager.OnWindowBeforeDoubleClick;
             mouseHook = new ThreadMouseDoubleClickHook(() =>
-                wordApp != null && WordStructureManager.TryHandleFloatingDoubleClick(wordApp));
+                wordApp != null ? WordStructureManager.TryPrepareFloatingDoubleClickAction(wordApp) : null, "_WwG");
         }
         catch (Exception ex)
         {

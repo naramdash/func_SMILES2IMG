@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
+using Smiles2Img.Editor;
 using Smiles2Img.Rendering;
 
 namespace Smiles2Img;
@@ -272,7 +273,8 @@ public static class StructureMetadata
         if (string.IsNullOrWhiteSpace(text)) return "";
         var trimmed = text!.Trim();
 
-        if (MoleculeRenderer.TryRenderStructure(trimmed, RenderOptions.Default, out _, out var ket, out var smiles))
+        if (!MoleculeActionHelper.IsAmbiguousPlainAlphaSmiles(trimmed) &&
+            MoleculeRenderer.TryRenderStructure(trimmed, RenderOptions.Default, out _, out var ket, out var smiles))
         {
             if (!string.IsNullOrWhiteSpace(ket)) return ket!;
             if (!string.IsNullOrWhiteSpace(smiles)) return smiles!;

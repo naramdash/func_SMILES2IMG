@@ -23,7 +23,7 @@ $coreDll = (Resolve-Path (Join-Path $repoRoot 'dist\x64\PowerPoint\Smiles2Img.Co
 [System.Reflection.Assembly]::LoadFrom($coreDll) | Out-Null
 [Smiles2Img.Rendering.NativeIndigo]::Initialize((Split-Path $coreDll -Parent))
 
-$addinVersion = '1.8.1'
+$addinVersion = '1.9.0'
 try {
     $propsXml = [xml](Get-Content (Join-Path $repoRoot 'Directory.Build.props') -Raw)
     if ($propsXml.Project.PropertyGroup.Version) { $addinVersion = [string]$propsXml.Project.PropertyGroup.Version }
@@ -292,7 +292,7 @@ try {
         @('Insert Structure',  'Paste Structure',          'Ribbon / Right-Click',       'Convert selected TextBox (SMILES/InChI/Name) or clipboard in 0.1s'),
         @('Structure Tools',   'Copy SMILES / InChI / KET','Ribbon / Right-Click',       'Extract exact chemical identifier or lossless KET JSON from any slide shape'),
         @('Structure Tools',   'Copy SVG',                 'Ribbon / Right-Click',       'Copy lossless Vector SVG straight into Adobe Illustrator / A0 posters'),
-        @('Structure Tools',   'Molecule Info',            'Ribbon / Right-Click',       'Inspect 17 descriptors live or copy Multi-Line List / TSV / Markdown / JSON'),
+                @('Structure Tools',   'Molecule Info',            'Ribbon / Right-Click',       'Inspect 12 descriptors live or copy Multi-Line List / TSV / Markdown / JSON'),
         @('Structure Tools',   'Batch Style',              'Ribbon -> Batch Style',      '1-click restyle: Dark Mode (White Ink), Color, ACS B&W, or White BG'),
         @('Right-Click Menu',  'Chemical Structure > ...', 'Right-Click Shape / Text',   '3-level cascading menu for editing, copying, and Molecule Info formats')
     )
@@ -350,10 +350,10 @@ try {
         'All 4 structures on Slide 4 are live PowerPoint shapes inserted via func_SMILES2IMG and styled with [Batch Style] -> [Dark Mode]. Double-click any molecule to edit substituents in place without disturbing card alignment!'
 
     $cards = @(
-        @{ Name = 'Aspirin';     Meta = 'C9H8O4  ·  MW 180.16';   Sub = 'LogP 1.31  ·  Lipinski PASS'; Smiles = $aspirinSmiles },
-        @{ Name = 'Caffeine';    Meta = 'C8H10N4O2  ·  MW 194.19';Sub = 'LogP -0.07  ·  Lipinski PASS';Smiles = $caffeineSmiles },
-        @{ Name = 'Nicotine';    Meta = 'C10H14N2  ·  MW 162.23'; Sub = 'LogP 1.17  ·  1 Chiral Ctr';  Smiles = $nicotineSmiles },
-        @{ Name = 'Paracetamol'; Meta = 'C8H9NO2  ·  MW 151.16';  Sub = 'LogP 0.46  ·  Lipinski PASS'; Smiles = $paracetamolSmiles }
+        @{ Name = 'Aspirin';     Meta = 'C9H8O4  ·  MW 180.16';   Sub = 'LogP 1.31  ·  TPSA 63.6'; Smiles = $aspirinSmiles },
+        @{ Name = 'Caffeine';    Meta = 'C8H10N4O2  ·  MW 194.19';Sub = 'LogP -1.03  ·  TPSA 61.8';Smiles = $caffeineSmiles },
+        @{ Name = 'Nicotine';    Meta = 'C10H14N2  ·  MW 162.24'; Sub = 'LogP 1.85  ·  Fsp3 0.50';Smiles = $nicotineSmiles },
+        @{ Name = 'Paracetamol'; Meta = 'C8H9NO2  ·  MW 151.17';  Sub = 'LogP 1.35  ·  TPSA 49.3'; Smiles = $paracetamolSmiles }
     )
     for ($i = 0; $i -lt 4; $i++) {
         $cx = 36 + $i * 226
@@ -420,13 +420,13 @@ try {
     # =========================================================================
     Write-Host '[7/8] Building Slide 7: Live Q&A Molecule Info & Batch Style Lab...' -ForegroundColor Yellow
     $s7 = New-DarkSlide $pres 'Slide 7 · Hands-On Lab' 'Live Conference Q&A (Molecule Info) & 1-Click Batch Style' 'Inspect exact descriptors mid-talk or switch your entire presentation theme in a single click' `
-        'Exercise 1: Select the Ibuprofen structure on the left and click [Molecule Info] to inspect MW, Exact Mass, LogP, TPSA, Fsp3, and Lipinski live. Exercise 2: Unselect all shapes and click [Batch Style] -> [White Background] or [Publication B&W], then switch back to [Dark Mode]!'
+        'Exercise 1: Select the Ibuprofen structure on the left and click [Molecule Info] to inspect MW, Exact Mass, LogP, TPSA, and Fsp3 live. Exercise 2: Unselect all shapes and click [Batch Style] -> [White Background] or [Publication B&W], then switch back to [Dark Mode]!'
 
     [void](Add-Card $s7 36 114 448 374 $C_CARD_DARK $C_CARD_LINE)
     Add-Text $s7 56 128 408 26 '1. LIVE Q&A — SELECT IBUPROFEN -> CLICK [MOLECULE INFO]' 10.5 $true $C_SKY | Out-Null
     [void](Insert-LivePptStructure $ppt $pptObj $s7 $ibuprofenSmiles 76 160 368 176 $true)
     [void](Add-Card $s7 56 348 408 122 0x2A170F $C_CARD_LINE)
-    Add-Text $s7 68 356 384 108 "Sample Output of [Copy as Multi-Line List]:`r• Formula: C13H18O2   |   MW: 206.28 g/mol`r• Exact Mass: 206.1307 Da   |   LogP: 3.21   |   TPSA: 37.3 A²`r• Rings: 1 (1 Aromatic)   |   Fsp3: 0.46   |   Chiral Centers: 1`r• Lipinski Ro5: PASS (0 violations)" 9.8 $false $C_TEXT_MUTED 'Consolas' | Out-Null
+    Add-Text $s7 68 356 384 108 "Sample Output of [Copy as Multi-Line List]:`r• Formula: C13H18O2   |   MW: 206.29 g/mol`r• Exact Mass: 206.1307 Da   |   LogP: 3.21   |   TPSA: 37.3 A²`r• Heavy Atoms: 15   |   Rings: 1 (1 Aromatic)`r• Fraction Csp3 (Fsp3): 0.46" 9.8 $false $C_TEXT_MUTED 'Consolas' | Out-Null
 
     [void](Add-Card $s7 508 114 416 374 $C_CARD_DARK $C_TEAL_DARK)
     Add-Text $s7 528 128 376 26 '2. DECK-WIDE [BATCH STYLE] — TRY IT RIGHT NOW!' 10.5 $true $C_TEAL | Out-Null

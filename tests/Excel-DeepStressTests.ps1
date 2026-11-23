@@ -251,7 +251,7 @@ try {
     # -------------------------------------------------------------
     Write-Host "`n[Scenario 5] Complex natural product with full options (Paclitaxel)..." -ForegroundColor Yellow
     Invoke-Excel {
-        $sheet1.Range("D17").Formula = '=SMILES2IMG(A17, "white", "bw num stereo h all-c", "rot90 flip")'
+        $sheet1.Range("D17").Formula = '=SMILES2IMG(A17, "white", "bw num stereo h all-c", "rot90")'
         $excel.Calculate()
     }
     Wait-ForResult { (Get-CellRichImage 'D17' 'Molecules') -ne $null } "Full-option complex molecule in D17"

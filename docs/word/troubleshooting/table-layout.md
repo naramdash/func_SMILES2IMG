@@ -28,5 +28,5 @@ If you intended to restyle your whole manuscript and only one structure changed,
 ## Related Guides
 
 - [**Double-Click & Editing**](/word/troubleshooting/double-click) — Restore double-click editing when Word Picture Format opens instead of Ketcher or Mol\*
-- [**2. SAR Tables & Experimental Properties**](/word/tables-properties) — Layout-safe fixed-width SAR tables and 17-descriptor `Molecule Info` copy
+- [**2. SAR Tables & Experimental Properties**](/word/tables-properties) — Layout-safe fixed-width SAR tables and 12-descriptor `Molecule Info` copy
 - [**4. Journal Finish, SVG, Sharing**](/word/publishing) — Pre-submission ACS monochrome conversion and Illustrator vector `SVG` export

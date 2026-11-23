@@ -3,6 +3,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <AssemblyName>Smiles2Img.Core</AssemblyName>
     <RootNamespace>Smiles2Img</RootNamespace>
+    <Description>func_SMILES2IMG shared cheminformatics, Ketcher 2D, and Mol* 3D core engine.</Description>
   </PropertyGroup>
 
   <ItemGroup>

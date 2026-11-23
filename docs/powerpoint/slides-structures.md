@@ -30,7 +30,8 @@ Build synthetic schemes complete with reaction arrows (`➔`), `+` signs, cataly
 
 ## 3. Double-Click In-Place Re-Editing & Cross-App Reuse
 
-* **Keeps Exact Card Position & Size:** Double-clicking any 2D molecule or reaction shape in Normal view reopens Ketcher 2D in `0.05s`. Pressing <kbd>Ctrl</kbd> + <kbd>Enter</kbd> swaps the image right inside the original bounding box (`Left`, `Top`, `Width`, `Height`) so multi-card slide alignment never shifts.
+* **Keeps Exact Card Position & Size:** Double-clicking any 2D molecule or reaction shape on the slide canvas in Normal view reopens Ketcher 2D in `0.05s` (ribbon and pane double-clicks are never intercepted). Pressing <kbd>Ctrl</kbd> + <kbd>Enter</kbd> swaps the image right inside the original bounding box (`Left`, `Top`, `Width`, `Height`) so multi-card slide alignment never shifts.
+* **Safe Name/CAS Confirmation & Cache:** SMILES, InChI, KET, and validated CAS numbers convert immediately, while compound names or ambiguous short English words prompt briefly on **`[Paste Structure]`**. PubChem lookups cache locally for **30 days** (`%LOCALAPPDATA%\Smiles2Img`), and malformed CAS check digits reject in `0ms`.
 * **Animation Tip:** Because updating a shape replaces the underlying picture object, add PowerPoint **Appear / Fade** animations **after** finalizing your chemical edits (or re-apply them afterward).
 * **From Excel or Word to PowerPoint:**
   * **From Word manuscripts:** Select a reaction scheme in Word ➔ **`[Copy KET]`** (or **`[Copy SMILES]`** for a single molecule) ➔ switch to PowerPoint ➔ **`[Paste Structure]`** ➔ **`[Batch Style]` ➔ `[Dark Mode]`**.

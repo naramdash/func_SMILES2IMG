@@ -40,8 +40,8 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
             pptEvents.WindowBeforeDoubleClick += PowerPointStructureManager.OnWindowBeforeDoubleClick;
 
             // PowerPoint's native WindowBeforeDoubleClick event does not fire for shapes/pictures in Normal view.
-            // Install an in-process thread-level mouse hook to intercept double-clicks on molecular structure shapes.
-            mouseHook = new ThreadMouseDoubleClickHook(TryHandleMouseDoubleClick);
+            // Install an in-process thread-level mouse hook on the slide viewport that defers modal editor calls cleanly.
+            mouseHook = new ThreadMouseDoubleClickHook(TryPrepareDoubleClickAction, "mdiClass", "paneClassDC");
         }
         catch (Exception ex)
         {
@@ -66,9 +66,9 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
         catch { }
     }
 
-    private bool TryHandleMouseDoubleClick()
+    private Action? TryPrepareDoubleClickAction()
     {
-        if (isEditing || pptApp == null) return false;
+        if (isEditing || pptApp == null) return null;
         try
         {
             var sel = pptApp.ActiveWindow?.Selection;
@@ -78,28 +78,29 @@ public class PowerPointAddIn : IDTExtensibility2, IRibbonExtensibility
                 var structStr = PowerPointStructureManager.ExtractStructure(targetShape);
                 if (!string.IsNullOrEmpty(structStr))
                 {
-                    isEditing = true;
-                    try
+                    var app = pptApp;
+                    var isMolstar = StructureMetadata.IsMolstar(targetShape.AlternativeText, targetShape.Title);
+                    return () =>
                     {
-                        if (StructureMetadata.IsMolstar(targetShape.AlternativeText, targetShape.Title))
+                        if (isEditing) return;
+                        isEditing = true;
+                        try
                         {
-                            PowerPointStructureManager.EditSelectedMolstar(pptApp, targetShape);
+                            if (isMolstar)
+                                PowerPointStructureManager.EditSelectedMolstar(app, targetShape);
+                            else
+                                PowerPointStructureManager.EditSelectedMolecule(app, targetShape);
                         }
-                        else
+                        finally
                         {
-                            PowerPointStructureManager.EditSelectedMolecule(pptApp, targetShape);
+                            isEditing = false;
                         }
-                    }
-                    finally
-                    {
-                        isEditing = false;
-                    }
-                    return true; // Suppress PowerPoint's default double-click action (e.g. Picture Format pane)
+                    };
                 }
             }
         }
         catch { }
-        return false;
+        return null;
     }
 
     public void OnAddInsUpdate(ref Array custom) { }

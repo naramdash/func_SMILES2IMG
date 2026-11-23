@@ -13,7 +13,7 @@ Complete command reference for the Microsoft PowerPoint **`[SMILES]`** ribbon ta
 | | `Paste Structure` | Converts a selected TextBox (`SMILES`, `InChI`, `KET`, or compound name/CAS) in-place in `0.1s`, or pastes clipboard structure centered on slide |
 | **Structure Tools** | `Copy SMILES` / `Copy InChI` / `Copy KET` | Extracts canonical SMILES, IUPAC InChI, or lossless KET JSON (`Shape.Tags["KET"]`) from the selected shape or TextBox text |
 | | `Copy SVG` | Copies lossless vector SVG graphics + `<svg>` XML text to the clipboard for A0 posters, Illustrator, or Inkscape |
-| | `Molecule Info` | Copies individual properties, multi-line speaker-note/card lists, 17-column tables, or opens the 17-property window |
+| | `Molecule Info` | Copies individual properties, multi-line speaker-note/card lists, 12-column tables, or opens the detailed property window |
 | | `Batch Style` | Restyles selected shapes—or every ungrouped 2D structure across the **entire presentation deck** when nothing is selected |
 | **About** | `Online Docs` | Opens the official PowerPoint documentation portal (`/powerpoint/`) in your web browser |
 | | `About func_SMILES2IMG` | Displays installed version, embedded engine versions, open-source licenses, and 1-click update check |

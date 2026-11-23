@@ -67,8 +67,8 @@ try {
             $excelTabs = @(
                 @{ Name = '0. Start Here';            Zoom = 100; Cell = 'E6'; Out = 'excel-01.webp' },
                 @{ Name = '1. Structure Rendering';   Zoom = 96;  Cell = 'E4'; Out = 'excel-02.webp' },
-                @{ Name = '2. Properties & Lipinski'; Zoom = 78;  Cell = 'D4'; Out = 'excel-03.webp' },
-                @{ Name = '3. SAR & Similarity';      Zoom = 105; Cell = 'E5'; Out = 'excel-04.webp' },
+                @{ Name = '2. Properties & 3D';       Zoom = 78;  Cell = 'D4'; Out = 'excel-03.webp' },
+                @{ Name = '3. SAR & SMARTS';          Zoom = 105; Cell = 'E5'; Out = 'excel-04.webp' },
                 @{ Name = '4. Notation Conversions';  Zoom = 91;  Cell = 'F4'; Out = 'excel-05.webp' },
                 @{ Name = '5. Styles & Transforms';   Zoom = 104; Cell = 'F5'; Out = 'excel-06.webp' },
                 @{ Name = '6. Reactions & KET';       Zoom = 104; Cell = 'E4'; Out = 'excel-07.webp' },

@@ -20,7 +20,7 @@ Build polished Hit-to-Lead and SAR comparison slides where structures, potency t
 1. Set a dark slide background (`#0F172A` slate or `#1E293B` navy) and draw 4 equal rounded-rectangle cards side by side.
 2. Add each candidate via **`[Paste Structure]`** (select a typed SMILES/name TextBox) or **`[Insert / Edit Structure]`**, then align the structures horizontally.
 3. Click **`[SMILES]` ➔ `[Batch Style]` ➔ `[Dark Mode (White Ink)]`** so all 4 cards share identical crisp white line weight and transparent backgrounds.
-4. Click each structure and choose **`[SMILES]` ➔ `[Molecule Info]` ➔ `[Copy as Multi-Line List]`** (or **`Copy Molecular Weight`** / **`Detailed Window`**) to paste verified Formula, MW, LogP, TPSA, and Lipinski metrics into the text area below.
+4. Click each structure and choose **`[SMILES]` ➔ `[Molecule Info]` ➔ `[Copy as Multi-Line List]`** (or **`Copy Molecular Weight`** / **`Detailed Window`**) to paste verified Formula, MW, LogP, TPSA, and `Fsp3` metrics into the text area below.
 5. **Tweak Substituents Without Re-Aligning:** **Double-click** any card's molecule anytime to modify R-groups in Ketcher—when applied, the structure stays centered inside its original card footprint.
 
 ## 3. Switch an Entire Presentation's Theme in 1 Second (`Batch Style`)

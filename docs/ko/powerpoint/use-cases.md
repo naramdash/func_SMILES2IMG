@@ -37,7 +37,7 @@
 
 1. **텍스트 상자 `0.1초` 변환:** 4개 카드에 SMILES나 화합물명(`Aspirin`, `Caffeine`)이 적힌 텍스트 상자를 배치하고 테두리를 선택해 **`[SMILES]` ➔ `[Paste Structure]`** 를 누릅니다.
 2. **1클릭 스타일 통일:** **`[SMILES]` ➔ `[Batch Style]`** 로 모든 카드의 선 굵기와 투명 배경을 통일합니다 *(`Ctrl+G` 그룹 도형은 먼저 해제 후 실행)*.
-3. **오타 없는 물성 불릿 붙이기:** 각 후보를 선택해 **`[Molecule Info]` ➔ `[Copy as Multi-Line List]`** 를 눌러 화학식·MW·LogP·TPSA·Lipinski 통과 여부를 카드 하단에 붙입니다.
+3. **오타 없는 물성 불릿 붙이기:** 각 후보를 선택해 **`[Molecule Info]` ➔ `[Copy as Multi-Line List]`** 를 눌러 화학식·MW·LogP·TPSA·`Fsp3` 지표를 카드 하단에 붙입니다.
 4. **더블클릭 제자리 수정:** 수정할 구조식만 **더블클릭**해 Ketcher에서 고치면 카드 중앙 위치와 크기 그대로 교체됩니다.
 
 * **관련 가이드:** [**2. 다크 모드 · 후보 카드 · 덱 테마 전환**](/ko/powerpoint/dark-mode) · [**1. 2D 구조식 · 반응식 슬라이드**](/ko/powerpoint/slides-structures) · Playbook **Slide 3 & 4**
@@ -65,7 +65,7 @@ Word 논문이나 Excel 시트에 이미 만들어 둔 `KET` 반응식을 다시
 
 1. **논문 반응식 3초 재활용:** Word 또는 Excel의 `KET` 반응식을 선택해 **`[SMILES]` ➔ `[Copy KET]`** 를 누른 뒤 PowerPoint에서 **`[Paste Structure]`** ➔ **`[Batch Style]` ➔ `[Dark Mode]`** 를 적용합니다 *(PowerPoint 애니메이션은 화학 편집이 끝난 뒤 마지막에 지정)*.
 2. **발표자 노트 Q&A 세팅:** 발표 전 주요 물질을 선택해 **`[Molecule Info]` ➔ `[Copy as Multi-Line List]`** 를 눌러 **발표자 노트**에 붙여두면 발표자 보기에서 청중에게 보이지 않게 수치를 읽을 수 있습니다.
-3. **17종 전체 물성 창 띄우기:** 세미나 Q&A 중에는 <kbd>Esc</kbd>로 쇼를 나와 구조식을 클릭하고 **`[Molecule Info]` ➔ `[Detailed Molecule Info Window...]`** 로 전체 물성을 함께 확인합니다.
+3. **12종 전체 물성 창 띄우기:** 세미나 Q&A 중에는 <kbd>Esc</kbd>로 쇼를 나와 구조식을 클릭하고 **`[Molecule Info]` ➔ `[Detailed Molecule Info Window...]`** 로 전체 물성을 함께 확인합니다.
 
 ::: tip 3종 앱 연계 워크플로우
 [**Excel 활용 사례**](/ko/excel/use-cases)에서 후보를 선별하고 ➔ [**Word 활용 사례**](/ko/word/use-cases)에서 논문 표·반응식을 작성한 뒤 ➔ 완성된 `KET` · `SMILES` 를 그대로 PowerPoint 슬라이드와 A0 포스터로 옮겨 마무리하세요.

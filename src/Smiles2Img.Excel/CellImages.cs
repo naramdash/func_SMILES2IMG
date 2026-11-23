@@ -23,14 +23,26 @@ internal static class CellImages
     internal static ExcelReference? Find(ExcelReference caller, string smiles, RenderOptions options)
     {
         var sheet = Prefix(caller) + SheetName;
+        var key = Key(smiles, options);
         try
         {
             var keys = new ExcelReference(0, 1048575, 1, 1, sheet);
-            return XlCall.Excel(XlCall.xlfMatch, Key(smiles, options), keys, 0) is double position
+            return XlCall.Excel(XlCall.xlfMatch, key, keys, 0) is double position
                 ? new ExcelReference((int)position - 1, (int)position - 1, 0, 0, sheet)
                 : null;
         }
-        catch (XlCallException) { return null; } // the cache sheet does not exist yet
+        catch (XlCallException)
+        {
+            try
+            {
+                // Fallback for .xls compatibility mode workbooks (max 65,536 rows).
+                var keysLegacy = new ExcelReference(0, 65535, 1, 1, sheet);
+                return XlCall.Excel(XlCall.xlfMatch, key, keysLegacy, 0) is double position
+                    ? new ExcelReference((int)position - 1, (int)position - 1, 0, 0, sheet)
+                    : null;
+            }
+            catch (XlCallException) { return null; } // the cache sheet does not exist yet
+        }
     }
 
     // Called only from the queued macro, never during worksheet calculation.
@@ -104,6 +116,8 @@ internal static class CellImages
     {
         var store = workbook.Worksheets.Cast<Excel.Worksheet>().FirstOrDefault(sheet => sheet.Name == SheetName);
         if (store != null) return store;
+        if (workbook.ProtectStructure)
+            throw new InvalidOperationException("Workbook structure is protected; unprotect the workbook to enable in-cell image caching, or use SMILES2IMG.FLOAT.");
         store = (Excel.Worksheet)workbook.Worksheets.Add(After: workbook.Worksheets.Item[workbook.Worksheets.Count]);
         store.Name = SheetName;
         store.Cells[1, 1] = "Image";

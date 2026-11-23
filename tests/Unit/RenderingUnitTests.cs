@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using com.epam.indigo;
 using ExcelDna.Integration;
 using Smiles2Img;
 using Smiles2Img.Editor;
@@ -50,7 +51,7 @@ internal static class RenderingUnitTests
 
     private static void RunInvalidInputTests()
     {
-        foreach (var input in new[] { "", " ", new string('C', 2001), "not-a-smiles", "C1CC", "C(C" })
+        foreach (var input in new[] { "", " ", new string('C', 16385), "not-a-smiles", "C1CC", "C(C" })
         {
             try
             {
@@ -59,6 +60,7 @@ internal static class RenderingUnitTests
             }
             catch (InvalidSmilesException) { }
         }
+        Check(MoleculeRenderer.Normalize(new string('C', 2005)).Length == 2005, "Normalize accepts valid structures over 2000 characters up to 16384");
         PassSuite("Unit: Invalid SMILES Rejection & Input Guardrails");
     }
 
@@ -72,12 +74,12 @@ internal static class RenderingUnitTests
             .Cast<ExcelFunctionAttribute>().Single();
         Check(floatAttribute.Name == "SMILES2IMG.FLOAT", "Floating Excel function name");
         Check(floatAttribute.IsMacroType, "Floating function must be IsMacroType=true for caller reference");
-        Check(floatAttribute.Description.StartsWith("[Excel 2016+]") && floatAttribute.Description.Length <= 255, "Floating function states its Excel requirement");
+        Check(floatAttribute.Description.StartsWith("[Excel 2016-2021]") && floatAttribute.Description.Length <= 255, "Floating function states its Excel requirement");
 
         var nativeAttribute = typeof(Functions).GetMethod(nameof(Functions.Img))!.GetCustomAttributes(typeof(ExcelFunctionAttribute), false)
             .Cast<ExcelFunctionAttribute>().Single();
         Check(nativeAttribute.IsMacroType, "Native function must be IsMacroType=true");
-        Check(nativeAttribute.Description.StartsWith("[Excel 2024 / Microsoft 365]") && nativeAttribute.Description.Contains("SMILES2IMG.FLOAT") && nativeAttribute.Description.Length <= 255,
+        Check(nativeAttribute.Description.StartsWith("[Excel 365/2024+]") && nativeAttribute.Description.Contains(".FLOAT") && nativeAttribute.Description.Length <= 255,
             "In-cell function states its Excel requirement");
 
         var ketAttr = typeof(Functions).GetMethod(nameof(Functions.KetImg))!.GetCustomAttributes(typeof(ExcelFunctionAttribute), false)
@@ -87,6 +89,59 @@ internal static class RenderingUnitTests
         var ketFloatAttr = typeof(FloatFunctions).GetMethod(nameof(FloatFunctions.KetImgFloat))!.GetCustomAttributes(typeof(ExcelFunctionAttribute), false)
             .Cast<ExcelFunctionAttribute>().Single();
         Check(ketFloatAttr.Name == "KET2IMG.FLOAT" && ketFloatAttr.IsMacroType, "KET2IMG.FLOAT function registration");
+
+        var udfCount = 0;
+        foreach (var type in new[] { typeof(Functions), typeof(FloatFunctions) })
+        {
+            foreach (var method in type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static))
+            {
+                var fnAttr = method.GetCustomAttributes(typeof(ExcelFunctionAttribute), false).Cast<ExcelFunctionAttribute>().FirstOrDefault();
+                if (fnAttr == null) continue;
+                udfCount++;
+                var desc = fnAttr.Description ?? string.Empty;
+                Check(!string.IsNullOrWhiteSpace(desc) && desc.Length <= 255,
+                    $"ExcelFunction {fnAttr.Name} description within 255-char Excel limit (len={desc.Length})");
+                Check(!desc.Contains('\r') && !desc.Contains('\n'),
+                    $"ExcelFunction {fnAttr.Name} description is single-line");
+
+                if (fnAttr.Name!.EndsWith("2LOGP", StringComparison.Ordinal))
+                    Check(desc.Contains("Wildman-Crippen") && desc.Contains("not experimental"),
+                        $"ExcelFunction {fnAttr.Name} states Wildman-Crippen model caveat");
+                if (fnAttr.Name.EndsWith("2TPSA", StringComparison.Ordinal))
+                    Check(desc.Contains("RDKit") && desc.Contains("PubChem"),
+                        $"ExcelFunction {fnAttr.Name} states RDKit vs PubChem TPSA mode");
+                if (fnAttr.Name.EndsWith("2AROMATIC", StringComparison.Ordinal))
+                    Check(desc.Contains("generic"),
+                        $"ExcelFunction {fnAttr.Name} states Indigo generic aromaticity model");
+                if (fnAttr.Name.EndsWith("2FSP3", StringComparison.Ordinal))
+                    Check(desc.Contains("0.00"),
+                        $"ExcelFunction {fnAttr.Name} states 0.00 range / carbon-free convention");
+                if (fnAttr.Name.StartsWith("INCHI2", StringComparison.Ordinal) || fnAttr.Name == "INCHI.MATCH" ||
+                    fnAttr.Name.StartsWith("KET2", StringComparison.Ordinal) || fnAttr.Name == "KET.MATCH")
+                    Check(desc.Contains("#VALUE!"),
+                        $"ExcelFunction {fnAttr.Name} documents #VALUE! strict input validation");
+                if (fnAttr.Name.StartsWith("NAME2", StringComparison.Ordinal) || fnAttr.Name.EndsWith("2NAME", StringComparison.Ordinal))
+                    Check(desc.Contains("PubChem"),
+                        $"ExcelFunction {fnAttr.Name} documents PubChem lookup behavior");
+
+                foreach (var param in method.GetParameters())
+                {
+                    var argAttr = param.GetCustomAttributes(typeof(ExcelArgumentAttribute), false).Cast<ExcelArgumentAttribute>().FirstOrDefault();
+                    if (argAttr != null)
+                    {
+                        var argDesc = argAttr.Description ?? string.Empty;
+                        Check(!string.IsNullOrWhiteSpace(argDesc) && argDesc.Length <= 255,
+                            $"ExcelArgument {fnAttr.Name}.{param.Name} description within 255-char Excel limit (len={argDesc.Length})");
+                        Check(!argDesc.Contains('\r') && !argDesc.Contains('\n'),
+                            $"ExcelArgument {fnAttr.Name}.{param.Name} description is single-line");
+                        if (param.Name == "style" && fnAttr.Name.Contains("2IMG"))
+                            Check(argDesc.Contains("hl:") && argDesc.Contains("ink="),
+                                $"ExcelArgument {fnAttr.Name}.style documents hl: and ink=");
+                    }
+                }
+            }
+        }
+        Check(udfCount == 49, $"Expected 49 registered Excel UDFs, found {udfCount}");
 
         PassSuite("Unit: Excel-DNA Function Registration & Metadata Attributes");
     }
@@ -127,8 +182,11 @@ internal static class RenderingUnitTests
         Check(opt5.Color == true && opt5.Transform == "rot90" && opt5.Background == "#ffff00", "ParseOptions hex bg + rot90");
         var opt6 = Functions.ParseOptions("FFFF00", null, null);
         Check(opt6.Color == true && opt6.Background == "#ffff00", "ParseOptions hex without hash");
-        var opt7 = Functions.ParseOptions(null, false, "flip");
-        Check(opt7.Color == false && opt7.Transform == "flip" && opt7.Background == "transparent", "ParseOptions default trans + B/W + flip");
+        var opt7 = Functions.ParseOptions(null, false, "rot90");
+        Check(opt7.Color == false && opt7.Transform == "rot90" && opt7.Background == "transparent", "ParseOptions default trans + B/W + rot90");
+        var optFlipIgnored = Functions.ParseOptions(null, "bw flip", "flipy rot180");
+        Check(optFlipIgnored.Color == false && optFlipIgnored.Transform == "rot180",
+            $"ParseOptions ignores mirror flip tokens while keeping rotations, got Transform='{optFlipIgnored.Transform}'");
         var optFallback = Functions.ParseOptions(false, null, null);
         Check(optFallback.Color == false && optFallback.Background == "transparent", "ParseOptions fallback bool in 2nd arg");
 
@@ -152,17 +210,39 @@ internal static class RenderingUnitTests
         var optSpace = Functions.ParseOptions(null, "white stereo", null);
         Check(optSpace.BaseColor == "white" && optSpace.StereoLabels == true, "ParseOptions white stereo space delimiter");
 
-        var optUltimateSpace = Functions.ParseOptions("white", "bw num stereo h all-c", "flip rot90");
+        // Regression: black background with white ink, bracket-aware SMARTS highlight parsing, and hashed ToKeyString
+        var optBlackBg = Functions.ParseOptions("black", "white", null);
+        Check(optBlackBg.Background == "black" && optBlackBg.BaseColor == "white" && optBlackBg.Color == true,
+            "ParseOptions bg='black' renders black background with white ink");
+        var optHlOr = Functions.ParseOptions(null, "hl:[N,O],num", null);
+        Check(optHlOr.HighlightQuery == "[N,O]" && optHlOr.AtomNumbers == true,
+            $"ParseOptions preserves comma inside SMARTS brackets: '{optHlOr.HighlightQuery}'");
+        var optHlSemi = Functions.ParseOptions(null, "hl:[#6;R] num", null);
+        Check(optHlSemi.HighlightQuery == "[#6;R]" && optHlSemi.AtomNumbers == true,
+            $"ParseOptions preserves semicolon inside SMARTS brackets: '{optHlSemi.HighlightQuery}'");
+        var optHlPlus = Functions.ParseOptions(null, "bw+hl:[N+](=O)[O-]", null);
+        Check(optHlPlus.Color == false && optHlPlus.HighlightQuery == "[N+](=O)[O-]",
+            $"ParseOptions preserves bw+hl:[N+](=O)[O-]: '{optHlPlus.HighlightQuery}'");
+        var optHlSlash = Functions.ParseOptions(null, "bw/hl:C/C=C/C", null);
+        Check(optHlSlash.Color == false && optHlSlash.HighlightQuery == "C/C=C/C",
+            $"ParseOptions preserves bw/hl:C/C=C/C: '{optHlSlash.HighlightQuery}'");
+        var hlLowerKey = Functions.ParseOptions(null, "hl:c1ccccc1", null).ToKeyString();
+        var hlUpperKey = Functions.ParseOptions(null, "hl:C1CCCCC1", null).ToKeyString();
+        var hlWildcardKey = Functions.ParseOptions(null, "hl:c1ccccc1*", null).ToKeyString();
+        Check(hlLowerKey != hlUpperKey, "ToKeyString differentiates case-sensitive SMARTS highlights");
+        Check(!hlWildcardKey.Contains("*"), "ToKeyString hashes highlight query without Excel wildcard characters");
+
+        var optUltimateSpace = Functions.ParseOptions("white", "bw num stereo h all-c", "rot90");
         Check(optUltimateSpace.Color == false && optUltimateSpace.AtomNumbers == true &&
               optUltimateSpace.StereoLabels == true && optUltimateSpace.UnfoldHydrogens == true &&
               optUltimateSpace.AllCarbons == true && optUltimateSpace.Background == "white" &&
-              optUltimateSpace.Transform == "flip,rot90", "ParseOptions ultimate full-option (spaces)");
+              optUltimateSpace.Transform == "rot90", "ParseOptions ultimate full-option (spaces)");
 
-        var optUltimatePipe = Functions.ParseOptions("white", "bw|num|stereo|h|all-c", "flip|rot90");
+        var optUltimatePipe = Functions.ParseOptions("white", "bw|num|stereo|h|all-c", "rot90|rot180");
         Check(optUltimatePipe.Color == false && optUltimatePipe.AtomNumbers == true &&
               optUltimatePipe.StereoLabels == true && optUltimatePipe.UnfoldHydrogens == true &&
               optUltimatePipe.AllCarbons == true && optUltimatePipe.Background == "white" &&
-              optUltimatePipe.Transform == "flip,rot90", "ParseOptions ultimate full-option (pipes)");
+              optUltimatePipe.Transform == "rot90,rot180", "ParseOptions ultimate full-option (pipes)");
 
         var bwPng = MoleculeRenderer.Render("CCO", color: false);
         using (var bwStream = new MemoryStream(bwPng))
@@ -210,12 +290,12 @@ internal static class RenderingUnitTests
         }
 
         var aflatoxinPng = MoleculeRenderer.Render("O1C=C[C@H]([C@H]1O2)c3c2cc(OC)c4c3OC(=O)C5=C4CCC(=O)5");
-        Check(aflatoxinPng.Length > 100, "Aflatoxin junction H render");
+        Check(aflatoxinPng.Length > 100, "Aflatoxin native Indigo render");
         var micPng = MoleculeRenderer.Render("CN=C=O");
         Check(micPng.Length > 100, "MIC small molecule render");
-        var nicFlippedPng = MoleculeRenderer.Render("CN1CCC[C@H]1c2cccnc2", color: true, transform: "flip");
-        Check(nicFlippedPng.Length > 100, "Nicotine flip transform render");
-        var artemisininPng = MoleculeRenderer.Render("CC1CC2CC3(C)OO4C(O2)(C1C(=O)O3)C(C)CC4");
+        var nicRotPng = MoleculeRenderer.Render("CN1CCC[C@H]1c2cccnc2", color: true, transform: "rot90");
+        Check(nicRotPng.Length > 100, "Nicotine rot90 transform render");
+        var artemisininPng = MoleculeRenderer.Render("C[C@@H]1CC[C@H]2[C@@H](C)C(=O)O[C@@H]3O[C@@]4(C)CC[C@@H]1[C@]23OO4");
         Check(artemisininPng.Length > 100, "Artemisinin render");
 
         using (var ms = new MemoryStream(MoleculeRenderer.Render("CCO")))
@@ -236,9 +316,43 @@ internal static class RenderingUnitTests
             Check(corner.R == 255 && corner.G == 255 && corner.B == 255 && corner.A == 255, "Explicit white background corner pixel");
         }
 
+        // Regression: rigid planar rotations preserve exact stereochemistry (R/S), and mirror reflection is ignored
+        NativeIndigo.EnsureInitialized();
+        using (var indigo = new Indigo())
+        {
+            foreach (var rot in new[] { "rot90", "rot180", "rot270" })
+            {
+                using var alaMol = indigo.loadMolecule("C[C@H](N)C(=O)O");
+                alaMol.dearomatize();
+                alaMol.layout();
+                MoleculeRenderer.ApplyTransform(alaMol, rot);
+                var rotatedMolfile = alaMol.molfile();
+                using var reloaded = indigo.loadMolecule(rotatedMolfile);
+                Check(reloaded.canonicalSmiles() == "C[C@H](N)C(O)=O",
+                    $"Transform '{rot}' preserves L-Alanine (S) configuration, got: {reloaded.canonicalSmiles()}");
+            }
+        }
+        var rotAlaPng = MoleculeRenderer.Render("C[C@H](N)C(=O)O", transform: "rot90");
+        Check(rotAlaPng.Length > 100, "Render rotated chiral L-Alanine produces valid PNG");
+
+        // Regression: pure Indigo rendering never mutates isocyanide, 13C-methyl, or deuterated ring junctions
+        Check(MoleculeRenderer.RenderSvg("[13CH3]Oc1ccccc1") != MoleculeRenderer.RenderSvg("COc1ccccc1"),
+            "Pure Indigo SVG preserves [13CH3] isotope label cleanly");
+        Check(MoleculeRenderer.RenderSvg("c1ccccc1[N+]#[C-]") != MoleculeRenderer.RenderSvg("Cc1ccccc1"),
+            "Pure Indigo SVG preserves isocyanide [N+]#[C-] cleanly");
+
+        const string aflaNormal = "O1C=C[C@H]([C@H]1O2)c3c2cc(OC)c4c3OC(=O)C5=C4CCC(=O)5";
+        const string aflaDeut = "O1C=C[C@H]([C@H]1O2)c3c2cc(OC([2H])([2H])[2H])c4c3OC(=O)C5=C4CCC(=O)5";
+        Check(MoleculeRenderer.RenderSvg(aflaDeut) != MoleculeRenderer.RenderSvg(aflaNormal),
+            "Pure Indigo SVG preserves deuterium [2H] atoms on ring-junction chiral aflatoxin");
+
+        // Regression: SMILES: prefix and R-group structures accepted by MoleculeRenderer.Render
+        Check(MoleculeRenderer.Render("SMILES:CCO").Length > 100, "MoleculeRenderer.Render accepts SMILES: prefix");
+        Check(MoleculeRenderer.Render("*c1ccccc1").Length > 100, "MoleculeRenderer.Render renders R-group structure *c1ccccc1");
+
         Directory.CreateDirectory("output/samples");
         File.WriteAllBytes("output/samples/1_nicotine_default.png", MoleculeRenderer.Render("CN1CCC[C@H]1c2cccnc2"));
-        File.WriteAllBytes("output/samples/1_nicotine_flipped.png", nicFlippedPng);
+        File.WriteAllBytes("output/samples/1_nicotine_rot90.png", nicRotPng);
         File.WriteAllBytes("output/samples/2_oenanthotoxin.png", MoleculeRenderer.Render("CCC[C@@H](O)CC/C=C\\C=C/C#CC#C/C=C/CO"));
         File.WriteAllBytes("output/samples/3_pyrethrin.png", MoleculeRenderer.Render("CC1=C(C(=O)C[C@@H]1OC(=O)[C@@H]2[C@H](C2(C)C)/C=C(\\C)/C(=O)OC)C/C=C\\C=C"));
         File.WriteAllBytes("output/samples/4_aflatoxin.png", aflatoxinPng);
@@ -248,7 +362,7 @@ internal static class RenderingUnitTests
         File.WriteAllBytes("output/samples/8_chalcogran.png", MoleculeRenderer.Render("CC[C@H](O1)CC[C@@]12CCCO2"));
         File.WriteAllBytes("output/samples/9_thujone.png", MoleculeRenderer.Render("CC(C)[C@@]12C[C@@H]1[C@@H](C)C(=O)C2"));
         File.WriteAllBytes("output/samples/10_thiamine_default.png", MoleculeRenderer.Render("OCCSc1c(C)[n+](cs1)Cc2cnc(C)nc2N"));
-        File.WriteAllBytes("output/samples/10_thiamine_flipped.png", MoleculeRenderer.Render("OCCSc1c(C)[n+](cs1)Cc2cnc(C)nc2N", color: true, transform: "flip"));
+        File.WriteAllBytes("output/samples/10_thiamine_rot180.png", MoleculeRenderer.Render("OCCSc1c(C)[n+](cs1)Cc2cnc(C)nc2N", color: true, transform: "rot180"));
         File.WriteAllBytes("output/samples/mic.png", micPng);
         File.WriteAllBytes("output/samples/methanol.png", MoleculeRenderer.Render("CO"));
         File.WriteAllBytes("output/samples/sample_bw_num.png", comboPng);
@@ -270,8 +384,23 @@ internal static class RenderingUnitTests
         Check(ketPng != null && ketPng.Length > 100, "MoleculeRenderer renders KET data directly");
         Check(ketPng!.Take(8).SequenceEqual(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }), "KET PNG signature");
 
-        var ketOptPng = MoleculeRenderer.RenderKet(SampleKet, new RenderOptions { Background = "white", Transform = "flip" });
+        var ketOptPng = MoleculeRenderer.RenderKet(SampleKet, new RenderOptions { Background = "white", Transform = "rot90" });
         Check(ketOptPng != null && ketOptPng.Length > 100, "MoleculeRenderer renders KET with options");
+
+        // Regression: KET rendering honors num, stereo, h, and all-c style options
+        using (var indigo = new Indigo())
+        {
+            using var ala = indigo.loadMolecule("C[C@H](N)C(=O)O");
+            ala.layout();
+            var realKet = ala.json();
+            var ketDefaultPng = MoleculeRenderer.RenderKet(realKet, RenderOptions.Default)!;
+            foreach (var styleToken in new[] { "num", "stereo", "h", "all-c" })
+            {
+                var styledPng = MoleculeRenderer.RenderKet(realKet, Functions.ParseOptions(null, styleToken, null));
+                Check(styledPng != null && styledPng.Length > 100 && !ketDefaultPng.SequenceEqual(styledPng),
+                    $"RenderKet honors '{styleToken}' style option");
+            }
+        }
 
         var ethanolInchi = MoleculeRenderer.TryConvertToInchi("CCO")!;
         Check(MoleculeRenderer.IsInchi(ethanolInchi), "IsInchi identifies InChI string");
@@ -348,49 +477,60 @@ internal static class RenderingUnitTests
         Check(StructureMetadata.ExtractPreloadForKetcher("Aspirin") == "CC(=O)Oc1ccccc1C(=O)O", "ExtractPreloadForKetcher preloads built-in offline name");
         Check(StructureMetadata.ExtractPreloadForKetcher(SampleKet) == SampleKet, "ExtractPreloadForKetcher preloads KET JSON");
         Check(StructureMetadata.ExtractPreloadForKetcher("Figure 1: Introduction") == "", "ExtractPreloadForKetcher skips non-chemical prose");
-
-        Check(MolstarSessionManager.ExtractInitialPdbTarget("1crn") == "1CRN", "ExtractInitialPdbTarget normalizes 4-char PDB ID");
-        Check(MolstarSessionManager.ExtractInitialPdbTarget("PDB: 6LU7") == "6LU7", "ExtractInitialPdbTarget parses PDB: prefix");
-        Check(MolstarSessionManager.ExtractInitialPdbTarget(@"C:\temp\protein.cif") == @"C:\temp\protein.cif", "ExtractInitialPdbTarget keeps local .cif path");
-        Check(MolstarSessionManager.ExtractInitialPdbTarget("Aspirin") == "", "ExtractInitialPdbTarget rejects non-PDB text");
-
-        Check(Smiles2Img.Editor.MoleculeActionHelper.ResolveSmilesWithTextFallback(null, "Aspirin", resolvePubChem: false) == "CC(=O)Oc1ccccc1C(=O)O",
-            "ResolveSmilesWithTextFallback resolves chemical name instead of returning literal name");
-        Check(Smiles2Img.Editor.MoleculeActionHelper.ResolveSmilesWithTextFallback(null, "Hello World", resolvePubChem: false) == null,
-            "ResolveSmilesWithTextFallback rejects non-chemical text");
-        Check(Smiles2Img.Editor.MoleculeActionHelper.ResolveStructureOrText(null, null, "Aspirin", resolvePubChem: false) == "CC(=O)Oc1ccccc1C(=O)O",
-            "ResolveStructureOrText resolves fallback text consistently");
-
-        foreach (var (quickInput, expectedSmiles, expectKet) in new[]
+        foreach (var ambiguousText in new[] { "I", "C", "N", "O", "CO", "NO", "COP", "POP", "COCO", "ICON" })
         {
-            ("Aspirin", "CC(=O)Oc1ccccc1C(=O)O", false),
-            ("Paracetamol", "CC(=O)Nc1ccc(O)cc1", false),
-            ("50-78-2", "CC(=O)Oc1ccccc1C(=O)O", false),
-            ("THF", "C1CCOC1", false),
-            ("c1ccccc1", "c1ccccc1", false),
-            (SampleKet, "CO", true)
+            Check(MoleculeActionHelper.IsAmbiguousPlainAlphaSmiles(ambiguousText),
+                $"IsAmbiguousPlainAlphaSmiles flags '{ambiguousText}'");
+            Check(StructureMetadata.ExtractPreloadForKetcher(ambiguousText) == "",
+                $"ExtractPreloadForKetcher skips ambiguous word/symbol '{ambiguousText}'");
+        }
+        Check(!MoleculeActionHelper.IsAmbiguousPlainAlphaSmiles("SMILES:CO"), "IsAmbiguousPlainAlphaSmiles allows explicit SMILES: prefix");
+        Check(!MoleculeActionHelper.IsAmbiguousPlainAlphaSmiles("CCO"), "IsAmbiguousPlainAlphaSmiles allows aliphatic chain CCO");
+
+        Check(MoleculeActionHelper.IsValidCasNumber("50-78-2"), "CAS checksum accepts Aspirin 50-78-2");
+        Check(MoleculeActionHelper.IsValidCasNumber("58-08-2"), "CAS checksum accepts Caffeine 58-08-2");
+        Check(MoleculeActionHelper.IsValidCasNumber("103-90-2"), "CAS checksum accepts Paracetamol 103-90-2");
+        Check(!MoleculeActionHelper.IsValidCasNumber("50-78-9"), "CAS checksum rejects invalid check digit 50-78-9");
+        Check(!MoleculeActionHelper.IsValidCasNumber("00-78-2"), "CAS checksum rejects leading zero CAS");
+        Check(!MoleculeActionHelper.IsValidCasNumber("12345"), "CAS checksum rejects plain numbers");
+
+        foreach (var (quickInput, expectedKind, expectedSmiles, expectConfirm, expectKet) in new[]
+        {
+            ("c1ccccc1", QuickInsertSourceKind.ExplicitStructure, "c1ccccc1", false, false),
+            ("CCO", QuickInsertSourceKind.ExplicitStructure, "CCO", false, false),
+            ("SMILES:CO", QuickInsertSourceKind.ExplicitStructure, "CO", false, false),
+            ("InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3", QuickInsertSourceKind.ExplicitStructure, "CCO", false, false),
+            (SampleKet, QuickInsertSourceKind.ExplicitStructure, "CO", false, true),
+            ("50-78-2", QuickInsertSourceKind.ValidatedCas, "CC(=O)Oc1ccccc1C(=O)O", false, false),
+            ("CO", QuickInsertSourceKind.AmbiguousSmiles, "CO", true, false),
+            ("COP", QuickInsertSourceKind.AmbiguousSmiles, "COP", true, false),
+            ("Aspirin", QuickInsertSourceKind.ChemicalName, "CC(=O)Oc1ccccc1C(=O)O", true, false),
+            ("Paracetamol", QuickInsertSourceKind.ChemicalName, "CC(=O)Nc1ccc(O)cc1", true, false),
+            ("THF", QuickInsertSourceKind.ChemicalName, "C1CCOC1", true, false)
         })
         {
-            Check(Smiles2Img.Editor.MoleculeActionHelper.TryRenderQuickInsertInput(
-                      quickInput, RenderOptions.Default, out var qPng, out var qKet, out var qSmiles, resolvePubChem: false)
-                  && qPng != null && qPng.Length > 100
-                  && qSmiles == expectedSmiles
-                  && (!expectKet || qKet == SampleKet),
-                $"TryRenderQuickInsertInput renders '{quickInput}'");
+            Check(MoleculeActionHelper.TryResolveQuickInsertInput(quickInput, RenderOptions.Default, out var qRes, resolvePubChem: false)
+                  && qRes != null
+                  && qRes.PngBytes.Length > 100
+                  && qRes.SourceKind == expectedKind
+                  && qRes.RequiresConfirmation == expectConfirm
+                  && qRes.Smiles == expectedSmiles
+                  && (!expectKet || qRes.Ket == SampleKet),
+                $"TryResolveQuickInsertInput('{quickInput}') -> {expectedKind}, confirm={expectConfirm}");
         }
 
         foreach (var rejectedInput in new[]
         {
             "",
             "   ",
+            "50-78-9",
             "This is a long regular prose sentence with many words.",
             "https://example.com/aspirin",
             "http://example.com"
         })
         {
-            Check(!Smiles2Img.Editor.MoleculeActionHelper.TryRenderQuickInsertInput(
-                      rejectedInput, RenderOptions.Default, out _, out _, out _, resolvePubChem: false),
-                $"TryRenderQuickInsertInput rejects '{rejectedInput}'");
+            Check(!MoleculeActionHelper.TryResolveQuickInsertInput(rejectedInput, RenderOptions.Default, out _, resolvePubChem: false),
+                $"TryResolveQuickInsertInput rejects '{rejectedInput}'");
         }
 
         var largeFit = StructureMetadata.FitTextBoxReplacementBounds(50f, 60f, 300f, 200f, 960f, 540f, png);

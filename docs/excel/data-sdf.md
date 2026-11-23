@@ -25,6 +25,7 @@ Every identifier conversion returns a native Excel text `String` (`*2NAME` resol
 | **SMILES / InChI / KET ➔ Name** | `=SMILES2NAME(A2)` · `=INCHI2NAME(A2)` · `=KET2NAME(A2)` | `Aspirin` |
 | **SMILES / KET ➔ IUPAC InChI** | `=SMILES2INCHI(A2)` · `=KET2INCHI(A2)` | `InChI=1S/C9H8O4/c1-6(10)...` |
 | **InChI ➔ Canonical SMILES** | `=INCHI2SMILES(A2)` | `CC(=O)Oc1ccccc1C(=O)O` |
+| **KET ➔ Canonical SMILES** | `=KET2SMILES(A2)` | `CC(=O)Oc1ccccc1C(=O)O` |
 | **SMILES / InChI / KET ➔ InChIKey** | `=SMILES2INCHIKEY(A2)` · `=INCHI2INCHIKEY(A2)` · `=KET2INCHIKEY(A2)` | `BSYNRYMUTXBXSQ-UHFFFAOYSA-N` |
 
 ## 2. Deduplicating Multi-Vendor Tables with `InChIKey`
@@ -41,6 +42,6 @@ Add a canonical helper column using `=SMILES2INCHIKEY(B2)`—because the 27-char
 
 ## Related Guides
 
-- [**Substructure & Similarity**](/excel/sar) — Screen scaffolds with `=SMILES.MATCH` (`TRUE`/`FALSE`) and Tanimoto similarity scores
-- [**SDF Import & Export**](/excel/sdf) — Import external `.sdf`/`.mol` libraries into a 12-column live worksheet or export sheets back to `.sdf`
-- [**All 40 Functions**](/excel/formulas) — Full parameter catalog across all 40 Excel functions
+- [**Substructure Search**](/excel/sar) — Screen scaffolds with `=SMILES.MATCH`, `=INCHI.MATCH`, and `=KET.MATCH` (`TRUE`/`FALSE`)
+- [**SDF Import**](/excel/sdf) — Import external `.sdf`/`.mol` libraries into an 11-column live worksheet
+- [**All 49 Functions**](/excel/formulas) — Full parameter catalog across all 49 Excel functions

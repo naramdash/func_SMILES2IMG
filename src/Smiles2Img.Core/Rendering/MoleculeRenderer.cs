@@ -9,7 +9,7 @@ namespace Smiles2Img.Rendering;
 
 public static class MoleculeRenderer
 {
-    private const int RingTopology = 10;
+    private const int MaxStructureInputLength = 16384;
     private static readonly char[] TransformSeparators = [' ', ',', '|', ';'];
     private static readonly ConcurrentDictionary<string, MoleculeInfo?> _infoCache = new(StringComparer.Ordinal);
 
@@ -35,26 +35,74 @@ public static class MoleculeRenderer
     public static string Normalize(string smiles)
     {
         var input = smiles?.Trim();
-        if (string.IsNullOrEmpty(input) || input!.Length > 2000)
-            throw new InvalidSmilesException("Enter a SMILES or InChI string containing 1 to 2000 characters.");
+        if (!string.IsNullOrEmpty(input) && input!.StartsWith("SMILES:", StringComparison.OrdinalIgnoreCase))
+            input = input.Substring(7).Trim();
+
+        if (string.IsNullOrEmpty(input) || input!.Length > MaxStructureInputLength)
+            throw new InvalidSmilesException($"Enter a SMILES or InChI string containing 1 to {MaxStructureInputLength} characters.");
 
         if (IsInchi(input))
             return NormalizeInchi(input!);
 
+        if (!HasValidSmilesBrackets(input!))
+            throw Invalid();
+
+        return input!;
+    }
+
+    private static bool IsSingleLineSmilesCandidate(string input)
+        => !IsInchi(input) && !IsKet(input) && input.IndexOf('\n') < 0 && input.IndexOf('\r') < 0;
+
+    private static bool HasValidSmilesBrackets(string input)
+    {
+        if (string.IsNullOrEmpty(input) || input.Length > MaxStructureInputLength)
+            return false;
+
         // Fast syntax validation (bracket and parenthesis balancing)
         var branches = 0;
         var inAtom = false;
+        var prev = '\0';
         foreach (var character in input)
         {
-            if (character == '[' && !inAtom) inAtom = true;
-            else if (character == ']' && inAtom) inAtom = false;
-            else if (character is '[' or ']') throw Invalid();
-            else if (!inAtom && character == '(') branches++;
-            else if (!inAtom && character == ')' && --branches < 0) throw Invalid();
+            if (character == '[' && !inAtom)
+            {
+                inAtom = true;
+            }
+            else if (character == ']' && inAtom)
+            {
+                inAtom = false;
+            }
+            else if (character is '[' or ']')
+            {
+                return false;
+            }
+            else if (!inAtom && character == '(')
+            {
+                branches++;
+            }
+            else if (!inAtom && character == ')')
+            {
+                if (prev == '(' || --branches < 0)
+                    return false;
+            }
+
+            prev = character;
         }
 
-        if (inAtom || branches != 0) throw Invalid();
-        return input;
+        return !inAtom && branches == 0;
+    }
+
+    private static string? GetBadValenceError(IndigoObject mol)
+    {
+        try
+        {
+            var err = mol.checkBadValence();
+            return string.IsNullOrWhiteSpace(err) ? null : err.Trim();
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public static byte[] Render(string smiles, bool color = true, string? transform = null, string? background = null)
@@ -125,8 +173,6 @@ public static class MoleculeRenderer
 
         if (options.UnfoldHydrogens)
             molecule.unfoldHydrogens();
-        else
-            ExposeRingJunctionChiralHydrogens(molecule);
 
         if (options.AllCarbons)
             indigo.setOption("render-label-mode", "all");
@@ -138,9 +184,6 @@ public static class MoleculeRenderer
         molecule.dearomatize();
         molecule.layout();
         ApplyTransform(molecule, options.Transform);
-
-        if (!options.AllCarbons)
-            LabelHeteroMethyls(molecule);
 
         return renderer.renderToBuffer(molecule);
     }
@@ -168,7 +211,10 @@ public static class MoleculeRenderer
         var trimmed = input!.Trim();
 
         if (trimmed.StartsWith("SMILES:", StringComparison.OrdinalIgnoreCase))
-            return trimmed.Substring(7).Trim();
+        {
+            trimmed = trimmed.Substring(7).Trim();
+            if (string.IsNullOrEmpty(trimmed)) return null;
+        }
 
         if (IsKet(trimmed))
         {
@@ -186,13 +232,27 @@ public static class MoleculeRenderer
                 using var indigo = new Indigo();
                 using var inchi = new IndigoInchi(indigo);
                 using var mol = inchi.loadMolecule(NormalizeInchi(trimmed));
+                if (mol.countAtoms() <= 0) return null;
                 return mol.canonicalSmiles() ?? mol.smiles();
             }
             catch { }
             return null;
         }
 
-        return trimmed;
+        if (IsSingleLineSmilesCandidate(trimmed) && !HasValidSmilesBrackets(trimmed))
+            return null;
+
+        NativeIndigo.EnsureInitialized();
+        try
+        {
+            using var indigo = new Indigo();
+            using var mol = indigo.loadMolecule(trimmed);
+            if (mol.countAtoms() <= 0 || GetBadValenceError(mol) != null) return null;
+            return mol.canonicalSmiles() ?? mol.smiles();
+        }
+        catch { }
+
+        return null;
     }
 
     public static string? TryConvertToKet(string? input)
@@ -209,11 +269,15 @@ public static class MoleculeRenderer
         if (trimmed.StartsWith("SMILES:", StringComparison.OrdinalIgnoreCase))
             trimmed = trimmed.Substring(7).Trim();
 
+        if (IsSingleLineSmilesCandidate(trimmed) && !HasValidSmilesBrackets(trimmed))
+            return null;
+
         NativeIndigo.EnsureInitialized();
         try
         {
             using var indigo = new Indigo();
             IndigoObject? obj = null;
+            var isReaction = false;
             try
             {
                 if (IsInchi(trimmed))
@@ -228,13 +292,26 @@ public static class MoleculeRenderer
             }
             catch
             {
-                try { obj = indigo.loadReaction(trimmed); } catch { }
+                try { obj = indigo.loadReaction(trimmed); isReaction = true; } catch { }
             }
 
             if (obj != null)
             {
                 using (obj)
                 {
+                    if (!isReaction && !IsKet(trimmed) && GetBadValenceError(obj) != null)
+                        return null;
+
+                    try
+                    {
+                        if (!obj.hasCoord())
+                            obj.layout();
+                    }
+                    catch
+                    {
+                        try { obj.layout(); } catch { }
+                    }
+
                     var json = obj.json();
                     if (!string.IsNullOrWhiteSpace(json))
                         return StructureMetadata.CompactKet(json);
@@ -252,12 +329,29 @@ public static class MoleculeRenderer
         var trimmed = input!.Trim();
 
         if (IsInchi(trimmed))
-            return NormalizeInchi(trimmed);
+        {
+            var normalized = NormalizeInchi(trimmed);
+            NativeIndigo.EnsureInitialized();
+            try
+            {
+                using var indigo = new Indigo();
+                using var inchi = new IndigoInchi(indigo);
+                using var mol = inchi.loadMolecule(normalized);
+                return mol.countAtoms() > 0 ? normalized : null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         if (trimmed.StartsWith("KET:", StringComparison.OrdinalIgnoreCase))
             trimmed = trimmed.Substring(4).Trim();
         else if (trimmed.StartsWith("SMILES:", StringComparison.OrdinalIgnoreCase))
             trimmed = trimmed.Substring(7).Trim();
+
+        if (IsSingleLineSmilesCandidate(trimmed) && !HasValidSmilesBrackets(trimmed))
+            return null;
 
         NativeIndigo.EnsureInitialized();
         try
@@ -265,6 +359,7 @@ public static class MoleculeRenderer
             using var indigo = new Indigo();
             using var inchi = new IndigoInchi(indigo);
             using var mol = indigo.loadMolecule(trimmed);
+            if (mol.countAtoms() <= 0 || GetBadValenceError(mol) != null) return null;
             return inchi.getInchi(mol);
         }
         catch
@@ -317,6 +412,17 @@ public static class MoleculeRenderer
 
         ConfigureBaseRendererOptions(indigo, options, outputFormat);
 
+        if (options.AtomNumbers)
+        {
+            indigo.setOption("render-atom-ids-visible", "true");
+            indigo.setOption("render-atom-bond-ids-from-one", "true");
+        }
+
+        indigo.setOption("render-stereo-style", options.StereoLabels ? "ext" : "none");
+
+        if (options.AllCarbons)
+            indigo.setOption("render-label-mode", "all");
+
         IndigoObject? obj = null;
         var isReaction = false;
         try
@@ -337,8 +443,16 @@ public static class MoleculeRenderer
 
         using (obj)
         {
+            if (options.UnfoldHydrogens)
+            {
+                try { obj.unfoldHydrogens(); } catch { }
+            }
+
             if (!isReaction && !string.IsNullOrWhiteSpace(options.HighlightQuery))
+            {
                 ApplySubstructureHighlight(indigo, obj, options.HighlightQuery);
+                try { obj.dearomatize(); } catch { }
+            }
 
             try
             {
@@ -396,10 +510,12 @@ public static class MoleculeRenderer
         try
         {
             using var indigo = new Indigo();
+            indigo.setOption("aromaticity-model", "generic");
             using var targetMol = TryLoadMoleculeForAnalysis(indigo, targetInput!);
             if (targetMol == null) return null;
 
-            targetMol.aromatize();
+            try { targetMol.dearomatize(); } catch { }
+            try { targetMol.aromatize(); } catch { }
 
             using var queryObj = TryLoadQueryForMatching(indigo, queryInput!.Trim());
             if (queryObj == null) return null;
@@ -414,45 +530,11 @@ public static class MoleculeRenderer
         }
     }
 
-    public static double? CalculateSimilarity(string? input1, string? input2, string? metric = "tanimoto")
-    {
-        if (string.IsNullOrWhiteSpace(input1) || string.IsNullOrWhiteSpace(input2))
-            return null;
-
-        var normMetric = (metric ?? "tanimoto").Trim().ToLowerInvariant();
-        if (string.IsNullOrEmpty(normMetric) || normMetric is "default" or "tan")
-            normMetric = "tanimoto";
-        else if (normMetric is "tversky")
-            normMetric = "tversky";
-        else if (normMetric is "euclid" or "euclid-sub")
-            normMetric = "euclid-sub";
-
-        NativeIndigo.EnsureInitialized();
-        try
-        {
-            using var indigo = new Indigo();
-            using var mol1 = TryLoadMoleculeForAnalysis(indigo, input1!);
-            using var mol2 = TryLoadMoleculeForAnalysis(indigo, input2!);
-            if (mol1 == null || mol2 == null) return null;
-
-            mol1.aromatize();
-            mol2.aromatize();
-
-            using var fp1 = mol1.fingerprint("sim");
-            using var fp2 = mol2.fingerprint("sim");
-            var sim = indigo.similarity(fp1, fp2, normMetric);
-            return Math.Round((double)sim, 4);
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
     private static IndigoObject? TryLoadMoleculeForAnalysis(Indigo indigo, string rawInput)
     {
         var input = StripStructurePrefixes(rawInput, out _);
         if (string.IsNullOrWhiteSpace(input)) return null;
+        if (IsSingleLineSmilesCandidate(input) && !HasValidSmilesBrackets(input)) return null;
 
         try
         {
@@ -467,7 +549,15 @@ public static class MoleculeRenderer
             else
             {
                 var m = indigo.loadMolecule(input);
-                if (m.countAtoms() > 0) return m;
+                if (m.countAtoms() > 0)
+                {
+                    if (!IsKet(input) && GetBadValenceError(m) != null)
+                    {
+                        m.Dispose();
+                        return null;
+                    }
+                    return m;
+                }
                 m.Dispose();
                 return null;
             }
@@ -482,15 +572,15 @@ public static class MoleculeRenderer
     {
         try
         {
-            var q = indigo.loadQueryMolecule(query);
-            try { q.aromatize(); } catch { }
-            return q;
+            return indigo.loadSmarts(query);
         }
         catch
         {
             try
             {
-                return indigo.loadSmarts(query);
+                var q = indigo.loadQueryMolecule(query);
+                try { q.aromatize(); } catch { }
+                return q;
             }
             catch
             {
@@ -504,11 +594,13 @@ public static class MoleculeRenderer
         if (string.IsNullOrWhiteSpace(query)) return;
         try
         {
+            indigo.setOption("aromaticity-model", "generic");
             indigo.setOption("render-highlight-color-enabled", true);
             indigo.setOption("render-highlight-color", 0.92f, 0.18f, 0.18f);
             indigo.setOption("render-highlight-thickness-enabled", true);
 
-            molecule.aromatize();
+            try { molecule.dearomatize(); } catch { }
+            try { molecule.aromatize(); } catch { }
             using var queryObj = TryLoadQueryForMatching(indigo, query!.Trim());
             if (queryObj == null) return;
 
@@ -561,10 +653,14 @@ public static class MoleculeRenderer
 
     private static MoleculeInfo? ComputeMoleculeInfoCore(string input, bool resolvePubChem)
     {
+        if (IsSingleLineSmilesCandidate(input) && !HasValidSmilesBrackets(input))
+            return null;
+
         NativeIndigo.EnsureInitialized();
         try
         {
             using var indigo = new Indigo();
+            indigo.setOption("aromaticity-model", "generic");
             try
             {
                 IndigoObject? mol = null;
@@ -594,83 +690,127 @@ public static class MoleculeRenderer
                 {
                     using (mol)
                     {
+                        if (!IsKet(input) && GetBadValenceError(mol) != null)
+                        {
+                            try { inchi?.Dispose(); } catch { }
+                            return null;
+                        }
+
+                        var hasQueryOrDummyAtoms = false;
+                        foreach (IndigoObject atom in mol.iterateAtoms())
+                        {
+                            using (atom)
+                            {
+                                if (atom.isPseudoatom() || atom.isRSite() || atom.isTemplateAtom())
+                                {
+                                    hasQueryOrDummyAtoms = true;
+                                    break;
+                                }
+                            }
+                        }
+
                         var rawFormula = "";
-                        try { rawFormula = mol.grossFormula()?.Replace(" ", "") ?? ""; } catch { }
                         double mw = 0;
-                        try { mw = mol.molecularWeight(); } catch { }
                         double exact = 0;
-                        try { exact = mol.monoisotopicMass(); } catch { }
-                        double logP = 0;
-                        try { logP = Math.Round((double)mol.logP(), 2); } catch { }
-                        double tpsa = 0;
-                        try { tpsa = Math.Round((double)mol.tpsa(false), 2); } catch { }
-                        int hbd = 0;
-                        try { hbd = mol.numHydrogenBondDonors(); } catch { }
-                        int hba = 0;
-                        try { hba = mol.numHydrogenBondAcceptors(); } catch { }
-                        int rotBonds = 0;
-                        try { rotBonds = mol.numRotatableBonds(); } catch { }
                         int heavyAtoms = 0;
-                        try { heavyAtoms = mol.countHeavyAtoms(); } catch { }
                         int rings = 0;
-                        try { rings = mol.countSSSR(); } catch { }
-                        int chiralCenters = 0;
-                        try { chiralCenters = mol.countStereocenters(); } catch { }
+                        double logP = 0;
+                        bool hasLogP = false;
+                        double tpsa = 0;
+                        bool hasTpsa = false;
+                        double tpsaWithSP = 0;
+                        bool hasTpsaWithSP = false;
                         int aromaticRings = 0;
                         double fsp3 = 0.0;
-                        try
-                        {
-                            indigo.setOption("aromaticity-model", "generic");
-                            using var aromMol = mol.clone();
-                            aromMol.aromatize();
+                        var canSmiles = "";
 
-                            foreach (IndigoObject ring in aromMol.iterateSSSR())
+                        if (hasQueryOrDummyAtoms)
+                        {
+                            try { canSmiles = mol.canonicalSmiles() ?? mol.smiles() ?? ""; }
+                            catch { try { canSmiles = mol.smiles() ?? ""; } catch { } }
+                        }
+                        else
+                        {
+                            try { rawFormula = mol.grossFormula()?.Replace(" ", "") ?? ""; } catch { }
+                            try { mw = Math.Round(mol.molecularWeight(), 4, MidpointRounding.AwayFromZero); } catch { }
+                            try { exact = mol.monoisotopicMass(); } catch { }
+                            try { heavyAtoms = mol.countHeavyAtoms(); } catch { }
+                            try { rings = mol.countSSSR(); } catch { }
+
+                            using var analysisMol = mol.clone();
+                            try { analysisMol.dearomatize(); } catch { }
+                            try { analysisMol.aromatize(); } catch { }
+
+                            try
                             {
-                                using (ring)
+                                // Bypass Indigo.Net checkResult(double) negative-return bug via direct IndigoLib + GetLastIndigoError.
+                                indigo.setSessionID();
+                                IndigoLib.indigoSetErrorMessage("");
+                                double rawLogP = IndigoLib.indigoLogP(analysisMol.self);
+                                string err = NativeIndigo.GetLastIndigoError();
+                                if (string.IsNullOrEmpty(err) && !double.IsNaN(rawLogP) && !double.IsInfinity(rawLogP))
                                 {
-                                    bool allAromatic = true;
-                                    int bondCount = 0;
-                                    foreach (IndigoObject b in ring.iterateBonds())
+                                    logP = Math.Round(rawLogP, 2, MidpointRounding.AwayFromZero);
+                                    if (logP == 0) logP = 0.0;
+                                    hasLogP = true;
+                                }
+                            }
+                            catch { }
+
+                            try { tpsa = Math.Round((double)analysisMol.tpsa(false), 2, MidpointRounding.AwayFromZero); hasTpsa = true; } catch { }
+                            try { tpsaWithSP = Math.Round((double)analysisMol.tpsa(true), 2, MidpointRounding.AwayFromZero); hasTpsaWithSP = true; } catch { }
+
+                            try
+                            {
+                                foreach (IndigoObject ring in analysisMol.iterateSSSR())
+                                {
+                                    using (ring)
                                     {
-                                        using (b)
+                                        bool allAromatic = true;
+                                        int bondCount = 0;
+                                        foreach (IndigoObject b in ring.iterateBonds())
                                         {
-                                            bondCount++;
-                                            if (b.bondOrder() != 4)
+                                            using (b)
                                             {
-                                                allAromatic = false;
-                                                break;
+                                                bondCount++;
+                                                if (b.bondOrder() != 4)
+                                                {
+                                                    allAromatic = false;
+                                                    break;
+                                                }
                                             }
                                         }
+                                        if (bondCount > 0 && allAromatic)
+                                            aromaticRings++;
                                     }
-                                    if (bondCount > 0 && allAromatic)
-                                        aromaticRings++;
                                 }
-                            }
 
-                            int totalCarbons = 0;
-                            int sp3Carbons = 0;
-                            foreach (IndigoObject atom in aromMol.iterateAtoms())
-                            {
-                                using (atom)
+                                int totalCarbons = 0;
+                                int sp3Carbons = 0;
+                                foreach (IndigoObject atom in analysisMol.iterateAtoms())
                                 {
-                                    if (atom.atomicNumber() == 6)
+                                    using (atom)
                                     {
-                                        totalCarbons++;
-                                        if (string.Equals(atom.getHybridizationStr(), "SP3", StringComparison.OrdinalIgnoreCase))
-                                            sp3Carbons++;
+                                        if (!atom.isPseudoatom() && !atom.isRSite() && !atom.isTemplateAtom() && atom.atomicNumber() == 6)
+                                        {
+                                            totalCarbons++;
+                                            if (string.Equals(atom.getHybridizationStr(), "SP3", StringComparison.OrdinalIgnoreCase))
+                                                sp3Carbons++;
+                                        }
                                     }
                                 }
+                                if (totalCarbons > 0)
+                                    fsp3 = Math.Round((double)sp3Carbons / totalCarbons, 2, MidpointRounding.AwayFromZero);
                             }
-                            if (totalCarbons > 0)
-                                fsp3 = Math.Round((double)sp3Carbons / totalCarbons, 2);
+                            catch { }
+
+                            try { canSmiles = analysisMol.canonicalSmiles() ?? mol.canonicalSmiles() ?? ""; }
+                            catch { try { canSmiles = mol.canonicalSmiles() ?? mol.smiles() ?? ""; } catch { } }
                         }
-                        catch { }
-                        var canSmiles = "";
-                        try { canSmiles = mol.canonicalSmiles() ?? ""; } catch { try { canSmiles = mol.smiles() ?? ""; } catch { } }
 
                         string title = "";
                         string iupac = "";
-                        if (resolvePubChem && !string.IsNullOrWhiteSpace(canSmiles))
+                        if (!hasQueryOrDummyAtoms && resolvePubChem && !string.IsNullOrWhiteSpace(canSmiles))
                         {
                             var resolved = PubChemResolver.ResolveCompound(canSmiles);
                             title = resolved.CompoundName;
@@ -687,7 +827,7 @@ public static class MoleculeRenderer
                                 inchi ??= new IndigoInchi(indigo);
                                 canInchiKey = inchi.getInchiKey(canInchi) ?? "";
                             }
-                            else
+                            else if (!hasQueryOrDummyAtoms)
                             {
                                 inchi ??= new IndigoInchi(indigo);
                                 canInchi = inchi.getInchi(mol) ?? "";
@@ -705,19 +845,20 @@ public static class MoleculeRenderer
                         {
                             CompoundName = title,
                             IupacName = iupac,
+                            HasQueryOrDummyAtoms = hasQueryOrDummyAtoms,
                             Formula = rawFormula,
                             MolecularWeight = mw,
                             ExactMass = exact,
                             LogP = logP,
+                            HasLogP = hasLogP,
                             Tpsa = tpsa,
-                            HBondDonors = hbd,
-                            HBondAcceptors = hba,
-                            RotatableBonds = rotBonds,
+                            HasTpsa = hasTpsa,
+                            TpsaWithSP = tpsaWithSP,
+                            HasTpsaWithSP = hasTpsaWithSP,
                             HeavyAtomCount = heavyAtoms,
                             RingCount = rings,
                             AromaticRingCount = aromaticRings,
                             Fsp3 = fsp3,
-                            ChiralCenters = chiralCenters,
                             Smiles = canSmiles,
                             InChI = canInchi,
                             InChIKey = canInchiKey,
@@ -806,51 +947,7 @@ public static class MoleculeRenderer
         return false;
     }
 
-    // Expose explicit H only on stereocenters whose non-H bonds are all part of rings
-    // (e.g. ring junctions, bridgeheads). This prevents Indigo from putting wedge bonds
-    // directly onto ring bonds while keeping standard skeletal formulas everywhere else.
-    private static void ExposeRingJunctionChiralHydrogens(IndigoObject molecule)
-    {
-        if (molecule.countStereocenters() == 0) return;
-
-        var chainBonds = new Dictionary<int, int>();
-        foreach (IndigoObject atom in molecule.iterateAtoms()) chainBonds[atom.index()] = 0;
-        foreach (IndigoObject bond in molecule.iterateBonds())
-        {
-            if (bond.topology() != RingTopology)
-            {
-                chainBonds[bond.source().index()]++;
-                chainBonds[bond.destination().index()]++;
-            }
-        }
-
-        var junctions = new HashSet<int>();
-        foreach (IndigoObject sc in molecule.iterateStereocenters())
-        {
-            var idx = sc.index();
-            if (chainBonds[idx] == 0 && sc.countHydrogens() > 0)
-                junctions.Add(idx);
-        }
-
-        if (junctions.Count == 0) return;
-
-        molecule.unfoldHydrogens();
-        var toRemove = new List<int>();
-        foreach (IndigoObject atom in molecule.iterateAtoms())
-        {
-            if (atom.symbol() == "H")
-            {
-                var keep = atom.iterateNeighbors().Cast<IndigoObject>().Any(n => junctions.Contains(n.index()));
-                if (!keep) toRemove.Add(atom.index());
-            }
-        }
-
-        toRemove.Sort();
-        for (var i = toRemove.Count - 1; i >= 0; i--)
-            molecule.getAtom(toRemove[i]).remove();
-    }
-
-    private static void ApplyTransform(IndigoObject molecule, string? transform)
+    internal static void ApplyTransform(IndigoObject molecule, string? transform)
     {
         if (string.IsNullOrWhiteSpace(transform)) return;
         var tokens = transform!.ToLowerInvariant().Split(TransformSeparators, StringSplitOptions.RemoveEmptyEntries);
@@ -858,63 +955,36 @@ public static class MoleculeRenderer
         {
             switch (token)
             {
-                case "flip" or "flipx":
-                    foreach (IndigoObject a in molecule.iterateAtoms())
-                    {
-                        var p = a.xyz();
-                        a.setXYZ(-p[0], p[1], p[2]);
-                    }
-                    break;
-                case "flipy":
-                    foreach (IndigoObject a in molecule.iterateAtoms())
-                    {
-                        var p = a.xyz();
-                        a.setXYZ(p[0], -p[1], p[2]);
-                    }
-                    break;
                 case "rot90":
                     foreach (IndigoObject a in molecule.iterateAtoms())
                     {
-                        var p = a.xyz();
-                        a.setXYZ(p[1], -p[0], p[2]);
+                        using (a)
+                        {
+                            var p = a.xyz();
+                            a.setXYZ(p[1], -p[0], p[2]);
+                        }
                     }
                     break;
                 case "rot180":
                     foreach (IndigoObject a in molecule.iterateAtoms())
                     {
-                        var p = a.xyz();
-                        a.setXYZ(-p[0], -p[1], p[2]);
+                        using (a)
+                        {
+                            var p = a.xyz();
+                            a.setXYZ(-p[0], -p[1], p[2]);
+                        }
                     }
                     break;
                 case "rot270":
                     foreach (IndigoObject a in molecule.iterateAtoms())
                     {
-                        var p = a.xyz();
-                        a.setXYZ(-p[1], p[0], p[2]);
+                        using (a)
+                        {
+                            var p = a.xyz();
+                            a.setXYZ(-p[1], p[0], p[2]);
+                        }
                     }
                     break;
-            }
-        }
-    }
-
-    private static void LabelHeteroMethyls(IndigoObject molecule)
-    {
-        if (molecule.countAtoms() <= 4) return;
-        foreach (IndigoObject atom in molecule.iterateAtoms())
-        {
-            if (atom.symbol() == "C" && atom.degree() == 1)
-            {
-                var neighbor = atom.iterateNeighbors().Cast<IndigoObject>().FirstOrDefault();
-                if (neighbor != null)
-                {
-                    var sym = neighbor.symbol();
-                    if (sym is "N" or "O" or "S")
-                    {
-                        var cPos = atom.xyz();
-                        var nPos = neighbor.xyz();
-                        atom.resetAtom(cPos[0] < nPos[0] - 0.2f ? "H3C" : "CH3");
-                    }
-                }
             }
         }
     }
@@ -953,6 +1023,12 @@ public static class MoleculeRenderer
         {
             molecule.Dispose();
             throw Invalid();
+        }
+        var badValence = GetBadValenceError(molecule);
+        if (badValence != null)
+        {
+            molecule.Dispose();
+            throw new InvalidSmilesException("Indigo: " + badValence);
         }
         return molecule;
     }

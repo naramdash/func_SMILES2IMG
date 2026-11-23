@@ -5,11 +5,11 @@ Explore 6 practical ways **`func_SMILES2IMG`** turns Microsoft Excel into a self
 | Use Case | What You Can Do | Key Tool |
 | :--- | :--- | :--- |
 | [**1. Synthesis ELN & Stoichiometry**](#synthesis-eln) | Auto-fill SMILES, structures, MW, and mg weights from names or CAS | `=NAME2SMILES`, `=SMILES2MW` |
-| [**2. Hit-to-Lead SAR Triage**](#sar-triage) | Highlight query scaffolds and screen Lipinski + ADME thresholds live | `=SMILES.MATCH`, `"hl:"` |
+| [**2. Hit-to-Lead SAR Triage**](#sar-triage) | Highlight query scaffolds and screen transparent ADME thresholds live | `=SMILES.MATCH`, `"hl:"` |
 | [**3. Reagent & Library Deduplication**](#deduplication) | Normalize vendor SMILES variations into `InChIKey` for `COUNTIF` & `XLOOKUP` | `=SMILES2INCHIKEY` |
-| [**4. SDF Import & Office Handoff**](#sdf-handoff) | Convert `.sdf` files to 12-column live tables and reuse schemes in Word/PPT | `[Import SDF]`, `[Batch Style]` |
+| [**4. SDF Import & Office Handoff**](#sdf-handoff) | Convert `.sdf` files to 11-column live tables and reuse schemes in Word/PPT | `[Import SDF]`, `[Batch Style]` |
 | [**5. R-Group Analog Enumeration**](#rgroup-enumeration) | Swap R-groups with `SUBSTITUTE` and preview analog structures & properties in 0ms | `=SUBSTITUTE`, `=SMILES2IMG` |
-| [**6. Dynamic Lead Comparison & FILTER**](#dynamic-comparison) | Compare in-cell structure images dynamically via `XLOOKUP` and `FILTER` (365+) | `=SMILES.SIMILARITY` |
+| [**6. Dynamic Lead Comparison & FILTER**](#dynamic-comparison) | Compare in-cell structure images dynamically via `XLOOKUP` and `FILTER` (365+) | `=XLOOKUP`, `=FILTER` |
 
 ---
 
@@ -39,7 +39,7 @@ Eliminate switching between ChemDraw, PubChem, and manual weight calculators dur
 
 ## 2. Hit-to-Lead SAR Triage {#sar-triage}
 
-Point every analog row to a single query scaffold cell (`$B$2`) so editing one SMARTS pattern updates substructure flags, color-highlighted 2D structures, and Lipinski triage tiers across your entire screening table simultaneously.
+Point every analog row to a single query scaffold cell (`$B$2`) so editing one SMARTS pattern updates substructure flags, color-highlighted 2D structures, and MW/LogP triage tiers across your entire screening table simultaneously.
 
 <FeatureMedia id="excel-sar-screening" />
 
@@ -51,12 +51,12 @@ Point every analog row to a single query scaffold cell (`$B$2`) so editing one S
   title="Dynamic Query SAR Triage Sheet"
   :columns='["Target SMILES", "Query ($B$2)", "Match", "Highlighted 2D", "Priority Tier"]'
   :rows='[
-    { cells: ["CC(=O)Oc1ccccc1C(=O)O", "c1ccncc1", "=SMILES.MATCH(A2, $B$2)", "=SMILES2IMG(A2, \"\", \"hl:\"&$B$2)", "=IF(AND(SMILES2LIPINSKI(A2)=\"PASS\", SMILES.MATCH(A2, $B$2)), \"Priority\", \"Monitor\")"], desc: "Aspirin vs. pyridine query", out: "Monitor" },
-    { cells: ["CN1CCCC1c2cccnc2", "", "=SMILES.MATCH(A3, $B$2)", "=SMILES2IMG(A3, \"\", \"hl:\"&$B$2)", "=IF(AND(SMILES2LIPINSKI(A3)=\"PASS\", SMILES.MATCH(A3, $B$2)), \"Priority\", \"Monitor\")"], desc: "Nicotine matches $B$2 scaffold", out: "Priority" }
+    { cells: ["CC(=O)Oc1ccccc1C(=O)O", "c1ccncc1", "=SMILES.MATCH(A2, $B$2)", "=SMILES2IMG(A2, \"\", \"hl:\"&$B$2)", "=IF(AND(SMILES2MW(A2)<=500, SMILES2LOGP(A2)<=4, SMILES.MATCH(A2, $B$2)), \"Priority\", \"Monitor\")"], desc: "Aspirin vs. pyridine query", out: "Monitor" },
+    { cells: ["CN1CCCC1c2cccnc2", "", "=SMILES.MATCH(A3, $B$2)", "=SMILES2IMG(A3, \"\", \"hl:\"&$B$2)", "=IF(AND(SMILES2MW(A3)<=500, SMILES2LOGP(A3)<=4, SMILES.MATCH(A3, $B$2)), \"Priority\", \"Monitor\")"], desc: "Nicotine matches $B$2 scaffold", out: "Priority" }
   ]'
 />
 
-* **Next:** [**Substructure & Similarity (SAR)**](/excel/sar) · [**Lipinski, ADME, 3D**](/excel/lipinski-adme) · Playbook **Tab 2 & Tab 3**
+* **Next:** [**Substructure Search**](/excel/sar) · [**LogP, TPSA & 3D**](/excel/lipinski-adme) · Playbook **Tab 2 & Tab 3**
 
 ---
 
@@ -90,19 +90,19 @@ Import `.sdf` screening libraries exported from RDKit, KNIME, DataWarrior, or Pu
 
 <FeatureMedia id="excel-sdf-workflow" />
 
-1. **1-Click 12-Column Import:** Click **`[SMILES]` ➔ `[SDF File]` ➔ `[Import SDF File (.sdf)...]`** to generate formatted rows with `Name`, `Structure`, `SMILES`, `Formula`, `MW`, `Exact Mass`, `LogP`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`, and `Lipinski`.
+1. **1-Click 11-Column Import:** Click **`[SMILES]` ➔ `[Import SDF]`** to generate formatted rows with `Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `TPSA`, `Rings`, `Aromatic Rings`, and `Fsp3`.
 2. **Restyle in 1 Click:** Filter down to top hits and run **`[SMILES]` ➔ `[Batch Style]` ➔ `[Publication B&W]`** (or `Dark Mode`).
 3. **Hand Off Without Redrawing:**
    - **To Word:** Copy filtered table rows into Word, or click **`[Copy SMILES]`** / **`[Copy KET]`** and run **`[Paste Structure]`** ([Word Use Cases](/word/use-cases)).
    - **To PowerPoint:** Paste hits onto slides with **`[Paste Structure]`**, then apply **`[Batch Style]` ➔ `[Dark Mode]`** ([PowerPoint Use Cases](/powerpoint/use-cases)).
 
-* **Next:** [**SDF Import & Export**](/excel/sdf) · [**Batch Style, TSV, 3D**](/excel/tools-export) · Playbook **Tab 9**
+* **Next:** [**SDF Import**](/excel/sdf) · [**Batch Style, TSV, 3D**](/excel/tools-export) · Playbook **Tab 9**
 
 ---
 
 ## 5. R-Group Analog Enumeration {#rgroup-enumeration}
 
-Simulate entire analog series inside Excel using native **`SUBSTITUTE`**—no Python or RDKit scripts required. Adding a single substituent SMILES fragment renders the analog and updates MW, LogP, and Lipinski status in `0ms`.
+Simulate entire analog series inside Excel using native **`SUBSTITUTE`**—no Python or RDKit scripts required. Adding a single substituent SMILES fragment renders the analog and updates MW, Formula, LogP, and TPSA in `0ms`.
 
 <FeatureMedia id="excel-cheminformatics" />
 
@@ -112,15 +112,15 @@ Simulate entire analog series inside Excel using native **`SUBSTITUTE`**—no Py
 
 <FormulaTable
   title="R-Group Enumeration Sheet"
-  :columns='["R-Group", "Template ($B$2)", "Analog SMILES", "2D Structure", "MW", "Lipinski"]'
+  :columns='["R-Group", "Template ($B$2)", "Analog SMILES", "2D Structure", "MW", "Formula"]'
   :rows='[
-    { cells: ["O", "CC(=O)Nc1ccc([R])cc1", "=SUBSTITUTE($B$2, \"[R]\", A2)", "=SMILES2IMG(C2)", "=SMILES2MW(C2)", "=SMILES2LIPINSKI(C2)"], desc: "4-OH analog (Paracetamol)", out: "151.16 · PASS" },
-    { cells: ["F", "", "=SUBSTITUTE($B$2, \"[R]\", A3)", "=SMILES2IMG(C3)", "=SMILES2MW(C3)", "=SMILES2LIPINSKI(C3)"], desc: "4-Fluoro analog", out: "153.16 · PASS" },
-    { cells: ["C(F)(F)F", "", "=SUBSTITUTE($B$2, \"[R]\", A4)", "=SMILES2IMG(C4)", "=SMILES2MW(C4)", "=SMILES2LIPINSKI(C4)"], desc: "4-CF3 analog", out: "203.16 · PASS" }
+    { cells: ["O", "CC(=O)Nc1ccc([R])cc1", "=SUBSTITUTE($B$2, \"[R]\", A2)", "=SMILES2IMG(C2)", "=SMILES2MW(C2)", "=SMILES2FORMULA(C2)"], desc: "4-OH analog (Paracetamol)", out: "151.16 · C8H9NO2" },
+    { cells: ["F", "", "=SUBSTITUTE($B$2, \"[R]\", A3)", "=SMILES2IMG(C3)", "=SMILES2MW(C3)", "=SMILES2FORMULA(C3)"], desc: "4-Fluoro analog", out: "153.16 · C8H8FNO" },
+    { cells: ["C(F)(F)F", "", "=SUBSTITUTE($B$2, \"[R]\", A4)", "=SMILES2IMG(C4)", "=SMILES2MW(C4)", "=SMILES2FORMULA(C4)"], desc: "4-CF3 analog", out: "203.16 · C9H8F3NO" }
   ]'
 />
 
-* **Next:** [**SMILES, InChI**](/excel/structures) · [**Lipinski, ADME, 3D**](/excel/lipinski-adme)
+* **Next:** [**SMILES, InChI**](/excel/structures) · [**LogP, TPSA & 3D**](/excel/lipinski-adme)
 
 ---
 
@@ -130,17 +130,17 @@ Because `=SMILES2IMG` returns a native **in-cell `CellImage`** on **Microsoft 36
 
 <FeatureMedia id="excel-formula-table" />
 
-1. **Dropdown Lead Comparator:** Use Excel **Data Validation** dropdowns in `B2` and `C2` pointing to compound names on a `Library` sheet, then pull each live structure cell with `=XLOOKUP(B2, Library!$A:$A, Library!$C:$C)` paired with `=SMILES.SIMILARITY(B3, C3)` and `ΔMW` / `ΔLogP` rows.
+1. **Dropdown Lead Comparator:** Use Excel **Data Validation** dropdowns in `B2` and `C2` pointing to compound names on a `Library` sheet, then pull each live structure cell with `=XLOOKUP(B2, Library!$A:$A, Library!$C:$C)` paired with `=SMILES.MATCH(B3, Library!$B$1)` and `ΔMW` / `ΔLogP` rows.
 2. **Live Spilling `FILTER` Shortlist:** Combine property cutoffs into a dynamic shortlist whose images update automatically whenever thresholds change:
    ```text
-   =FILTER(Library!A2:F200, (Library!E2:E200="PASS")*(Library!F2:F200<=90))
+   =FILTER(Library!A2:F200, (Library!E2:E200<=4.0)*(Library!F2:F200<=90))
    ```
 
 ::: info Microsoft 365 / Excel 2024+ Only
 Moving rendered structure images through `XLOOKUP` or `FILTER` requires native in-cell pictures (`=SMILES2IMG`), not Excel 2016–2021 `.FLOAT` shapes.
 :::
 
-* **Next:** [**SMILES, InChI**](/excel/structures) · [**Substructure & Similarity (SAR)**](/excel/sar)
+* **Next:** [**SMILES, InChI**](/excel/structures) · [**Substructure Search (SAR)**](/excel/sar)
 
 ---
 

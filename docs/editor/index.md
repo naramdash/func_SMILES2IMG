@@ -15,7 +15,7 @@ Draw molecules and multi-step reaction schemes from scratch from the **`[SMILES]
 
 ::: tip 💡 Two-Way Round-Trip Editing Across Excel, Word & PowerPoint
 * **Double-Click Re-Editing (<0.05s):** Every structure inserted into an Excel cell, Word page, or PowerPoint slide retains its lossless chemical coordinates—just **double-click** it anytime to modify atoms, bonds, or reaction arrows!
-* **Live MW & Formula Bar:** Automatically displays **Formula, Molecular Weight (MW), and Exact Mass** in the top bar while you draw.
+* **Top Toolbar & Live Property Lookup:** Use **`Background: White` / `Background: Transparent`**, **`Cancel (Esc)`**, and **`Apply (Ctrl+Enter)`** in the top toolbar; inspect live Formula, MW, and Exact Mass anytime via Ketcher's built-in **Calculated Values** tool or Office's **`[Molecule Info]`** menu.
 * **100% Offline & Confidential:** Runs entirely on your local PC without internet access.
 :::
 

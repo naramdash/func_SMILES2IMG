@@ -8,7 +8,7 @@
 
 | Office 앱 | 주요 활용 | 가이드 |
 | :--- | :--- | :--- |
-| <AppBadge app="excel" /> | 화합물명·CAS·SMILES·InChI를 셀 안 2D 구조식(`=SMILES2IMG`, `=NAME2IMG`)으로 자동 렌더링하고, 40개 물성·Lipinski·SAR 함수 계산과 `.sdf` 입출력을 한 번에 처리합니다. | <span class="s2i-nowrap">[개요 보기 →](/ko/excel/)</span> |
+| <AppBadge app="excel" /> | 화합물명·CAS·SMILES·InChI를 셀 안 2D 구조식(`=SMILES2IMG`, `=NAME2IMG`)으로 자동 렌더링하고, 49개 물성·3D·변환·SAR 함수 계산과 `.sdf` 가져오기를 한 번에 처리합니다. | <span class="s2i-nowrap">[개요 보기 →](/ko/excel/)</span> |
 | <AppBadge app="word" /> | 논문 본문과 화합물 SAR 표에 인라인 구조식을 배치하고, `Molecule Info`로 물성을 오타 없이 복사하며, 클릭 한 번의 ACS 학술지 흑백 변환과 벡터 SVG 복사를 지원합니다. | <span class="s2i-nowrap">[개요 보기 →](/ko/word/)</span> |
 | <AppBadge app="powerpoint" /> | 슬라이드 텍스트 상자를 0.1초 만에 투명 다크 모드 구조식으로 변환하고, 발표 중 360° 회전하는 3D 단백질(`.glb`) 삽입과 덱 전체 `Batch Style` 전환을 지원합니다. | <span class="s2i-nowrap">[개요 보기 →](/ko/powerpoint/)</span> |
 
@@ -29,7 +29,7 @@
 ## 로컬 우선(Local-First) 보안 & 문서 공유 {#privacy}
 
 ### 로컬 처리 vs. 선택적 네트워크 사용
-핵심 2D 구조식 렌더링(**EPAM Indigo**), 2D 스케처(**EPAM Ketcher**), 3D 뷰어 런타임(**Mol\***), 모든 물성·Lipinski·SAR 계산, `.sdf` 입출력, Batch Style, SVG 복사는 **내 PC에서 로컬로 실행**되며 구조식을 외부 서버로 전송하지 않습니다.
+핵심 2D 구조식 렌더링(**EPAM Indigo**), 2D 스케처(**EPAM Ketcher**), 3D 뷰어 런타임(**Mol\***), 모든 물성·3D·SAR 계산, `.sdf` 가져오기, Batch Style, SVG 복사는 **내 PC에서 로컬로 실행**되며 구조식을 외부 서버로 전송하지 않습니다.
 
 아래 선택 기능을 직접 호출할 때만 인터넷에 접속합니다:
 1. **PubChem 물질명 / CAS 조회:** 내장 사전에 없는 화합물 이름·CAS 번호를 조회할 때(`=NAME2IMG`, `=NAME2SMILES`, `=SMILES2NAME`, `Molecule Info` 물질명) PubChem에 1회 조회하고 결과를 디스크에 로컬 캐시합니다.

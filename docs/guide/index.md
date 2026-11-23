@@ -8,7 +8,7 @@ Instead of copy-pasting static screenshots from external drawing tools, write si
 
 | Office App | What You Can Do | Guide |
 | :--- | :--- | :--- |
-| <AppBadge app="excel" /> | Render compound names, CAS numbers, SMILES, or InChI into live in-cell 2D structures (`=SMILES2IMG`, `=NAME2IMG`), run 40 property, Lipinski, and SAR formulas across tables, and import/export `.sdf` files. | <span class="s2i-nowrap">[Overview →](/excel/)</span> |
+| <AppBadge app="excel" /> | Render compound names, CAS numbers, SMILES, or InChI into live in-cell 2D structures (`=SMILES2IMG`, `=NAME2IMG`), run 49 property, 3D complexity, conversion, and SAR formulas across tables, and import `.sdf` files. | <span class="s2i-nowrap">[Overview →](/excel/)</span> |
 | <AppBadge app="word" /> | Insert crisp inline structures into manuscripts and fixed-width SAR tables, copy descriptors without typos via `Molecule Info`, switch the whole document to ACS B&W in one click, and copy lossless Vector SVG. | <span class="s2i-nowrap">[Overview →](/word/)</span> |
 | <AppBadge app="powerpoint" /> | Convert slide textboxes into transparent dark-mode structures in 0.1s, embed 360°-rotatable 3D proteins (`.glb`), and switch deck themes instantly with 1-click `Batch Style`. | <span class="s2i-nowrap">[Overview →](/powerpoint/)</span> |
 
@@ -29,7 +29,7 @@ All three apps include the built-in offline **[Ketcher 2D](/editor/)** sketcher 
 ## Local-First Privacy & Cross-Platform Sharing {#privacy}
 
 ### Local Execution vs. Optional Network Calls
-Core 2D rendering (**EPAM Indigo**), 2D sketching (**EPAM Ketcher**), 3D viewer runtime (**Mol\***), all physicochemical/Lipinski/SAR calculations, `.sdf` I/O, Batch Style, and SVG copy run **locally on your PC** without uploading your structures.
+Core 2D rendering (**EPAM Indigo**), 2D sketching (**EPAM Ketcher**), 3D viewer runtime (**Mol\***), all physicochemical/3D/SAR calculations, `.sdf` import, Batch Style, and SVG copy run **locally on your PC** without uploading your structures.
 
 Internet access is used **only when you explicitly invoke** one of these optional features:
 1. **PubChem Name / CAS Lookup:** Resolving an uncached compound name or CAS number (`=NAME2IMG`, `=NAME2SMILES`, `=SMILES2NAME`, or Substance Name in `Molecule Info`) queries PubChem once and caches the result locally on disk.

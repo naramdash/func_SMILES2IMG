@@ -10,12 +10,12 @@ namespace Smiles2Img;
 public static class FloatFunctions
 {
     [ExcelFunction(Name = "SMILES2IMG.FLOAT", Category = "SMILES",
-        Description = "[Excel 2016+] Places a molecular structure picture over the cell (moves and sizes with the cell). Use on Excel 2016/2019/2021.", IsMacroType = true)]
+        Description = "[Excel 2016-2021] Cell-anchored floating 2D image (offline Indigo). Accepts SMILES, >>, InChI, or KET; #VALUE! on bad syntax.", IsMacroType = true)]
     public static object ImgFloat(
-        [ExcelArgument(Name = "smiles", Description = "A SMILES string, Ketcher (KET) string, or cell reference (e.g., A2, \"CCO\").")] string smiles,
-        [ExcelArgument(Name = "background", Description = "Optional: \"trans\" (default), \"white\", CSS color (e.g. \"yellow\"), or hex (#RRGGBB).")] object? background = null,
-        [ExcelArgument(Name = "style", Description = "Optional: \"color\" (default), \"bw\", \"num\", \"stereo\", \"h\", \"all-c\", \"white\", combined (e.g. \"bw num\" or \"bw|stereo\").")] object? style = null,
-        [ExcelArgument(Name = "transform", Description = "Optional: orientation (flip, flipy, rot90, rot180, rot270).")] object? transform = null)
+        [ExcelArgument(Name = "smiles", Description = Functions.ArgSmilesImgDesc)] string smiles,
+        [ExcelArgument(Name = "background", Description = Functions.ArgBgDesc)] object? background = null,
+        [ExcelArgument(Name = "style", Description = Functions.ArgStyleDesc)] object? style = null,
+        [ExcelArgument(Name = "transform", Description = Functions.ArgTransformDesc)] object? transform = null)
     {
         if (ExcelDnaUtil.IsInFunctionWizard()) return "SMILES2IMG.FLOAT";
         if (XlCall.Excel(XlCall.xlfCaller) is not ExcelReference caller ||
@@ -56,12 +56,12 @@ public static class FloatFunctions
     }
 
     [ExcelFunction(Name = "KET2IMG.FLOAT", Category = "SMILES",
-        Description = "[Excel 2016+] Places a Ketcher (KET) structure/reaction picture over the cell. Use on Excel 2016/2019/2021.", IsMacroType = true)]
+        Description = "[Excel 2016-2021] Cell-anchored floating 2D image from strict Ketcher KET JSON (molecule or reaction, offline); #VALUE! if not KET.", IsMacroType = true)]
     public static object KetImgFloat(
-        [ExcelArgument(Name = "ket", Description = "A Ketcher JSON string or cell reference containing one (e.g., A2, \"{...}\").")] string ket,
-        [ExcelArgument(Name = "background", Description = "Optional: \"trans\" (default), \"white\", CSS color (e.g. \"yellow\"), or hex (#RRGGBB).")] object? background = null,
-        [ExcelArgument(Name = "style", Description = "Optional: \"color\" (default), \"bw\", \"white\", combined.")] object? style = null,
-        [ExcelArgument(Name = "transform", Description = "Optional: orientation (flip, flipy, rot90, rot180, rot270).")] object? transform = null)
+        [ExcelArgument(Name = "ket", Description = Functions.ArgKetImgDesc)] string ket,
+        [ExcelArgument(Name = "background", Description = Functions.ArgBgDesc)] object? background = null,
+        [ExcelArgument(Name = "style", Description = Functions.ArgStyleDesc)] object? style = null,
+        [ExcelArgument(Name = "transform", Description = Functions.ArgTransformDesc)] object? transform = null)
     {
         if (ExcelDnaUtil.IsInFunctionWizard()) return "KET2IMG.FLOAT";
         if (XlCall.Excel(XlCall.xlfCaller) is not ExcelReference caller ||
@@ -70,7 +70,7 @@ public static class FloatFunctions
 
         try
         {
-            if (string.IsNullOrWhiteSpace(ket)) { FloatingPictureUpdates.Remove(caller); return ExcelError.ExcelErrorValue; }
+            if (string.IsNullOrWhiteSpace(ket) || !MoleculeRenderer.IsKet(ket)) { FloatingPictureUpdates.Remove(caller); return ExcelError.ExcelErrorValue; }
             var options = Functions.ParseOptions(background, style, transform);
             var cleanKet = MoleculeRenderer.CleanKet(ket);
             var key = CellImages.Key(cleanKet, options);
@@ -87,32 +87,46 @@ public static class FloatFunctions
     }
 
     [ExcelFunction(Name = "INCHI2IMG.FLOAT", Category = "SMILES",
-        Description = "[Excel 2016+] Places an InChI molecular structure picture over the cell. Use on Excel 2016/2019/2021.", IsMacroType = true)]
+        Description = "[Excel 2016-2021] Cell-anchored floating 2D image from strict IUPAC InChI (offline Indigo); #VALUE! if input is not InChI.", IsMacroType = true)]
     public static object InchiImgFloat(
-        [ExcelArgument(Name = "inchi", Description = "An IUPAC InChI string or cell reference (e.g., A2, \"InChI=1S/...\").")] string inchi,
-        [ExcelArgument(Name = "background", Description = "Optional: \"trans\" (default), \"white\", CSS color (e.g. \"yellow\"), or hex (#RRGGBB).")] object? background = null,
-        [ExcelArgument(Name = "style", Description = "Optional: \"color\" (default), \"bw\", \"num\", \"stereo\", \"h\", \"all-c\", \"white\", combined.")] object? style = null,
-        [ExcelArgument(Name = "transform", Description = "Optional: orientation (flip, flipy, rot90, rot180, rot270).")] object? transform = null)
-        => ImgFloat(inchi, background, style, transform);
+        [ExcelArgument(Name = "inchi", Description = Functions.ArgInchiImgDesc)] string inchi,
+        [ExcelArgument(Name = "background", Description = Functions.ArgBgDesc)] object? background = null,
+        [ExcelArgument(Name = "style", Description = Functions.ArgStyleDesc)] object? style = null,
+        [ExcelArgument(Name = "transform", Description = Functions.ArgTransformDesc)] object? transform = null)
+    {
+        if (ExcelDnaUtil.IsInFunctionWizard()) return "INCHI2IMG.FLOAT";
+        if (XlCall.Excel(XlCall.xlfCaller) is not ExcelReference caller ||
+            caller.RowFirst != caller.RowLast || caller.ColumnFirst != caller.ColumnLast)
+            return ExcelError.ExcelErrorValue;
+        if (string.IsNullOrWhiteSpace(inchi) || !MoleculeRenderer.IsInchi(inchi))
+        {
+            FloatingPictureUpdates.Remove(caller);
+            return ExcelError.ExcelErrorValue;
+        }
+        return ImgFloat(inchi, background, style, transform);
+    }
 
     [ExcelFunction(Name = "NAME2IMG.FLOAT", Category = "SMILES",
-        Description = "[Excel 2016+] Resolves a chemical name or CAS number and places its molecular structure picture over the cell.", IsMacroType = true)]
+        Description = "[Excel 2016-2021] Cell-anchored floating 2D image from name/CAS. 104 built-in offline + CAS check; else PubChem (30d cache, #N/A if offline).", IsMacroType = true)]
     public static object NameImgFloat(
-        [ExcelArgument(Name = "name", Description = "Chemical name or CAS number (e.g. \"Aspirin\", \"50-78-2\").")] string name,
-        [ExcelArgument(Name = "background", Description = "Optional: \"trans\" (default), \"white\", CSS color, or hex (#RRGGBB).")] object? background = null,
-        [ExcelArgument(Name = "style", Description = "Optional: \"color\" (default), \"bw\", \"num\", \"stereo\", \"h\", \"all-c\", \"white\", \"hl:<query>\".")] object? style = null,
-        [ExcelArgument(Name = "transform", Description = "Optional: orientation (flip, flipy, rot90, rot180, rot270).")] object? transform = null)
+        [ExcelArgument(Name = "name", Description = Functions.ArgNameDesc)] string name,
+        [ExcelArgument(Name = "background", Description = Functions.ArgBgDesc)] object? background = null,
+        [ExcelArgument(Name = "style", Description = Functions.ArgStyleDesc)] object? style = null,
+        [ExcelArgument(Name = "transform", Description = Functions.ArgTransformDesc)] object? transform = null)
     {
         if (ExcelDnaUtil.IsInFunctionWizard()) return "NAME2IMG.FLOAT";
+        if (XlCall.Excel(XlCall.xlfCaller) is not ExcelReference caller ||
+            caller.RowFirst != caller.RowLast || caller.ColumnFirst != caller.ColumnLast)
+            return ExcelError.ExcelErrorValue;
         if (string.IsNullOrWhiteSpace(name))
         {
-            if (XlCall.Excel(XlCall.xlfCaller) is ExcelReference c1) FloatingPictureUpdates.Remove(c1);
+            FloatingPictureUpdates.Remove(caller);
             return ExcelError.ExcelErrorValue;
         }
         var smiles = PubChemResolver.ResolveNameToSmiles(name);
         if (string.IsNullOrWhiteSpace(smiles))
         {
-            if (XlCall.Excel(XlCall.xlfCaller) is ExcelReference c2) FloatingPictureUpdates.Remove(c2);
+            FloatingPictureUpdates.Remove(caller);
             return ExcelError.ExcelErrorNA;
         }
         return ImgFloat(smiles!, background, style, transform);

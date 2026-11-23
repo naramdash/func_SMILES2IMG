@@ -5,7 +5,7 @@
     - Launches visible Office windows and verifies HWND visibility
     - Drives Word & PowerPoint via their in-process COMAddIn.Object.ExecuteRibbonAction(...)
     - Verifies live modal UI dialogs (MoleculeInfoDialog & AboutDialog) pop up and render inside Word, PowerPoint, and Excel
-    - Drives Excel via RegisterXLL, live cell formula evaluation (v1.0 ~ v1.8.0), and $excel.Run(...)
+    - Drives Excel via RegisterXLL, live cell formula evaluation (v1.0 ~ v1.9.0), and $excel.Run(...)
 #>
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Windows.Forms
@@ -81,6 +81,20 @@ public static class OfficeE2EWindow {
     }
 }
 '@ -ErrorAction SilentlyContinue
+
+function Invoke-ComRetry([scriptblock]$Operation, [int]$TimeoutSec = 20) {
+    $deadline = [DateTime]::UtcNow.AddSeconds($TimeoutSec)
+    while ($true) {
+        try { return (& $Operation) }
+        catch {
+            $hex = '{0:X8}' -f $_.Exception.HResult
+            if (($hex -notmatch '80010001|8001010A|800AC472' -and
+                 $_.Exception.ToString() -notmatch '80010001|8001010A|800AC472|rejected') -or
+                [DateTime]::UtcNow -ge $deadline) { throw }
+            Start-Sleep -Milliseconds 250
+        }
+    }
+}
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $distX64 = Join-Path $repoRoot "dist\x64"
@@ -200,16 +214,16 @@ try {
     if (-not [OfficeE2EWindow]::DialogDetected) { throw "Word OnAbout modal UI dialog did not appear on screen!" }
     Write-Host "  [PASS] Word Live Modal UI Popup: '$([OfficeE2EWindow]::LastDetectedTitle)' ($([OfficeE2EWindow]::LastDetectedWidth)x$([OfficeE2EWindow]::LastDetectedHeight) px)" -ForegroundColor Green
 
-    # Test 1F: CCO text selection -> In-Process OnCopyAllSummary (17-column TSV with header)
+    # Test 1F: CCO text selection -> In-Process OnCopyAllSummary (12-column TSV with header)
     $doc.Range($doc.Content.End - 1, $doc.Content.End - 1).Select()
     $word.Selection.TypeText("CCO")
     $doc.Range($doc.Content.End - 4, $doc.Content.End - 1).Select()
     [void]$wordObj.ExecuteRibbonAction("OnCopyAllSummary")
     $wordClip = [Smiles2Img.Editor.SafeClipboard]::GetText()
-    if (-not $wordClip -or -not $wordClip.Contains("C2H6O") -or -not $wordClip.Contains("Heavy Atoms") -or -not $wordClip.Contains("Fsp3")) {
-        throw "Word OnCopyAllSummary failed or missing v1.8.0 17-column TSV header! Got: $wordClip"
+    if (-not $wordClip -or -not $wordClip.Contains("C2H6O") -or -not $wordClip.Contains("Heavy Atoms") -or -not $wordClip.Contains("Fsp3") -or $wordClip.Contains("Chiral")) {
+        throw "Word OnCopyAllSummary failed or unexpected 12-column TSV header! Got: $wordClip"
     }
-    Write-Host "  [PASS] Word In-Process OnCopyAllSummary copied 17-column TSV header + row" -ForegroundColor Green
+    Write-Host "  [PASS] Word In-Process OnCopyAllSummary copied 12-column TSV header + row" -ForegroundColor Green
 
     # Test 1G: Cross-Host Parity Checks in Word (Replaced LockAspectRatio + "Aspirin" text fallback across Copy SMILES/InChI/SVG/Formula/KET)
     $inlineAfterReplace = $doc.InlineShapes.Item(1)
@@ -304,10 +318,10 @@ try {
 
     [void]$pptObj.ExecuteRibbonAction("OnCopyAllSummary")
     $pptClip = [Smiles2Img.Editor.SafeClipboard]::GetText()
-    if (-not $pptClip -or -not $pptClip.Contains("C9H8O4") -or -not $pptClip.Contains("Heavy Atoms") -or -not $pptClip.Contains("Fsp3")) {
-        throw "PowerPoint OnCopyAllSummary failed or missing 17-column TSV header! Got: $pptClip"
+    if (-not $pptClip -or -not $pptClip.Contains("C9H8O4") -or -not $pptClip.Contains("Heavy Atoms") -or -not $pptClip.Contains("Fsp3") -or $pptClip.Contains("Chiral")) {
+        throw "PowerPoint OnCopyAllSummary failed or unexpected 12-column TSV header! Got: $pptClip"
     }
-    Write-Host "  [PASS] PowerPoint In-Process OnCopyAllSummary copied 17-column TSV header + row" -ForegroundColor Green
+    Write-Host "  [PASS] PowerPoint In-Process OnCopyAllSummary copied 12-column TSV header + row" -ForegroundColor Green
 
     # Test 2E: Live Modal UI Popup inside PowerPoint (OnCopyMoleculeInfo -> MoleculeInfoDialog & OnAbout -> AboutDialog)
     $slide.Shapes.Item(2).Select()
@@ -400,7 +414,7 @@ try {
     $valB1 = $ws.Range("B1").Text
     Write-Host "  [PASS] Excel =SMILES2IMG.FLOAT(A1) evaluated cleanly (Cell text='$valB1', Shapes=$($ws.Shapes.Count))" -ForegroundColor Green
 
-    # Test 3B: Core, v1.7.0 Physicochemical, v1.8.0 Complexity, Search/Similarity & KET Worksheet Formulas
+    # Test 3B: Core, LogP/TPSA, Structural Complexity, Search & InChI/KET Parity Worksheet Formulas
     $ws.Range("C1").Formula = "=SMILES2NAME(A1)"
     $ws.Range("D1").Formula = "=SMILES2MW(A1)"
     $ws.Range("E1").Formula = "=SMILES2FORMULA(A1)"
@@ -409,21 +423,20 @@ try {
     $ws.Range("H1").Formula = "=SMILES2EXACTMASS(A1)"
     $ws.Range("I1").Formula = "=SMILES2LOGP(A1)"
     $ws.Range("J1").Formula = "=SMILES2TPSA(A1)"
-    $ws.Range("K1").Formula = "=SMILES2HBD(A1)"
-    $ws.Range("L1").Formula = "=SMILES2HBA(A1)"
-    $ws.Range("M1").Formula = "=SMILES2ROTBONDS(A1)"
-    $ws.Range("N1").Formula = "=SMILES2LIPINSKI(A1)"
     $ws.Range("O1").Formula = "=SMILES2HEAVY(A1)"
     $ws.Range("P1").Formula = "=SMILES2RINGS(A1)"
     $ws.Range("Q1").Formula = "=SMILES2AROMATIC(A1)"
     $ws.Range("R1").Formula = "=SMILES2FSP3(A1)"
-    $ws.Range("S1").Formula = "=SMILES2CHIRAL(A1)"
     $ws.Range("T1").Formula = "=SMILES.MATCH(A1, ""c1ccccc1"")"
-    $ws.Range("U1").Formula = "=SMILES.SIMILARITY(A1, ""c1ccccc1"")"
+    $ws.Range("K1").Formula = "=INCHI2LOGP(F1)"
+    $ws.Range("L1").Formula = "=INCHI.MATCH(F1, ""c1ccccc1"")"
     $ws.Range("A3").Value2 = $sampleKet
     $ws.Range("B3").Formula = "=KET2FORMULA(A3)"
-    $ws.Range("C3").Formula = "=SMILES2HEAVY(A3)"
+    $ws.Range("C3").Formula = "=KET2HEAVY(A3)"
     $ws.Range("D3").Formula = "=KET2EXACTMASS(A3)"
+    $ws.Range("E3").Formula = "=KET2SMILES(A3)"
+    $ws.Range("F3").Formula = "=KET2LOGP(A3)"
+    $ws.Range("G3").Formula = "=KET.MATCH(A3, ""C"")"
     Start-Sleep -Seconds 1
 
     $mwVal = [double]$ws.Range("D1").Value2
@@ -433,62 +446,66 @@ try {
     $exactMassVal = [double]$ws.Range("H1").Value2
     $logpVal = [double]$ws.Range("I1").Value2
     $tpsaVal = [double]$ws.Range("J1").Value2
-    $hbdVal = [int]$ws.Range("K1").Value2
-    $hbaVal = [int]$ws.Range("L1").Value2
-    $rotVal = [int]$ws.Range("M1").Value2
-    $lipVal = $ws.Range("N1").Text
+    $inchiLogpVal = [double]$ws.Range("K1").Value2
+    $inchiMatchVal = [bool]$ws.Range("L1").Value2
     $heavyVal = [int]$ws.Range("O1").Value2
     $ringsVal = [int]$ws.Range("P1").Value2
     $aromVal = [int]$ws.Range("Q1").Value2
     $fsp3Val = [double]$ws.Range("R1").Value2
-    $chiralVal = [int]$ws.Range("S1").Value2
     $matchVal = [bool]$ws.Range("T1").Value2
-    $simVal = [double]$ws.Range("U1").Value2
     $ketFormVal = $ws.Range("B3").Text
     $ketHeavyVal = [int]$ws.Range("C3").Value2
+    $ketSmilesVal = $ws.Range("E3").Text
+    $ketMatchVal = [bool]$ws.Range("G3").Value2
 
     if ([math]::Abs($mwVal - 180.16) -gt 0.2) { throw "Excel =SMILES2MW(A1) mismatch: $mwVal" }
     if ($formulaVal -ne "C9H8O4") { throw "Excel =SMILES2FORMULA(A1) mismatch: $formulaVal" }
     if (-not $inchiVal.StartsWith("InChI=1S/C9H8O4")) { throw "Excel =SMILES2INCHI(A1) mismatch: $inchiVal" }
     if ($inchiKeyVal -ne "BSYNRYMUTXBXSQ-UHFFFAOYSA-N") { throw "Excel =SMILES2INCHIKEY(A1) mismatch: $inchiKeyVal" }
     if ([math]::Abs($exactMassVal - 180.0423) -gt 0.01) { throw "Excel =SMILES2EXACTMASS(A1) mismatch: $exactMassVal" }
-    if ($logpVal -le 0.5 -or $tpsaVal -le 50 -or $hbdVal -ne 1 -or $hbaVal -lt 3 -or $rotVal -lt 2 -or $lipVal -ne "PASS") {
-        throw "Excel v1.7.0 physicochemical UDF mismatch: LogP=$logpVal, TPSA=$tpsaVal, HBD=$hbdVal, Lipinski=$lipVal"
+    if ($logpVal -le 0.5 -or $tpsaVal -le 50 -or [math]::Abs($inchiLogpVal - $logpVal) -gt 0.01 -or -not $inchiMatchVal) {
+        throw "Excel physicochemical / INCHI2* parity UDF mismatch: LogP=$logpVal, TPSA=$tpsaVal, InchiLogP=$inchiLogpVal, InchiMatch=$inchiMatchVal"
     }
-    if ($heavyVal -ne 13 -or $ringsVal -ne 1 -or $aromVal -ne 1 -or [math]::Abs($fsp3Val - 0.11) -gt 0.01 -or $chiralVal -ne 0) {
-        throw "Excel v1.8.0 structural complexity UDF mismatch: Heavy=$heavyVal, Rings=$ringsVal, Arom=$aromVal, Fsp3=$fsp3Val, Chiral=$chiralVal"
+    if ($heavyVal -ne 13 -or $ringsVal -ne 1 -or $aromVal -ne 1 -or [math]::Abs($fsp3Val - 0.11) -gt 0.01) {
+        throw "Excel structural complexity UDF mismatch: Heavy=$heavyVal, Rings=$ringsVal, Arom=$aromVal, Fsp3=$fsp3Val"
     }
-    if (-not $matchVal -or $simVal -le 0.1) { throw "Excel SMILES.MATCH / SMILES.SIMILARITY UDF mismatch: Match=$matchVal, Sim=$simVal" }
-    if ($ketFormVal -ne "CH4O" -or $ketHeavyVal -ne 2) { throw "Excel KET2FORMULA / SMILES2HEAVY(KET) UDF mismatch: Formula=$ketFormVal, Heavy=$ketHeavyVal" }
-    Write-Host "  [PASS] Excel 21 Live Worksheet UDFs (Core + v1.7.0 Physicochemical/Search + v1.8.0 Complexity + KET2*) verified" -ForegroundColor Green
+    if (-not $matchVal) { throw "Excel SMILES.MATCH UDF mismatch: Match=$matchVal" }
+    if ($ketFormVal -ne "CH4O" -or $ketHeavyVal -ne 2 -or $ketSmilesVal -ne "CO" -or -not $ketMatchVal) {
+        throw "Excel KET2* parity UDF mismatch: Formula=$ketFormVal, Heavy=$ketHeavyVal, Smiles=$ketSmilesVal, KetMatch=$ketMatchVal"
+    }
+    Write-Host "  [PASS] Excel Live Worksheet UDFs (Core + SMILES/InChI/KET Parity + Complexity + SMARTS Match) verified" -ForegroundColor Green
 
-    # Test 3C: Selection-Scoped BatchStyleBwCommand in Excel
-    $ws.Range("A2").Value2 = "CCO"
-    $ws.Range("B2").Formula = "=SMILES2IMG.FLOAT(A2)"
+    # Test 3C: Lossless Selection-Scoped BatchStyleBwCommand in Excel (preserves hl: and rot90)
+    Invoke-ComRetry { $ws.Range("A2").Value2 = "CCO" }
+    Invoke-ComRetry { $ws.Range("B1").Formula = "=SMILES2IMG.FLOAT(A1, ""white"", ""hl:c1ccccc1"", ""rot90"")" }
+    Start-Sleep -Milliseconds 300
+    Invoke-ComRetry { $ws.Range("B2").Formula = "=SMILES2IMG.FLOAT(A2)" }
     Start-Sleep -Milliseconds 500
-    $ws.Activate()
-    [void]$ws.Range("A1:B1").Select()
-    [void]$excel.Run("BatchStyleBwCommand")
+    Invoke-ComRetry { [void]$ws.Activate() }
+    Invoke-ComRetry { [void]$ws.Range("A1:B1").Select() }
+    Invoke-ComRetry { [void]$excel.Run("BatchStyleBwCommand") }
     Start-Sleep -Milliseconds 500
-    $fB1 = [string]$ws.Range("B1").Formula
-    $fB2 = [string]$ws.Range("B2").Formula
-    if (-not $fB1.Contains('"bw"')) { throw "Excel BatchStyleBwCommand did not update selected cell B1! Got: $fB1" }
+    $fB1 = [string](Invoke-ComRetry { $ws.Range("B1").Formula })
+    $fB2 = [string](Invoke-ComRetry { $ws.Range("B2").Formula })
+    if (-not $fB1.Contains('"bw hl:c1ccccc1"') -or -not $fB1.Contains('"rot90"')) {
+        throw "Excel BatchStyleBwCommand did not preserve structural highlight / rot90 on B1! Got: $fB1"
+    }
     if ($fB2.Contains('"bw"')) { throw "Excel BatchStyleBwCommand modified unselected cell B2! Got: $fB2" }
-    Write-Host "  [PASS] Excel Selection-Scoped BatchStyleBwCommand (B1 -> '$fB1', unselected B2 -> '$fB2')" -ForegroundColor Green
+    Write-Host "  [PASS] Excel Lossless BatchStyleBwCommand (B1 -> '$fB1', unselected B2 -> '$fB2')" -ForegroundColor Green
 
     # Test 3D: CopySelectedAllSummaryCommand, CopySelectedMoleculeSvgCommand & Live Modal MoleculeInfoDialog Popup
     try { [System.Windows.Forms.Clipboard]::Clear() } catch {}
-    [void]$ws.Range("A2").Select()
+    Invoke-ComRetry { [void]$ws.Range("A2").Select() }
     Start-Sleep -Milliseconds 200
-    [void]$excel.Run("CopySelectedAllSummaryCommand")
+    Invoke-ComRetry { [void]$excel.Run("CopySelectedAllSummaryCommand") }
     Start-Sleep -Milliseconds 500
     $clipText = [Smiles2Img.Editor.SafeClipboard]::GetText()
     if (-not $clipText -or -not $clipText.Contains("C2H6O") -or -not $clipText.Contains("Heavy Atoms")) {
         throw "Excel CopySelectedAllSummaryCommand failed! Got: $clipText"
     }
-    Write-Host "  [PASS] Excel CopySelectedAllSummaryCommand copied 17-column TSV summary" -ForegroundColor Green
+    Write-Host "  [PASS] Excel CopySelectedAllSummaryCommand copied 12-column TSV summary" -ForegroundColor Green
 
-    [void]$excel.Run("CopySelectedMoleculeSvgCommand")
+    Invoke-ComRetry { [void]$excel.Run("CopySelectedMoleculeSvgCommand") }
     Start-Sleep -Milliseconds 400
     $excelSvg = [Smiles2Img.Editor.SafeClipboard]::GetText()
     if (-not $excelSvg -or -not $excelSvg.Contains("<svg")) {
@@ -497,24 +514,24 @@ try {
     Write-Host "  [PASS] Excel CopySelectedMoleculeSvgCommand copied valid Vector SVG ($($excelSvg.Length) chars)" -ForegroundColor Green
 
     [OfficeE2EWindow]::StartModalDialogCloser("Molecule Info")
-    [void]$excel.Run("CopySelectedMoleculeInfoCommand")
+    Invoke-ComRetry { [void]$excel.Run("CopySelectedMoleculeInfoCommand") }
     if (-not [OfficeE2EWindow]::DialogDetected) { throw "Excel CopySelectedMoleculeInfoCommand modal UI dialog did not appear on screen!" }
     Write-Host "  [PASS] Excel Live Modal UI Popup: '$([OfficeE2EWindow]::LastDetectedTitle)' ($([OfficeE2EWindow]::LastDetectedWidth)x$([OfficeE2EWindow]::LastDetectedHeight) px)" -ForegroundColor Green
 
     # Test 3E: Live =NAME2IMG.FLOAT("Caffeine") floating picture creation
-    $shapesBeforeNameImg = $ws.Shapes.Count
-    $ws.Range("B4").RowHeight = 90
-    $ws.Range("B4").ColumnWidth = 24
-    $ws.Range("B4").Formula = '=NAME2IMG.FLOAT("Caffeine")'
+    $shapesBeforeNameImg = [int](Invoke-ComRetry { $ws.Shapes.Count })
+    Invoke-ComRetry { $ws.Range("B4").RowHeight = 90 }
+    Invoke-ComRetry { $ws.Range("B4").ColumnWidth = 24 }
+    Invoke-ComRetry { $ws.Range("B4").Formula = '=NAME2IMG.FLOAT("Caffeine")' }
     Start-Sleep -Seconds 2
-    if ($ws.Shapes.Count -le $shapesBeforeNameImg) {
-        throw "Excel =NAME2IMG.FLOAT(""Caffeine"") failed to create floating picture! Shapes before=$shapesBeforeNameImg, after=$($ws.Shapes.Count)"
+    $shapesAfterNameImg = [int](Invoke-ComRetry { $ws.Shapes.Count })
+    if ($shapesAfterNameImg -le $shapesBeforeNameImg) {
+        throw "Excel =NAME2IMG.FLOAT(""Caffeine"") failed to create floating picture! Shapes before=$shapesBeforeNameImg, after=$shapesAfterNameImg"
     }
-    Write-Host "  [PASS] Excel =NAME2IMG.FLOAT(""Caffeine"") rendered live floating picture (Shapes=$shapesBeforeNameImg -> $($ws.Shapes.Count))" -ForegroundColor Green
+    Write-Host "  [PASS] Excel =NAME2IMG.FLOAT(""Caffeine"") rendered live floating picture (Shapes=$shapesBeforeNameImg -> $shapesAfterNameImg)" -ForegroundColor Green
 
-    # Test 3F: Live SDF Import -> Export Round-Trip (Structure & Compound Name Preservation)
+    # Test 3F: Live SDF Import (11-column medicinal chemistry table with TPSA)
     $tempSdfIn = Join-Path ([System.IO.Path]::GetTempPath()) ("smiles2img_e2e_in_" + [Guid]::NewGuid().ToString("N") + ".sdf")
-    $tempSdfOut = Join-Path ([System.IO.Path]::GetTempPath()) ("smiles2img_e2e_out_" + [Guid]::NewGuid().ToString("N") + ".sdf")
     try {
         $r1 = New-Object Smiles2Img.Rendering.SdfRecord
         $r1.Name = "Aspirin"
@@ -524,47 +541,43 @@ try {
         $r2.Smiles = "CCO"
         [Smiles2Img.Rendering.SdfManager]::WriteSdfFile($tempSdfIn, [Smiles2Img.Rendering.SdfRecord[]]@($r1, $r2))
 
-        $wsSdf = $wb.Worksheets.Add()
-        $wsSdf.Activate()
+        $wsSdf = Invoke-ComRetry { $wb.Worksheets.Add() }
+        Invoke-ComRetry { [void]$wsSdf.Activate() }
         $importedCount = [Smiles2Img.KetcherEditor]::ImportSdfFromFile($excel, $tempSdfIn)
         if ($importedCount -ne 2) { throw "Excel ImportSdfFromFile expected 2 imported rows, got $importedCount" }
         Start-Sleep -Milliseconds 500
-        $exportedCount = [Smiles2Img.KetcherEditor]::ExportSdfToFile($excel, $tempSdfOut)
-        if ($exportedCount -ne 2) { throw "Excel ExportSdfToFile expected 2 exported rows, got $exportedCount" }
-
-        $exported = [Smiles2Img.Rendering.SdfManager]::ReadSdfFile($tempSdfOut)
-        if ($exported.Count -ne 2) { throw "SDF round-trip expected 2 records, got $($exported.Count)" }
-        $exportedNames = @($exported | ForEach-Object { $_.Name })
-        if ($exportedNames -notcontains "Aspirin" -or $exportedNames -notcontains "Compound_Custom_1") {
-            throw "SDF round-trip lost compound names! Got: $($exportedNames -join ', ')"
+        $hdr8 = [string](Invoke-ComRetry { $wsSdf.Cells.Item(1, 8).Value2 })
+        $fml8 = [string](Invoke-ComRetry { $wsSdf.Cells.Item(2, 8).Formula })
+        if ($hdr8 -ne "TPSA" -or $fml8 -ne "=SMILES2TPSA(C2)") {
+            throw "Excel ImportSdfFromFile expected TPSA column 8 formula, got: $hdr8 / $fml8"
         }
-        Write-Host "  [PASS] Excel Live SDF Import -> Export Round-Trip preserved 2 records and names ($($exportedNames -join ', '))" -ForegroundColor Green
+        Write-Host "  [PASS] Excel Live SDF Import generated 11-column live formula table (2 records)" -ForegroundColor Green
     } finally {
-        Remove-Item -LiteralPath $tempSdfIn, $tempSdfOut -Force -ErrorAction SilentlyContinue
+        Remove-Item -LiteralPath $tempSdfIn -Force -ErrorAction SilentlyContinue
     }
 
     # Test 3G: Excel Cross-Host Parity (Plain-text 'Aspirin' Copy KET + InChI ActiveCell QuickInsert)
-    $ws.Activate()
-    $ws.Range("A5").Value2 = "Aspirin"
-    [void]$ws.Range("A5").Select()
+    Invoke-ComRetry { [void]$ws.Activate() }
+    Invoke-ComRetry { $ws.Range("A5").Value2 = "Aspirin" }
+    Invoke-ComRetry { [void]$ws.Range("A5").Select() }
     try { [System.Windows.Forms.Clipboard]::Clear() } catch {}
-    [void]$excel.Run("CopySelectedMoleculeKetCommand")
+    Invoke-ComRetry { [void]$excel.Run("CopySelectedMoleculeKetCommand") }
     Start-Sleep -Milliseconds 400
     $excelKet = [Smiles2Img.Editor.SafeClipboard]::GetText()
     if (-not $excelKet -or -not $excelKet.Contains('"root"')) { throw "Excel CopySelectedMoleculeKetCommand on plain text 'Aspirin' failed! Got: $excelKet" }
 
-    $ws.Range("A6").Value2 = "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3"
-    [void]$ws.Range("A6").Select()
+    Invoke-ComRetry { $ws.Range("A6").Value2 = "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3" }
+    Invoke-ComRetry { [void]$ws.Range("A6").Select() }
     [void][Smiles2Img.Editor.SafeClipboard]::SetText("not-a-molecule")
-    [void]$excel.Run("QuickInsertCommand")
+    Invoke-ComRetry { [void]$excel.Run("QuickInsertCommand") }
     Start-Sleep -Milliseconds 800
-    $fA6 = [string]$ws.Range("A6").Formula
+    $fA6 = [string](Invoke-ComRetry { $ws.Range("A6").Formula })
     if (-not $fA6.StartsWith("=SMILES2IMG", [System.StringComparison]::OrdinalIgnoreCase) -or -not $fA6.Contains("CCO")) {
         throw "Excel QuickInsertCommand on InChI cell failed! Got formula: $fA6"
     }
     Write-Host "  [PASS] Excel Cross-Host Parity: Copy KET on 'Aspirin' cell & QuickInsert on InChI cell verified ('$fA6')" -ForegroundColor Green
 
-    $wb.Close($false)
+    Invoke-ComRetry { $wb.Close($false) }
 } finally {
     if ($excel) {
         try { $excel.Quit() } catch {}

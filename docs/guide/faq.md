@@ -16,15 +16,14 @@ Yes! Select any molecule cell or picture and click **`[SMILES]` ➔ `[Copy SVG]`
 
 ## 2. `.sdf` Files & Molecular Property Export
 
-### Q. Can I open or save `.sdf` chemical database files in Excel?
-Yes! Click **`[SMILES]` ➔ `[SDF File]`** on the Excel ribbon:
-* **`Import SDF File (.sdf)...`:** Reads any multi-compound `.sdf` file and generates a 12-column medicinal chemistry worksheet (`Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`, `Lipinski`) powered by live Excel formulas.
-* **`Export Sheet to SDF (.sdf)...`:** Exports your worksheet compounds back to a standard V2000 `.sdf` file.
+### Q. Can I open `.sdf` chemical database files in Excel?
+Yes! Click **`[SMILES]` ➔ `[Import SDF]`** on the Excel ribbon:
+* **`Import SDF (.sdf)...`:** Reads any multi-compound `.sdf` file and generates an 11-column medicinal chemistry worksheet (`Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `TPSA`, `Rings`, `Aromatic Rings`, `Fsp3`) powered by live Excel formulas.
 
-### Q. How do I copy Molecular Weight, Formula, LogP, and Lipinski info into a table at once?
+### Q. How do I copy Molecular Weight, Formula, LogP, and TPSA info into a table at once?
 **Right-click** any molecule ➔ **`Chemical Structure` ➔ `Copy Molecule Info`** and choose your format:
 * **`Copy All Summary (Text)`:** Copies a **2-row table (Headers + Data)**—ideal for starting a new table in Excel or Word.
-* **`Copy as Excel Row (TSV Columns)`:** Copies **only the 17 data columns (no header)**—ideal for appending rows into an existing table.
+* **`Copy as Excel Row (TSV Columns)`:** Copies **only the 12 data columns (no header)**—ideal for appending rows into an existing table.
 * **`Copy as Multi-Line List`:** Ready to paste as bullet points into PowerPoint slide text boxes.
 * **`Copy as Markdown Table` / JSON:** Great for Notion, GitHub, and electronic lab notebooks (inside **`Detailed Molecule Info Window...`**, choose a format from the bottom dropdown and click **`Copy All`**, or double-click any individual property row to copy it).
 
@@ -45,4 +44,4 @@ Click **`[SMILES]` ➔ `[About func_SMILES2IMG]`** on the ribbon and press **`[C
 ## Related Guides
 
 - [**Installation & Setup**](/guide/install) — One-line PowerShell installer, offline manual ZIP setup, and update/uninstall commands.
-- [**All 40 Excel Functions**](/excel/formulas) — Full parameter catalog, return data types, and shared styling tokens.
+- [**All 49 Excel Functions**](/excel/formulas) — Full parameter catalog, return data types, and shared styling tokens.

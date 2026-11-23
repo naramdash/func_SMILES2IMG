@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web.Script.Serialization;
 
 namespace Smiles2Img.Rendering;
@@ -14,13 +16,19 @@ namespace Smiles2Img.Rendering;
 /// </summary>
 public static class PubChemResolver
 {
-    private static readonly ConcurrentDictionary<string, (string CompoundName, string IupacName)> SmilesCache = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly ConcurrentDictionary<string, (string CompoundName, string IupacName, long SavedUtcTicks)> SmilesCache = new(StringComparer.Ordinal);
+    private static readonly ConcurrentDictionary<string, long> FailedSmilesLookupUtcTicks = new(StringComparer.Ordinal);
     private static readonly ConcurrentDictionary<string, (string Title, double? WeightKDa)> PdbCache = new(StringComparer.OrdinalIgnoreCase);
     private static readonly JavaScriptSerializer Serializer = new() { MaxJsonLength = int.MaxValue };
     private static readonly object FileLock = new();
+    private static readonly long NegativeCacheTtlTicks = TimeSpan.FromSeconds(60).Ticks;
+    private static readonly long DiskCacheTtlTicks = TimeSpan.FromDays(30).Ticks;
+    private const int NegativeCacheLimit = 2048;
+    private const string SmilesCacheFileName = "pubchem_cache_v2.json";
+    private const string NameCacheFileName = "pubchem_name2smiles_cache_v2.json";
     private static bool _cacheLoaded;
 
-    private static readonly Dictionary<string, (string CompoundName, string IupacName)> BuiltInSmilesToCompound = new(StringComparer.OrdinalIgnoreCase)
+    private static readonly Dictionary<string, (string CompoundName, string IupacName)> BuiltInSmilesToCompound = new(StringComparer.Ordinal)
     {
         ["CCO"] = ("Ethanol", "ethanol"),
         ["OCC"] = ("Ethanol", "ethanol"),
@@ -29,46 +37,87 @@ public static class PubChemResolver
         ["O"] = ("Water", "oxidane"),
         ["CC(C)O"] = ("Isopropanol", "propan-2-ol"),
         ["CC(=O)C"] = ("Acetone", "propan-2-one"),
+        ["CC(C)=O"] = ("Acetone", "propan-2-one"),
         ["CC(=O)O"] = ("Acetic Acid", "acetic acid"),
+        ["CC(O)=O"] = ("Acetic Acid", "acetic acid"),
         ["C(=O)O"] = ("Formic Acid", "formic acid"),
+        ["OC=O"] = ("Formic Acid", "formic acid"),
         ["c1ccccc1"] = ("Benzene", "benzene"),
         ["Cc1ccccc1"] = ("Toluene", "toluene"),
         ["Oc1ccccc1"] = ("Phenol", "phenol"),
         ["Nc1ccccc1"] = ("Aniline", "aniline"),
         ["OC(=O)c1ccccc1"] = ("Benzoic Acid", "benzoic acid"),
         ["Oc1ccccc1C(=O)O"] = ("Salicylic Acid", "2-hydroxybenzoic acid"),
+        ["Oc1ccccc1C(O)=O"] = ("Salicylic Acid", "2-hydroxybenzoic acid"),
         ["CC(=O)Oc1ccccc1C(=O)O"] = ("Aspirin", "2-acetyloxybenzoic acid"),
+        ["CC(=O)Oc1ccccc1C(O)=O"] = ("Aspirin", "2-acetyloxybenzoic acid"),
         ["Cn1cnc2c1c(=O)n(C)c(=O)n2C"] = ("Caffeine", "1,3,7-trimethylpurine-2,6-dione"),
+        ["C[n]1c(=O)c2c([n]c[n]2C)[n](C)c1=O"] = ("Caffeine", "1,3,7-trimethylpurine-2,6-dione"),
         ["CC(=O)Nc1ccc(O)cc1"] = ("Acetaminophen", "N-(4-hydroxyphenyl)acetamide"),
         ["CC(C)Cc1ccc(C(C)C(=O)O)cc1"] = ("Ibuprofen", "2-[4-(2-methylpropyl)phenyl]propanoic acid"),
+        ["CC(C)Cc1ccc(cc1)C(C)C(O)=O"] = ("Ibuprofen", "2-[4-(2-methylpropyl)phenyl]propanoic acid"),
         ["COc1ccc2cc([C@H](C)C(=O)O)ccc2c1"] = ("Naproxen", "(2S)-2-(6-methoxynaphthalen-2-yl)propanoic acid"),
+        ["COc1cc2ccc(cc2cc1)[C@H](C)C(O)=O"] = ("Naproxen", "(2S)-2-(6-methoxynaphthalen-2-yl)propanoic acid"),
         ["c1ccncc1"] = ("Pyridine", "pyridine"),
+        ["c1cccc[n]1"] = ("Pyridine", "pyridine"),
         ["C1CCOC1"] = ("Tetrahydrofuran", "oxolane"),
+        ["C1CCCO1"] = ("Tetrahydrofuran", "oxolane"),
         ["CS(=O)C"] = ("Dimethyl Sulfoxide", "methylsulfinylmethane"),
+        ["CS(C)=O"] = ("Dimethyl Sulfoxide", "methylsulfinylmethane"),
         ["CN(C)C=O"] = ("Dimethylformamide", "N,N-dimethylformamide"),
         ["CC#N"] = ("Acetonitrile", "acetonitrile"),
         ["ClCCl"] = ("Dichloromethane", "dichloromethane"),
         ["ClC(Cl)Cl"] = ("Chloroform", "trichloromethane"),
         ["CCOC(=O)C"] = ("Ethyl Acetate", "ethyl acetate"),
+        ["CCOC(C)=O"] = ("Ethyl Acetate", "ethyl acetate"),
         ["CCOCC"] = ("Diethyl Ether", "ethoxyethane"),
         ["CCCCCC"] = ("Hexane", "hexane"),
         ["C1CCCCC1"] = ("Cyclohexane", "cyclohexane"),
         ["NCC(=O)O"] = ("Glycine", "2-aminoacetic acid"),
+        ["NCC(O)=O"] = ("Glycine", "2-aminoacetic acid"),
         ["C[C@H](N)C(=O)O"] = ("Alanine", "(2S)-2-aminopropanoic acid"),
+        ["C[C@H](N)C(O)=O"] = ("Alanine", "(2S)-2-aminopropanoic acid"),
         ["C[C@H](O)C(=O)O"] = ("L-Lactic Acid", "(2S)-2-hydroxypropanoic acid"),
+        ["C[C@H](O)C(O)=O"] = ("L-Lactic Acid", "(2S)-2-hydroxypropanoic acid"),
         ["OC(=O)CC(O)(C(=O)O)CC(=O)O"] = ("Citric Acid", "2-hydroxypropane-1,2,3-tricarboxylic acid"),
+        ["OC(=O)C(O)(CC(O)=O)CC(O)=O"] = ("Citric Acid", "2-hydroxypropane-1,2,3-tricarboxylic acid"),
         ["OC[C@H](O)[C@H]1OC(=O)C(O)=C1O"] = ("Ascorbic Acid", "(5R)-[(1S)-1,2-dihydroxyethyl]-3,4-dihydroxyfuran-2(5H)-one"),
+        ["O[C@@H](CO)[C@H]1OC(=O)C(O)=C1O"] = ("Ascorbic Acid", "(5R)-[(1S)-1,2-dihydroxyethyl]-3,4-dihydroxyfuran-2(5H)-one"),
         ["OC[C@H]1OC(O)[C@H](O)[C@@H](O)[C@@H]1O"] = ("D-Glucose", "(3R,4S,5S,6R)-6-(hydroxymethyl)oxane-2,3,4,5-tetrol"),
         ["NCCc1ccc(O)c(O)c1"] = ("Dopamine", "4-(2-aminoethyl)benzene-1,2-diol"),
+        ["NCCc1cc(O)c(O)cc1"] = ("Dopamine", "4-(2-aminoethyl)benzene-1,2-diol"),
         ["NCCc1c[nH]c2ccc(O)cc12"] = ("Serotonin", "3-(2-aminoethyl)-1H-indol-5-ol"),
-        ["CNC[C@H](O)c1ccc(O)c(O)c1"] = ("Epinephrine", "4-[(1R)-1-hydroxy-2-(methylamino)ethyl]benzene-1,2-diol")
+        ["NCCc1c[nH]c2ccc(O)cc21"] = ("Serotonin", "3-(2-aminoethyl)-1H-indol-5-ol"),
+        ["CNC[C@H](O)c1ccc(O)c(O)c1"] = ("Epinephrine", "4-[(1R)-1-hydroxy-2-(methylamino)ethyl]benzene-1,2-diol"),
+        ["CNC[C@H](O)c1cc(O)c(O)cc1"] = ("Epinephrine", "4-[(1R)-1-hydroxy-2-(methylamino)ethyl]benzene-1,2-diol")
     };
 
-    private static string GetCacheFilePath()
+    private static bool IsNegativelyCached(ConcurrentDictionary<string, long> cache, string key)
+    {
+        if (cache.TryGetValue(key, out var expiresAtUtcTicks))
+        {
+            if (DateTime.UtcNow.Ticks < expiresAtUtcTicks)
+                return true;
+            cache.TryRemove(key, out _);
+        }
+        return false;
+    }
+
+    private static void RecordNegativeCache(ConcurrentDictionary<string, long> cache, string key)
+    {
+        if (cache.Count >= NegativeCacheLimit)
+            cache.Clear();
+        cache[key] = DateTime.UtcNow.Ticks + NegativeCacheTtlTicks;
+    }
+
+    private static bool IsCacheExpired(long savedUtcTicks)
+        => DateTime.UtcNow.Ticks - savedUtcTicks > DiskCacheTtlTicks;
+
+    private static string GetCacheFilePath(string fileName)
     {
         var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Smiles2Img");
         try { Directory.CreateDirectory(dir); } catch { }
-        return Path.Combine(dir, "pubchem_cache.json");
+        return Path.Combine(dir, fileName);
     }
 
     private static void EnsureCacheLoaded()
@@ -80,7 +129,7 @@ public static class PubChemResolver
             _cacheLoaded = true;
             try
             {
-                var path = GetCacheFilePath();
+                var path = GetCacheFilePath(SmilesCacheFileName);
                 if (File.Exists(path))
                 {
                     var json = File.ReadAllText(path, Encoding.UTF8);
@@ -89,8 +138,13 @@ public static class PubChemResolver
                     {
                         foreach (var kvp in dict)
                         {
-                            if (kvp.Value != null && kvp.Value.Length >= 2)
-                                SmilesCache[kvp.Key] = (kvp.Value[0] ?? "", kvp.Value[1] ?? "");
+                            if (kvp.Value != null &&
+                                kvp.Value.Length >= 3 &&
+                                long.TryParse(kvp.Value[2], NumberStyles.Integer, CultureInfo.InvariantCulture, out var savedTicks) &&
+                                !IsCacheExpired(savedTicks))
+                            {
+                                SmilesCache[kvp.Key] = (kvp.Value[0] ?? "", kvp.Value[1] ?? "", savedTicks);
+                            }
                         }
                     }
                 }
@@ -108,10 +162,18 @@ public static class PubChemResolver
                 var dict = new Dictionary<string, string[]>();
                 foreach (var kvp in SmilesCache)
                 {
-                    dict[kvp.Key] = new[] { kvp.Value.CompoundName, kvp.Value.IupacName };
+                    if (!IsCacheExpired(kvp.Value.SavedUtcTicks))
+                    {
+                        dict[kvp.Key] = new[]
+                        {
+                            kvp.Value.CompoundName,
+                            kvp.Value.IupacName,
+                            kvp.Value.SavedUtcTicks.ToString(CultureInfo.InvariantCulture)
+                        };
+                    }
                 }
                 var json = Serializer.Serialize(dict);
-                File.WriteAllText(GetCacheFilePath(), json, Encoding.UTF8);
+                File.WriteAllText(GetCacheFilePath(SmilesCacheFileName), json, Encoding.UTF8);
             }
         }
         catch { }
@@ -131,7 +193,14 @@ public static class PubChemResolver
 
         EnsureCacheLoaded();
         if (SmilesCache.TryGetValue(s, out var cached))
-            return cached;
+        {
+            if (!IsCacheExpired(cached.SavedUtcTicks))
+                return (cached.CompoundName, cached.IupacName);
+            SmilesCache.TryRemove(s, out _);
+        }
+
+        if (IsNegativelyCached(FailedSmilesLookupUtcTicks, s))
+            return ("", "");
 
         try
         {
@@ -165,10 +234,14 @@ public static class PubChemResolver
                         var title = firstProp.TryGetValue("Title", out var t) && t != null ? t.ToString()!.Trim() : "";
                         var iupac = firstProp.TryGetValue("IUPACName", out var u) && u != null ? u.ToString()!.Trim() : "";
 
-                        var result = (title, iupac);
-                        SmilesCache[s] = result;
-                        SaveCache();
-                        return result;
+                        if (!string.IsNullOrEmpty(title) || !string.IsNullOrEmpty(iupac))
+                        {
+                            var result = (title, iupac);
+                            SmilesCache[s] = (title, iupac, DateTime.UtcNow.Ticks);
+                            FailedSmilesLookupUtcTicks.TryRemove(s, out _);
+                            SaveCache();
+                            return result;
+                        }
                     }
                 }
             }
@@ -178,6 +251,7 @@ public static class PubChemResolver
             // Network error, timeout, or compound not in PubChem
         }
 
+        RecordNegativeCache(FailedSmilesLookupUtcTicks, s);
         return ("", "");
     }
 
@@ -233,8 +307,12 @@ public static class PubChemResolver
         return ("", null);
     }
 
-    private static readonly ConcurrentDictionary<string, string> NameToSmilesCache = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly ConcurrentDictionary<string, (string Smiles, long SavedUtcTicks)> NameToSmilesCache = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly ConcurrentDictionary<string, long> FailedNameLookupUtcTicks = new(StringComparer.OrdinalIgnoreCase);
     private static bool _nameCacheLoaded;
+
+    internal static IEnumerable<string> BuiltInNameOrCasKeys => BuiltInCommonChemicals.Keys;
+    internal static IEnumerable<string> BuiltInSmilesKeys => BuiltInSmilesToCompound.Keys;
 
     private static readonly Dictionary<string, string> BuiltInCommonChemicals = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -349,13 +427,6 @@ public static class PubChemResolver
         ["56-41-7"] = "C[C@H](N)C(=O)O"
     };
 
-    private static string GetNameCacheFilePath()
-    {
-        var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Smiles2Img");
-        try { Directory.CreateDirectory(dir); } catch { }
-        return Path.Combine(dir, "pubchem_name2smiles_cache.json");
-    }
-
     private static void EnsureNameCacheLoaded()
     {
         if (_nameCacheLoaded) return;
@@ -365,17 +436,23 @@ public static class PubChemResolver
             _nameCacheLoaded = true;
             try
             {
-                var path = GetNameCacheFilePath();
+                var path = GetCacheFilePath(NameCacheFileName);
                 if (File.Exists(path))
                 {
                     var json = File.ReadAllText(path, Encoding.UTF8);
-                    var dict = Serializer.Deserialize<Dictionary<string, string>>(json);
+                    var dict = Serializer.Deserialize<Dictionary<string, string[]>>(json);
                     if (dict != null)
                     {
                         foreach (var kvp in dict)
                         {
-                            if (!string.IsNullOrWhiteSpace(kvp.Value))
-                                NameToSmilesCache[kvp.Key] = kvp.Value;
+                            if (kvp.Value != null &&
+                                kvp.Value.Length >= 2 &&
+                                !string.IsNullOrWhiteSpace(kvp.Value[0]) &&
+                                long.TryParse(kvp.Value[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out var savedTicks) &&
+                                !IsCacheExpired(savedTicks))
+                            {
+                                NameToSmilesCache[kvp.Key] = (kvp.Value[0], savedTicks);
+                            }
                         }
                     }
                 }
@@ -390,16 +467,51 @@ public static class PubChemResolver
         {
             lock (FileLock)
             {
-                var dict = new Dictionary<string, string>();
+                var dict = new Dictionary<string, string[]>();
                 foreach (var kvp in NameToSmilesCache)
                 {
-                    dict[kvp.Key] = kvp.Value;
+                    if (!IsCacheExpired(kvp.Value.SavedUtcTicks))
+                    {
+                        dict[kvp.Key] = new[]
+                        {
+                            kvp.Value.Smiles,
+                            kvp.Value.SavedUtcTicks.ToString(CultureInfo.InvariantCulture)
+                        };
+                    }
                 }
                 var json = Serializer.Serialize(dict);
-                File.WriteAllText(GetNameCacheFilePath(), json, Encoding.UTF8);
+                File.WriteAllText(GetCacheFilePath(NameCacheFileName), json, Encoding.UTF8);
             }
         }
         catch { }
+    }
+
+    private static readonly Regex CasFormatPattern = new(@"^[1-9]\d{1,6}-\d{2}-\d$", RegexOptions.Compiled);
+    private static readonly Regex AnyNumericTripletPattern = new(@"^\d+-\d+-\d+$", RegexOptions.Compiled);
+
+    internal static bool IsNumericTriplet(string? input) =>
+        !string.IsNullOrWhiteSpace(input) && AnyNumericTripletPattern.IsMatch(input!.Trim());
+
+    /// <summary>
+    /// Validates a CAS Registry Number including its mathematical check digit.
+    /// </summary>
+    public static bool IsValidCasNumber(string? input)
+    {
+        if (string.IsNullOrWhiteSpace(input)) return false;
+        var trimmed = input!.Trim();
+        if (!CasFormatPattern.IsMatch(trimmed)) return false;
+
+        int checkDigit = trimmed[trimmed.Length - 1] - '0';
+        int sum = 0;
+        int weight = 1;
+        for (int i = trimmed.Length - 2; i >= 0; i--)
+        {
+            char ch = trimmed[i];
+            if (ch == '-') continue;
+            sum += (ch - '0') * weight;
+            weight++;
+        }
+        return (sum % 10) == checkDigit;
     }
 
     /// <summary>
@@ -410,13 +522,19 @@ public static class PubChemResolver
     {
         if (string.IsNullOrWhiteSpace(nameOrCas)) return null;
         var q = nameOrCas!.Trim();
+        if (IsNumericTriplet(q) && !IsValidCasNumber(q))
+            return null;
 
         if (BuiltInCommonChemicals.TryGetValue(q, out var builtInSmiles))
             return builtInSmiles;
 
         EnsureNameCacheLoaded();
-        if (NameToSmilesCache.TryGetValue(q, out var cachedSmiles))
-            return cachedSmiles;
+        if (NameToSmilesCache.TryGetValue(q, out var cached))
+        {
+            if (!IsCacheExpired(cached.SavedUtcTicks))
+                return cached.Smiles;
+            NameToSmilesCache.TryRemove(q, out _);
+        }
 
         return null;
     }
@@ -430,9 +548,16 @@ public static class PubChemResolver
         if (string.IsNullOrWhiteSpace(nameOrCas)) return null;
         var q = nameOrCas!.Trim();
 
+        // Reject malformed CAS-style numeric triplets with invalid check digits in 0ms without querying PubChem.
+        if (IsNumericTriplet(q) && !IsValidCasNumber(q))
+            return null;
+
         var offlineMatch = ResolveNameToSmilesOffline(q);
         if (!string.IsNullOrEmpty(offlineMatch))
             return offlineMatch;
+
+        if (IsNegativelyCached(FailedNameLookupUtcTicks, q))
+            return null;
 
         try
         {
@@ -467,7 +592,8 @@ public static class PubChemResolver
 
                         if (!string.IsNullOrEmpty(smiles))
                         {
-                            NameToSmilesCache[q] = smiles!;
+                            NameToSmilesCache[q] = (smiles!, DateTime.UtcNow.Ticks);
+                            FailedNameLookupUtcTicks.TryRemove(q, out _);
                             SaveNameCache();
                             return smiles;
                         }
@@ -477,6 +603,7 @@ public static class PubChemResolver
         }
         catch { }
 
+        RecordNegativeCache(FailedNameLookupUtcTicks, q);
         return null;
     }
 }

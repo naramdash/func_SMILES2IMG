@@ -1,8 +1,8 @@
 WEBVTT
 
 00:00:00.833 --> 00:00:01.553
-Open [SDF File] -> [Import SDF File (.sdf)...] to load sample_compounds.sdf.
+Click [Import SDF] to load sample_compounds.sdf.
 
 00:00:01.583 --> 00:00:03.000
-Imported 3 compounds into a 12-column structure & complexity worksheet.
+Imported 3 compounds into an 11-column structure & complexity worksheet.
 

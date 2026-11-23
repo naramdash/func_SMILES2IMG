@@ -24,7 +24,7 @@ All four descriptors work seamlessly with SMILES, InChI, and single-molecule KET
 | **Chemical Formula** | `=SMILES2FORMULA(A2)` | `=INCHI2FORMULA(A2)` · `=KET2FORMULA(A2)` | `C9H8O4` | **0ms Offline** · Standard Hill notation (`String`) |
 | **Molecular Weight (MW)** | `=SMILES2MW(A2)` | `=INCHI2MW(A2)` · `=KET2MW(A2)` | `180.16` | **0ms Offline** · Numeric `Double` in g/mol (2 decimals) |
 | **Exact Mass (HRMS)** | `=SMILES2EXACTMASS(A2)` | `=INCHI2EXACTMASS(A2)` · `=KET2EXACTMASS(A2)` | `180.0423` | **0ms Offline** · Monoisotopic mass in Da (4 decimals) |
-| **Substance Name** | `=SMILES2NAME(A2)` | `=INCHI2NAME(A2)` · `=KET2NAME(A2)` | `Aspirin` | PubChem / IUPAC lookup with local disk cache (`String`) |
+| **Substance Name** | `=SMILES2NAME(A2)` | `=INCHI2NAME(A2)` · `=KET2NAME(A2)` | `Aspirin` | Built-in 0ms dictionary + PubChem lookup (30-day local disk cache, `String`) |
 
 ## 2. Template 1: Organic Synthesis Stoichiometry Calculator (ELN)
 
@@ -49,8 +49,14 @@ Use `=SMILES2EXACTMASS(A2)` (accurate to 4 decimal places) to compute calculated
 | **`[M + Na]+`** | `=ROUND(SMILES2EXACTMASS(A2) + 22.989218, 4)` | `203.0315` |
 | **`[M - H]-`** *(ESI Negative)* | `=ROUND(SMILES2EXACTMASS(A2) - 1.007276, 4)` | `179.0350` |
 
+::: info Salts, Isotopes & Non-Molecule Inputs
+* **Salts & Counterions:** Multi-component structures (`CN(C)C(=N)NC(=N)N.Cl`, `[Na+].CC(=O)[O-]`) are evaluated across the complete salt as drawn, reflecting counterion mass and formula directly.
+* **Isotopic Labels:** Heavy isotopes (`[2H]`, `[13CH3]`) update `MW` and `Exact Mass` with exact isotopic masses, while `=SMILES2FORMULA` outputs standard IUPAC Hill notation (`[2H]C([2H])([2H])S(=O)C([2H])([2H])[2H]` ➔ `C2H6OS`).
+* **Queries & Reactions:** Query R-groups (`*`, `[R1]`) and multi-component reactions (`>>`) return `#N/A` on single-molecule scalar formulas so unphysical numbers are never produced.
+:::
+
 ## Related Guides
 
-- [**Lipinski, ADME, 3D**](/excel/lipinski-adme) — Screen ADME drug-likeness, hydrogen bonds, rings, `Fsp3`, and stereocenters
+- [**LogP, TPSA & 3D**](/excel/lipinski-adme) — Compute Crippen `LogP`, Ertl `TPSA`, rings, and `Fsp3`
 - [**Identifier Conversion**](/excel/data-sdf) — Convert between Name/CAS, Canonical SMILES, InChI, and `InChIKey`
-- [**Playbook (.xlsx)**](/excel/playbook) — Open tabs `2. Properties & Lipinski` and `7. Real-World Workflows` to copy these live tables directly
+- [**Playbook (.xlsx)**](/excel/playbook) — Open tabs `2. Properties & 3D` and `7. Real-World Workflows` to copy these live tables directly

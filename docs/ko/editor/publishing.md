@@ -9,7 +9,7 @@ next:
 
 # 논문 투고용 ACS 흑백 일괄 변환 & 일러스트레이터(SVG) 내보내기
 
-클릭 한 번으로 Excel 시트, Word 논문, PowerPoint 발표 자료 전체의 구조식을 **학술지 흑백(ACS 스타일)** 또는 **다크 모드**로 일괄 변환하고, **Adobe Illustrator용 무손실 SVG 벡터**와 **17열 물성 표**를 복사하는 방법입니다.
+클릭 한 번으로 Excel 시트, Word 논문, PowerPoint 발표 자료 전체의 구조식을 **학술지 흑백(ACS 스타일)** 또는 **다크 모드**로 일괄 변환하고, **Adobe Illustrator용 무손실 SVG 벡터**와 **12열 물성 표**를 복사하는 방법입니다.
 
 ## 1. 🎨 문서 전체 스타일 원클릭 통일 (`Batch Style`)
 
@@ -23,7 +23,7 @@ next:
 | **⬛ `Dark Mode (White Ink)`** | 투명 배경 + 흰색 결합선 | 어두운 배경의 학회 발표용 PPT 슬라이드 | `=SMILES2IMG(A2, "trans", "white")` |
 
 ### 프로그램별 적용 범위
-* **📗 Excel:** 현재 마우스로 드래그해 선택한 셀 영역의 구조식만 변환하거나, 단일 셀만 선택된 경우 **현재 시트 전체**의 구조식 수식을 일괄 변환합니다.
+* **📗 Excel:** 현재 마우스로 드래그해 선택한 셀 영역의 구조식만 변환하거나, 단일 셀만 선택된 경우 **현재 시트 전체**의 구조식 수식을 일괄 변환합니다 (`hl:`, `num`, `stereo`, 회전 변환 및 사용자 정의 동적 표현식은 손실 없이 유지).
 * **📘 Word:** 드래그해 선택한 문단/표 안의 구조식만 변환하거나, 선택 영역이 없으면 **워드 문서 전체**의 구조식을 일괄 변환합니다.
 * **📙 PowerPoint:** 선택한 슬라이드 도형들만 변환하거나, 선택된 도형이 없으면 **프레젠테이션 전체 슬라이드**의 구조식을 일괄 변환합니다.
 
@@ -46,31 +46,30 @@ next:
 
 <FeatureMedia id="common-molecule-info" />
 
-### 한눈에 확인 가능한 10가지 핵심 물성
+### 한눈에 확인 가능한 주요 물성 지표
 1. **Substance Name (물질명):** IUPAC / PubChem 일반명 (`Aspirin`)
 2. **Chemical Formula (화학식):** 표준 Hill 표기법 (`C9H8O4`)
 3. **Molecular Weight (분자량):** 평균 분자량 (`180.16 g/mol`)
 4. **Monoisotopic Mass (정밀 질량):** 질량분석(HRMS)용 단일동위원소 질량 (`180.0423 Da`)
 5. **LogP & TPSA:** 옥탄올/물 분배계수(`1.31`) 및 위상 극성 표면적(`63.60 Å²`)
-6. **Lipinski Rule of 5:** 경구 투여 약물성 통과 여부 및 HBD(`1`), HBA(`4`), 회전 결합 수(`3`)
-7. **고리 · 방향족성 · 3D 복잡도:** 중원자 수(`13`), 전체 고리(`1`), 방향족 고리(`1`), 3D 입체 비율(`Fsp3: 0.11`), 키랄 중심(`0`)
-8. **표준 식별자 3종:** Canonical SMILES, IUPAC InChI, 27자리 InChIKey
+6. **고리 · 방향족성 · 3D 복잡도:** 중원자 수(`13`), 전체 고리(`1`), 방향족 고리(`1`), 3D 입체 비율(`Fsp3: 0.11`)
+7. **표준 식별자 3종:** Canonical SMILES, IUPAC InChI, 27자리 InChIKey
 
 ### 📋 붙여넣을 곳에 맞춰 골라 쓰는 5가지 일괄 복사 서식
 
 우클릭 메뉴나 상세창 하단의 **`Copy All`** 버튼(드롭다운에서 서식 선택)을 눌러 아래 5가지 서식 중 하나로 복사할 수 있습니다:
 
-#### ① 표의 첫 행을 만들 때 — 17열 헤더 + 데이터 표 복사 (`Copy All Summary (Text)`)
-17가지 물성 **헤더 행**(1행)과 **데이터 행**(2행)이 탭 구분(TSV) 및 서식 있는 HTML 표로 동시에 복사됩니다. 빈 엑셀 영역이나 워드 본문에 <kbd>Ctrl</kbd> + <kbd>V</kbd>로 붙여넣으면 헤더가 달린 깔끔한 17열 표가 즉시 만들어집니다:
+#### ① 표의 첫 행을 만들 때 — 12열 헤더 + 데이터 표 복사 (`Copy All Summary (Text)`)
+12가지 물성 **헤더 행**(1행)과 **데이터 행**(2행)이 탭 구분(TSV) 및 서식 있는 HTML 표로 동시에 복사됩니다. 빈 엑셀 영역이나 워드 본문에 <kbd>Ctrl</kbd> + <kbd>V</kbd>로 붙여넣으면 헤더가 달린 깔끔한 12열 표가 즉시 만들어집니다:
 ```text
-Name	Formula	MW (g/mol)	Exact Mass	LogP	TPSA (Å²)	HBD	HBA	RotB	Heavy Atoms	Rings	Aromatic Rings	Fsp3	Chiral Centers	Lipinski	SMILES	InChIKey
-Aspirin	C9H8O4	180.16	180.0423	1.31	63.6	1	4	3	13	1	1	0.11	0	Pass	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
+Name	Formula	MW (g/mol)	Exact Mass	LogP	TPSA (Å²)	Heavy Atoms	Rings	Aromatic Rings	Fsp3	SMILES	InChIKey
+Aspirin	C9H8O4	180.16	180.0423	1.31	63.6	13	1	1	0.11	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 ```
 
 #### ② 기존 표 아래 행에 계속 이어 붙일 때 — 데이터 행만 복사 (`Copy as Excel Row (TSV Columns)`)
-헤더 없이 **17열 데이터 값만** 복사됩니다. 이미 만들어 둔 엑셀 시트나 워드 표(Table)의 다음 빈 행에 <kbd>Ctrl</kbd> + <kbd>V</kbd>로 붙여넣으면 각 칸(열)으로 자동 분할되어 들어갑니다:
+헤더 없이 **12열 데이터 값만** 복사됩니다. 이미 만들어 둔 엑셀 시트나 워드 표(Table)의 다음 빈 행에 <kbd>Ctrl</kbd> + <kbd>V</kbd>로 붙여넣으면 각 칸(열)으로 자동 분할되어 들어갑니다:
 ```text
-Aspirin	C9H8O4	180.16	180.0423	1.31	63.6	1	4	3	13	1	1	0.11	0	Pass	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
+Aspirin	C9H8O4	180.16	180.0423	1.31	63.6	13	1	1	0.11	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 ```
 
 #### ③ 파워포인트 슬라이드 & 실험 섹션 요약용 (`Copy as Multi-Line List`)
@@ -83,14 +82,9 @@ Molecular Weight: 180.16 g/mol
 Exact Mass: 180.0423
 LogP: 1.31
 TPSA: 63.6 Å²
-H-Bond Donors: 1
-H-Bond Acceptors: 4
-Rotatable Bonds: 3
 Heavy Atoms: 13
 Rings (Total / Aromatic): 1 / 1
 Fraction Csp3 (Fsp3): 0.11
-Chiral Centers: 0
-Lipinski Rule of 5: Passed
 SMILES: CC(=O)Oc1ccccc1C(=O)O
 InChI: InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)
 InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
@@ -107,11 +101,9 @@ InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 | **Exact Mass** | 180.0423 |
 | **LogP** | 1.31 |
 | **TPSA** | 63.6 Å² |
-| **HBD / HBA / RotB** | 1 / 4 / 3 |
-| **Heavy Atoms / Chiral** | 13 / 0 |
+| **Heavy Atoms** | 13 |
 | **Rings (Total / Aromatic)** | 1 / 1 |
 | **Fraction Csp3 (Fsp3)** | 0.11 |
-| **Lipinski Rule of 5** | Passed |
 | **SMILES** | `CC(=O)Oc1ccccc1C(=O)O` |
 | **InChI** | `InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)` |
 | **InChIKey** | `BSYNRYMUTXBXSQ-UHFFFAOYSA-N` |
@@ -128,15 +120,10 @@ InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
   "exactMass": 180.0423,
   "logP": 1.31,
   "tpsa": 63.6,
-  "hBondDonors": 1,
-  "hBondAcceptors": 4,
-  "rotatableBonds": 3,
   "heavyAtomCount": 13,
   "ringCount": 1,
   "aromaticRingCount": 1,
   "fsp3": 0.11,
-  "chiralCenters": 0,
-  "passesLipinski": true,
   "smiles": "CC(=O)Oc1ccccc1C(=O)O",
   "inchi": "InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)",
   "inchiKey": "BSYNRYMUTXBXSQ-UHFFFAOYSA-N"
@@ -145,5 +132,5 @@ InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 
 ## 🚀 다음 단계로 이어서 보기
 
-- [**40개 엑셀 함수 전체 개요**](/ko/excel/formulas) — 40종 전체 엑셀 화학 함수의 입력·출력 규격 및 공용 렌더링 옵션 레퍼런스
+- [**49개 엑셀 함수 전체 개요**](/ko/excel/formulas) — 49종 전체 엑셀 화학 함수의 입력·출력 규격 및 공용 렌더링 옵션 레퍼런스
 - [**자주 묻는 질문 (FAQ)**](/ko/guide/faq) — 설치·실행, 엑셀 수식, 스타일·벡터 연동, 로컬 실행 및 네트워크 보안 관련 핵심 Q&A

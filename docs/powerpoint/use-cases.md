@@ -37,7 +37,7 @@ Assemble aligned 4–8 analog comparison slides in minutes and tweak substituent
 
 1. **Convert TextBoxes In-Place (`0.1s`):** Lay out 4 candidate cards with TextBoxes containing SMILES or compound names (`Aspirin`, `Caffeine`, `Paracetamol`), select each TextBox border, and click **`[SMILES]` ➔ `[Paste Structure]`**.
 2. **Unify Visual Style in 1s:** Run **`[SMILES]` ➔ `[Batch Style]`** (`Dark Mode` or `Standard Color`; ungroup cards first if grouped with `Ctrl+G`).
-3. **Add Verified ADME Footnotes:** Click each candidate and choose **`[Molecule Info]` ➔ `[Copy as Multi-Line List]`** to paste Formula, MW, LogP, TPSA, and Lipinski status beneath the card.
+3. **Add Verified ADME Footnotes:** Click each candidate and choose **`[Molecule Info]` ➔ `[Copy as Multi-Line List]`** to paste Formula, MW, LogP, TPSA, and `Fsp3` beneath the card.
 4. **Update Next Week in Seconds:** **Double-click** any card's structure in Normal view to modify R-groups in Ketcher—its card center and footprint stay locked automatically.
 
 * **Next:** [**2. Dark Mode, Cards, Deck Restyle**](/powerpoint/dark-mode) · [**1. 2D Structures & Reaction Slides**](/powerpoint/slides-structures) · Playbook **Slides 3 & 4**
@@ -65,7 +65,7 @@ Bring `KET` reaction schemes directly over from your Word paper onto dark semina
 
 1. **Reuse Paper Schemes in 3s:** Select any `KET` reaction scheme in Word or Excel and click **`[SMILES]` ➔ `[Copy KET]`**. Switch to PowerPoint, click **`[Paste Structure]`**, and run **`[Batch Style]` ➔ `[Dark Mode]`** *(apply PowerPoint animations after finishing chemical edits)*.
 2. **Preload Q&A Speaker Notes:** Click **`[Molecule Info]` ➔ `[Copy as Multi-Line List]`** on key compounds and paste into **Speaker Notes** so exact values appear privately in Presenter View.
-3. **Inspect All 17 Descriptors Live:** After finishing full-screen slides (<kbd>Esc</kbd>), click any structure and open **`[Molecule Info]` ➔ `[Detailed Molecule Info Window...]`** to show calculated properties side by side.
+3. **Inspect All 12 Descriptors Live:** After finishing full-screen slides (<kbd>Esc</kbd>), click any structure and open **`[Molecule Info]` ➔ `[Detailed Molecule Info Window...]`** to show calculated properties side by side.
 
 ::: tip Cross-App Suite Handoff
 Screen libraries in [**Excel Use Cases**](/excel/use-cases) ➔ draft manuscripts in [**Word Use Cases**](/word/use-cases) ➔ bring those exact `KET` schemes and `SMILES` directly into your PowerPoint slides and posters.

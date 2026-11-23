@@ -1,9 +1,9 @@
 ﻿<#
 .SYNOPSIS
     Generates the official self-contained func_SMILES2IMG Excel Interactive Playbook
-    (10 tabs: Quick Start -> Core Rendering -> Properties/Lipinski -> SAR/SMARTS ->
+    (10 tabs: Quick Start -> Core Rendering -> Properties/3D -> SAR/SMARTS ->
     Conversions -> Styles -> Reactions/KET -> Real-World Lab Workflows -> Legacy .FLOAT ->
-    Complete 40-Function, Ribbon & SDF Reference).
+    Complete 49-Function, Ribbon & SDF Reference).
 #>
 param(
     [string]$AddInPath = (Join-Path $PSScriptRoot '..\dist\x64\Smiles2Img-AddIn64-packed.xll'),
@@ -46,7 +46,7 @@ $coreDll = (Resolve-Path (Join-Path $repoRoot 'dist\x64\Word\Smiles2Img.Core.dll
 [System.Reflection.Assembly]::LoadFrom($coreDll) | Out-Null
 [Smiles2Img.Rendering.NativeIndigo]::Initialize((Split-Path $coreDll -Parent))
 
-$addinVersion = '1.8.1'
+$addinVersion = '1.9.0'
 try {
     $propsXml = [xml](Get-Content (Join-Path $repoRoot 'Directory.Build.props') -Raw)
     if ($propsXml.Project.PropertyGroup.Version) { $addinVersion = [string]$propsXml.Project.PropertyGroup.Version }
@@ -271,8 +271,8 @@ try {
     $tabSpecs = @(
         @{ Name = '0. Start Here';             Color = 0x6E760F }, # Teal #0F766E (BGR)
         @{ Name = '1. Structure Rendering';    Color = 0xB4661B }, # Blue
-        @{ Name = '2. Properties & Lipinski';  Color = 0x417C10 }, # Excel Green
-        @{ Name = '3. SAR & Similarity';       Color = 0x993366 }, # Purple
+        @{ Name = '2. Properties & 3D';        Color = 0x417C10 }, # Excel Green
+        @{ Name = '3. SAR & SMARTS';           Color = 0x993366 }, # Purple
         @{ Name = '4. Notation Conversions';   Color = 0x8F5E00 }, # Deep Cyan
         @{ Name = '5. Styles & Transforms';    Color = 0x0066CC }, # Amber/Orange
         @{ Name = '6. Reactions & KET';        Color = 0x52731E }, # Olive Teal
@@ -295,7 +295,7 @@ try {
     $s0 = $sheets[0]
     Set-BannerAndCallout $s0 7 `
         "func_SMILES2IMG v$addinVersion — Self-Contained Microsoft Excel Playbook" `
-        "No web documentation needed! Explore all 10 tabs from basics to real-world lab workflows. SMILES/InChI/KET rendering, all 32 property/SAR formulas, and Ketcher 2D run locally offline; optional PubChem Name/CAS lookup and Mol* PDB fetch use the network once and cache locally." `
+        "No web documentation needed! Explore all 10 tabs from basics to real-world lab workflows. SMILES/InChI/KET rendering, all 41 property/SAR/conversion formulas, and Ketcher 2D run locally offline; optional PubChem Name/CAS lookup and Mol* PDB fetch use the network once and cache locally." `
         0x6E760F
 
     Add-SectionHeader $s0 4 7 'A. 3-Minute Interactive Sandbox — Try Editing Any Input (Col C) or Double-Click Any Structure Cell (Col E)!'
@@ -308,7 +308,7 @@ try {
         @(4, 'InChI -> 2D Structure',  'InChI=1S/C8H9NO2/c1-6(10)9-7-2-4-8(11)5-3-7/h2-5,11H,1H3,(H,9,10)', '=INCHI2IMG(C9)', '', 'Edit InChI or double-click cell', 'Direct rendering from IUPAC Standard InChI identifiers'),
         @(5, 'Molecular Weight (MW)',  'CC(=O)Oc1ccccc1C(=O)O',                '=SMILES2MW(C10)',                '', 'Use in math: =SMILES2MW(C10)*10',       'Returns a native Excel Double (180.16) for stoichiometry & mass formulas'),
         @(6, 'Chemical Formula',       'CC(=O)Oc1ccccc1C(=O)O',                '=SMILES2FORMULA(C11)',           '', 'Combine with text: & operator',         'Instant offline Hill formula (C9H8O4) with zero server calls'),
-        @(7, 'Lipinski Rule of 5',     'CC(=O)Oc1ccccc1C(=O)O',                '=SMILES2LIPINSKI(C12)',          '', 'Filter with =COUNTIF(..., "PASS")',     'Screens oral drug-likeness (MW<=500, LogP<=5, HBD<=5, HBA<=10)'),
+        @(7, 'TPSA (Polar Surface)',   'CC(=O)Oc1ccccc1C(=O)O',                '=SMILES2TPSA(C12)',              '', 'Pass TRUE: =SMILES2TPSA(C12,TRUE)',     'Indigo Ertl TPSA (A^2; optional TRUE includes S/P atoms)'),
         @(8, 'Substructure Match',     'CC(=O)Oc1ccccc1C(=O)O',                '=SMILES.MATCH(C13, "c1ccccc1")', '', 'Swap "c1ccccc1" -> "C(=O)O"',           'Returns TRUE/FALSE for SMARTS/SMILES pharmacophore filtering'),
         @(9, 'ACS Publication B&W',    'CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O',      '=SMILES2IMG(C14, , "bw stereo")','', 'Or click Ribbon -> Batch Style',        'Combine tokens: pure black ACS journal line art + chiral R/S labels'),
         @(10,'Dark Mode (White Ink)',  'Cn1cnc2c1c(=O)n(C)c(=O)n2C',           '=SMILES2IMG(C15, "#1E293B", "white")','', 'Right-click -> Copy Vector SVG',    'High-contrast white carbon bonds over dark cells or conference slides')
@@ -321,7 +321,7 @@ try {
             '=INCHI2IMG(C9)',
             '=SMILES2MW(C10)',
             '=SMILES2FORMULA(C11)',
-            '=SMILES2LIPINSKI(C12)',
+            '=SMILES2TPSA(C12)',
             '=SMILES.MATCH(C13, "c1ccccc1")',
             '=SMILES2IMG(C14, , "bw stereo")',
             '=SMILES2IMG(C15, "#1E293B", "white")'
@@ -334,14 +334,14 @@ try {
     $mapRows = @(
         @('0', '0. Start Here',            'Beginner',     'Instant orientation & live sandbox',           'Top 10 formulas + double-click edit',             'Edit Col C & double-click Col E',           'First-time users'),
         @('1', '1. Structure Rendering',   'Beginner',     'Render from Name, CAS, SMILES & InChI',        '=NAME2IMG, =SMILES2IMG, =INCHI2IMG',              'Drag down across 12 compound rows',         'Catalogs & inventories'),
-        @('2', '2. Properties & Lipinski', 'Intermediate', '18-col medicinal chemistry screening table',   'All 14 property & 3D complexity UDFs + KPIs',     'Live COUNTIF & AVERAGE dashboard',          'Drug discovery & ADMET'),
-        @('3', '3. SAR & Similarity',      'Intermediate', 'Substructure highlighting & Tanimoto rank',    '=SMILES.MATCH, hl:SMARTS, =SMILES.SIMILARITY',    'Edit Query B3 + built-in 12-group SMARTS',  'SAR & hit expansion'),
+        @('2', '2. Properties & 3D',       'Intermediate', '14-col medicinal chemistry screening table',   'All 9 SMILES property & 3D complexity UDFs',      'Live AVERAGE & SUM dashboard',              'Drug discovery & ADMET'),
+        @('3', '3. SAR & SMARTS',          'Intermediate', 'Substructure highlighting & InChI parity',     '=SMILES.MATCH, =INCHI.MATCH, hl:SMARTS',          'Edit Query B3 + built-in 12-group SMARTS',  'SAR & scaffold filters'),
         @('4', '4. Notation Conversions',  'Intermediate', 'Standardize & deduplicate chemical IDs',       '=NAME2SMILES, =INCHI2*, =SMILES2INCHIKEY',        'Automatic duplicate detector via InChIKey', 'Database cleaning'),
         @('5', '5. Styles & Transforms',   'Intermediate', 'ACS B&W, Dark Mode, NMR numbering, rotation',  'All 16 style presets + full token cheat sheet',   'Edit benchmark molecule B3',                'Papers & presentations'),
-        @('6', '6. Reactions & KET',       'Advanced',     'Multi-step reaction schemes & KET JSON',       '=KET2IMG, =KET2FORMULA, =KET2MW, =KET2EXACTMASS', 'Double-click Aspirin synthesis in Ketcher', 'Synthetic chemistry'),
+        @('6', '6. Reactions & KET',       'Advanced',     'Multi-step reaction schemes & KET JSON',       '=KET2IMG, =KET2SMILES, =KET2FORMULA, =KET2MW',    'Double-click Aspirin synthesis in Ketcher', 'Synthetic chemistry'),
         @('7', '7. Real-World Workflows',  'Production',   'Copy-ready Stoichiometry & MPO Triage labs',   'Live mg/mmol scaling + Yield % + MPO IF/AND',     'Change Target mmol (H6) to rescale lab',    'Daily bench & med-chem'),
         @('8', '8. Legacy Excel (.FLOAT)', 'Compat',       'Excel 2016 / 2019 / 2021 floating shapes',     '=SMILES2IMG.FLOAT, =NAME2IMG.FLOAT',              '10 floating cell-anchored shapes',          'Excel 2016-2021 users'),
-        @('9', '9. Ribbon, SDF & Ref',     'Reference',    'Complete 40-UDF catalog, Ribbon & .SDF guide', 'All 40 UDFs, 3-level context menu, Error codes',  'Export any tab to .sdf & re-import',        'Offline desktop reference')
+        @('9', '9. Ribbon, SDF & Ref',     'Reference',    'Complete 49-UDF catalog, Ribbon & .SDF guide', 'All 49 UDFs, 3-level context menu, Error codes',  'Import any .sdf file via [Import SDF]',     'Offline desktop reference')
     )
     Add-StyledTable $s0 18 $mapHeaders $mapRows @{} 0x475569 @() 28 @(2,4,5,6,7) @()
 
@@ -379,9 +379,9 @@ try {
     Add-StyledTable $s1 3 $t1Headers $t1Rows $t1Formulas 0xC97A22 $t1Widths 74 @(2,3,4,6,8) @(3,4,6)
 
     # =========================================================================
-    # TAB 2: Physicochemical Properties, 3D Complexity & Lipinski Ro5 Dashboard
+    # TAB 2: Physicochemical Properties & 3D Complexity Dashboard
     # =========================================================================
-    Write-Host '[3/10] Building Tab 2: Properties & Lipinski Dashboard...' -ForegroundColor Yellow
+    Write-Host '[3/10] Building Tab 2: Properties & 3D Complexity Dashboard...' -ForegroundColor Yellow
     $s2 = $sheets[2]
     $t2Cols = @(
         @{ H = '#';              W = 5;  Fn = $null },
@@ -393,35 +393,30 @@ try {
         @{ H = 'Exact Mass';     W = 12; Fn = 'SMILES2EXACTMASS' },
         @{ H = 'LogP';           W = 8;  Fn = 'SMILES2LOGP' },
         @{ H = 'TPSA (A^2)';     W = 10; Fn = 'SMILES2TPSA' },
-        @{ H = 'HBD';            W = 7;  Fn = 'SMILES2HBD' },
-        @{ H = 'HBA';            W = 7;  Fn = 'SMILES2HBA' },
-        @{ H = 'RotB';           W = 7;  Fn = 'SMILES2ROTBONDS' },
         @{ H = 'Heavy';          W = 7;  Fn = 'SMILES2HEAVY' },
         @{ H = 'Rings';          W = 7;  Fn = 'SMILES2RINGS' },
         @{ H = 'Arom';           W = 7;  Fn = 'SMILES2AROMATIC' },
         @{ H = 'Fsp3';           W = 8;  Fn = 'SMILES2FSP3' },
-        @{ H = 'Chiral';         W = 7;  Fn = 'SMILES2CHIRAL' },
-        @{ H = 'Lipinski Ro5';   W = 24; Fn = 'SMILES2LIPINSKI' },
-        @{ H = 'Med-Chem Note';  W = 34; Fn = $null }
+        @{ H = 'Med-Chem Note';  W = 36; Fn = $null }
     )
     Set-BannerAndCallout $s2 $t2Cols.Length `
-        '2. Physicochemical Descriptors, 3D Complexity & Lipinski Ro5 Screening (100% Offline)' `
-        'Lipinski Rule of 5: MW <= 500 | LogP <= 5 | HBD <= 5 | HBA <= 10. Escape from Flatland: Fsp3 >= 0.25 and Aromatic Rings <= 3 improve solubility. All numeric outputs work directly inside AVERAGE / COUNTIF / IF!' `
+        '2. Physicochemical Descriptors & 3D Complexity Dashboard (100% Offline)' `
+        'EPAM Indigo Wildman-Crippen LogP & Ertl TPSA paired with 3D complexity metrics: Fsp3 >= 0.25 and fewer Aromatic Rings help improve solubility. All numeric outputs work directly inside AVERAGE / SUM / COUNTIF / IF!' `
         0x417C10
 
     $t2Drugs = @(
-        @('Aspirin',      'CC(=O)Oc1ccccc1C(=O)O',                                                                                           'NSAID; 0 Ro5 violations; flat aromatic (Fsp3=0.11)'),
-        @('Ibuprofen',    'CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O',                                                                                 'NSAID; 0 violations; 1 chiral center; good Fsp3'),
-        @('Caffeine',     'Cn1cnc2c1c(=O)n(C)c(=O)n2C',                                                                                      'Purine CNS stimulant; low TPSA; passes BBB'),
-        @('Paracetamol',  'CC(=O)Nc1ccc(O)cc1',                                                                                              'Analgesic; compact MW=151; 0 violations'),
-        @('Penicillin G', 'CC1(C(N2C(S1)C(C2=O)NC(=O)Cc3ccccc3)C(=O)O)C',                                                                    'Beta-lactam antibiotic; 3 chiral centers'),
-        @('Morphine',     'CN1CC[C@]23[C@@H]4Oc5c3c(CC1[C@@H]2C=C[C@@H]4O)ccc5O',                                                            'Opioid alkaloid; rigid 5-ring 3D scaffold'),
+        @('Aspirin',      'CC(=O)Oc1ccccc1C(=O)O',                                                                                           'NSAID; C9H8O4; flat aromatic (Fsp3=0.11)'),
+        @('Ibuprofen',    'CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O',                                                                                 '(S)-NSAID; LogP=3.21; Fsp3=0.46'),
+        @('Caffeine',     'Cn1cnc2c1c(=O)n(C)c(=O)n2C',                                                                                      'Purine CNS stimulant; LogP=-1.03; TPSA=61.8'),
+        @('Paracetamol',  'CC(=O)Nc1ccc(O)cc1',                                                                                              'Analgesic; compact MW=151.17; TPSA=49.3'),
+        @('Penicillin G', 'CC1([C@@H](N2[C@H](S1)[C@@H](C2=O)NC(=O)Cc3ccccc3)C(=O)O)C',                                                      'Beta-lactam antibiotic; bicyclic core'),
+        @('Morphine',     'CN1CC[C@]23[C@@H]4Oc5c3c(C[C@@H]1[C@@H]2C=C[C@@H]4O)ccc5O',                                                       'Opioid alkaloid; rigid 5-ring 3D scaffold'),
         @('Dopamine',     'NCCc1ccc(O)c(O)c1',                                                                                               'Neurotransmitter; low MW catecholamine'),
-        @('Nicotine',     'CN1CCC[C@H]1c2cccnc2',                                                                                            'Cholinergic ligand; 1 chiral center; LogP=1.2'),
-        @('Artemisinin',  'CC1CCC2C(C(=O)OC3C24C1CCC(O3)(OO4)C)C',                                                                           'Nobel antimalarial; sp3-rich (Fsp3=0.93, 0 arom)'),
-        @('Cholesterol',  'CC(C)CCCC(C)C1CCC2C1(CCC3C2CC=C4C3(CCC(C4)O)C)C',                                                                 'Sterol lipid; fails Ro5 due to LogP > 5'),
-        @('Atorvastatin', 'CC(C)c1c(c(c(c1NC(=O)c2ccccc2)c3ccc(cc3)F)c4ccccc4)CC(O)CC(O)CC(=O)O',                                            'Statin; fails Ro5 (MW > 500, LogP > 5)'),
-        @('Paclitaxel',   'CC1=C2C(C(=O)C3(C(CC4C(C3C(C(C2(C)C)(CC1OC(=O)C(C(c5ccccc5)NC(=O)c6ccccc6)O)O)OC(=O)c7ccccc7)(CO4)OC(=O)C)O)C)OC(=O)C','Taxol natural product; exceeds Ro5 (MW=854)')
+        @('Nicotine',     'CN1CCC[C@H]1c2cccnc2',                                                                                            'Cholinergic ligand; Fsp3=0.50; LogP=1.85'),
+        @('Artemisinin',  'C[C@@H]1CC[C@H]2[C@@H](C)C(=O)O[C@@H]3O[C@@]4(C)CC[C@@H]1[C@]23OO4',                                              'Antimalarial endoperoxide; Fsp3=0.93; 0 arom rings'),
+        @('Cholesterol',  'C[C@H](CCCC(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C',                               'Sterol lipid; high Fsp3 (0.93) & LogP (7.39)'),
+        @('Atorvastatin', 'CC(C)c1c(C(=O)Nc2ccccc2)c(c(n1CC[C@@H](C[C@@H](CC(=O)O)O)O)c3ccc(F)cc3)c4ccccc4',                                  'Statin; 4 aromatic rings; MW=558.7; fluorinated pyrrole'),
+        @('Paclitaxel',   'CC1=C2[C@@]([C@]([C@H]([C@@H]3[C@]4([C@H](OC4)C[C@@H]([C@]3(C(=O)[C@@H]2OC(=O)C)C)O)OC(=O)C)OC(=O)c5ccccc5)(C[C@@H]1OC(=O)[C@H](O)[C@@H](NC(=O)c6ccccc6)c7ccccc7)O)(C)C','Taxol natural product; 7 rings; MW=853.9')
     )
     $t2Start = 4
     $t2End = $t2Start + $t2Drugs.Length - 1
@@ -439,7 +434,7 @@ try {
             $t2Formulas[$colL] = @($t2Start..$t2End | ForEach-Object { "=$($t2Cols[$c].Fn)(C$_)" })
         }
     }
-    Add-StyledTable $s2 3 @($t2Cols | ForEach-Object { $_.H }) $t2Rows $t2Formulas 0x4E8E1E @($t2Cols | ForEach-Object { $_.W }) 74 @(2,3,19) @(3,5)
+    Add-StyledTable $s2 3 @($t2Cols | ForEach-Object { $_.H }) $t2Rows $t2Formulas 0x4E8E1E @($t2Cols | ForEach-Object { $_.W }) 74 @(2,3,14) @(3,5)
 
     # Live KPI Summary Row below the 12-drug screening table (Row 17)
     $kpiRow = $t2End + 2
@@ -450,11 +445,10 @@ try {
         $s2.Range("F${kpiRow}").Formula = "=ROUND(AVERAGE(F${t2Start}:F${t2End}),2)"
         $s2.Range("H${kpiRow}").Formula = "=ROUND(AVERAGE(H${t2Start}:H${t2End}),2)"
         $s2.Range("I${kpiRow}").Formula = "=ROUND(AVERAGE(I${t2Start}:I${t2End}),1)"
-        $s2.Range("M${kpiRow}").Formula = "=ROUND(AVERAGE(M${t2Start}:M${t2End}),1)"
-        $s2.Range("P${kpiRow}").Formula = "=ROUND(AVERAGE(P${t2Start}:P${t2End}),2)"
-        $s2.Range("R${kpiRow}").Formula = "=COUNTIF(R${t2Start}:R${t2End},`"PASS`") & `" / `" & COUNTA(R${t2Start}:R${t2End}) & `" PASS`""
-        $s2.Range("S${kpiRow}").Value2 = 'Shows UDFs return true Excel numbers & strings for native analytics!'
-        $kr = $s2.Range("A${kpiRow}:S${kpiRow}")
+        $s2.Range("J${kpiRow}").Formula = "=ROUND(AVERAGE(J${t2Start}:J${t2End}),1)"
+        $s2.Range("M${kpiRow}").Formula = "=ROUND(AVERAGE(M${t2Start}:M${t2End}),2)"
+        $s2.Range("N${kpiRow}").Value2 = 'UDFs return true Excel numbers for native AVERAGE!'
+        $kr = $s2.Range("A${kpiRow}:N${kpiRow}")
         $kr.Interior.Color = 0xF0FDF4
         $kr.Font.Bold = $true
         $kr.RowHeight = 28
@@ -462,17 +456,17 @@ try {
         $kr.Borders.Color = 0xB7E4C7
         $kr.VerticalAlignment = -4108
         $kr.HorizontalAlignment = -4108
-        $s2.Range("S${kpiRow}").HorizontalAlignment = -4131
+        $s2.Range("N${kpiRow}").HorizontalAlignment = -4131
     }
 
     # =========================================================================
-    # TAB 3: SAR Substructure Screening, Similarity Ranking & SMARTS Dictionary
+    # TAB 3: SAR Substructure Screening, InChI Parity & SMARTS Dictionary
     # =========================================================================
-    Write-Host '[4/10] Building Tab 3: SAR, Similarity & SMARTS Dictionary...' -ForegroundColor Yellow
+    Write-Host '[4/10] Building Tab 3: SAR, SMARTS Highlighting & Dictionary...' -ForegroundColor Yellow
     $s3 = $sheets[3]
     Set-BannerAndCallout $s3 8 `
-        '3. Substructure Search (=SMILES.MATCH), Highlighting (hl:) & Tanimoto Similarity (=SMILES.SIMILARITY)' `
-        'Interactive Exercise: Edit Cell B3 (copy any SMARTS from the 12-group dictionary below!) or Cell F3 (Lead SMILES) to immediately recompute matches, red ring highlights, and similarity rankings.' `
+        '3. Substructure Search (=SMILES.MATCH & =INCHI.MATCH) & Visual Highlighting (hl:)' `
+        'Interactive Exercise: Edit Cell B3 (copy any SMARTS from the 12-group dictionary below!) to immediately recompute SMILES/InChI substructure matches and bright red scaffold highlights.' `
         0x993366
 
     Invoke-Excel {
@@ -486,24 +480,14 @@ try {
         $s3.Range('B3').HorizontalAlignment = -4108
         $s3.Range('C3').Value2 = 'Try: C(=O)O | c1ccncc1 | c1ccc(O)cc1'
         $s3.Range('C3').Font.Italic = $true
-        $s3.Range('E3').Value2 = 'Lead SMILES ($F$3):'
-        $s3.Range('E3').Font.Bold = $true
-        $s3.Range('E3').HorizontalAlignment = -4152
-        $s3.Range('F3').Value2 = 'CC(=O)Oc1ccccc1C(=O)O'
-        $s3.Range('F3').Font.Bold = $true
-        $s3.Range('F3').Font.Name = 'Consolas'
-        $s3.Range('F3').Interior.Color = 0xFCE8D5
-        $s3.Range('F3').HorizontalAlignment = -4108
-        $s3.Range('G3').Value2 = '(Aspirin Lead)'
-        $s3.Range('G3').Font.Italic = $true
         $s3.Rows.Item(3).RowHeight = 25
     }
 
-    $t3Headers = @('#', 'Compound', 'Target SMILES', 'Match? (=SMILES.MATCH)', 'Highlighted Structure (hl:)', 'Tanimoto Similarity', 'Similarity Rank', 'SAR Pharmacophore Interpretation')
-    $t3Widths  = @(5, 18, 30, 22, 26, 20, 14, 44)
+    $t3Headers = @('#', 'Compound', 'Target SMILES', 'Match? (=SMILES.MATCH)', 'Highlighted Structure (hl:)', 'InChI Parity (=INCHI.MATCH)', 'LogP (=SMILES2LOGP)', 'SAR Pharmacophore Interpretation')
+    $t3Widths  = @(5, 18, 30, 22, 26, 24, 18, 44)
     $t3Rows = @(
-        @(1,  'Aspirin',     'CC(=O)Oc1ccccc1C(=O)O',                    '', '', '', '', 'Exact lead match (Similarity = 1.00); contains benzene core'),
-        @(2,  'Salicylic Acid','O=C(O)c1ccccc1O',                        '', '', '', '', 'Aspirin precursor; high scaffold similarity + benzene ring'),
+        @(1,  'Aspirin',     'CC(=O)Oc1ccccc1C(=O)O',                    '', '', '', '', 'Salicylate ester lead containing benzene core -> TRUE'),
+        @(2,  'Salicylic Acid','O=C(O)c1ccccc1O',                        '', '', '', '', 'Aspirin precursor with phenolic benzene ring -> TRUE'),
         @(3,  'Ibuprofen',   'CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O',          '', '', '', '', 'Para-substituted benzene highlighted in bright red'),
         @(4,  'Paracetamol', 'CC(=O)Nc1ccc(O)cc1',                       '', '', '', '', 'Acetamide phenol sharing benzene ring with Aspirin'),
         @(5,  'Vanillin',    'O=Cc1ccc(O)c(OC)c1',                       '', '', '', '', 'Substituted phenolic aldehyde containing benzene'),
@@ -516,8 +500,8 @@ try {
     $t3Formulas = @{
         'D' = @(5..14 | ForEach-Object { "=SMILES.MATCH(C$_, `$B`$3)" });
         'E' = @(5..14 | ForEach-Object { "=SMILES2IMG(C$_, , `"hl:`" & `$B`$3)" });
-        'F' = @(5..14 | ForEach-Object { "=ROUND(SMILES.SIMILARITY(C$_, `$F`$3), 3)" });
-        'G' = @(5..14 | ForEach-Object { "=RANK(F$_, `$F`$5:`$F`$14)" })
+        'F' = @(5..14 | ForEach-Object { "=INCHI.MATCH(SMILES2INCHI(C$_), `$B`$3)" });
+        'G' = @(5..14 | ForEach-Object { "=SMILES2LOGP(C$_)" })
     }
     Add-StyledTable $s3 4 $t3Headers $t3Rows $t3Formulas 0xB34D80 $t3Widths 72 @(2,3,8) @(3)
 
@@ -534,7 +518,7 @@ try {
         @(8,  'Aryl Halide (F/Cl)', '[c][F,Cl,Br,I]',        '=SMILES.MATCH(C5,"[c][F,Cl,Br,I]")', 'Atorvastatin',       'Halogenated',   'Metabolic blocker / halogen bonding',          'Paste into B3'),
         @(9,  'Sulfonamide',        'S(=O)(=O)N',            '=SMILES.MATCH(C5,"S(=O)(=O)N")',     'Sulfa drugs',        'Bioisostere',   'Classic carboxylic acid bioisostere',          'Paste into B3'),
         @(10, 'Aldehyde',           '[CX3H1](=O)[#6]',       '=SMILES.MATCH(C5,"[CX3H1](=O)[#6]")','Vanillin',           'Reactive Alert','Electrophilic carbonyl / PAINS alert',         'Paste into B3'),
-        @(11, 'Nitro Group',        '[$([NX3](=O)=O)]',      '=SMILES.MATCH(C5,"[$([NX3](=O)=O)]")','Nitroaromatics',    'Toxicity Alert','Mutagenicity / structural alert screen',       'Paste into B3'),
+        @(11, 'Nitro Group',        '[$([NX3](=O)=O),$([NX3+](=O)[O-])]', '=SMILES.MATCH(C5,"[$([NX3](=O)=O),$([NX3+](=O)[O-])]")','Nitroaromatics', 'Toxicity Alert','Mutagenicity / structural alert screen', 'Paste into B3'),
         @(12, 'Michael Acceptor',   '[C]=[C]-C(=O)',         '=SMILES.MATCH(C5,"[C]=[C]-C(=O)")',  'Covalent inhibitors','Covalent Warhead','Targeted covalent cysteine warhead',          'Paste into B3')
     )
     Add-StyledTable $s3 17 $smartsHeaders $smartsRows @{} 0x6B2D5C @() 26 @(2,3,4,5,7) @(3,4)
@@ -622,8 +606,8 @@ try {
         @(12, 'Chained: Pipe Delimiter', '(default)',   '"bw|num"',                   '=SMILES2IMG($B$3, , "bw|num")',                              '', 'Pipe-delimited monochrome + NMR atom indices'),
         @(13, 'Rotate 90 deg CW',        '(default)',   'transform="rot90"',          '=SMILES2IMG($B$3, , , "rot90")',                             '', 'Compact vertical orientation for narrow columns'),
         @(14, 'Rotate 180 deg',          '(default)',   'transform="rot180"',         '=SMILES2IMG($B$3, , , "rot180")',                            '', '180-degree planar orientation alignment'),
-        @(15, 'Horizontal Mirror Flip',  '(default)',   'transform="flip"',           '=SMILES2IMG($B$3, , , "flip")',                              '', 'Left-right mirror flip for SAR series alignment'),
-        @(16, 'All-in-One Combined',     '"white"',     '"bw num stereo", "flip rot90"','=SMILES2IMG($B$3, "white", "bw num stereo", "flip rot90")','', 'White BG + B&W + Numbers + Stereo + Flip + Rot90')
+        @(15, 'Rotate 270 deg CW',       '(default)',   'transform="rot270"',          '=SMILES2IMG($B$3, , , "rot270")',                            '', '270-degree planar rotation (stereo-safe)'),
+        @(16, 'All-in-One Combined',     '"white"',     '"bw num stereo", "rot90"',    '=SMILES2IMG($B$3, "white", "bw num stereo", "rot90")',     '', 'White BG + B&W + Numbers + Stereo + Rot90')
     )
     $t5Formulas = @{
         'F' = @(
@@ -641,8 +625,8 @@ try {
             '=SMILES2IMG($B$3, , "bw|num")',
             '=SMILES2IMG($B$3, , , "rot90")',
             '=SMILES2IMG($B$3, , , "rot180")',
-            '=SMILES2IMG($B$3, , , "flip")',
-            '=SMILES2IMG($B$3, "white", "bw num stereo", "flip rot90")'
+            '=SMILES2IMG($B$3, , , "rot270")',
+            '=SMILES2IMG($B$3, "white", "bw num stereo", "rot90")'
         )
     }
     Add-StyledTable $s5 4 $t5Headers $t5Rows $t5Formulas 0x0080E6 $t5Widths 74 @(2,4,5,7) @(3,4,5)
@@ -654,7 +638,7 @@ try {
     $s6 = $sheets[6]
     Set-BannerAndCallout $s6 8 `
         '6. Multi-Step Reaction Schemes & Lossless EPAM Ketcher KET Canvas (=KET2IMG & =KET2*)' `
-        'Interactive Exercise: Double-click any cell in Col E to launch Ketcher 2D with full arrows, + signs, and exact 2D coordinates restored. Add catalysts/conditions above the arrow and press Ctrl+Enter!' `
+        'Interactive Exercise: Double-click any cell in Col E to launch Ketcher 2D with full arrows, + signs, and exact 2D coordinates restored. Single-molecule KET cells also support all =KET2SMILES / =KET2* / =KET.MATCH parity UDFs!' `
         0x52731E
 
     $t6Headers = @('#', 'Diagram / Reaction Title', 'KET JSON Data (Truncated View)', 'Image Formula', 'Live Rendered KET Diagram', 'Formula (=KET2FORMULA)', 'MW (=KET2MW)', 'Workflow & Round-Trip Notes')
@@ -662,9 +646,9 @@ try {
     $t6Rows = @(
         @(1, 'Aspirin Synthesis (Reaction)',     $ketAspirinRxn,     '=KET2IMG(C4)', '', 'Reaction Scheme', 'Multi-Comp', 'Salicylic Acid + Acetic Anhydride -> Aspirin. Double-click Col E to edit arrows!'),
         @(2, 'Paracetamol Synthesis (Reaction)', $ketParacetamolRxn, '=KET2IMG(C5)', '', 'Reaction Scheme', 'Multi-Comp', '4-Aminophenol + Acetic Anhydride -> Paracetamol. Preserves full reaction layout!'),
-        @(3, 'Aspirin (Single-Mol KET)',         $ketAspirinMol,     '=KET2IMG(C6)', '', '', '', 'Exact 2D coordinates + live =KET2FORMULA & =KET2MW evaluation'),
+        @(3, 'Aspirin (Single-Mol KET)',         $ketAspirinMol,     '=KET2IMG(C6)', '', '', '', 'Exact 2D coords + live =KET2SMILES, =KET2FORMULA, =KET2MW & =KET2LOGP'),
         @(4, 'Caffeine (Single-Mol KET)',        $ketCaffeineMol,    '=KET2IMG(C7)', '', '', '', 'Exact ring orientation preserved across save/reopen/share'),
-        @(5, 'Ibuprofen (Single-Mol KET)',       $ketIbuprofenMol,   '=KET2IMG(C8)', '', '', '', 'Exact 2D coordinates & functional groups preserved in Ketcher JSON')
+        @(5, 'Ibuprofen (Single-Mol KET)',       $ketIbuprofenMol,   '=KET2IMG(C8)', '', '', '', 'Exact 2D coords + chiral stereobonds + full =KET2* / =KET.MATCH parity')
     )
     $t6Formulas = @{
         'E' = @('=KET2IMG(C4)','=KET2IMG(C5)','=KET2IMG(C6)','=KET2IMG(C7)','=KET2IMG(C8)');
@@ -709,14 +693,14 @@ try {
     }
 
     # --- Use Case B: Hit-to-Lead Candidate Triage (Multi-Parameter Optimization) ---
-    Add-SectionHeader $s7 10 10 'Use Case B: Medicinal Chemistry Hit-to-Lead Triage (Auto-Decision: Lipinski PASS + Fsp3 >= 0.20 + LogP <= 4.0 + TPSA <= 90)' 0xF3E8FF 0x581C87
-    $s7BHeaders = @('ID', 'Candidate', 'SMILES', '2D Structure', 'MW', 'LogP', 'TPSA', 'Fsp3', 'Lipinski Ro5', 'MPO Decision (Formula)')
+    Add-SectionHeader $s7 10 10 'Use Case B: Medicinal Chemistry Hit-to-Lead Triage (Auto-Decision: MW <= 500 + LogP <= 4.0 + TPSA <= 90 + Fsp3 >= 0.20 + Arom <= 3)' 0xF3E8FF 0x581C87
+    $s7BHeaders = @('ID', 'Candidate', 'SMILES', '2D Structure', 'MW', 'LogP', 'TPSA', 'Fsp3', 'Arom. Rings', 'MPO Decision (Formula)')
     $s7BRows = @(
         @('CPD-01', 'Ibuprofen',   'CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O', '', '', '', '', '', '', ''),
         @('CPD-02', 'Caffeine',    'Cn1cnc2c1c(=O)n(C)c(=O)n2C',      '', '', '', '', '', '', ''),
         @('CPD-03', 'Nicotine',    'CN1CCC[C@H]1c2cccnc2',            '', '', '', '', '', '', ''),
         @('CPD-04', 'Aspirin',     'CC(=O)Oc1ccccc1C(=O)O',           '', '', '', '', '', '', ''),
-        @('CPD-05', 'Atorvastatin','CC(C)c1c(c(c(c1NC(=O)c2ccccc2)c3ccc(cc3)F)c4ccccc4)CC(O)CC(O)CC(=O)O', '', '', '', '', '', '', '')
+        @('CPD-05', 'Atorvastatin','CC(C)c1c(C(=O)Nc2ccccc2)c(c(n1CC[C@@H](C[C@@H](CC(=O)O)O)O)c3ccc(F)cc3)c4ccccc4', '', '', '', '', '', '', '')
     )
     $s7BFormulas = @{
         'D' = @(12..16 | ForEach-Object { "=SMILES2IMG(C$_)" });
@@ -724,8 +708,8 @@ try {
         'F' = @(12..16 | ForEach-Object { "=SMILES2LOGP(C$_)" });
         'G' = @(12..16 | ForEach-Object { "=SMILES2TPSA(C$_)" });
         'H' = @(12..16 | ForEach-Object { "=SMILES2FSP3(C$_)" });
-        'I' = @(12..16 | ForEach-Object { "=SMILES2LIPINSKI(C$_)" });
-        'J' = @(12..16 | ForEach-Object { "=IF(AND(I$_=`"PASS`",H$_>=0.2,F$_<=4,G$_<=90),`"ADVANCE`",`"OPTIMIZE`")" })
+        'I' = @(12..16 | ForEach-Object { "=SMILES2AROMATIC(C$_)" });
+        'J' = @(12..16 | ForEach-Object { "=IF(AND(E$_<=500,F$_<=4,G$_<=90,H$_>=0.2,I$_<=3),`"ADVANCE`",`"OPTIMIZE`")" })
     }
     Add-StyledTable $s7 11 $s7BHeaders $s7BRows $s7BFormulas 0x7E22CE @() 72 @(2,3) @(3)
     Invoke-Excel {
@@ -746,7 +730,7 @@ try {
     $s8 = $sheets[8]
     Set-BannerAndCallout $s8 8 `
         '8. Legacy Excel 2016 / 2019 / 2021 Compatibility (=SMILES2IMG.FLOAT & =NAME2IMG.FLOAT)' `
-        'Excel 2016-2021 lacks native in-cell pictures — append .FLOAT to any image formula to insert cell-anchored shapes (xlMoveAndSize). All 32 property/SAR/conversion formulas work identically without .FLOAT!' `
+        'Excel 2016-2021 lacks native in-cell pictures — append .FLOAT to any image formula to insert cell-anchored shapes (xlMoveAndSize). All 41 scalar property/SAR/conversion formulas work identically without .FLOAT!' `
         0x336633
 
     $t8Headers = @('#', 'Mode', 'Compound', 'Input (SMILES / Name)', 'Style Preset', 'Formula Syntax (Copyable)', 'Live Floating Shape (.FLOAT)', 'Compatibility Notes')
@@ -760,7 +744,7 @@ try {
         @(6,  'Hydrogens', 'Ethanol',      'CCO',                              'Explicit H',       '=SMILES2IMG.FLOAT(D9, , "h")',                               '', 'Unfolded C-H hydrogens'),
         @(7,  'Combined',  'Aspirin',      'CC(=O)Oc1ccccc1C(=O)O',            'B&W + NMR #',      '=SMILES2IMG.FLOAT(D10, , "bw num")',                         '', 'Chained space options work identically in .FLOAT'),
         @(8,  'Dark Mode', 'Nicotine',     'CN1CCC[C@H]1c2cccnc2',             'Dark + Stereo',    '=SMILES2IMG.FLOAT(D11, "#1E293B", "white stereo")',          '', 'White ink over dark background'),
-        @(9,  'Transform', 'Nicotine',     'CN1CCC[C@H]1c2cccnc2',             'Mirror Flip',      '=SMILES2IMG.FLOAT(D12, , , "flip")',                         '', 'Horizontal mirror flip'),
+        @(9,  'Transform', 'Nicotine',     'CN1CCC[C@H]1c2cccnc2',             'Rotate 270 deg',   '=SMILES2IMG.FLOAT(D12, , , "rot270")',                       '', 'Planar 270-degree rotation (stereo-safe)'),
         @(10, 'All-in-One','Aspirin',      'CC(=O)Oc1ccccc1C(=O)O',            'White+Full+Rot90', '=SMILES2IMG.FLOAT(D13, "white", "bw num stereo", "rot90")',  '', 'Full option matrix supported on legacy Excel')
     )
     $t8Formulas = @{
@@ -773,23 +757,23 @@ try {
             '=SMILES2IMG.FLOAT(D9, , "h")',
             '=SMILES2IMG.FLOAT(D10, , "bw num")',
             '=SMILES2IMG.FLOAT(D11, "#1E293B", "white stereo")',
-            '=SMILES2IMG.FLOAT(D12, , , "flip")',
+            '=SMILES2IMG.FLOAT(D12, , , "rot270")',
             '=SMILES2IMG.FLOAT(D13, "white", "bw num stereo", "rot90")'
         )
     }
     Add-StyledTable $s8 3 $t8Headers $t8Rows $t8Formulas 0x3D7A3D $t8Widths 76 @(2,3,4,6,8) @(4,6)
 
     # =========================================================================
-    # TAB 9: Complete Offline Reference (Ribbon, 3-Level Menu, SDF & All 40 UDFs)
+    # TAB 9: Complete Offline Reference (Ribbon, 3-Level Menu, SDF & All 49 UDFs)
     # =========================================================================
-    Write-Host '[10/10] Building Tab 9: Complete 40-Function, Ribbon & SDF Reference...' -ForegroundColor Yellow
+    Write-Host '[10/10] Building Tab 9: Complete 49-Function, Ribbon & SDF Reference...' -ForegroundColor Yellow
     $s9 = $sheets[9]
     Set-BannerAndCallout $s9 6 `
-        "9. Complete Offline Desktop Reference — [SMILES] Ribbon, .SDF Database I/O & All 40 Excel Functions" `
-        "Everything you need in one tab: exact v$addinVersion Ribbon buttons, 3-level right-click menu, 12-column .sdf export/import guide, all 40 functions, and #N/A / #VALUE! / #NAME? fixes." `
+        "9. Complete Offline Desktop Reference — [SMILES] Ribbon, .SDF Import & All 49 Excel Functions" `
+        "Everything you need in one tab: exact v$addinVersion Ribbon buttons, 3-level right-click menu, 11-column .sdf import guide, all 49 functions, and #N/A / #VALUE! / #NAME? fixes." `
         0x3B291E
 
-    Add-SectionHeader $s9 4 6 'A. Excel [SMILES] Ribbon Tab, 3-Level Right-Click Menu & .SDF Database Workflow'
+    Add-SectionHeader $s9 4 6 'A. Excel [SMILES] Ribbon Tab, 3-Level Right-Click Menu & .SDF Import Workflow'
     $r9Headers = @('Ribbon Group', 'Exact Button / Menu Label', 'How to Access', 'Primary Action', 'Output / Export Options', 'Tips & Cross-App Notes')
     $r9Widths  = @(18, 28, 22, 34, 32, 42)
     $r9Rows = @(
@@ -797,17 +781,17 @@ try {
         @('Insert Structure', 'Insert / Edit (InChI)',      'Ribbon -> [SMILES]',          'Opens Ketcher / inserts IUPAC InChI formula',     'Inserts =INCHI2IMG(...)',                  'Best for regulatory & PubChem InChI tables'),
         @('Insert Structure', 'Insert / Edit (KET)',        'Ribbon -> [SMILES]',          'Inserts lossless KET reaction / canvas formula',  'Inserts =KET2IMG(...)',                    'Preserves reaction arrows, +, and labels'),
         @('Insert Structure', '3D Structure (Mol*)',        'Ribbon -> [SMILES]',          'Opens Mol* 3D protein viewer (PDB / local file)', '3D Model (.glb) or Transparent 2D PNG',    'Try PDB IDs: 1CRN, 4HHB, 6LU7, 1BNA'),
-        @('Insert Structure', 'Paste Structure',            'Ribbon or Right-Click',       'Converts clipboard SMILES/InChI/KET/Name in 0.1s','Instant structure without opening editor', 'Works in Excel, Word & PowerPoint'),
+        @('Insert Structure', 'Paste Structure',            'Ribbon or Right-Click',       'Converts clipboard SMILES/InChI/KET/Name in 0.1s','Instant structure without opening editor', 'Confirmation prompt guards ambiguous words/names'),
         @('Structure Tools',  'Copy SMILES / InChI / KET',  'Ribbon or Right-Click',       'Extracts exact identifier from selected cell',    'Plain text onto clipboard',                'Right-click -> Chemical Structure > ...'),
         @('Structure Tools',  'Copy SVG',                   'Ribbon or Right-Click',       'Copies lossless vector SVG graphics',             'Paste into Illustrator / Inkscape',        'Crisp at any poster/journal DPI'),
-        @('Structure Tools',  'Molecule Info',              'Ribbon or Right-Click',       'Inspects 17 descriptors + 2D preview dialog',     'Summary, 17-col TSV, List, Markdown, JSON','Double-click any row to copy single value'),
-        @('Structure Tools',  'Batch Style',                'Ribbon -> Batch Style',       '1-click restyle across selection or entire sheet','Color, ACS B&W, White BG, Dark Mode',      'Instant switch before journal submission'),
-        @('Structure Tools',  'SDF File (Import / Export)', 'Ribbon -> SDF File',          'Imports .sdf into 12-col live formula table',     'Exports sheet rows back to V2000 .sdf',    'Export Tab 2 to .sdf, then re-import it!'),
+        @('Structure Tools',  'Molecule Info',              'Ribbon or Right-Click',       'Inspects 12 descriptors + 2D preview dialog',     'Summary, 12-col TSV, List, Markdown, JSON','Double-click any row to copy single value'),
+        @('Structure Tools',  'Batch Style',                'Ribbon -> Batch Style',       '1-click restyle across selection or entire sheet','Color, ACS B&W, White BG, Dark Mode',      'Losslessly preserves hl:, num, stereo & rot*'),
+        @('Structure Tools',  'Import SDF',                 'Ribbon -> [Import SDF]',      'Imports V2000/V3000 .sdf into live formula sheet','11-col table (MW, LogP, TPSA, Fsp3, etc.)','Live Indigo descriptors refresh on edit'),
         @('Diagnostics/About','Diagnostics, Docs & About',  'Ribbon -> [SMILES]',          'Inspects Indigo logs, opens /excel/ docs, updates', 'Logs, Online Docs, 3rd-party notices',   'Open Diagnostics on #VALUE!; Online Docs for guides')
     )
     Add-StyledTable $s9 5 $r9Headers $r9Rows @{} 0x475569 $r9Widths 30 @(1,2,3,4,5,6) @()
 
-    Add-SectionHeader $s9 17 6 'B. Complete 40-Function Excel UDF Catalog (Grouped by Category — Zero Web Docs Needed)'
+    Add-SectionHeader $s9 17 6 'B. Complete 49-Function Excel UDF Catalog (Grouped by Category — Zero Web Docs Needed)'
     $f9Headers = @('Category', 'Function Name', 'Syntax', 'Return Type', 'Network?', 'Description')
     $f9Rows = @(
         @('In-Cell Image (4)',    'SMILES2IMG',        '=SMILES2IMG(smiles, [bg], [style], [transform])', 'In-Cell Picture', 'Offline',  'Render 2D structure from SMILES string'),
@@ -818,50 +802,59 @@ try {
         @('Legacy Float (4)',     'NAME2IMG.FLOAT',    '=NAME2IMG.FLOAT(nameOrCas, [bg], [style], [tr])', 'Floating Shape',  'PubChem*', 'Excel 2016-2021 floating picture from Name/CAS'),
         @('Legacy Float (4)',     'INCHI2IMG.FLOAT',   '=INCHI2IMG.FLOAT(inchi, [bg], [style], [tr])',    'Floating Shape',  'Offline',  'Excel 2016-2021 floating picture from InChI'),
         @('Legacy Float (4)',     'KET2IMG.FLOAT',     '=KET2IMG.FLOAT(ketJson, [bg], [style], [tr])',    'Floating Shape',  'Offline',  'Excel 2016-2021 floating picture from KET'),
-        @('Properties (9)',       'SMILES2FORMULA',    '=SMILES2FORMULA(smiles)',                         'Text (String)',   'Offline',  'Hill molecular formula (e.g. C9H8O4)'),
-        @('Properties (9)',       'SMILES2MW',         '=SMILES2MW(smiles)',                              'Number (Double)', 'Offline',  'Average molecular weight (g/mol)'),
-        @('Properties (9)',       'SMILES2EXACTMASS',  '=SMILES2EXACTMASS(smiles)',                       'Number (Double)', 'Offline',  'Monoisotopic exact mass for HRMS (Da)'),
-        @('Properties (9)',       'SMILES2LOGP',       '=SMILES2LOGP(smiles)',                            'Number (Double)', 'Offline',  'Wildman-Crippen octanol-water LogP'),
-        @('Properties (9)',       'SMILES2TPSA',       '=SMILES2TPSA(smiles)',                            'Number (Double)', 'Offline',  'Topological polar surface area (A^2)'),
-        @('Properties (9)',       'SMILES2HBD',        '=SMILES2HBD(smiles)',                             'Number (Int)',    'Offline',  'Hydrogen bond donor count (NH + OH)'),
-        @('Properties (9)',       'SMILES2HBA',        '=SMILES2HBA(smiles)',                             'Number (Int)',    'Offline',  'Hydrogen bond acceptor count (N + O)'),
-        @('Properties (9)',       'SMILES2ROTBONDS',   '=SMILES2ROTBONDS(smiles)',                        'Number (Int)',    'Offline',  'Rotatable single bond count'),
-        @('Properties (9)',       'SMILES2LIPINSKI',   '=SMILES2LIPINSKI(smiles)',                        'Text (String)',   'Offline',  'Lipinski Rule of 5 ("PASS" or violation details)'),
-        @('3D Complexity (5)',    'SMILES2HEAVY',      '=SMILES2HEAVY(smiles)',                           'Number (Int)',    'Offline',  'Heavy (non-hydrogen) atom count'),
-        @('3D Complexity (5)',    'SMILES2RINGS',      '=SMILES2RINGS(smiles)',                           'Number (Int)',    'Offline',  'Total ring count (SSSR)'),
-        @('3D Complexity (5)',    'SMILES2AROMATIC',   '=SMILES2AROMATIC(smiles)',                        'Number (Int)',    'Offline',  'Aromatic ring count'),
-        @('3D Complexity (5)',    'SMILES2FSP3',       '=SMILES2FSP3(smiles)',                            'Number (Double)', 'Offline',  'Fraction of sp3 carbons (0.00-1.00)'),
-        @('3D Complexity (5)',    'SMILES2CHIRAL',     '=SMILES2CHIRAL(smiles)',                          'Number (Int)',    'Offline',  'Tetrahedral chiral center count'),
-        @('SAR Search (2)',       'SMILES.MATCH',      '=SMILES.MATCH(targetSmiles, querySmarts)',        'Boolean',         'Offline',  'TRUE if target contains SMARTS/SMILES substructure'),
-        @('SAR Search (2)',       'SMILES.SIMILARITY', '=SMILES.SIMILARITY(smilesA, smilesB)',            'Number (Double)', 'Offline',  'Morgan/ECFP Tanimoto similarity (0.00-1.00)'),
-        @('Convert / Name (4)',   'NAME2SMILES',       '=NAME2SMILES(nameOrCas)',                         'Text (String)',   'PubChem*', 'Resolve chemical name or CAS to SMILES (cached)'),
-        @('Convert / Name (4)',   'SMILES2NAME',       '=SMILES2NAME(smiles)',                            'Text (String)',   'PubChem*', 'Resolve SMILES to common substance name (cached)'),
-        @('Convert / Name (4)',   'SMILES2INCHI',      '=SMILES2INCHI(smiles)',                           'Text (String)',   'Offline',  'Convert SMILES to IUPAC Standard InChI'),
-        @('Convert / Name (4)',   'SMILES2INCHIKEY',   '=SMILES2INCHIKEY(smiles)',                        'Text (String)',   'Offline',  'Convert SMILES to 27-char InChIKey (deduplication)'),
-        @('InChI Functions (6)',  'INCHI2SMILES',      '=INCHI2SMILES(inchi)',                            'Text (String)',   'Offline',  'Convert IUPAC InChI to SMILES'),
-        @('InChI Functions (6)',  'INCHI2FORMULA',     '=INCHI2FORMULA(inchi)',                           'Text (String)',   'Offline',  'Hill formula directly from InChI'),
-        @('InChI Functions (6)',  'INCHI2MW',          '=INCHI2MW(inchi)',                                'Number (Double)', 'Offline',  'Molecular weight directly from InChI'),
-        @('InChI Functions (6)',  'INCHI2EXACTMASS',   '=INCHI2EXACTMASS(inchi)',                         'Number (Double)', 'Offline',  'Monoisotopic exact mass directly from InChI'),
-        @('InChI Functions (6)',  'INCHI2INCHIKEY',    '=INCHI2INCHIKEY(inchi)',                          'Text (String)',   'Offline',  'InChIKey directly from InChI'),
-        @('InChI Functions (6)',  'INCHI2NAME',        '=INCHI2NAME(inchi)',                              'Text (String)',   'PubChem*', 'Common substance name from InChI (cached)'),
-        @('KET Functions (6)',    'KET2FORMULA',       '=KET2FORMULA(ketJson)',                           'Text (String)',   'Offline',  'Hill formula directly from KET JSON'),
-        @('KET Functions (6)',    'KET2MW',            '=KET2MW(ketJson)',                                'Number (Double)', 'Offline',  'Molecular weight directly from KET JSON'),
-        @('KET Functions (6)',    'KET2EXACTMASS',     '=KET2EXACTMASS(ketJson)',                         'Number (Double)', 'Offline',  'Monoisotopic exact mass directly from KET JSON'),
-        @('KET Functions (6)',    'KET2INCHI',         '=KET2INCHI(ketJson)',                             'Text (String)',   'Offline',  'IUPAC InChI directly from KET JSON'),
-        @('KET Functions (6)',    'KET2INCHIKEY',      '=KET2INCHIKEY(ketJson)',                          'Text (String)',   'Offline',  'InChIKey directly from KET JSON'),
-        @('KET Functions (6)',    'KET2NAME',          '=KET2NAME(ketJson)',                              'Text (String)',   'PubChem*', 'Common substance name from KET JSON (cached)')
+        @('SMILES Props (9)',     'SMILES2FORMULA',    '=SMILES2FORMULA(smiles)',                         'Text (String)',   'Offline',  'Hill molecular formula (e.g. C9H8O4)'),
+        @('SMILES Props (9)',     'SMILES2MW',         '=SMILES2MW(smiles)',                              'Number (Double)', 'Offline',  'Average molecular weight (g/mol)'),
+        @('SMILES Props (9)',     'SMILES2EXACTMASS',  '=SMILES2EXACTMASS(smiles)',                       'Number (Double)', 'Offline',  'Monoisotopic exact mass for HRMS (Da)'),
+        @('SMILES Props (9)',     'SMILES2LOGP',       '=SMILES2LOGP(smiles)',                            'Number (Double)', 'Offline',  'Indigo Wildman-Crippen octanol-water LogP'),
+        @('SMILES Props (9)',     'SMILES2TPSA',       '=SMILES2TPSA(smiles, [include_sp])',              'Number (Double)', 'Offline',  'Indigo Ertl TPSA (A^2; [include_sp]=TRUE for S/P)'),
+        @('SMILES Props (9)',     'SMILES2HEAVY',      '=SMILES2HEAVY(smiles)',                           'Number (Int)',    'Offline',  'Heavy (non-hydrogen) atom count'),
+        @('SMILES Props (9)',     'SMILES2RINGS',      '=SMILES2RINGS(smiles)',                           'Number (Int)',    'Offline',  'Total ring count (SSSR)'),
+        @('SMILES Props (9)',     'SMILES2AROMATIC',   '=SMILES2AROMATIC(smiles)',                        'Number (Int)',    'Offline',  'Aromatic ring count'),
+        @('SMILES Props (9)',     'SMILES2FSP3',       '=SMILES2FSP3(smiles)',                            'Number (Double)', 'Offline',  'Fraction of sp3 carbons (0.00-1.00)'),
+        @('SAR Search (3)',       'SMILES.MATCH',      '=SMILES.MATCH(targetSmiles, querySmarts)',        'Boolean',         'Offline',  'TRUE if SMILES target contains SMARTS/SMILES substructure'),
+        @('SAR Search (3)',       'INCHI.MATCH',       '=INCHI.MATCH(targetInchi, querySmarts)',          'Boolean',         'Offline',  'TRUE if InChI target contains SMARTS/SMILES substructure'),
+        @('SAR Search (3)',       'KET.MATCH',         '=KET.MATCH(targetKet, querySmarts)',              'Boolean',         'Offline',  'TRUE if KET target contains SMARTS/SMILES substructure'),
+        @('Convert / Name (6)',   'NAME2SMILES',       '=NAME2SMILES(nameOrCas)',                         'Text (String)',   'PubChem*', 'Resolve chemical name or valid CAS to SMILES (cached)'),
+        @('Convert / Name (6)',   'SMILES2NAME',       '=SMILES2NAME(smiles)',                            'Text (String)',   'PubChem*', 'Resolve SMILES to common substance name (cached)'),
+        @('Convert / Name (6)',   'SMILES2INCHI',      '=SMILES2INCHI(smiles)',                           'Text (String)',   'Offline',  'Convert SMILES to IUPAC Standard InChI'),
+        @('Convert / Name (6)',   'SMILES2INCHIKEY',   '=SMILES2INCHIKEY(smiles)',                        'Text (String)',   'Offline',  'Convert SMILES to 27-char InChIKey (deduplication)'),
+        @('Convert / Name (6)',   'INCHI2SMILES',      '=INCHI2SMILES(inchi)',                            'Text (String)',   'Offline',  'Convert IUPAC InChI to canonical SMILES'),
+        @('Convert / Name (6)',   'KET2SMILES',        '=KET2SMILES(ketJson)',                            'Text (String)',   'Offline',  'Convert KET JSON molecule to canonical SMILES'),
+        @('InChI Parity (11)',    'INCHI2FORMULA',     '=INCHI2FORMULA(inchi)',                           'Text (String)',   'Offline',  'Hill formula directly from InChI'),
+        @('InChI Parity (11)',    'INCHI2MW',          '=INCHI2MW(inchi)',                                'Number (Double)', 'Offline',  'Molecular weight directly from InChI'),
+        @('InChI Parity (11)',    'INCHI2EXACTMASS',   '=INCHI2EXACTMASS(inchi)',                         'Number (Double)', 'Offline',  'Monoisotopic exact mass directly from InChI'),
+        @('InChI Parity (11)',    'INCHI2LOGP',        '=INCHI2LOGP(inchi)',                              'Number (Double)', 'Offline',  'Wildman-Crippen LogP directly from InChI'),
+        @('InChI Parity (11)',    'INCHI2TPSA',        '=INCHI2TPSA(inchi, [include_sp])',                'Number (Double)', 'Offline',  'Ertl TPSA directly from InChI'),
+        @('InChI Parity (11)',    'INCHI2HEAVY',       '=INCHI2HEAVY(inchi)',                             'Number (Int)',    'Offline',  'Heavy atom count directly from InChI'),
+        @('InChI Parity (11)',    'INCHI2RINGS',       '=INCHI2RINGS(inchi)',                             'Number (Int)',    'Offline',  'Total ring count directly from InChI'),
+        @('InChI Parity (11)',    'INCHI2AROMATIC',    '=INCHI2AROMATIC(inchi)',                          'Number (Int)',    'Offline',  'Aromatic ring count directly from InChI'),
+        @('InChI Parity (11)',    'INCHI2FSP3',        '=INCHI2FSP3(inchi)',                              'Number (Double)', 'Offline',  'Fraction sp3 carbons directly from InChI'),
+        @('InChI Parity (11)',    'INCHI2INCHIKEY',    '=INCHI2INCHIKEY(inchi)',                          'Text (String)',   'Offline',  'InChIKey directly from InChI'),
+        @('InChI Parity (11)',    'INCHI2NAME',        '=INCHI2NAME(inchi)',                              'Text (String)',   'PubChem*', 'Common substance name from InChI (cached)'),
+        @('KET Parity (12)',      'KET2FORMULA',       '=KET2FORMULA(ketJson)',                           'Text (String)',   'Offline',  'Hill formula directly from KET JSON'),
+        @('KET Parity (12)',      'KET2MW',            '=KET2MW(ketJson)',                                'Number (Double)', 'Offline',  'Molecular weight directly from KET JSON'),
+        @('KET Parity (12)',      'KET2EXACTMASS',     '=KET2EXACTMASS(ketJson)',                         'Number (Double)', 'Offline',  'Monoisotopic exact mass directly from KET JSON'),
+        @('KET Parity (12)',      'KET2LOGP',          '=KET2LOGP(ketJson)',                              'Number (Double)', 'Offline',  'Wildman-Crippen LogP directly from KET JSON'),
+        @('KET Parity (12)',      'KET2TPSA',          '=KET2TPSA(ketJson, [include_sp])',                'Number (Double)', 'Offline',  'Ertl TPSA directly from KET JSON'),
+        @('KET Parity (12)',      'KET2HEAVY',         '=KET2HEAVY(ketJson)',                             'Number (Int)',    'Offline',  'Heavy atom count directly from KET JSON'),
+        @('KET Parity (12)',      'KET2RINGS',         '=KET2RINGS(ketJson)',                             'Number (Int)',    'Offline',  'Total ring count directly from KET JSON'),
+        @('KET Parity (12)',      'KET2AROMATIC',      '=KET2AROMATIC(ketJson)',                          'Number (Int)',    'Offline',  'Aromatic ring count directly from KET JSON'),
+        @('KET Parity (12)',      'KET2FSP3',          '=KET2FSP3(ketJson)',                              'Number (Double)', 'Offline',  'Fraction sp3 carbons directly from KET JSON'),
+        @('KET Parity (12)',      'KET2INCHI',         '=KET2INCHI(ketJson)',                             'Text (String)',   'Offline',  'IUPAC InChI directly from KET JSON'),
+        @('KET Parity (12)',      'KET2INCHIKEY',      '=KET2INCHIKEY(ketJson)',                          'Text (String)',   'Offline',  'InChIKey directly from KET JSON'),
+        @('KET Parity (12)',      'KET2NAME',          '=KET2NAME(ketJson)',                              'Text (String)',   'PubChem*', 'Common substance name from KET JSON (cached)')
     )
     Add-StyledTable $s9 18 $f9Headers $f9Rows @{} 0x334155 @() 24 @(1,2,3,6) @(2,3)
 
-    Add-SectionHeader $s9 60 6 'C. Built-In Troubleshooting Guide (#N/A, #VALUE!, #NAME? & Sharing Workbooks)'
+    Add-SectionHeader $s9 69 6 'C. Built-In Troubleshooting Guide (#N/A, #VALUE!, #NAME? & Sharing Workbooks)'
     $trHeaders = @('Symptom / Code', 'Cause', 'Exact Fix', 'Notes', 'Applies To', 'Quick Check')
     $trRows = @(
-        @('#N/A (~0.1s)',     'Async rendering or first-time PubChem lookup', 'Wait a moment — updates automatically',       'Cached locally for instant reuse',  'All Image/Name UDFs', 'Normal behavior'),
+        @('#N/A (Missing)',   'Offline network, PubChem name missing, or uncomputable input', 'Check internet, name spelling, or single-molecule input', 'Cached locally up to 30 days', 'Name / Property UDFs', 'Normal for R-groups (*)'),
         @('#VALUE! (Error)',  'Invalid SMILES/InChI syntax or empty cell',    'Click Ribbon [SMILES] -> [Diagnostics]',      'Shows exact Indigo parser error',   'All UDFs',            'Check unclosed rings'),
         @('#NAME? (Missing)', 'Add-in not loaded or Excel 2016-2021',         'Re-run install.ps1 or append .FLOAT',         'See Tab 8 for .FLOAT formulas',     'Excel 2016-2021',     'File -> Options -> Add-ins'),
         @('Sharing .xlsx',  'Co-author on macOS or PC without add-in',      'Cached PNG images & values stay visible',     'Avoid Ctrl+Alt+F9 without add-in',  'All Excel versions',  'Export PDF for lock')
     )
-    Add-StyledTable $s9 61 $trHeaders $trRows @{} 0x3B291E @() 28 @(1,2,3,4,5,6) @()
+    Add-StyledTable $s9 70 $trHeaders $trRows @{} 0x3B291E @() 28 @(1,2,3,4,5,6) @()
 
     Write-Host "`nRecalculating all 10 tabs and waiting for async image & .FLOAT rendering..." -ForegroundColor Cyan
     Invoke-Excel {

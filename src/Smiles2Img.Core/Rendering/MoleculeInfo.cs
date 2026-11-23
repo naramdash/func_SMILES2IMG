@@ -27,17 +27,17 @@ public sealed class MoleculeInfo
     public string Formula { get; set; } = "";
     public double MolecularWeight { get; set; }
     public double ExactMass { get; set; }
+    public bool HasQueryOrDummyAtoms { get; set; }
     public double LogP { get; set; }
+    public bool HasLogP { get; set; }
     public double Tpsa { get; set; }
-    public int HBondDonors { get; set; }
-    public int HBondAcceptors { get; set; }
-    public int RotatableBonds { get; set; }
+    public bool HasTpsa { get; set; }
+    public double TpsaWithSP { get; set; }
+    public bool HasTpsaWithSP { get; set; }
     public int HeavyAtomCount { get; set; }
     public int RingCount { get; set; }
     public int AromaticRingCount { get; set; }
     public double Fsp3 { get; set; }
-    public int ChiralCenters { get; set; }
-    public bool PassesLipinski => MolecularWeight <= 500.0 && LogP <= 5.0 && HBondDonors <= 5 && HBondAcceptors <= 10;
     public string Smiles { get; set; } = "";
     public bool IsReaction { get; set; }
     public bool IsMacromolecule { get; set; }
@@ -74,9 +74,8 @@ public sealed class MoleculeInfo
             parts.Add($"Exact Mass: {ExactMass:F4}");
         if (!IsMacromolecule) parts.Add($"LogP: {LogP:F2}");
         if (!IsMacromolecule) parts.Add($"TPSA: {Tpsa:F1} Å²");
-        if (!IsMacromolecule) parts.Add($"HBD/HBA/RotB: {HBondDonors}/{HBondAcceptors}/{RotatableBonds}");
         if (HeavyAtomCount > 0)
-            parts.Add($"Heavy/Rings/Arom/Fsp3/Chiral: {HeavyAtomCount}/{RingCount}/{AromaticRingCount}/{Fsp3:F2}/{ChiralCenters}");
+            parts.Add($"Heavy/Rings/Arom/Fsp3: {HeavyAtomCount}/{RingCount}/{AromaticRingCount}/{Fsp3:F2}");
         parts.Add($"SMILES: {Smiles}");
         if (!string.IsNullOrWhiteSpace(InChI))
             parts.Add($"InChI: {InChI}");
@@ -104,14 +103,9 @@ public sealed class MoleculeInfo
         {
             lines.Add($"LogP: {LogP:F2}");
             lines.Add($"TPSA: {Tpsa:F1} Å²");
-            lines.Add($"H-Bond Donors: {HBondDonors}");
-            lines.Add($"H-Bond Acceptors: {HBondAcceptors}");
-            lines.Add($"Rotatable Bonds: {RotatableBonds}");
             lines.Add($"Heavy Atoms: {HeavyAtomCount}");
             lines.Add($"Rings (Total / Aromatic): {RingCount} / {AromaticRingCount}");
             lines.Add($"Fraction Csp3 (Fsp3): {Fsp3:F2}");
-            lines.Add($"Chiral Centers: {ChiralCenters}");
-            lines.Add($"Lipinski Rule of 5: {(PassesLipinski ? "Passed" : "Failed")}");
         }
         lines.Add($"SMILES: {Smiles}");
         if (!string.IsNullOrWhiteSpace(InChI))
@@ -141,15 +135,10 @@ public sealed class MoleculeInfo
             ExactMass > 0 ? ExactMass.ToString("F4", CultureInfo.InvariantCulture) : "",
             LogP.ToString("F2", CultureInfo.InvariantCulture),
             Tpsa.ToString("F1", CultureInfo.InvariantCulture),
-            HBondDonors.ToString(),
-            HBondAcceptors.ToString(),
-            RotatableBonds.ToString(),
             HeavyAtomCount.ToString(),
             RingCount.ToString(),
             AromaticRingCount.ToString(),
             Fsp3.ToString("F2", CultureInfo.InvariantCulture),
-            ChiralCenters.ToString(),
-            PassesLipinski ? "Pass" : "Fail",
             CleanTsvField(Smiles),
             CleanTsvField(InChIKey)
         };
@@ -161,7 +150,7 @@ public sealed class MoleculeInfo
         var headerValues = new[]
         {
             "Name", "Formula", "MW (g/mol)", "Exact Mass", "LogP", "TPSA (Å²)",
-            "HBD", "HBA", "RotB", "Heavy Atoms", "Rings", "Aromatic Rings", "Fsp3", "Chiral Centers", "Lipinski", "SMILES", "InChIKey"
+            "Heavy Atoms", "Rings", "Aromatic Rings", "Fsp3", "SMILES", "InChIKey"
         };
         string header = string.Join("\t", headerValues);
         return header + "\r\n" + row;
@@ -185,11 +174,9 @@ public sealed class MoleculeInfo
             sb.AppendLine($"| **Exact Mass** | {ExactMass:F4} |");
         if (!IsMacromolecule) sb.AppendLine($"| **LogP** | {LogP:F2} |");
         if (!IsMacromolecule) sb.AppendLine($"| **TPSA** | {Tpsa:F1} Å² |");
-        if (!IsMacromolecule) sb.AppendLine($"| **HBD / HBA / RotB** | {HBondDonors} / {HBondAcceptors} / {RotatableBonds} |");
-        if (!IsMacromolecule) sb.AppendLine($"| **Heavy Atoms / Chiral** | {HeavyAtomCount} / {ChiralCenters} |");
+        if (!IsMacromolecule) sb.AppendLine($"| **Heavy Atoms** | {HeavyAtomCount} |");
         if (!IsMacromolecule) sb.AppendLine($"| **Rings (Total / Aromatic)** | {RingCount} / {AromaticRingCount} |");
         if (!IsMacromolecule) sb.AppendLine($"| **Fraction Csp3 (Fsp3)** | {Fsp3:F2} |");
-        if (!IsMacromolecule) sb.AppendLine($"| **Lipinski Rule of 5** | {(PassesLipinski ? "Passed" : "Failed")} |");
         sb.AppendLine($"| **SMILES** | `{Smiles}` |");
         if (!string.IsNullOrWhiteSpace(InChI))
             sb.AppendLine($"| **InChI** | `{InChI}` |");
@@ -217,15 +204,10 @@ public sealed class MoleculeInfo
         {
             sb.AppendLine($"  \"logP\": {LogP.ToString("F2", CultureInfo.InvariantCulture)},");
             sb.AppendLine($"  \"tpsa\": {Tpsa.ToString("F1", CultureInfo.InvariantCulture)},");
-            sb.AppendLine($"  \"hBondDonors\": {HBondDonors},");
-            sb.AppendLine($"  \"hBondAcceptors\": {HBondAcceptors},");
-            sb.AppendLine($"  \"rotatableBonds\": {RotatableBonds},");
             sb.AppendLine($"  \"heavyAtomCount\": {HeavyAtomCount},");
             sb.AppendLine($"  \"ringCount\": {RingCount},");
             sb.AppendLine($"  \"aromaticRingCount\": {AromaticRingCount},");
             sb.AppendLine($"  \"fsp3\": {Fsp3.ToString("F2", CultureInfo.InvariantCulture)},");
-            sb.AppendLine($"  \"chiralCenters\": {ChiralCenters},");
-            sb.AppendLine($"  \"passesLipinski\": {(PassesLipinski ? "true" : "false")},");
         }
         sb.AppendLine($"  \"smiles\": \"{EscapeJson(Smiles)}\",");
         if (!string.IsNullOrWhiteSpace(InChI))
@@ -252,11 +234,9 @@ public sealed class MoleculeInfo
         if (ExactMass > 0) rows.Add(("Exact Mass", $"{ExactMass:F4}"));
         if (!IsMacromolecule) rows.Add(("LogP", $"{LogP:F2}"));
         if (!IsMacromolecule) rows.Add(("TPSA", $"{Tpsa:F1} Å²"));
-        if (!IsMacromolecule) rows.Add(("HBD / HBA / RotB", $"{HBondDonors} / {HBondAcceptors} / {RotatableBonds}"));
-        if (!IsMacromolecule) rows.Add(("Heavy Atoms / Chiral", $"{HeavyAtomCount} / {ChiralCenters}"));
+        if (!IsMacromolecule) rows.Add(("Heavy Atoms", $"{HeavyAtomCount}"));
         if (!IsMacromolecule) rows.Add(("Rings (Total / Aromatic)", $"{RingCount} / {AromaticRingCount}"));
         if (!IsMacromolecule) rows.Add(("Fraction Csp3 (Fsp3)", $"{Fsp3:F2}"));
-        if (!IsMacromolecule) rows.Add(("Lipinski Rule of 5", PassesLipinski ? "Passed" : "Failed"));
         rows.Add(("SMILES", Smiles));
         if (!string.IsNullOrWhiteSpace(InChIKey)) rows.Add(("InChIKey", InChIKey));
 
@@ -292,7 +272,7 @@ public sealed class MoleculeInfo
         var headerValues = new[]
         {
             "Name", "Formula", "MW (g/mol)", "Exact Mass", "LogP", "TPSA (Å²)",
-            "HBD", "HBA", "RotB", "Heavy Atoms", "Rings", "Aromatic Rings", "Fsp3", "Chiral Centers", "Lipinski", "SMILES", "InChIKey"
+            "Heavy Atoms", "Rings", "Aromatic Rings", "Fsp3", "SMILES", "InChIKey"
         };
         var rowValues = new[]
         {
@@ -302,15 +282,10 @@ public sealed class MoleculeInfo
             ExactMass > 0 ? ExactMass.ToString("F4", CultureInfo.InvariantCulture) : "",
             LogP.ToString("F2", CultureInfo.InvariantCulture),
             Tpsa.ToString("F1", CultureInfo.InvariantCulture),
-            HBondDonors.ToString(),
-            HBondAcceptors.ToString(),
-            RotatableBonds.ToString(),
             HeavyAtomCount.ToString(),
             RingCount.ToString(),
             AromaticRingCount.ToString(),
             Fsp3.ToString("F2", CultureInfo.InvariantCulture),
-            ChiralCenters.ToString(),
-            PassesLipinski ? "Pass" : "Fail",
             CleanTsvField(Smiles),
             CleanTsvField(InChIKey)
         };
@@ -364,8 +339,7 @@ public sealed class MoleculeInfo
         if (!IsMacromolecule)
         {
             sb.AppendLine($"• LogP (Crippen): {LogP:F2} | TPSA: {Tpsa:F1} Å²");
-            sb.AppendLine($"• Lipinski Ro5: {(PassesLipinski ? "Pass" : "Violation")} (HBD: {HBondDonors}, HBA: {HBondAcceptors}, RotBonds: {RotatableBonds})");
-            sb.AppendLine($"• Complexity: Heavy={HeavyAtomCount}, Rings={RingCount} (Arom={AromaticRingCount}), Fsp3={Fsp3:F2}, Chiral={ChiralCenters}");
+            sb.AppendLine($"• Complexity: Heavy={HeavyAtomCount}, Rings={RingCount} (Arom={AromaticRingCount}), Fsp3={Fsp3:F2}");
         }
         sb.AppendLine($"• Canonical SMILES: {Smiles}");
         if (!string.IsNullOrWhiteSpace(InChI))

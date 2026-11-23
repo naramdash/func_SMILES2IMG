@@ -52,13 +52,13 @@ const tabs: PlaybookTab[] = [
       },
       {
         img: '/examples/previews/excel-03.webp',
-        captionEn: 'Tab 2 · Properties & Lipinski — 18 physicochemical KPIs & Ro5',
-        captionKo: '탭 2 · 분자 물성 & Lipinski — 18종 물성 지표 및 약물성(Ro5)'
+        captionEn: 'Tab 2 · Properties & 3D — 15-col physicochemical & 3D KPIs',
+        captionKo: '탭 2 · 분자 물성 & 3D — 15열 물성 및 3D 복잡도 지표'
       },
       {
         img: '/examples/previews/excel-04.webp',
-        captionEn: 'Tab 3 · SAR & Similarity — SMARTS alerts & Tanimoto ranking',
-        captionKo: '탭 3 · SAR & 유사도 검색 — SMARTS 하이라이트 및 Tanimoto 순위'
+        captionEn: 'Tab 3 · SAR & SMARTS — SMARTS alerts, hl: highlights & InChI parity',
+        captionKo: '탭 3 · SAR & SMARTS — 부분구조 하이라이트 및 InChI 동등 검색'
       },
       {
         img: '/examples/previews/excel-05.webp',
@@ -87,8 +87,8 @@ const tabs: PlaybookTab[] = [
       },
       {
         img: '/examples/previews/excel-10.webp',
-        captionEn: 'Tab 9 · Ribbon, SDF & Ref — Complete 40-function offline reference',
-        captionKo: '탭 9 · 리본 · SDF · 사전 — 40종 전체 함수 및 오프라인 해결 가이드'
+        captionEn: 'Tab 9 · Ribbon, SDF & Ref — Complete 49-function offline reference',
+        captionKo: '탭 9 · 리본 · SDF · 사전 — 49종 전체 함수 및 오프라인 해결 가이드'
       }
     ]
   },

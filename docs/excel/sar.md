@@ -1,14 +1,14 @@
-# Substructure & Similarity (SAR)
+# Substructure Search (SAR & SMARTS)
 
-Output native Excel **`TRUE` / `FALSE` filter flags (`=SMILES.MATCH`)** and **`0.0–1.0` 2D similarity scores (`=SMILES.SIMILARITY`)** across thousands of molecules (SMILES, InChI, or KET), and visually highlight matching atoms inside `...2IMG` structures (`hl:`).
+Output native Excel **`TRUE` / `FALSE` filter flags** across all three chemical notations (**`=SMILES.MATCH`**, **`=INCHI.MATCH`**, **`=KET.MATCH`**), and visually highlight matching atoms and bonds inside rendered structures (`hl:`).
 
 <FormulaTable
-  title="SAR Substructure, Similarity, Highlight Sheet"
-  :columns='["Target", "Reference", "Formula"]'
+  title="SAR Substructure & Highlight Sheet"
+  :columns='["Target", "Query", "Formula"]'
   :rows='[
-    { cells: ["CC(=O)Oc1ccccc1C(=O)O", "", "=SMILES.MATCH(A2, \"c1ccccc1\")"], desc: "Boolean substructure match (benzene)", out: "TRUE" },
-    { cells: ["CC(=O)Oc1ccccc1C(=O)O", "c1ccccc1C(=O)O", "=SMILES.SIMILARITY(A3, $B$3)"], desc: "2D Tanimoto similarity vs Reference ($B$3)", out: "0.00–1.00" },
-    { cells: ["CC(=O)Oc1ccccc1C(=O)O", "", "=SMILES2IMG(A4, \"\", \"hl:c1ccccc1\")"], desc: "Visually highlight matching benzene atoms", out: "Highlighted 2D" }
+    { cells: ["CC(=O)Oc1ccccc1C(=O)O", "c1ccccc1", "=SMILES.MATCH(A2, $B$2)"], desc: "Boolean SMARTS substructure match (benzene)", out: "TRUE" },
+    { cells: ["InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)", "", "=INCHI.MATCH(A3, $B$2)"], desc: "Direct InChI substructure match", out: "TRUE" },
+    { cells: ["CC(=O)Oc1ccccc1C(=O)O", "", "=SMILES2IMG(A4, \"\", \"hl:\"&$B$2)"], desc: "Visually highlight matching substructure atoms", out: "Highlighted 2D" }
   ]'
 />
 
@@ -16,23 +16,27 @@ Output native Excel **`TRUE` / `FALSE` filter flags (`=SMILES.MATCH`)** and **`0
 
 ## 1. Dynamic Query Cell Pattern (Interactive SAR Dashboard)
 
-Instead of hardcoding a SMARTS string in every row, place your query scaffold in a single header cell (e.g., `$B$3`) and reference it across your table:
+Instead of hardcoding a SMARTS pattern in every row, place your query motif in a single header cell (e.g., `$B$3`) and reference it across your table:
 
 | Column Purpose | Formula Referencing `$B$3` | What Happens When You Edit `$B$3` |
 | :--- | :--- | :--- |
-| **Scaffold Match (`TRUE`/`FALSE`)** | `=SMILES.MATCH(A6, $B$3)` | Instantly flags every row containing the new query motif |
+| **SMILES Substructure Match (`TRUE`/`FALSE`)** | `=SMILES.MATCH(A6, $B$3)` | Instantly flags every SMILES row containing the new query motif |
+| **InChI / KET Parity Match (`TRUE`/`FALSE`)** | `=INCHI.MATCH(A6, $B$3)` · `=KET.MATCH(A6, $B$3)` | Screens native InChI or KET canvas columns directly |
 | **Highlighted Structure Image** | `=SMILES2IMG(A6, "", "hl:"&$B$3)` | Colors the matching substructure atoms and bonds inside every cell image |
-| **2D Similarity Score (`0.0–1.0`)** | `=SMILES.SIMILARITY(A6, $B$3, "tanimoto")` | Ranks every compound by 2D fingerprint similarity (`"tanimoto"`, `"tversky"`, or `"euclid-sub"`) |
 
-Combine `=SMILES.MATCH` with `=SMILES2LIPINSKI` to prioritize drug-like hits containing your required pharmacophore:
+Combine `=SMILES.MATCH` with exact physicochemical thresholds to prioritize drug-like hits containing your required pharmacophore:
 
 ```text
-=IF(AND(SMILES2LIPINSKI(A2)="PASS", SMILES.MATCH(A2, "c1ccncc1")), "Priority Lead", "Exclude")
+=IF(AND(SMILES2MW(A2)<=500, SMILES2LOGP(A2)<=4, SMILES.MATCH(A2, "c1ccncc1")), "Priority Lead", "Exclude")
 ```
+
+::: info SMARTS Matching Convention
+Standard Daylight/RDKit **SMARTS** is parsed first. Uppercase `C` / `N` match aliphatic atoms and lowercase `c` / `n` match aromatic atoms; use atomic numbers (`[#6]`, `[#7]`) when matching either. Target aromaticity is normalized under EPAM Indigo's `generic` model so Kekule and lowercase aromatic SMILES match identically.
+:::
 
 ## 2. Copy-Ready Dictionary: 12 Common Functional Group SMARTS
 
-Use these standard SMILES/SMARTS patterns with `=SMILES.MATCH` or `"hl:<pattern>"` across your spreadsheets:
+Use these standard SMILES/SMARTS patterns with `=SMILES.MATCH` (`INCHI.MATCH` / `KET.MATCH`) or `"hl:<pattern>"` across your spreadsheets:
 
 | Functional Group / Ring | SMARTS Pattern | Substructure Match (`TRUE` / `FALSE`) | Highlighted Structure Formula |
 | :--- | :--- | :--- | :--- |
@@ -51,7 +55,7 @@ Use these standard SMILES/SMARTS patterns with `=SMILES.MATCH` or `"hl:<pattern>
 
 ## Related Guides
 
-- [**Identifier Conversion**](/excel/data-sdf) — Standardize Name/CAS/SMILES/InChIKey strings and deduplicate compound tables
-- [**Lipinski, ADME, 3D**](/excel/lipinski-adme) — Pair SAR scaffold filters with Lipinski Ro5, TPSA, and Fsp3 cutoffs
-- [**SDF Import & Export**](/excel/sdf) — Import `.sdf` screening libraries directly into a 12-column live Excel SAR table
+- [**Identifier Conversion**](/excel/data-sdf) — Standardize Name/CAS/SMILES/KET/InChIKey strings and deduplicate compound tables
+- [**LogP, TPSA & 3D**](/excel/lipinski-adme) — Pair SAR scaffold filters with LogP, TPSA, and Fsp3 cutoffs
+- [**SDF Import**](/excel/sdf) — Import `.sdf` screening libraries directly into an 11-column live Excel SAR table
 - [**Styles & Highlights**](/excel/styles-reactions) — Customize highlight options alongside `"bw"`, `"num"`, and dark mode

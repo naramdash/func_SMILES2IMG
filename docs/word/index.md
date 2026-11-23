@@ -17,7 +17,7 @@ Finished drafting in color and need strict black-and-white line art for ACS, RSC
 <FeatureMedia id="word-ch6-publication-finish" />
 
 ### 3. Zero-Typo HRMS / Formula Copy & 3D Protein Figures (`Mol*`)
-Pull Chemical Formula, Molecular Weight, Monoisotopic Exact Mass (`Da`), LogP, and Lipinski status straight from any structure into your Experimental section, or enter a 4-character PDB ID (`1CRN`, `6LU7`) to insert a crisp 3D protein figure.
+Pull Chemical Formula, Molecular Weight, Monoisotopic Exact Mass (`Da`), LogP, and TPSA straight from any structure into your Experimental section, or enter a 4-character PDB ID (`1CRN`, `6LU7`) to insert a crisp 3D protein figure.
 
 <FeatureMedia id="word-ch5-edit-and-molstar" />
 
@@ -27,7 +27,7 @@ Pull Chemical Formula, Molecular Weight, Monoisotopic Exact Mass (`Da`), LogP, a
 | :--- | :--- | :--- |
 | **Editing a typo inside a compound table** | Reopen external editor → export PNG → delete & reinsert → fix shifted column widths | **Double-click the structure → edit in Ketcher 2D → <kbd>Ctrl</kbd> + <kbd>Enter</kbd>** |
 | **Switching 30 color figures to ACS B&W** | Re-export and replace every file one by one | **`[SMILES]` ➔ `[Batch Style]` ➔ `[Publication B&W]` in 1 click** |
-| **Typing Formula, MW & HRMS Exact Mass** | Look up or calculate manually in another window (typo risk) | **`[Molecule Info]` copies all 17 descriptors & Exact Mass in 1 click** |
+| **Typing Formula, MW & HRMS Exact Mass** | Look up or calculate manually in another window (typo risk) | **`[Molecule Info]` copies all 12 descriptors & Exact Mass in 1 click** |
 | **Sharing `.docx` with Mac co-authors & reviewers** | Proprietary OLE objects break or fail to edit on macOS | **Standard high-DPI PNG + `.glb` embedded—100% readable on Mac, Web & PDF** |
 | **Adding a 3D protein binding-site figure** | Launch PyMOL / ChimeraX, render PNG, crop and re-import manually | **`[3D Structure (Mol*)]` fetches PDB by ID & preserves camera angle on re-edit** |
 

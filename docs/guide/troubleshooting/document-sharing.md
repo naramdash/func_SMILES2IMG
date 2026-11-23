@@ -10,7 +10,7 @@ How `.docx`, `.pptx`, and `.xlsx` files created with **`func_SMILES2IMG`** behav
 
 ## 2. Microsoft Excel (`.xlsx`)
 
-* **Cached Outputs Stay Visible:** `.FLOAT` picture shapes, Microsoft 365 in-cell image caches, and calculated descriptor values (`MW`, `Formula`, `LogP`, `Lipinski`) remain visible on other PCs as long as the workbook is not recalculated.
+* **Cached Outputs Stay Visible:** `.FLOAT` picture shapes, Microsoft 365 in-cell image caches, and calculated descriptor values (`MW`, `Formula`, `LogP`, `TPSA`) remain visible on other PCs as long as the workbook is not recalculated.
 * **Preventing `#NAME?` on External Sharing:** If a recipient without `func_SMILES2IMG` double-clicks a custom formula cell or triggers a full recalculation (<kbd>F9</kbd>), Excel displays `#NAME?` for custom functions.
 * **Recommended Final-Export Workflow:**
   1. Keep your original working `.xlsx` with live formulas.

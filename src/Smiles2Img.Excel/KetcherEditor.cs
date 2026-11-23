@@ -27,7 +27,7 @@ public static partial class KetcherEditor
         {
             events = (Excel.Application)ExcelDnaUtil.Application;
             events.SheetBeforeDoubleClick += OnSheetBeforeDoubleClick;
-            mouseHook = new ThreadMouseDoubleClickHook(TryHandleMouseDoubleClick);
+            mouseHook = new ThreadMouseDoubleClickHook(TryHandleMouseDoubleClick, "EXCEL7");
         }
         catch (Exception ex)
         {
@@ -291,30 +291,43 @@ public static partial class KetcherEditor
 
             string? rawInput = SafeClipboard.ContainsText() ? SafeClipboard.GetText()?.Trim() : null;
 
-            byte[]? pngBytes = null;
-            string? ket = null;
-            string? smiles = null;
-            bool rendered = !string.IsNullOrEmpty(rawInput) &&
-                MoleculeActionHelper.TryRenderQuickInsertInput(rawInput, RenderOptions.Default, out pngBytes, out ket, out smiles);
+            QuickInsertResolution? resolution = null;
+            if (!string.IsNullOrEmpty(rawInput) &&
+                MoleculeActionHelper.TryResolveQuickInsertInput(rawInput, RenderOptions.Default, out var clipResolution) &&
+                clipResolution != null)
+            {
+                if (!MoleculeActionHelper.ConfirmQuickInsertIfNeeded(clipResolution, ExcelDnaUtil.WindowHandle))
+                    return;
+                resolution = clipResolution;
+            }
 
-            // Fallback to current cell plain text if clipboard doesn't have valid structure
-            if (!rendered && app.ActiveCell is Excel.Range activeCell)
+            // Fallback to current cell plain text if clipboard didn't contain a valid structure
+            if (resolution == null && app.ActiveCell is Excel.Range activeCell)
             {
                 string cellFormula = Convert.ToString((object?)activeCell.Formula) ?? "";
                 string cellVal = Convert.ToString((object?)activeCell.Value2)?.Trim() ?? "";
-                if (!cellFormula.StartsWith("=", StringComparison.Ordinal) && !string.IsNullOrEmpty(cellVal))
+                if (!cellFormula.StartsWith("=", StringComparison.Ordinal) &&
+                    !string.IsNullOrEmpty(cellVal) &&
+                    MoleculeActionHelper.TryResolveQuickInsertInput(cellVal, RenderOptions.Default, out var cellResolution) &&
+                    cellResolution != null)
                 {
-                    rendered = MoleculeActionHelper.TryRenderQuickInsertInput(cellVal, RenderOptions.Default, out pngBytes, out ket, out smiles);
+                    if (!MoleculeActionHelper.ConfirmQuickInsertIfNeeded(cellResolution, ExcelDnaUtil.WindowHandle))
+                        return;
+                    resolution = cellResolution;
                 }
             }
 
-            if (!rendered || pngBytes == null)
+            if (resolution == null || resolution.PngBytes == null || resolution.PngBytes.Length == 0)
             {
                 DialogHelper.ShowInfo(
-                    "No valid SMILES, InChI, KET, or chemical name/CAS found on clipboard (or active cell).\nPlease copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) or compound name (e.g. Aspirin) and try again.",
+                    "No valid SMILES, InChI, KET, or chemical name/CAS found on clipboard (or active cell).\nPlease copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O), CAS number (e.g. 50-78-2), or compound name (e.g. Aspirin) and try again.",
                     ExcelDnaUtil.WindowHandle);
                 return;
             }
+
+            byte[] pngBytes = resolution.PngBytes;
+            string? ket = resolution.Ket;
+            string? smiles = resolution.Smiles;
 
             if (app.ActiveCell is Excel.Range targetCell)
             {
@@ -421,6 +434,7 @@ public static partial class KetcherEditor
     public static int ApplyBatchStyle(string background, string style, string presetLabel = "Preset")
     {
         int updated = 0;
+        int skippedComposite = 0;
         try
         {
             var app = (Excel.Application)ExcelDnaUtil.Application;
@@ -432,46 +446,61 @@ public static partial class KetcherEditor
 
             if (selectedShape == null)
             {
-                var formulaRegex = new System.Text.RegularExpressions.Regex(
-                    @"^=\s*(?<fn>(?:SMILES2IMG|KET2IMG|INCHI2IMG|NAME2IMG)(?:\.FLOAT)?)\s*\(\s*(?<arg1>""(?:""""|[^""])*""|[^,)]+)(?:\s*,\s*[^,)]*)*\s*\)\s*$",
-                    System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-
                 var used = sheet.UsedRange;
+                Excel.Range? scanRange = used;
                 try
                 {
-                    if (app.Selection is Excel.Range selRange && selRange.Count > 1 && used != null)
+                    object? rawSelection = app.Selection;
+                    if (rawSelection is Excel.Range selRange &&
+                        used != null &&
+                        Convert.ToDouble((object?)selRange.CountLarge) > 1)
                     {
                         hasMultiCellSelection = true;
-                        var intersected = app.Intersect(selRange, used);
-                        used = intersected;
+                        scanRange = app.Intersect(selRange, used);
                     }
                 }
                 catch { }
-                if (used != null)
-                {
-                    int rows = Math.Min(used.Rows.Count, 500);
-                    int cols = Math.Min(used.Columns.Count, 50);
-                    for (int r = 1; r <= rows; r++)
-                    {
-                        for (int c = 1; c <= cols; c++)
-                        {
-                            try
-                            {
-                                var cell = (Excel.Range)used.Cells[r, c];
-                                string formula = Convert.ToString((object?)cell.Formula) ?? "";
-                                if (string.IsNullOrEmpty(formula) || !formula.StartsWith("=", StringComparison.Ordinal))
-                                    continue;
 
-                                var m = formulaRegex.Match(formula);
-                                if (m.Success)
+                if (scanRange != null)
+                {
+                    void RewriteCell(Excel.Range cell)
+                    {
+                        string formula = Convert.ToString((object?)cell.Formula) ?? "";
+                        if (string.IsNullOrEmpty(formula) || !formula.StartsWith("=", StringComparison.Ordinal))
+                            return;
+
+                        var status = ExcelFormulaRewriter.TryRewriteImageStyle(formula, background, style, out var rewritten);
+                        if (status == FormulaRewriteStatus.Updated)
+                        {
+                            cell.Formula = rewritten;
+                            updated++;
+                        }
+                        else if (status == FormulaRewriteStatus.SkippedComposite)
+                        {
+                            skippedComposite++;
+                        }
+                    }
+
+                    // SpecialCells on a 1-cell range silently expands to the whole sheet; handle CountLarge == 1 directly.
+                    if (Convert.ToDouble((object?)scanRange.CountLarge) == 1)
+                    {
+                        try { RewriteCell(scanRange); } catch { }
+                    }
+                    else
+                    {
+                        Excel.Range? formulaCells = null;
+                        try { formulaCells = scanRange.SpecialCells(Excel.XlCellType.xlCellTypeFormulas); }
+                        catch { }
+
+                        if (formulaCells != null)
+                        {
+                            foreach (Excel.Range area in formulaCells.Areas)
+                            {
+                                foreach (Excel.Range cell in area.Cells)
                                 {
-                                    var fn = m.Groups["fn"].Value;
-                                    var arg1 = m.Groups["arg1"].Value.Trim();
-                                    cell.Formula = $"={fn}({arg1}, \"{background}\", \"{style}\")";
-                                    updated++;
+                                    try { RewriteCell(cell); } catch { }
                                 }
                             }
-                            catch { }
                         }
                     }
                 }
@@ -515,8 +544,12 @@ public static partial class KetcherEditor
                 catch { }
             }
 
-            if (updated > 0)
+            if (updated > 0 && skippedComposite > 0)
+                MoleculeNotification.NotifyCopied("Batch Style", $"Updated {updated} structure(s) to {presetLabel} (skipped {skippedComposite} composite formula(s))");
+            else if (updated > 0)
                 MoleculeNotification.NotifyCopied("Batch Style", $"Updated {updated} structure(s) to {presetLabel}");
+            else if (skippedComposite > 0)
+                MoleculeNotification.NotifyWarning("Batch Style", $"Skipped {skippedComposite} composite formula(s); apply style to standalone image formulas or shapes.");
             else
                 MoleculeNotification.NotifyWarning("Batch Style", "No SMILES structures found on the active sheet.");
         }
@@ -572,11 +605,10 @@ public static partial class KetcherEditor
         ("MW (g/mol)", "SMILES2MW", 12),
         ("Exact Mass", "SMILES2EXACTMASS", 13),
         ("LogP", "SMILES2LOGP", 9),
+        ("TPSA", "SMILES2TPSA", 9),
         ("Rings", "SMILES2RINGS", 8),
         ("Aromatic Rings", "SMILES2AROMATIC", 10),
         ("Fsp3", "SMILES2FSP3", 8),
-        ("Chiral Centers", "SMILES2CHIRAL", 10),
-        ("Lipinski", "SMILES2LIPINSKI", 10),
     ];
 
     public static int ImportSdfFromFile(Excel.Application app, string filePath)
@@ -597,7 +629,7 @@ public static partial class KetcherEditor
             try
             {
                 var used = sheet.UsedRange;
-                if (used != null && (used.Rows.Count > 1 || used.Columns.Count > 1 || Convert.ToString((object?)((Excel.Range)sheet.Cells[1, 1]).Value2) != null))
+                if (used != null && (used.Rows.Count > 1 || used.Columns.Count > 1 || !string.IsNullOrEmpty(Convert.ToString((object?)((Excel.Range)sheet.Cells[1, 1]).Value2))))
                 {
                     startRow = used.Row + used.Rows.Count + 1;
                 }
@@ -639,101 +671,5 @@ public static partial class KetcherEditor
         {
             try { app.ScreenUpdating = prevScreenUpdating; } catch { }
         }
-    }
-
-    [ExcelCommand(MenuName = "SMILES2IMG", MenuText = "Export Sheet to SDF...")]
-    public static void ExportSdfCommand()
-    {
-        try
-        {
-            using var sfd = new SaveFileDialog
-            {
-                Title = "Export Worksheet Molecules to SDF (.sdf)",
-                Filter = "MDL Structure Data File (*.sdf)|*.sdf|All Files (*.*)|*.*",
-                FileName = "molecules_export.sdf",
-                DefaultExt = "sdf"
-            };
-
-            var dr = DialogHelper.ShowCommonDialog(sfd, ExcelDnaUtil.WindowHandle);
-            if (dr != DialogResult.OK || string.IsNullOrWhiteSpace(sfd.FileName))
-                return;
-
-            var app = (Excel.Application)ExcelDnaUtil.Application;
-            int count = ExportSdfToFile(app, sfd.FileName);
-            if (count > 0)
-                MoleculeNotification.NotifyCopied("SDF Export", $"Exported {count} molecule(s) to {System.IO.Path.GetFileName(sfd.FileName)}");
-            else
-                MoleculeNotification.NotifyWarning("SDF Export", "No valid SMILES structures found on the active worksheet to export.");
-        }
-        catch (Exception ex)
-        {
-            DialogHelper.ShowWarning("Error exporting SDF file:\n" + ex.Message, ExcelDnaUtil.WindowHandle);
-        }
-    }
-
-    public static int ExportSdfToFile(Excel.Application app, string filePath)
-    {
-        if (app.ActiveSheet is not Excel.Worksheet sheet)
-            return 0;
-
-        var records = new System.Collections.Generic.List<SdfRecord>();
-        var seenSmilesRows = new System.Collections.Generic.HashSet<int>();
-
-        var used = sheet.UsedRange;
-        if (used != null)
-        {
-            int rows = Math.Min(used.Rows.Count, 1000);
-            int cols = Math.Min(used.Columns.Count, 30);
-
-            for (int r = 1; r <= rows; r++)
-            {
-                string? rowSmiles = null;
-                string? rowName = null;
-
-                for (int c = 1; c <= cols; c++)
-                {
-                    try
-                    {
-                        var cell = (Excel.Range)used.Cells[r, c];
-                        string? extracted = ExtractSmilesFromCell(cell, allowPlainTextNameLookup: false);
-                        if (!string.IsNullOrWhiteSpace(extracted) && string.IsNullOrEmpty(rowSmiles))
-                        {
-                            rowSmiles = extracted;
-                        }
-                        else
-                        {
-                            string val = Convert.ToString((object?)cell.Value2)?.Trim() ?? "";
-                            string formula = Convert.ToString((object?)cell.Formula) ?? "";
-                            if (string.IsNullOrEmpty(rowName) &&
-                                !string.IsNullOrEmpty(val) &&
-                                !formula.StartsWith("=", StringComparison.Ordinal) &&
-                                !string.Equals(val, "Name", StringComparison.OrdinalIgnoreCase) &&
-                                !string.Equals(val, "SMILES", StringComparison.OrdinalIgnoreCase) &&
-                                !IsLikelySmiles(val) &&
-                                !double.TryParse(val, out _))
-                            {
-                                rowName = val;
-                            }
-                        }
-                    }
-                    catch { }
-                }
-
-                if (!string.IsNullOrWhiteSpace(rowSmiles) && seenSmilesRows.Add(r))
-                {
-                    records.Add(new SdfRecord
-                    {
-                        Name = rowName ?? $"Row_{r}",
-                        Smiles = rowSmiles!
-                    });
-                }
-            }
-        }
-
-        if (records.Count == 0)
-            return 0;
-
-        SdfManager.WriteSdfFile(filePath, records);
-        return records.Count;
     }
 }

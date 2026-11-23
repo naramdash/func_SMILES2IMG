@@ -17,7 +17,7 @@ const content = computed(() => {
         cards: [
           {
             title: '🔒 100% 로컬 우선 보안',
-            desc: '2D 렌더링(EPAM Indigo), Ketcher 2D, 반응식 KET 저장, SVG 복사, 17종 물성 계산이 모두 내 PC 로컬에서 실행되어 미공개 연구 구조식이 외부 서버로 나가지 않습니다.'
+            desc: '2D 렌더링(EPAM Indigo), Ketcher 2D, 반응식 KET 저장, SVG 복사, 12종 물성 계산이 모두 내 PC 로컬에서 실행되어 미공개 연구 구조식이 외부 서버로 나가지 않습니다.'
           },
           {
             title: '🍎 Mac · 심사위원 100% 호환',
@@ -69,7 +69,7 @@ const content = computed(() => {
       cards: [
         {
           title: '🔒 100% 로컬 우선 보안',
-          desc: 'Ketcher 2D 스케치, Indigo 렌더링, SVG 복사, 17종 물성 조회가 모두 내 PC 로컬에서 실행되어 미공개 후보 물질 슬라이드가 외부로 나가지 않습니다.'
+          desc: 'Ketcher 2D 스케치, Indigo 렌더링, SVG 복사, 12종 물성 조회가 모두 내 PC 로컬에서 실행되어 미공개 후보 물질 슬라이드가 외부로 나가지 않습니다.'
         },
         {
           title: '🎤 발표장 PC · Mac 100% 호환',

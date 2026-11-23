@@ -16,15 +16,14 @@
 
 ## 2. `.sdf` 파일 & 분자 물성 표 복사
 
-### Q. 엑셀에서 `.sdf` 화학 데이터 파일을 열거나 저장할 수 있나요?
-네! 엑셀 상단 **`[SMILES]` ➔ `[SDF File]`** 메뉴를 사용하세요:
-* **`Import SDF File (.sdf)...`:** `.sdf` 파일을 읽어 새 시트에 12개 의약화학·3D 복잡도 열(`Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`, `Lipinski`)을 갖춘 라이브 수식 표를 자동 생성합니다.
-* **`Export Sheet to SDF (.sdf)...`:** 시트의 화합물 목록을 표준 V2000 `.sdf` 파일로 내보냅니다.
+### Q. 엑셀에서 `.sdf` 화학 데이터 파일을 열 수 있나요?
+네! 엑셀 상단 **`[SMILES]` ➔ `[Import SDF]`** 버튼을 사용하세요:
+* **`Import SDF (.sdf)...`:** `.sdf` 파일을 읽어 새 시트에 11개 물성·식별자 열(`Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `TPSA`, `Rings`, `Aromatic Rings`, `Fsp3`)을 갖춘 라이브 수식 표를 자동 생성합니다.
 
-### Q. 분자량, 화학식, LogP, Lipinski 정보를 표로 한 번에 복사하려면?
+### Q. 분자량, 화학식, LogP, TPSA 정보를 표로 한 번에 복사하려면?
 분자 셀이나 그림을 **우클릭 ➔ `Chemical Structure` ➔ `Copy Molecule Info`** 메뉴에서 원하는 서식을 고르세요:
 * **`Copy All Summary (Text)`:** **머리글(Header) + 데이터** 2줄 표로 복사되어 새 표를 만들 때 적합합니다.
-* **`Copy as Excel Row (TSV Columns)`:** **데이터 행만** 17개 칸으로 복사되어 기존 표 아래에 이어 붙일 때 씁니다.
+* **`Copy as Excel Row (TSV Columns)`:** **데이터 행만** 12개 칸으로 복사되어 기존 표 아래에 이어 붙일 때 씁니다.
 * **`Copy as Multi-Line List`:** PowerPoint 슬라이드 텍스트 상자에 글머리 기호로 붙여넣기 좋습니다.
 * **`Copy as Markdown Table` / JSON:** Notion, GitHub, 연구노트용 (`Detailed Molecule Info Window...` 하단 드롭다운에서 서식 선택 후 **`[Copy All]`** 또는 개별 행 더블클릭 복사 가능).
 
@@ -45,4 +44,4 @@
 ## 관련 가이드
 
 - [**설치 가이드 (10초 셋업)**](/ko/guide/install) — PowerShell 1줄 자동 설치, 오프라인 기업망 수동 설치 및 업데이트/제거 방법
-- [**40개 엑셀 함수 전체 개요**](/ko/excel/formulas) — 전체 40종 함수 규격, 반환 데이터 형식 및 공용 스타일 키워드 사전
+- [**49개 엑셀 함수 전체 개요**](/ko/excel/formulas) — 전체 49종 함수 규격, 반환 데이터 형식 및 공용 스타일 키워드 사전

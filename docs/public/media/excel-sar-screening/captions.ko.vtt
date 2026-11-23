@@ -1,5 +1,5 @@
 WEBVTT
 
 00:00:00.333 --> 00:00:02.133
-=SMILES.MATCH와 =SMILES.SIMILARITY, 하이라이트 이미지를 순차 생성합니다.
+=SMILES.MATCH 부분구조 검색과 하이라이트 이미지를 순차 생성합니다.
 

@@ -6,13 +6,13 @@ Troubleshooting for Mol\* `.glb` 3D protein insertion, `.pptx` file size limits,
 
 * **Check Office Version Requirement:** Live mouse rotation and **Morph** camera transitions for `.glb` objects require **PowerPoint 2019, 2021, 2024, or Microsoft 365**.
 * **Lightweight Decks, PowerPoint 2016, or Giant Cryo-EM/Ribosome Complexes:** Switch Mol\*'s top toolbar from **`3D Model (GLB)`** to **`2D Picture`** with **`BG: Transparent`** to insert a sharp alpha-transparent PNG that works on every PowerPoint version while keeping file size small.
-* **Corporate Firewall Blocking RCSB PDB Fetches:** Click **`Open File...`** inside Mol\* to load local `.pdb`, `.cif`, `.bcif`, or `.sdf` files offline ([Offline PDB Files](/editor/troubleshooting/offline-pdb)).
+* **Corporate Firewall Blocking RCSB PDB Fetches:** Click **`Open File...`** inside Mol\* to load local `.pdb`, `.cif`, `.bcif`, `.ent`, `.mol`, `.sdf`, `.molj`, or `.molx` files offline ([Offline PDB Files](/editor/troubleshooting/offline-pdb)).
 
 ## 2. Double-Click Opens Format Picture Instead of Ketcher or Mol\* {#double-click}
 
 `func_SMILES2IMG` identifies editable slide objects via **`Shape.Tags`** (`KET`, `SMILES`, `MOLSTAR`) and **`Alt Text`**, plus `CustomXMLParts` for 3D Mol\* camera states.
 
-* **Plain Screenshot or Copied Bitmap:** External images lack chemical tags and open PowerPoint Format Picture instead. Re-insert via **`[Insert / Edit Structure]`** or **`[Paste Structure]`**.
+* **Plain Screenshot or Copied Bitmap / Off-Canvas Click:** External images lack chemical tags and open PowerPoint Format Picture instead. Re-insert via **`[Insert / Edit Structure]`** or **`[Paste Structure]`**. *(Note: double-click editing applies on the Normal view slide canvas.)*
 * **SVG Converted to Shapes:** Once an SVG pasted via **`[Copy SVG]`** is ungrouped (`Convert to Shape`), its chemical link is replaced by raw vector polygons—always keep an untouched original copy on a backup slide.
 * **Verify Tags & Alternative Open Methods:** Right-click the shape ➔ **View Alt Text** to confirm `SMILES:`, `KET:`, or `MOLSTAR:` is intact. You can always select the shape and click **`[SMILES]` ➔ `[Insert / Edit Structure]`** (2D) or **`[3D Structure (Mol*)]`** (3D). If the `[SMILES]` tab itself is missing, check [Missing Ribbon Tab](/guide/troubleshooting/ribbon-tab).
 

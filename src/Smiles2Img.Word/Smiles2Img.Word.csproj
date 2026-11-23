@@ -3,6 +3,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <AssemblyName>Smiles2Img.Word</AssemblyName>
     <RootNamespace>Smiles2Img.Word</RootNamespace>
+    <Description>Chemical structure renderer, Ketcher 2D editor, Mol* 3D viewer, and molecular property tools for Word.</Description>
   </PropertyGroup>
 
   <ItemGroup>

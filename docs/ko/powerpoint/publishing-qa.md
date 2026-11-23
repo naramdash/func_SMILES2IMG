@@ -18,8 +18,8 @@
 
 PowerPoint 전체 화면 **슬라이드 쇼 진행 중에는 상단 리본과 추가 기능 우클릭 메뉴가 표시되지 않습니다.** 발표 상황에서는 아래 두 단계로 대비하는 것이 가장 확실합니다:
 
-* **발표 전 준비 (발표자 노트 활용):** 핵심 후보 물질 도형을 선택해 **`[SMILES]` ➔ `[Molecule Info]` ➔ `[Copy as Multi-Line List]`** 를 누르고, 화학식·HRMS 정밀질량·LogP·TPSA·`Fsp3`·Lipinski 정보를 **발표자 노트**에 붙여넣어 두세요. 발표자 보기 화면에서 청중 질문 시 즉시 읽어 답할 수 있습니다.
-* **리허설 · 랩미팅 실시간 조회:** 심층 Q&A가 들어오면 <kbd>Esc</kbd>로 슬라이드 쇼를 잠시 빠져나와 해당 구조식(또는 SMILES 텍스트)을 클릭하고 **`[Molecule Info]` ➔ `[Detailed Molecule Info Window...]`** 를 띄워 17종 물성을 한눈에 보여 주세요(행 더블클릭으로 개별 값 복사 가능, 5가지 복사 서식 전체 예시는 [스타일 · 출력 상세 매뉴얼](/ko/editor/publishing) 참고).
+* **발표 전 준비 (발표자 노트 활용):** 핵심 후보 물질 도형을 선택해 **`[SMILES]` ➔ `[Molecule Info]` ➔ `[Copy as Multi-Line List]`** 를 누르고, 화학식·HRMS 정밀질량·LogP·TPSA·`Fsp3` 정보를 **발표자 노트**에 붙여넣어 두세요. 발표자 보기 화면에서 청중 질문 시 즉시 읽어 답할 수 있습니다.
+* **리허설 · 랩미팅 실시간 조회:** 심층 Q&A가 들어오면 <kbd>Esc</kbd>로 슬라이드 쇼를 잠시 빠져나와 해당 구조식(또는 SMILES 텍스트)을 클릭하고 **`[Molecule Info]` ➔ `[Detailed Molecule Info Window...]`** 를 띄워 12종 물성 지표를 한눈에 보여 주세요(행 더블클릭으로 개별 값 복사 가능, 5가지 복사 서식 전체 예시는 [스타일 · 출력 상세 매뉴얼](/ko/editor/publishing) 참고).
 
 ### Step 3. 발표장 연단 PC · Mac · PDF 유인물 최종 점검
 

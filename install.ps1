@@ -291,7 +291,7 @@ function Register-OfficeComAddIn {
 # Register Word COM Add-in
 $wordDllPath = Join-Path $suiteDir 'Smiles2Img.Word.dll'
 if (Test-Path $wordDllPath) {
-    $wordAssembly = try { [System.Reflection.AssemblyName]::GetAssemblyName($wordDllPath).FullName } catch { "Smiles2Img.Word, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null" }
+    $wordAssembly = try { [System.Reflection.AssemblyName]::GetAssemblyName($wordDllPath).FullName } catch { "Smiles2Img.Word, Version=1.9.0.0, Culture=neutral, PublicKeyToken=null" }
     Register-OfficeComAddIn `
         -ProgId "Smiles2Img.Word.AddIn" `
         -Clsid "{41A5C1F0-559A-46E0-B9C0-8B35A0F1D910}" `
@@ -300,13 +300,13 @@ if (Test-Path $wordDllPath) {
         -DllPath $wordDllPath `
         -OfficeApp "Word" `
         -FriendlyName "func_SMILES2IMG" `
-        -Description "func_SMILES2IMG $([char]0xD654)$([char]0xD559) $([char]0xAD6C)$([char]0xC870)$([char]0xC2DD) $([char]0xB80C)$([char]0xB354)$([char]0xB7EC) $([char]0xBC0F) Ketcher $([char]0xC5D0)$([char]0xB514)$([char]0xD130)"
+        -Description "Chemical structure renderer, Ketcher 2D editor, Mol* 3D viewer, and molecular property tools for Word."
 }
 
 # Register PowerPoint COM Add-in
 $pptDllPath = Join-Path $suiteDir 'Smiles2Img.PowerPoint.dll'
 if (Test-Path $pptDllPath) {
-    $pptAssembly = try { [System.Reflection.AssemblyName]::GetAssemblyName($pptDllPath).FullName } catch { "Smiles2Img.PowerPoint, Version=1.8.1.0, Culture=neutral, PublicKeyToken=null" }
+    $pptAssembly = try { [System.Reflection.AssemblyName]::GetAssemblyName($pptDllPath).FullName } catch { "Smiles2Img.PowerPoint, Version=1.9.0.0, Culture=neutral, PublicKeyToken=null" }
     Register-OfficeComAddIn `
         -ProgId "Smiles2Img.PowerPoint.AddIn" `
         -Clsid "{A755973C-21FB-494A-A3C5-086AFFB7C2AC}" `
@@ -315,7 +315,7 @@ if (Test-Path $pptDllPath) {
         -DllPath $pptDllPath `
         -OfficeApp "PowerPoint" `
         -FriendlyName "func_SMILES2IMG" `
-        -Description "func_SMILES2IMG $([char]0xD654)$([char]0xD559) $([char]0xAD6C)$([char]0xC870)$([char]0xC2DD) $([char]0xB80C)$([char]0xB354)$([char]0xB7EC) $([char]0xBC0F) Ketcher $([char]0xC5D0)$([char]0xB514)$([char]0xD130)"
+        -Description "Chemical structure renderer, Ketcher 2D editor, Mol* 3D viewer, and slide styling tools for PowerPoint."
 }
 
 # Register Windows Toast Notification AUMID
@@ -343,7 +343,7 @@ foreach ($candidate in $installedCandidateFiles) {
     }
 }
 if (-not $installedVersion) {
-    $installedVersion = if ($tag -ne 'latest') { $tag } else { "v1.8.1" }
+    $installedVersion = if ($tag -ne 'latest') { $tag } else { "v1.9.0" }
 }
 
 # -------------------------------------------------------------

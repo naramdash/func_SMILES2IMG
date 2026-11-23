@@ -20,7 +20,7 @@
 1. 슬라이드 배경을 짙은 슬레이트/네이비(`#0F172A`, `#1E293B`)로 두고, 동일한 크기의 둥근 사각형 카드 4개를 나란히 배치합니다.
 2. 각 카드 자리에 **`[Paste Structure]`**(텍스트 상자 제자리 변환) 또는 **`[Insert / Edit Structure]`** 로 구조식을 넣습니다.
 3. **`[SMILES]` ➔ `[Batch Style]` ➔ `[Dark Mode (White Ink)]`** 를 눌러 4개 카드의 모든 구조식을 균일한 굵기의 투명 흰색 선화로 통일합니다.
-4. 각 구조식을 선택한 채 **`[SMILES]` ➔ `[Molecule Info]` ➔ `[Copy as Multi-Line List]`** (또는 **`Copy Molecular Weight`**)를 누르면 화학식·분자량·LogP·TPSA·Lipinski 판정을 카드 하단 텍스트 상자에 오타 없이 붙여넣을 수 있습니다.
+4. 각 구조식을 선택한 채 **`[SMILES]` ➔ `[Molecule Info]` ➔ `[Copy as Multi-Line List]`** (또는 **`Copy Molecular Weight`**)를 누르면 화학식·분자량·LogP·TPSA·`Fsp3` 지표를 카드 하단 텍스트 상자에 오타 없이 붙여넣을 수 있습니다.
 5. **정렬 흐트러짐 없는 치환기 수정:** 카드 위 구조식을 **더블클릭**해 R-그룹을 바꿔도 카드 중앙 위치와 크기가 그대로 유지됩니다.
 
 ## 3. 발표 덱 전체 테마 1초 일괄 전환 (`Batch Style`)

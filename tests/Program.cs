@@ -71,9 +71,10 @@ internal static class Program
 
             if (runUnit)
             {
-                PrintCategoryHeader("CATEGORY 1: UNIT TESTS (Rendering, Cheminformatics, UI & Ribbon XML)");
+                PrintCategoryHeader("CATEGORY 1: UNIT TESTS (Rendering, Cheminformatics, Real Substances, UI & Ribbon XML)");
                 RenderingUnitTests.RunAll();
                 CheminformaticsUnitTests.RunAll();
+                RealSubstanceEdgeCaseTests.RunAll();
                 UiAndRibbonUnitTests.RunAll();
             }
 

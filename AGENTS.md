@@ -70,7 +70,7 @@ Office Fluent UI (RibbonX XML)에서 아이콘(`imageMso`)을 변경할 때 아�
 
 ---
 
-### 📋 프로젝트에서 100% 검증된 `imageMso` 카탈로그 (32종)
+### 📋 프로젝트에서 100% 검증된 `imageMso` 카탈로그 (30종)
 
 | 분류 | `imageMso` | 적용 위치 및 용도 |
 | :--- | :--- | :--- |
@@ -96,9 +96,7 @@ Office Fluent UI (RibbonX XML)에서 아이콘(`imageMso`)을 변경할 때 아�
 | | `BlackAndWhiteGrayscale` | `btnBatchStyleBw` (학술 논문용 흑백) |
 | | `BlackAndWhiteLightGrayscale` | `btnBatchStyleWhiteBg` (흰색 사각형 - 흰색 배경) |
 | | `BlackAndWhiteBlack` | `btnBatchStyleDark` (검은색 사각형 - 다크모드) |
-| **SDF 파일** | `DatabaseQueryNew` | `menuRibbonExcelSdf` (화학 DB SDF 메뉴) |
-| | `ImportTextFile` | `btnRibbonExcelImportSdf` (SDF 파일 가져오기) |
-| | `FileSaveAs` | `btnRibbonExcelExportSdf` (시트 데이터 SDF 내보내기) |
+| **SDF 파일** | `ImportTextFile` | `btnImportSdf` (SDF 파일 가져오기) |
 | **진단 & 정보** | `WatchWindow` | `btnRibbonExcelDiagnostics` (시스템 상태 모니터링 안경) |
 | | `Info` | `btnRibbonExcelAbout` (버전 및 정보창) |
 | **컨텍스트 메뉴** | `DesignMode` | 우클릭 분자 편집 메뉴 |
@@ -120,7 +118,6 @@ Office Fluent UI (RibbonX XML)에서 아이콘(`imageMso`)을 변경할 때 아�
   - Chemical Formula: 오렌지색 원자 핵과 전자 궤도
   - Monoisotopic Mass: 초록색 질량 스펙트럼 피크
   - LogP / TPSA: 파란색 수용성 물방울
-  - Lipinski Rule of 5: 빨간색/주황색 알약(캡슐)
   - Rings & Aromaticity: 청록색 벤젠 방향족 육각 고리
   - 3D Complexity (Fsp3): 보라색 3D 사면체 입체 결합
   - Canonical SMILES: 연두색 화학 결합 노드

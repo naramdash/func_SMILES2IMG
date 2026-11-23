@@ -19,7 +19,7 @@ All 8 structure image functions (**`=SMILES2IMG`**, **`=NAME2IMG`**, **`=INCHI2I
 | `input` | 1st | *(Required)* | SMILES, Name/CAS, InChI, or KET cell/string |
 | `[background]` | 2nd | `""` (`trans`) | `""` / `"trans"`, `"white"`, CSS color (`"yellow"`), or `#RRGGBB` hex fill |
 | `[style]` | 3rd | `""` (`color`) | `"color"`, `"bw"`, `"white"`, `"ink=#HEX"`, `"hl:<smarts>"`, `"num"`, `"stereo"`, `"h"`, `"all-c"` |
-| `[transform]` | 4th | `""` | `"flip"`/`"flipx"`, `"flipy"`, `"rot90"`, `"rot180"`, `"rot270"` *(also accepted inside `[style]`)* |
+| `[transform]` | 4th | `""` | `"rot90"`, `"rot180"`, `"rot270"` *(also accepted inside `[style]`)* |
 
 ::: tip Shortcut for Monochrome (`"bw"`)
 Pass `"bw"` (or `FALSE`) directly in the 2nd argument to skip empty quotes: `=SMILES2IMG(A2, "bw")` and `=NAME2IMG("Aspirin", "bw")`.
@@ -40,15 +40,18 @@ Pass `"bw"` (or `FALSE`) directly in the 2nd argument to skip empty quotes: `=SM
 | **Dynamic Header Highlight** | `=SMILES2IMG(A6, "", "hl:"&$B$3)` | Edit query cell `$B$3` once to re-highlight an entire screening table |
 | **NMR Atom Numbers & Stereo** | `=SMILES2IMG(A2, "", "num stereo")` | 1-based atom indices (`1, 2, 3...`) and CIP *R/S*, *E/Z* descriptors |
 | **Explicit H & Carbon Vertices** | `=SMILES2IMG(A2, "", "h all-c")` | Unfolds explicit `-H` atoms and draws `C` symbols on carbons |
-| **Mirror Flip & Rotation** | `=SMILES2IMG(A2, "", "flip rot90")` | Horizontal/vertical flip and `90°`/`180°`/`270°` clockwise rotation |
+| **2D Planar Rotation** | `=SMILES2IMG(A2, "", "rot90")` | Clockwise `90°` / `180°` / `270°` planar rotation (preserves chiral R/S configuration) |
 
-## 3. Combine Tokens & Restyle Whole Sheets
+## 3. Combine Tokens & Lossless Batch Restyling
 
 * **Flexible Delimiters:** Separate multiple `[style]` tokens using spaces (`"bw num"`), commas (`"bw, num"`), pipes (`"bw|num"`), semicolons (`"bw;num"`), or `+` (`"bw+num"`).
-* **1-Click Sheet Conversion:** Restyle hundreds of existing structure formulas at once with **`[SMILES]` ➔ `[Batch Style]`** ([Batch Style, TSV, 3D](/excel/tools-export)).
+* **Background & Ink Aliases:** Transparent backgrounds accept `""`, `"trans"`, `"transparent"`, `"none"`, `"clear"`, and `"nobg"` (or `"bg=#HEX"` for solid fills); custom ink accepts `"ink=#HEX"`, `"line=#HEX"`, and `"base=#HEX"`.
+* **Pure EPAM Indigo Labeling:** Without explicit `"h"` or `"all-c"`, rendering delegates cleanly to EPAM Indigo's `terminal-hetero` mode (for molecules with ≤4 heavy atoms) and `hetero` mode (larger molecules), with no heuristic pseudo-methyl/chiral-H overrides.
+* **Stereochemistry Preservation (`flip` Ignored):** Planar rotations `"rot90"`, `"rot180"`, and `"rot270"` preserve absolute 2D stereochemistry; legacy horizontal/vertical reflection tokens (`flip`, `flipx`, `flipy`) are silently ignored so R/S configurations cannot be accidentally inverted.
+* **Lossless Sheet Conversion:** Restyle hundreds of existing structure formulas at once with **`[SMILES]` ➔ `[Batch Style]`**—preserving existing `hl:`, `num`, `stereo`, `h`, `all-c`, and `rot90`/`rot180`/`rot270` options ([Batch Style, TSV, 3D](/excel/tools-export)).
 
 ## Related Guides
 
-- [**All 40 Functions**](/excel/formulas) — Full parameter catalog and accepted style aliases
-- [**Substructure & Similarity**](/excel/sar) — Pair `hl:<SMARTS>` with `=SMILES.MATCH` and the 12-group SMARTS dictionary
+- [**All 49 Functions**](/excel/formulas) — Full parameter catalog and accepted style aliases
+- [**Substructure Search**](/excel/sar) — Pair `hl:<SMARTS>` with `=SMILES.MATCH` and the 12-group SMARTS dictionary
 - [**Batch Style, TSV, 3D**](/excel/tools-export) — Convert an entire sheet cleanly to ACS B&W or Dark Mode

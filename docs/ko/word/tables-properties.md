@@ -1,6 +1,6 @@
 # 2. 화합물 표(SAR) & 실험 물성(SI)
 
-Word 논문용 SAR·화합물 요약 표의 열 너비 틀어짐과 그림 잘림을 원천 차단하고, **`Molecule Info`** 로 화학식·분자량·HRMS 정밀질량·LogP·Lipinski 판정을 오타 없이 즉시 복사해 채웁니다.
+Word 논문용 SAR·화합물 요약 표의 열 너비 틀어짐과 그림 잘림을 원천 차단하고, **`Molecule Info`** 로 화학식·분자량·HRMS 정밀질량·LogP·TPSA를 오타 없이 즉시 복사해 채웁니다.
 
 <FeatureMedia id="word-ch3-compound-table" />
 
@@ -18,16 +18,16 @@ Word 기본 표 설정에서는 구조식을 넣을 때 열이 찌그러지거�
 
 ## 2. `Molecule Info`로 표 · Experimental Section 오타 없이 채우기
 
-Word의 구조식 그림을 선택하거나—**본문에 적힌 SMILES/화합물명 텍스트만 드래그한 상태에서**—상단 **`[SMILES]` ➔ `[Molecule Info]`** (또는 우클릭 ➔ **`Chemical Structure` ➔ `Copy Molecule Info`**)를 클릭하면 로컬에서 즉시 계산된 17종 물성을 원하는 서식으로 복사할 수 있습니다:
+Word의 구조식 그림을 선택하거나—**본문에 적힌 SMILES/화합물명 텍스트만 드래그한 상태에서**—상단 **`[SMILES]` ➔ `[Molecule Info]`** (또는 우클릭 ➔ **`Chemical Structure` ➔ `Copy Molecule Info`**)를 클릭하면 로컬에서 즉시 계산된 12종 물성 지표를 원하는 서식으로 복사할 수 있습니다:
 
 <FeatureMedia id="common-molecule-info" />
 
 | Word에서 작성 중인 항목 | 선택할 `Molecule Info` 메뉴 | 붙여넣기(<kbd>Ctrl</kbd> + <kbd>V</kbd>) 결과 |
 | :--- | :--- | :--- |
-| **새 17열 물성 요약 표 생성** | **`Copy All Summary (Text)`** | 17개 물성 머리글(Header) + 데이터 행이 서식 있는 Word 표(HTML/TSV)로 즉시 생성됨 |
-| **기존 표의 빈 행에 값 채우기** | **`Copy as Excel Row (TSV Columns)`** | 헤더 없이 17개 탭 구분 값만 복사되어 기존 표 행 셀에 맞추어 붙여넣기 가능 |
+| **새 12열 물성 요약 표 생성** | **`Copy All Summary (Text)`** | 12개 물성 머리글(Header) + 데이터 행이 서식 있는 Word 표(HTML/TSV)로 즉시 생성됨 |
+| **기존 표의 빈 행에 값 채우기** | **`Copy as Excel Row (TSV Columns)`** | 헤더 없이 12개 탭 구분 값만 복사되어 기존 표 행 셀에 맞추어 붙여넣기 가능 |
 | **Experimental Section · HRMS 기재** | **`Copy Chemical Formula`** / **`Copy Molecular Weight (MW)`** / **`Detailed Molecule Info Window...`** | Hill 화학식(`C9H8O4`), 평균 분자량(`180.16`), HRMS 대조용 단일동위원소 정밀질량(`180.0423 Da`) 개별 복사 |
-| **Supporting Information (SI) 요약 목록** | **`Copy as Multi-Line List`** | 물질명, IUPAC명, 물성 12종, SMILES, InChI, InChIKey가 정리된 줄바꿈 목록 복사 |
+| **Supporting Information (SI) 요약 목록** | **`Copy as Multi-Line List`** | 물질명, IUPAC명, 물성·3D 지표, SMILES, InChI, InChIKey가 정리된 줄바꿈 목록 복사 |
 
 ::: tip 숨은 꿀팁: 그림을 넣지 않고 텍스트에서도 바로 물성·SVG 추출
 구조식 그림을 아직 삽입하지 않았더라도 본문의 SMILES 문자열이나 물질명(`Ibuprofen`)을 드래그한 상태에서 **`[Molecule Info]`** 또는 **`[Copy SVG]`** 를 실행하면 즉시 계산·복사됩니다.
@@ -35,7 +35,7 @@ Word의 구조식 그림을 선택하거나—**본문에 적힌 SMILES/화합�
 
 ## 3. Excel SAR 시트와 연동해 표 만들기
 
-이미 Excel에서 `=SMILES2MW`, `=SMILES2LOGP`, `=SMILES2LIPINSKI`, `=SMILES.SIMILARITY` 등으로 스크리닝 표를 정리해 두었다면:
+이미 Excel에서 `=SMILES2MW`, `=SMILES2LOGP`, `=SMILES2TPSA`, `=SMILES.MATCH` 등으로 스크리닝 표를 정리해 두었다면:
 
 * **물성 데이터 일괄 붙여넣기:** Excel에서 숫자·텍스트 물성 행을 복사해 Word 표에 붙여넣은 뒤 **열 너비 고정**과 줄 간격 **`1줄`** 을 확인하고, 구조식 열에만 **`[Paste Structure]`** 나 **`[Insert / Edit Structure]`** 로 2D 그림을 채우세요.
 * **수정 시 즉시 동기화:** Word 표에서 구조식을 **더블클릭**해 치환기를 바꿨다면 바로 **`[Molecule Info]`** 를 눌러 변경된 화학식과 정밀질량을 확인·갱신할 수 있습니다.

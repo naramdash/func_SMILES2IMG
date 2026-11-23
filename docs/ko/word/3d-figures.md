@@ -13,7 +13,7 @@
 2. 상단 리본에서 **`[SMILES]` ➔ `[3D Structure (Mol*)]`** (또는 우클릭 ➔ **`Chemical Structure` ➔ `3D Structure (Mol*)...`**)를 클릭합니다.
 3. 두 가지 방식 중 하나로 구조를 불러옵니다:
    * **공개 PDB 코드 조회:** 4자리 PDB ID(`1CRN`, `4HHB`, `6LU7`, `1BNA`) 입력 후 **`Fetch`** 클릭.
-   * **오프라인 로컬 파일 열기:** **`Open File...`** 로 내 PC의 `.pdb`, `.cif`, `.bcif`, `.sdf`, `.mol`, `.mol2` 파일을 외부 전송 없이 엽니다.
+   * **오프라인 로컬 파일 열기:** **`Open File...`** 로 내 PC의 `.pdb`, `.cif`, `.bcif`, `.ent`, `.mol`, `.sdf`, `.molj`, `.molx` 파일을 외부 전송 없이 엽니다.
 4. **Cartoon**, **Surface**, **Ball & Stick**(리간드 결합 포켓) 스타일과 배경(`White` / `Transparent`)을 맞춘 뒤, 상단 툴바에서 출력 모드를 골라 <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (**`Apply to Document`**)를 누릅니다.
 
 ## 2. `2D Picture` vs. `3D Model (GLB)` 선택 기준

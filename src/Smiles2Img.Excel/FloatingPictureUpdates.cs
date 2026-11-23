@@ -92,6 +92,8 @@ internal static class FloatingPictureUpdates
         try
         {
             var sheetRef = (string)XlCall.Excel(XlCall.xlSheetNm, caller);
+            if (sheetRef.Length >= 2 && sheetRef[0] == '\'' && sheetRef[sheetRef.Length - 1] == '\'')
+                sheetRef = sheetRef.Substring(1, sheetRef.Length - 2).Replace("''", "'");
             var closeBracket = sheetRef.IndexOf(']');
             if (closeBracket > 1)
             {

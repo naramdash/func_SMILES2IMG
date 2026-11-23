@@ -34,12 +34,12 @@ Both formulas share the exact same **4-argument signature `(input, [background],
 | Action | How to Do It | Result |
 | :--- | :--- | :--- |
 | **Draw a Molecule** | Select a cell ➔ **`[SMILES]` ➔ `[Insert / Edit (SMILES)]`** (or `InChI`) ➔ sketch in Ketcher ➔ <kbd>Ctrl</kbd> + <kbd>Enter</kbd> | Writes `=SMILES2IMG("...")` (or `=INCHI2IMG(...)`) directly into the cell |
-| **0.1s Instant Convert** | Copy a SMILES/InChI string or select a text cell ➔ **`[SMILES]` ➔ `[Paste Structure]`** | Converts clipboard or cell text immediately without opening the editor |
-| **In-Place Re-Editing** | **Double-click** any rendered structure cell or `.FLOAT` picture | Reopens **Ketcher 2D** in `0.05s` with the molecule preloaded |
+| **0.1s Instant Convert** | Copy SMILES/InChI/KET/Name/CAS text or select a cell ➔ **`[SMILES]` ➔ `[Paste Structure]`** | Writes `=SMILES2IMG(...)` or `=KET2IMG(...)` directly; shows a quick confirmation dialog for chemical names or ambiguous short English words |
+| **In-Place Re-Editing** | **Double-click** any rendered structure cell or `.FLOAT` picture | Reopens **Ketcher 2D** in `0.05s` with the molecule preloaded (ambiguous plain words are safely skipped when preloading empty cells) |
 
 ## Related Guides
 
-- [**Names, Solvents, CAS**](/excel/name-cas) — Render `Aspirin`, `THF`, `HATU`, or `"50-78-2"` directly with `=NAME2IMG`
+- [**Names, Solvents, CAS**](/excel/name-cas) — Render `Aspirin`, `THF`, `DMSO`, or `"50-78-2"` directly with `=NAME2IMG` (built-in offline dictionary + 30-day local PubChem cache; invalid CAS check digits rejected in 0ms)
 - [**Reaction Schemes (KET)**](/excel/reactions) — Store multi-step reactions cleanly inside cells with `=KET2IMG`
 - [**Styles & Highlights**](/excel/styles-reactions) — Customize `[bg]`, `[style]` (`"bw"`, `"hl:..."`, `"num stereo"`), and `[transform]`
 - [**Legacy Excel (.FLOAT)**](/excel/legacy-float) — Cell-anchored shapes for Excel 2016, 2019, and 2021

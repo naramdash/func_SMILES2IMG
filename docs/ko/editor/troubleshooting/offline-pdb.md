@@ -12,7 +12,7 @@ Mol\* 상단에 4자리 PDB 코드(`1CRN`, `4HHB`, `6LU7` 등)를 입력하고 *
 
 Mol\* 3D 뷰어 런타임 자체는 `func_SMILES2IMG` 내부에 내장되어 있어 로컬 파일은 **인터넷 없이 즉시 열립니다**:
 
-1. 사용할 구조 파일(`.pdb`, `.cif`, `.bcif`, `.sdf`, `.mol`, `.mol2`)을 PC에 준비합니다.
+1. 사용할 구조 파일(`.pdb`, `.cif`, `.bcif`, `.ent`, `.mol`, `.sdf`, `.molj`, `.molx`)을 PC에 준비합니다.
 2. 리본에서 **`[SMILES]` ➔ `[3D Structure (Mol*)]`** 메뉴를 클릭합니다.
 3. Mol\* 상단 툴바의 **`Open File...`** 버튼을 눌러 로컬 파일을 선택합니다.
 4. 원하는 스타일(Cartoon, Surface 등)을 설정한 뒤 **`Apply to Slide`** / **`Apply to Document`** (또는 <kbd>Ctrl</kbd> + <kbd>Enter</kbd>)를 누릅니다.

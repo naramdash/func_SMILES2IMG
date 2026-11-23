@@ -11,8 +11,8 @@
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
-::: tip `v1.8.1` 정식 포함 기능
-위 명령어를 실행하면 Office 비트(32비트/64비트)를 자동 감지해 `func_SMILES2IMG v1.8.1` 패키지를 내려받고 파일 차단 해제(`Unblock-File`) 및 HKCU 레지스트리 등록까지 자동 완료합니다. Excel·Word·PowerPoint 통합 `Chemical Structure >` 우클릭 메뉴, 40개 엑셀 함수, Ketcher 2D, Mol\* 3D, 12열 `.sdf` 가져오기가 모두 포함됩니다.
+::: tip `v1.9.0` 정식 포함 기능
+위 명령어를 실행하면 Office 비트(32비트/64비트)를 자동 감지해 `func_SMILES2IMG v1.9.0` 패키지를 내려받고 파일 차단 해제(`Unblock-File`) 및 HKCU 레지스트리 등록까지 자동 완료합니다. Excel·Word·PowerPoint 통합 `Chemical Structure >` 우클릭 메뉴, 49개 엑셀 함수, Ketcher 2D, Mol\* 3D, 11열 `.sdf` 가져오기가 모두 포함됩니다.
 :::
 
 ## 2. 오피스 재시작 & `[SMILES]` 리본 탭 확인

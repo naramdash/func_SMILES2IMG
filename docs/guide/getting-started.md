@@ -37,7 +37,7 @@ Insert alpha-transparent white-ink structures onto dark presentation templates, 
 
 ## 4. Pick Your Dedicated App Guide
 
-- [**Excel Guide**](/excel/) — Structure tables, Name/CAS lookup, Lipinski/SAR screening, `.sdf` I/O, and all 40 formulas
+- [**Excel Guide**](/excel/) — Structure tables, Name/CAS lookup, LogP/TPSA/3D screening, `.sdf` import, and all 49 formulas
 - [**Word Guide**](/word/) — Inline manuscript structures, fixed-width SAR tables, KET reaction schemes, Mol\* 3D figures, and ACS B&W submission
 - [**PowerPoint Guide**](/powerpoint/) — Dark-mode structure cards, 0.1s TextBox conversion, synthesis slides, and 360°-rotatable 3D proteins
 - **[Editor — Ketcher 2D, Mol\* 3D, Export](/editor/)** — Master the 2D sketcher, 3D protein viewer, ACS B&W Batch Style, and lossless SVG copy

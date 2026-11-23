@@ -40,8 +40,8 @@ Because `=KET2IMG` and `=KET2IMG.FLOAT` use the exact same styling parser as `=S
 When a cell contains a single molecule stored as KET JSON (e.g., drawn with custom atom positions or explicit stereowedges in Ketcher), you can also query its descriptors directly:
 
 * **Formula / MW / Exact Mass:** `=KET2FORMULA(A2)`, `=KET2MW(A2)`, `=KET2EXACTMASS(A2)`
-* **Identifiers & Name:** `=KET2NAME(A2)`, `=KET2INCHI(A2)`, `=KET2INCHIKEY(A2)`
-* **ADME & Lipinski Rules:** `=SMILES2LIPINSKI(A2)`, `=SMILES2LOGP(A2)`, `=SMILES2TPSA(A2)` *(all `SMILES2*` descriptor functions accept single-molecule KET cells automatically)*
+* **Identifiers & Name:** `=KET2SMILES(A2)`, `=KET2NAME(A2)`, `=KET2INCHI(A2)`, `=KET2INCHIKEY(A2)`
+* **LogP, TPSA & 3D Parity:** `=KET2LOGP(A2)`, `=KET2TPSA(A2)`, `=KET2HEAVY(A2)`, `=KET2RINGS(A2)`, `=KET2AROMATIC(A2)`, `=KET2FSP3(A2)`, and `=KET.MATCH(A2, "smarts")` *(full 1:1 parity with `SMILES2*` and `SMILES.MATCH`)*
 
 ## Related Guides
 

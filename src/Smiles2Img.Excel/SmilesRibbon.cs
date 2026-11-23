@@ -12,6 +12,12 @@ namespace Smiles2Img;
 [ComVisible(true)]
 public class SmilesRibbon : ExcelRibbon
 {
+    public SmilesRibbon()
+    {
+        FriendlyName = "func_SMILES2IMG (Ribbon UI)";
+        Description = "Chemical structure Ribbon UI, Ketcher 2D editor, Mol* 3D viewer, and SDF/property tools for Excel.";
+    }
+
     public override string GetCustomUI(string RibbonID)
     {
         return $@"<customUI xmlns=""http://schemas.microsoft.com/office/2009/07/customui"">
@@ -93,26 +99,18 @@ public class SmilesRibbon : ExcelRibbon
     "btnBatchStyleBw",
     "btnBatchStyleWhiteBg",
     "btnBatchStyleDark")}
-          <menu id=""menuRibbonExcelSdf""
-                label=""SDF File""
-                screentip=""Import or Export SDF Chemical Files""
-                supertip=""Import an MDL .sdf chemical table into the worksheet or export worksheet structures to an .sdf file.""
-                imageMso=""DatabaseQueryNew""
-                size=""large"">
-            <button id=""btnImportSdf""
-                    label=""Import SDF File (.sdf)...""
-                    imageMso=""ImportTextFile""
-                    onAction=""OnImportSdf"" />
-            <button id=""btnExportSdf""
-                    label=""Export Sheet to SDF (.sdf)...""
-                    imageMso=""FileSaveAs""
-                    onAction=""OnExportSdf"" />
-          </menu>
+          <button id=""btnImportSdf""
+                  label=""Import SDF""
+                  screentip=""Import MDL SDF File (.sdf)""
+                  supertip=""Imports an MDL .sdf chemical table into a live formula worksheet table.""
+                  imageMso=""ImportTextFile""
+                  size=""large""
+                  onAction=""OnImportSdf"" />
         </group>
         <group id=""grpDiagnostics"" label=""Diagnostics"">
           <button id=""btnOpenDiagnostics""
                   label=""Diagnostics""
-                  screentip=""SMILES2IMG Diagnostics &amp; Log""
+                  screentip=""func_SMILES2IMG Diagnostics &amp; Log""
                   supertip=""Displays parser logs and add-in diagnostic information.""
                   imageMso=""WatchWindow""
                   size=""large""
@@ -238,9 +236,6 @@ public class SmilesRibbon : ExcelRibbon
 
     public void OnImportSdf(IRibbonControl control)
         => RunMacroSafe(() => KetcherEditor.ImportSdfCommand());
-
-    public void OnExportSdf(IRibbonControl control)
-        => RunMacroSafe(() => KetcherEditor.ExportSdfCommand());
 
     public void OnCopyMoleculeInfo(IRibbonControl control)
         => RunDirectSafe(() => KetcherEditor.CopySelectedMoleculeInfoCommand());

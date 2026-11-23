@@ -1,29 +1,29 @@
-# Batch Style, 17-Column TSV, 3D (`Mol*`)
+# Batch Style, 12-Column TSV, 3D (`Mol*`)
 
-Restyle formula-backed chemical tables across a range or an entire Excel worksheet in one click, expand a molecule cell into a 17-column TSV descriptor row, and place interactive 3D protein models (`Mol*`) straight from PDB codes in cells.
+Losslessly restyle formula-backed chemical tables across an entire Excel worksheet or selection in one click, expand a molecule cell into a 12-column TSV descriptor row, and place interactive 3D protein models (`Mol*`) straight from PDB codes in cells.
 
-## 1. Formula-Rewriting `Batch Style` Across Ranges or Sheets
+## 1. Lossless Formula-Rewriting `Batch Style` Across Ranges or Sheets
 
 Click **`[SMILES]` ➔ `[Batch Style]`** on the Excel ribbon to standardize the background and bond palette of your chemical structures in one step:
 
-* **Formula Rewriting:** Rewrites every `=SMILES2IMG`, `=NAME2IMG`, `=INCHI2IMG`, `=KET2IMG` (and `.FLOAT`) formula by keeping its first input reference (`A2`, `"Aspirin"`, etc.) and updating its `[bg]` and `[style]` arguments directly inside the cell formula (replacing any previous style/transform arguments).
-* **Standalone 2D Shapes:** When no multi-cell range is highlighted, any standalone ribbon-inserted 2D structure pictures on the active sheet are also restyled in place (`Mol*` 3D objects and `.FLOAT` formula shapes managed by formula recalculation are skipped appropriately).
-* **Scope:** Select a multi-cell range to restyle only that table, select a single cell to update the **entire active worksheet** (up to 500 rows × 50 columns in `UsedRange`), or click an inserted 2D shape to restyle only that shape.
+* **Lossless Formula Rewriting:** Rewrites standalone `=SMILES2IMG`, `=NAME2IMG`, `=INCHI2IMG`, `=KET2IMG` (and `.FLOAT`) formulas by keeping the first argument (including nested calls or quoted KET strings), updating `[bg]` and color/ink tokens in `[style]`, and **preserving structural tokens (`hl:`, `num`, `stereo`, `h`, `all-c`) and 4th-arg rotations (`rot90`, `rot180`, `rot270`)**.
+* **Dynamic Highlight Compatibility & Composite Protection:** Even formulas with dynamic expressions like `=SMILES2IMG(C5, , "hl:" & $B$3)` keep `$B$3` live after Batch Style, while composite wrapper formulas (such as `=IF(..., SMILES2IMG(...))`) are safely skipped without corruption.
+* **Scope:** Select a multi-cell range to restyle only that selection, select a single cell to scan all formula cells on the **entire active worksheet**, or click an inserted 2D shape to restyle only that shape.
 
 | `Batch Style` Preset | Formula Written in Excel | Typical Spreadsheet Use Case |
 | :--- | :--- | :--- |
-| **`Standard Color (Transparent)`** | `=SMILES2IMG(A2, "trans", "color")` | Default IUPAC element colors over clean worksheet cells |
-| **`Publication B&W (ACS Monochrome)`** | `=SMILES2IMG(A2, "trans", "bw")` | Journal submission tables, patent filings, and B&W printouts |
-| **`White Background (Color)`** | `=SMILES2IMG(A2, "white", "color")` | Crisp opaque card over shaded or conditionally formatted rows |
-| **`Dark Mode (White Ink)`** | `=SMILES2IMG(A2, "trans", "white")` | High-contrast white bond lines over dark dashboard tables |
+| **`Standard Color (Transparent)`** | `=SMILES2IMG(A2, "trans", "color ...")` | Default IUPAC element colors over clean worksheet cells |
+| **`Publication B&W (ACS Monochrome)`** | `=SMILES2IMG(A2, "trans", "bw ...")` | Journal submission tables, patent filings, and B&W printouts |
+| **`White Background (Color)`** | `=SMILES2IMG(A2, "white", "color ...")` | Crisp opaque card over shaded or conditionally formatted rows |
+| **`Dark Mode (White Ink)`** | `=SMILES2IMG(A2, "trans", "white ...")` | High-contrast white bond lines over dark dashboard tables |
 
-## 2. 17-Column TSV Row Expansion & Formula Identifier Extraction
+## 2. 12-Column TSV Row Expansion & Formula Identifier Extraction
 
 Select any formula structure cell (`=NAME2IMG`, `=SMILES2IMG`, `=INCHI2IMG`, `=KET2IMG`) or inserted picture shape and use **`[SMILES]`** (or right-click ➔ **`Chemical Structure`**) to pull underlying data back into Excel columns or graphics tools:
 
 <FeatureMedia id="common-molecule-info" />
 
-* **`Copy as Excel Row (TSV Columns)` (`Molecule Info`):** Pastes all **17 calculated descriptors** (`Name`, `Formula`, `MW`, `Exact Mass`, `LogP`, `TPSA`, `HBD`, `HBA`, `RotBonds`, `Heavy Atoms`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`, `Lipinski Ro5`, `Canonical SMILES`, `InChIKey`) across adjacent columns in a single <kbd>Ctrl</kbd> + <kbd>V</kbd>—ideal when you want static values without writing 17 separate UDF columns ([full 5-format specification →](/editor/publishing)).
+* **`Copy as Excel Row (TSV Columns)` (`Molecule Info`):** Pastes all **12 calculated descriptors** (`Name`, `Formula`, `MW`, `Exact Mass`, `LogP`, `TPSA`, `Heavy Atoms`, `Rings`, `Aromatic Rings`, `Fsp3`, `Canonical SMILES`, `InChIKey`) across adjacent columns in a single <kbd>Ctrl</kbd> + <kbd>V</kbd>—ideal when you want static values without writing 12 separate UDF columns ([full 5-format specification →](/editor/publishing)).
 * **`Copy SMILES` / `Copy InChI` / `Copy KET`:** Extracts resolved canonical identifiers even from `=NAME2IMG("Aspirin")`, CAS lookup cells, or legacy `.FLOAT` shapes.
 * **`Copy SVG`:** Copies vector graphics (`image/svg+xml` and raw `<svg>` XML text) so a highlighted hit from your screening table can be pasted directly into Adobe Illustrator or Inkscape without pixelation.
 
@@ -40,5 +40,5 @@ Embed 360°-rotatable 3D macromolecular models (`.glb`) or transparent 2D protei
 ## Related Guides
 
 - [**Ribbon & Context Menus**](/excel/ribbon) — Complete Excel `[SMILES]` ribbon map, 3 cell/picture context menus, and the Indigo parser log
-- [**SDF Import & Export**](/excel/sdf) — Import `.sdf`/`.mol` files into a 12-column live worksheet or export sheets back to `.sdf`
+- [**SDF Import**](/excel/sdf) — Import `.sdf`/`.mol` files into an 11-column live worksheet
 - [**Mol\* 3D Viewer Manual**](/editor/molstar) — Protein representations, ligand binding sites, and offline local PDB/CIF loading

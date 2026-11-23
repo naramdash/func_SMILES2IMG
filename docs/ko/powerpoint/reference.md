@@ -13,7 +13,7 @@ Microsoft PowerPoint 상단 **`[SMILES]`** 리본 탭 전체 명령표와 5가�
 | | `Paste Structure` | 선택한 텍스트 상자(SMILES·InChI·KET·화합물명/CAS)를 `0.1초` 만에 그 위치에서 구조식으로 치환 (클립보드 변환도 지원) |
 | **Structure Tools** | `Copy SMILES` / `Copy InChI` / `Copy KET` | 선택한 슬라이드 구조식(또는 텍스트)에서 표준 SMILES, IUPAC InChI, 무손실 KET JSON(`Shape.Tags["KET"]`) 복사 |
 | | `Copy SVG` | 대형 A0 학회 포스터, Adobe Illustrator, Inkscape용 무손실 벡터 SVG 그래픽 + XML 텍스트 복사 |
-| | `Molecule Info` | 개별 물성, Q&A/카드용 줄바꿈 목록(`Multi-Line`), 17열 요약표 복사 및 17종 상세 물성 창 열기 |
+| | `Molecule Info` | 개별 물성, Q&A/카드용 줄바꿈 목록(`Multi-Line`), 12열 요약표 복사 및 상세 물성 창 열기 |
 | | `Batch Style` | 선택한 도형(선택이 없으면 **프레젠테이션 전체 슬라이드**의 비그룹 2D 구조식)을 4종 프리셋으로 1초 일괄 전환 |
 | **About** | `Online Docs` | 웹 브라우저에서 PowerPoint 공식 문서 카테고리 인트로(`/powerpoint/`) 즉시 열기 |
 | | `About func_SMILES2IMG` | 설치 버전, 내장 엔진 버전, 서드파티 라이선스 확인 및 원클릭 최신 업데이트 체크 |

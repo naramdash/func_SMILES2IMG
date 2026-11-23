@@ -1,9 +1,32 @@
 using System;
+using System.Globalization;
 using System.Windows.Forms;
 using Smiles2Img.Notifications;
 using Smiles2Img.Rendering;
 
 namespace Smiles2Img.Editor;
+
+public enum QuickInsertSourceKind
+{
+    ExplicitStructure = 0,
+    ValidatedCas = 1,
+    AmbiguousSmiles = 2,
+    ChemicalName = 3
+}
+
+public sealed class QuickInsertResolution
+{
+    public string OriginalInput { get; set; } = "";
+    public QuickInsertSourceKind SourceKind { get; set; }
+    public bool RequiresConfirmation =>
+        SourceKind is QuickInsertSourceKind.AmbiguousSmiles or QuickInsertSourceKind.ChemicalName;
+    public byte[] PngBytes { get; set; } = Array.Empty<byte>();
+    public string? Ket { get; set; }
+    public string? Smiles { get; set; }
+    public string Formula { get; set; } = "";
+    public double MolecularWeight { get; set; }
+    public string ResolvedName { get; set; } = "";
+}
 
 /// <summary>
 /// Shared cross-host command execution helper for Excel, Word, and PowerPoint.
@@ -59,6 +82,45 @@ public static class MoleculeActionHelper
             ?? MoleculeRenderer.TryConvertToKet(PubChemResolver.ResolveNameToSmiles(selectedText));
     }
 
+    /// <summary>
+    /// Validates a CAS Registry Number including its mathematical check digit.
+    /// </summary>
+    public static bool IsValidCasNumber(string? input) => PubChemResolver.IsValidCasNumber(input);
+
+    /// <summary>
+    /// Identifies plain-letter strings that are valid SMILES syntactically yet easily collide
+    /// with ordinary English words, initials, or element symbols (e.g. "I", "C", "CO", "NO", "COP", "POP", "COCO").
+    /// Explicit prefixes ("SMILES:", "InChI=", "KET:"), punctuation/ring digits, and "CC..." aliphatic chains (e.g. "CCO") are allowed.
+    /// </summary>
+    public static bool IsAmbiguousPlainAlphaSmiles(string? input)
+    {
+        if (string.IsNullOrWhiteSpace(input)) return false;
+        var trimmed = input!.Trim();
+
+        if (trimmed.StartsWith("SMILES:", StringComparison.OrdinalIgnoreCase) ||
+            trimmed.StartsWith("KET:", StringComparison.OrdinalIgnoreCase) ||
+            trimmed.StartsWith("InChI=", StringComparison.OrdinalIgnoreCase) ||
+            trimmed.StartsWith("1S/", StringComparison.OrdinalIgnoreCase) ||
+            trimmed.StartsWith("1/", StringComparison.OrdinalIgnoreCase) ||
+            trimmed.StartsWith("{", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        for (int i = 0; i < trimmed.Length; i++)
+        {
+            char ch = trimmed[i];
+            bool isAsciiLetter = (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z');
+            if (!isAsciiLetter)
+                return false;
+        }
+
+        if (trimmed.Length <= 2)
+            return true;
+
+        return !trimmed.StartsWith("CC", StringComparison.Ordinal);
+    }
+
     private static bool LooksLikeChemicalNameOrCas(string input)
     {
         if (string.IsNullOrWhiteSpace(input) || input.Length < 2 || input.Length > 160)
@@ -71,8 +133,129 @@ public static class MoleculeActionHelper
             input.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             return false;
 
+        // Reject malformed digit-hyphen-digit triplets that fail the CAS check digit.
+        if (PubChemResolver.IsNumericTriplet(input) && !IsValidCasNumber(input))
+            return false;
+
         var tokens = input.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
         return tokens.Length is >= 1 and <= 6;
+    }
+
+    /// <summary>
+    /// Resolves and renders quick-insert input from SMILES, InChI, KET, checksum-validated CAS,
+    /// or chemical name, classifying whether user confirmation is required before insertion.
+    /// </summary>
+    public static bool TryResolveQuickInsertInput(
+        string? rawInput,
+        RenderOptions? options,
+        out QuickInsertResolution? resolution,
+        bool resolvePubChem = true)
+    {
+        resolution = null;
+        if (string.IsNullOrWhiteSpace(rawInput))
+            return false;
+
+        var trimmed = rawInput!.Trim();
+        if (MoleculeRenderer.TryRenderStructure(trimmed, options, out var pngBytes, out var ket, out var smiles) &&
+            pngBytes != null)
+        {
+            var kind = IsAmbiguousPlainAlphaSmiles(trimmed)
+                ? QuickInsertSourceKind.AmbiguousSmiles
+                : QuickInsertSourceKind.ExplicitStructure;
+
+            var info = MoleculeRenderer.TryGetMoleculeInfo(smiles ?? trimmed, resolvePubChem: false);
+            resolution = new QuickInsertResolution
+            {
+                OriginalInput = trimmed,
+                SourceKind = kind,
+                PngBytes = pngBytes,
+                Ket = ket,
+                Smiles = smiles,
+                Formula = info?.Formula ?? "",
+                MolecularWeight = info?.MolecularWeight ?? 0
+            };
+            return true;
+        }
+
+        var isCas = IsValidCasNumber(trimmed);
+        if (!isCas && !LooksLikeChemicalNameOrCas(trimmed))
+            return false;
+
+        var resolvedSmiles = resolvePubChem
+            ? PubChemResolver.ResolveNameToSmiles(trimmed)
+            : PubChemResolver.ResolveNameToSmilesOffline(trimmed);
+        if (string.IsNullOrWhiteSpace(resolvedSmiles))
+            return false;
+
+        if (!MoleculeRenderer.TryRenderStructure(resolvedSmiles, options, out pngBytes, out ket, out smiles) ||
+            pngBytes == null)
+        {
+            return false;
+        }
+
+        var molInfo = MoleculeRenderer.TryGetMoleculeInfo(smiles ?? resolvedSmiles, resolvePubChem: false);
+        var resolvedName = "";
+        if (!isCas)
+        {
+            try
+            {
+                resolvedName = PubChemResolver.ResolveCompound(smiles ?? resolvedSmiles, timeoutMs: 1).CompoundName;
+            }
+            catch { }
+        }
+
+        resolution = new QuickInsertResolution
+        {
+            OriginalInput = trimmed,
+            SourceKind = isCas ? QuickInsertSourceKind.ValidatedCas : QuickInsertSourceKind.ChemicalName,
+            PngBytes = pngBytes,
+            Ket = ket,
+            Smiles = smiles,
+            Formula = molInfo?.Formula ?? "",
+            MolecularWeight = molInfo?.MolecularWeight ?? 0,
+            ResolvedName = !string.IsNullOrWhiteSpace(resolvedName) ? resolvedName : trimmed
+        };
+        return true;
+    }
+
+    public static bool ConfirmQuickInsertIfNeeded(QuickInsertResolution? resolution, IntPtr ownerHwnd)
+    {
+        if (resolution == null) return false;
+        if (!resolution.RequiresConfirmation) return true;
+
+        var mwText = resolution.MolecularWeight > 0
+            ? $" (MW {resolution.MolecularWeight.ToString("F2", CultureInfo.InvariantCulture)} g/mol)"
+            : "";
+        var formulaLine = !string.IsNullOrWhiteSpace(resolution.Formula)
+            ? $"• Formula: {resolution.Formula}{mwText}\n"
+            : "";
+        var smilesLine = !string.IsNullOrWhiteSpace(resolution.Smiles)
+            ? $"• SMILES: {resolution.Smiles}\n"
+            : "";
+
+        string message;
+        if (resolution.SourceKind == QuickInsertSourceKind.AmbiguousSmiles)
+        {
+            message =
+                $"Text \"{resolution.OriginalInput}\" could be an ordinary word or abbreviation, or a SMILES string:\n\n" +
+                formulaLine +
+                smilesLine +
+                "\nInsert this molecular structure?\n(Tip: prefix with \"SMILES:\" to skip confirmation.)";
+        }
+        else
+        {
+            var nameLine = !string.IsNullOrWhiteSpace(resolution.ResolvedName)
+                ? $"• Matched Name: {resolution.ResolvedName}\n"
+                : "";
+            message =
+                $"Interpreted \"{resolution.OriginalInput}\" as a chemical compound name:\n\n" +
+                nameLine +
+                formulaLine +
+                smilesLine +
+                "\nInsert this molecular structure?";
+        }
+
+        return DialogHelper.ConfirmYesNo(message, DialogHelper.ToOwner(ownerHwnd)) == DialogResult.Yes;
     }
 
     /// <summary>
@@ -86,30 +269,17 @@ public static class MoleculeActionHelper
         out string? smiles,
         bool resolvePubChem = true)
     {
+        if (TryResolveQuickInsertInput(rawInput, options, out var res, resolvePubChem) && res != null)
+        {
+            pngBytes = res.PngBytes;
+            ket = res.Ket;
+            smiles = res.Smiles;
+            return true;
+        }
         pngBytes = null;
         ket = null;
         smiles = null;
-        if (string.IsNullOrWhiteSpace(rawInput))
-            return false;
-
-        var trimmed = rawInput!.Trim();
-        if (MoleculeRenderer.TryRenderStructure(trimmed, options, out pngBytes, out ket, out smiles) &&
-            pngBytes != null)
-        {
-            return true;
-        }
-
-        if (!LooksLikeChemicalNameOrCas(trimmed))
-            return false;
-
-        var resolved = resolvePubChem
-            ? PubChemResolver.ResolveNameToSmiles(trimmed)
-            : PubChemResolver.ResolveNameToSmilesOffline(trimmed);
-        if (string.IsNullOrWhiteSpace(resolved))
-            return false;
-
-        return MoleculeRenderer.TryRenderStructure(resolved, options, out pngBytes, out ket, out smiles) &&
-               pngBytes != null;
+        return false;
     }
 
     public static MoleculeInfo? TryResolveMolstarInfo(string? altText, string? title, bool resolvePubChem)

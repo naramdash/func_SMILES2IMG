@@ -1,6 +1,6 @@
 # 2. SAR Tables & Experimental Properties
 
-Build manuscript SAR and compound summary tables that never collapse column widths or clip structure tops—and copy locally calculated Chemical Formula, Molecular Weight, HRMS Exact Mass, LogP, and Lipinski data with zero manual typing errors.
+Build manuscript SAR and compound summary tables that never collapse column widths or clip structure tops—and copy locally calculated Chemical Formula, Molecular Weight, HRMS Exact Mass, LogP, and TPSA data with zero manual typing errors.
 
 <FeatureMedia id="word-ch3-compound-table" />
 
@@ -18,16 +18,16 @@ If you already drafted a Word table with a `SMILES` or `Compound` column (`Aspir
 
 ## 2. Zero-Typo Experimental & Table Data via `Molecule Info`
 
-Select any inserted structure picture—**or simply highlight a SMILES string or compound name in your manuscript prose**—and click **`[SMILES]` ➔ `[Molecule Info]`** (or right-click ➔ **`Chemical Structure` ➔ `Copy Molecule Info`**). All 17 descriptors are computed locally on your PC:
+Select any inserted structure picture—**or simply highlight a SMILES string or compound name in your manuscript prose**—and click **`[SMILES]` ➔ `[Molecule Info]`** (or right-click ➔ **`Chemical Structure` ➔ `Copy Molecule Info`**). All 12 property columns are computed locally on your PC:
 
 <FeatureMedia id="common-molecule-info" />
 
 | Manuscript Section You Are Writing | Best `Molecule Info` Option | What Gets Pasted (<kbd>Ctrl</kbd> + <kbd>V</kbd>) |
 | :--- | :--- | :--- |
-| **Starting a New 17-Column Property Table** | **`Copy All Summary (Text)`** | A formatted 2-row Word table (17 headers + values) copied via rich HTML + TSV |
-| **Appending Rows to an Existing Word Table** | **`Copy as Excel Row (TSV Columns)`** | 17 tab-separated values without headers—select empty cells across a row and paste |
+| **Starting a New 12-Column Property Table** | **`Copy All Summary (Text)`** | A formatted 2-row Word table (12 headers + values) copied via rich HTML + TSV |
+| **Appending Rows to an Existing Word Table** | **`Copy as Excel Row (TSV Columns)`** | 12 tab-separated values without headers—select empty cells across a row and paste |
 | **Experimental Section & HRMS (`m/z`)** | **`Copy Chemical Formula`**, **`Copy Molecular Weight (MW)`**, or **`Detailed Molecule Info Window...`** | Exact Hill formula (`C9H8O4`), MW (`180.16`), and 4-decimal Monoisotopic Exact Mass (`180.0423 Da`) for `[M+H]+` checks |
-| **Supporting Information (SI) Compound Block** | **`Copy as Multi-Line List`** | Clean line-by-line list including Name, IUPAC Name, 12 descriptors, SMILES, InChI, and InChIKey |
+| **Supporting Information (SI) Compound Block** | **`Copy as Multi-Line List`** | Clean line-by-line list including Name, IUPAC Name, descriptors, SMILES, InChI, and InChIKey |
 
 ::: tip Power Tip: Extract Properties or SVG Directly From Plain Text
 You do not even need to insert a structure picture first. Highlight any SMILES string or known compound name (e.g., `Ibuprofen`) in Word text, then run **`[Molecule Info]`** or **`[Copy SVG]`**—`func_SMILES2IMG` resolves the structure and copies the exact properties or vector SVG straight to your clipboard.
@@ -35,7 +35,7 @@ You do not even need to insert a structure picture first. Highlight any SMILES s
 
 ## 3. Importing SAR Data Straight From Excel
 
-Already calculated your library's MW, LogP, TPSA, Lipinski Ro5, and Tanimoto scores in Excel?
+Already calculated your library's MW, LogP, TPSA, `Fsp3`, and substructure match flags in Excel?
 
 * **Paste Formatted Table Rows:** Select your calculated property rows in Excel, copy (<kbd>Ctrl</kbd> + <kbd>C</kbd>), paste into Word (**Keep Source Formatting** or **Match Destination Table Style**), lock **Fixed Column Width**, then populate the structure column with **`[Insert / Edit Structure]`** or **`[Paste Structure]`**.
 * **Re-check Individual Compounds in Word:** Whenever you modify a structure in Word later by double-clicking, click **`[Molecule Info]`** right away to update its Formula, MW, and Exact Mass in the neighboring cell without returning to Excel.

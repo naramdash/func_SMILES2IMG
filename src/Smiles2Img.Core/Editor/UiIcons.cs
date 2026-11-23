@@ -345,21 +345,6 @@ public static class UiIcons
                 g.DrawLine(innerPen, 10 * s, 4 * s, 10 * s, 16 * s);
                 break;
             }
-            case "Lipinski Rule of 5":
-            {
-                // Rose Pharmaceutical Capsule Pill
-                var state = g.Save();
-                g.TranslateTransform(10 * s, 10 * s);
-                g.RotateTransform(-45);
-                using var roseBrush = new SolidBrush(Color.FromArgb(225, 29, 72));
-                using var slateBrush = new SolidBrush(Color.FromArgb(148, 163, 184));
-                g.FillPie(roseBrush, -4 * s, -8 * s, 8 * s, 8 * s, 180, 180);
-                g.FillRectangle(roseBrush, -4 * s, -4 * s, 8 * s, 4 * s);
-                g.FillRectangle(slateBrush, -4 * s, 0, 8 * s, 4 * s);
-                g.FillPie(slateBrush, -4 * s, 0, 8 * s, 8 * s, 0, 180);
-                g.Restore(state);
-                break;
-            }
             case "Rings & Aromaticity":
             {
                 // Royal Blue Bicyclic Aromatic Hexagon + Inner Ring

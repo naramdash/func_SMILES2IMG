@@ -1,11 +1,11 @@
 # Excel Overview
 
-Use **`func_SMILES2IMG`** in Microsoft Excel to render crisp 2D chemical structures inside cells, compute molecular properties and Lipinski drug-likeness across hundreds of rows locally in 0ms, screen compound libraries with SMARTS, and import/export `.sdf` chemical databases.
+Use **`func_SMILES2IMG`** in Microsoft Excel to render crisp 2D chemical structures inside cells, compute molecular properties and 3D complexity across hundreds of rows locally in 0ms, screen compound libraries with SMARTS, and import `.sdf` chemical databases.
 
 <FeatureMedia id="excel-overview" />
 
 ::: tip Download the 10-Tab Self-Contained Excel Playbook
-Practice all 40 formulas, organic stoichiometry calculators, SAR dashboards, and offline reference tables directly inside Excel—no web documentation needed:  
+Practice all 49 formulas, organic stoichiometry calculators, SAR dashboards, and offline reference tables directly inside Excel—no web documentation needed:  
 <a href="/func_SMILES2IMG/examples/func_SMILES2IMG_Excel_Playbook.xlsx" download="func_SMILES2IMG_Excel_Playbook.xlsx"><strong>func_SMILES2IMG_Excel_Playbook.xlsx</strong></a> · [See 10-tab breakdown & recommended tracks →](/excel/playbook)
 :::
 
@@ -42,8 +42,8 @@ Increase **row height** (`62–80 pt`) and **column width** to scale the molecul
 
 | Section | Pages | Key Formulas & Ribbon Tools |
 | :--- | :--- | :--- |
-| **Getting Started** | [**Playbook (.xlsx)**](/excel/playbook) · [**Use Cases**](/excel/use-cases) · [**All 40 Functions**](/excel/formulas) | Unified `=<INPUT>2<OUTPUT>` map, 6 lab scenarios & 10-tab workbook |
+| **Getting Started** | [**Playbook (.xlsx)**](/excel/playbook) · [**Use Cases**](/excel/use-cases) · [**All 49 Functions**](/excel/formulas) | Unified `=<INPUT>2<OUTPUT>` map, 6 lab scenarios & 10-tab workbook |
 | **Structure Images** | [**SMILES, InChI**](/excel/structures) · [**Names, Solvents, CAS**](/excel/name-cas) · [**Reaction Schemes (KET)**](/excel/reactions) · [**Styles & Highlights**](/excel/styles-reactions) | `=SMILES2IMG`, `=NAME2IMG`, `=INCHI2IMG`, `=KET2IMG`, `.FLOAT` |
-| **Properties & ADME** | [**Formula, MW, Exact Mass**](/excel/properties) · [**Lipinski, ADME, 3D**](/excel/lipinski-adme) | `=SMILES2MW`, `=SMILES2EXACTMASS`, `=SMILES2LIPINSKI`, `=SMILES2FSP3` |
-| **SAR & Identifiers** | [**Substructure & Similarity**](/excel/sar) · [**Identifier Conversion**](/excel/data-sdf) | `=SMILES.MATCH`, `=SMILES.SIMILARITY`, `=NAME2SMILES`, `=SMILES2INCHIKEY` |
-| **Sheet Tools & 3D** | [**SDF Import & Export**](/excel/sdf) · [**Batch Style, TSV, 3D**](/excel/tools-export) · [**Ribbon & Context Menus**](/excel/ribbon) | `[SDF File]`, `[Batch Style]`, `[Copy TSV]`, `[3D Structure (Mol*)]` |
+| **Properties & 3D** | [**Formula, MW, Exact Mass**](/excel/properties) · [**LogP, TPSA & 3D**](/excel/lipinski-adme) | `=SMILES2MW`, `=INCHI2LOGP`, `=KET2TPSA`, `=SMILES2FSP3` |
+| **SAR & Identifiers** | [**Substructure Search**](/excel/sar) · [**Identifier Conversion**](/excel/data-sdf) | `=SMILES.MATCH`, `=INCHI.MATCH`, `=KET2SMILES`, `=SMILES2INCHIKEY` |
+| **Sheet Tools & 3D** | [**SDF Import**](/excel/sdf) · [**Batch Style, TSV, 3D**](/excel/tools-export) · [**Ribbon & Context Menus**](/excel/ribbon) | `[Import SDF]`, `[Batch Style]`, `[Copy TSV]`, `[3D Structure (Mol*)]` |

@@ -330,8 +330,8 @@ public sealed class AboutDialog : Form
         };
 
         var (scrollHost, _) = DialogHelper.CreateScrollableWrappedLabel(
-            "func_SMILES2IMG integrates chemical structure sketching, 40 worksheet formulas, and 3D macromolecular visualization directly inside Excel, Word, and PowerPoint.\r\n\r\n" +
-            "• Microsoft Excel: In-cell (=SMILES2IMG, =INCHI2IMG, =KET2IMG, =NAME2IMG), floating (.FLOAT), 32 property/complexity/conversion/search UDFs (=SMILES2MW, =SMILES2LOGP, =SMILES2LIPINSKI, =SMILES2FSP3, =SMILES.MATCH), and 12-column SDF import/export.\r\n" +
+            "func_SMILES2IMG integrates chemical structure sketching, 49 worksheet formulas, and 3D macromolecular visualization directly inside Excel, Word, and PowerPoint.\r\n\r\n" +
+            "• Microsoft Excel: In-cell (=SMILES2IMG, =INCHI2IMG, =KET2IMG, =NAME2IMG), floating (.FLOAT), 41 property/complexity/conversion/search UDFs across SMILES, InChI & KET (=SMILES2MW, =INCHI2LOGP, =KET2TPSA, =SMILES2FSP3, =SMILES.MATCH), and 11-column SDF import.\r\n" +
             "• Microsoft Word: Inline and floating high-resolution structure images, lossless Vector SVG copy, 1-click Batch Style normalization, and live KET metadata round-trip editing.\r\n" +
             "• Microsoft PowerPoint: Slide shapes with KET metadata, 3D Mol* (.glb / 2D) models, Batch Style presets, and instant property export.\r\n" +
             "• Built-in Offline Engines: EPAM Ketcher, EPAM Indigo C++ Toolkit, Mol* 3D Viewer, and IUPAC InChI Library running locally without external servers.");
@@ -585,11 +585,11 @@ public sealed class AboutDialog : Form
                 return "v" + v;
             }
             var ver = asm.GetName().Version;
-            return ver != null ? $"v{ver.Major}.{ver.Minor}.{ver.Build}" : "v1.8.1";
+            return ver != null ? $"v{ver.Major}.{ver.Minor}.{ver.Build}" : "v1.9.0";
         }
         catch
         {
-            return "v1.8.1";
+            return "v1.9.0";
         }
     }
 

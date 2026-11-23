@@ -57,7 +57,7 @@ if (-not (Test-Path $distXll)) {
     $distXll = Join-Path $env:APPDATA 'Microsoft\AddIns\Smiles2Img\Smiles2Img-AddIn64.xll'
 }
 
-$addinVersion = '1.8.0'
+$addinVersion = '1.9.0'
 try {
     $propsXml = [xml](Get-Content (Join-Path $repoRoot 'Directory.Build.props') -Raw)
     if ($propsXml.Project.PropertyGroup.Version) {
@@ -289,12 +289,18 @@ function Start-FeatureClip {
         if ($cueEn -or $cueKo) {
             $this.Cues.Add(@{ tStart = $tStart; tEnd = ($tStart + 2.8); en = $cueEn; ko = $cueKo })
         }
+        $prevIdx = $this.FrameIdx
         [LiveCaptureEngine]::StartModalSnapLoop($this.MainHwnd, $this.OfficePid, $script:runnerPid, $this.FramesDir, $this.FrameIdx, $titleSub, $holdMs)
         & $invokeModal
         $newIdx = [LiveCaptureEngine]::StopModalSnapLoop()
+        $captured = $newIdx - $prevIdx
+        $bestIdx = [LiveCaptureEngine]::LastActiveModalShotFrameIndex
+        Write-Host "    [Modal] '$titleSub': +$captured frames (best=$bestIdx)" -ForegroundColor DarkCyan
+        if ($captured -le 0 -and $extraShotCopies.Count -gt 0) {
+            throw "Modal capture '$titleSub' recorded 0 frames; refusing to leave stale extraShotCopies."
+        }
         if ($newIdx -gt $this.FrameIdx) {
             $this.FrameIdx = $newIdx
-            $bestIdx = [LiveCaptureEngine]::LastActiveModalShotFrameIndex
             if ($bestIdx -lt 1) { $bestIdx = [Math]::Max(1, $this.FrameIdx - 4) }
             $midFrame = Join-Path $this.FramesDir ('f_{0:D4}.png' -f $bestIdx)
             if (Test-Path $midFrame) {
@@ -503,17 +509,26 @@ function Show-LiveMoleculeInfoOverHost {
 function Show-LiveAboutOverHost {
     param([IntPtr]$OwnerHwnd, [int]$HoldMs = 2000)
     $dlg = New-Object Smiles2Img.Editor.AboutDialog('func_SMILES2IMG')
-    $owner = New-Object Smiles2Img.Win32Window($OwnerHwnd)
+    $dlg.StartPosition = [System.Windows.Forms.FormStartPosition]::Manual
+    $dlg.Location = New-Object System.Drawing.Point([Math]::Max(40, [int](8 + (2768 - $dlg.Width) / 2)), [Math]::Max(40, [int](8 + (1556 - $dlg.Height) / 2)))
+    $dlg.TopMost = $true
     $t = New-Object System.Windows.Forms.Timer
     $t.Tag = $dlg
-    $t.Interval = $HoldMs + 1500
+    $t.Interval = $HoldMs + 3500
     $t.Add_Tick({
         param($sender, $e)
         $sender.Stop()
         try { $sender.Tag.Close() } catch {}
     })
-    $t.Start()
-    [void]$dlg.ShowDialog($owner)
+    $dlg.Tag = $t
+    $dlg.Add_Shown({
+        param($sender, $e)
+        $sender.Activate()
+        $sender.BringToFront()
+        if ($sender.Tag) { $sender.Tag.Start() }
+    })
+    [void]$dlg.ShowDialog()
+    $t.Stop()
     $t.Dispose()
     $dlg.Dispose()
 }
@@ -542,7 +557,7 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         $ptCopySvg      = [LiveCaptureEngine]::FindControlRelativeCenter($xHwnd, @('Copy SVG'))
         $ptMolInfo      = [LiveCaptureEngine]::FindControlRelativeCenter($xHwnd, @('Molecule Info'))
         $ptBatch        = [LiveCaptureEngine]::FindControlRelativeCenter($xHwnd, @('Batch Style'))
-        $ptSdf          = [LiveCaptureEngine]::FindControlRelativeCenter($xHwnd, @('SDF File'))
+        $ptSdf          = [LiveCaptureEngine]::FindControlRelativeCenter($xHwnd, @('Import SDF'))
         $ptDiag         = [LiveCaptureEngine]::FindControlRelativeCenter($xHwnd, @('Diagnostics'))
         $ptAbout        = [LiveCaptureEngine]::FindControlRelativeCenter($xHwnd, @('About func_SMILES2IMG'))
 
@@ -551,7 +566,7 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         try { $excel.ActiveWindow.Zoom = 85 } catch {}
         $ws = $wb.ActiveSheet
         $ws.Name = 'Compounds'
-        $ws.Range('A1:F1').Value2 = @('Compound', 'SMILES', '2D Structure (=SMILES2IMG)', 'Formula', 'MW (g/mol)', 'Lipinski Ro5')
+        $ws.Range('A1:F1').Value2 = @('Compound', 'SMILES', '2D Structure (=SMILES2IMG)', 'Formula', 'MW (g/mol)', 'LogP')
         $ws.Range('A1:F1').Font.Bold = $true
         $ws.Range('A1:F1').Interior.Color = 0xD1FAE5
         $ws.Columns.Item(1).ColumnWidth = 12
@@ -559,7 +574,7 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         $ws.Columns.Item(3).ColumnWidth = 22
         $ws.Columns.Item(4).ColumnWidth = 11
         $ws.Columns.Item(5).ColumnWidth = 12
-        $ws.Columns.Item(6).ColumnWidth = 12
+        $ws.Columns.Item(6).ColumnWidth = 10
         $rows = @(
             @('Aspirin', $aspirinSmiles),
             @('Caffeine', $caffeineSmiles),
@@ -576,23 +591,23 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         $c = Start-FeatureClip -Id 'excel-overview' -HostApp 'excel' -MainHwnd $xHwnd -OfficePid $xPid `
             -TitleEn 'Excel Overview: In-Cell Structure & Property Tables' `
             -TitleKo 'Excel 개요: 셀 안 화학 구조식 & 물성 표 자동 생성' `
-            -CaptionEn 'Type =SMILES2IMG(B2), =SMILES2MW(B2), and =SMILES2LIPINSKI(B2) in Microsoft Excel.' `
-            -CaptionKo '엑셀 셀에 =SMILES2IMG(B2), =SMILES2MW(B2), =SMILES2LIPINSKI(B2)를 입력해 구조식 표를 완성합니다.'
+            -CaptionEn 'Type =SMILES2IMG(B2), =SMILES2MW(B2), and =SMILES2LOGP(B2) in Microsoft Excel.' `
+            -CaptionKo '엑셀 셀에 =SMILES2IMG(B2), =SMILES2MW(B2), =SMILES2LOGP(B2)를 입력해 구조식 표를 완성합니다.'
         $c.Snap(4, $ptInsertSmiles.X, $ptInsertSmiles.Y)
         $c.AddCue(1.6, 'Enter =SMILES2IMG(B2) to render crisp 2D structures inside Excel cells.', '=SMILES2IMG(B2) 수식으로 셀 안에 2D 화학 구조식을 렌더링합니다.')
         [void]$ws.Range('C2').Select()
         $ws.Range('C2').Formula2 = '=SMILES2IMG(B2)'
         $ws.Range('D2').Formula2 = '=SMILES2FORMULA(B2)'
         $ws.Range('E2').Formula2 = '=SMILES2MW(B2)'
-        $ws.Range('F2').Formula2 = '=SMILES2LIPINSKI(B2)'
+        $ws.Range('F2').Formula2 = '=SMILES2LOGP(B2)'
         Start-Sleep -Seconds 2
         $c.Snap(5, 520, 520)
-        $c.AddCue(1.6, 'Fill formulas down to populate Aspirin, Caffeine, Ibuprofen & Paracetamol.', '수식을 아래로 채우면 모든 화합물의 구조식·분자량·약물성이 즉시 채워집니다.')
+        $c.AddCue(1.6, 'Fill formulas down to populate Aspirin, Caffeine, Ibuprofen & Paracetamol.', '수식을 아래로 채우면 모든 화합물의 구조식·분자량·LogP가 즉시 채워집니다.')
         for ($r = 3; $r -le 5; $r++) {
             $ws.Range("C$r").Formula2 = "=SMILES2IMG(B$r)"
             $ws.Range("D$r").Formula2 = "=SMILES2FORMULA(B$r)"
             $ws.Range("E$r").Formula2 = "=SMILES2MW(B$r)"
-            $ws.Range("F$r").Formula2 = "=SMILES2LIPINSKI(B$r)"
+            $ws.Range("F$r").Formula2 = "=SMILES2LOGP(B$r)"
             Start-Sleep -Milliseconds 600
             $c.Snap(4, 520, (520 + ($r - 2) * 85))
         }
@@ -779,7 +794,7 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         Start-Sleep -Seconds 2
         $c.CaptureShot(@())
         $c.Snap(6, 520, 520)
-        $c.ClickAt($ptAbout.X, $ptAbout.Y, 'Open About func_SMILES2IMG to verify version v1.8.0 and update status.', 'About func_SMILES2IMG 창에서 v1.8.0 버전과 라이선스를 확인합니다.')
+        $c.ClickAt($ptAbout.X, $ptAbout.Y, "Open About func_SMILES2IMG to verify version v$addinVersion and update status.", "About func_SMILES2IMG 창에서 v$addinVersion 버전과 라이선스를 확인합니다.")
         $c.RunWithModal('About func_SMILES2IMG', 2200, {
             Show-LiveAboutOverHost -OwnerHwnd $xHwnd -HoldMs 2200
         }, 'Inspect Third-Party Components, License Notices & Check for Updates.', '구성요소·라이선스 전문·업데이트 확인을 실행할 수 있습니다.')
@@ -829,9 +844,9 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         # --- 1.8 excel-cheminformatics ---
         $wsChem = $wb.Worksheets.Add()
         $wsChem.Name = 'Cheminformatics'
-        $wsChem.Range('A1:K1').Value2 = @('Name', 'SMILES', 'Structure', 'MW', 'ExactMass', 'LogP', 'TPSA', 'Rings', 'Aromatic', 'Fsp3', 'Lipinski')
-        $wsChem.Range('A1:K1').Font.Bold = $true
-        $wsChem.Range('A1:K1').Interior.Color = 0xDCFCE7
+        $wsChem.Range('A1:J1').Value2 = @('Name', 'SMILES', 'Structure', 'MW', 'ExactMass', 'LogP', 'TPSA', 'Rings', 'Aromatic', 'Fsp3')
+        $wsChem.Range('A1:J1').Font.Bold = $true
+        $wsChem.Range('A1:J1').Interior.Color = 0xDCFCE7
         $wsChem.Columns.Item(1).ColumnWidth = 10
         $wsChem.Columns.Item(2).ColumnWidth = 23
         $wsChem.Range('B2:B5').Font.Size = 8.5
@@ -843,7 +858,6 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         $wsChem.Columns.Item(8).ColumnWidth = 6
         $wsChem.Columns.Item(9).ColumnWidth = 8
         $wsChem.Columns.Item(10).ColumnWidth = 6.5
-        $wsChem.Columns.Item(11).ColumnWidth = 8
         $chemMols = @(
             @('Aspirin', $aspirinSmiles),
             @('Caffeine', $caffeineSmiles),
@@ -857,13 +871,13 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
             $wsChem.Cells.Item($r, 2).Value2 = $chemMols[$i][1]
         }
         $c = Start-FeatureClip -Id 'excel-cheminformatics' -HostApp 'excel' -MainHwnd $xHwnd -OfficePid $xPid `
-            -TitleEn 'Recipe: MW, Exact Mass, ADME, Lipinski Ro5 & 3D Complexity' `
-            -TitleKo '레시피: 분자량, 정밀질량, ADME, Lipinski 약물성 & 3D 복잡도' `
-            -CaptionEn 'Compute 11+ physicochemical and 3D complexity descriptors locally in 0ms.' `
-            -CaptionKo '로컬 오프라인으로 분자량·LogP·TPSA·Fsp3·Lipinski 통과 여부를 즉시 계산합니다.'
+            -TitleEn 'Recipe: MW, Exact Mass, LogP, TPSA & 3D Complexity' `
+            -TitleKo '레시피: 분자량, 정밀질량, LogP, TPSA & 3D 복잡도' `
+            -CaptionEn 'Compute physicochemical and 3D complexity descriptors locally in 0ms.' `
+            -CaptionKo '로컬 오프라인으로 분자량·LogP·TPSA·고리 수·Fsp3를 즉시 계산합니다.'
         Select-ExcelCell $excel $wsChem 'D2' 350
         $c.Snap(4, 650, 500)
-        $c.AddCue(1.8, 'Compute structures, MW, Exact Mass, LogP, TPSA, Fsp3 & Lipinski row by row.', '구조식과 분자량·정밀질량·LogP·TPSA·Fsp3·Lipinski 약물성을 순차 계산합니다.')
+        $c.AddCue(1.8, 'Compute structures, MW, Exact Mass, LogP, TPSA & Fsp3 row by row.', '구조식과 분자량·정밀질량·LogP·TPSA·Fsp3를 순차 계산합니다.')
         for ($r = 2; $r -le 5; $r++) {
             $wsChem.Range("C$r").Formula2 = "=SMILES2IMG(B$r)"
             $wsChem.Range("D$r").Formula2 = "=SMILES2MW(B$r)"
@@ -873,7 +887,6 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
             $wsChem.Range("H$r").Formula2 = "=SMILES2RINGS(B$r)"
             $wsChem.Range("I$r").Formula2 = "=SMILES2AROMATIC(B$r)"
             $wsChem.Range("J$r").Formula2 = "=SMILES2FSP3(B$r)"
-            $wsChem.Range("K$r").Formula2 = "=SMILES2LIPINSKI(B$r)"
             Start-Sleep -Milliseconds 500
             $c.Snap(4, (580 + ($r - 2) * 140), (490 + ($r - 2) * 80))
         }
@@ -888,13 +901,13 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         # --- 1.9 excel-sar-screening ---
         $wsSar = $wb.Worksheets.Add()
         $wsSar.Name = 'SARScreening'
-        $wsSar.Range('A1:E1').Value2 = @('Compound', 'SMILES', 'Highlight (c1ccccc1)', 'Has Benzene (=SMILES.MATCH)', 'Similarity vs Aspirin')
+        $wsSar.Range('A1:E1').Value2 = @('Compound', 'SMILES', 'Highlight (c1ccccc1)', 'Has Benzene (=SMILES.MATCH)', 'Has Carboxyl (=SMILES.MATCH)')
         $wsSar.Range('A1:E1').Font.Bold = $true
         $wsSar.Columns.Item(1).ColumnWidth = 11
         $wsSar.Columns.Item(2).ColumnWidth = 35
         $wsSar.Columns.Item(3).ColumnWidth = 20
         $wsSar.Columns.Item(4).ColumnWidth = 22
-        $wsSar.Columns.Item(5).ColumnWidth = 19
+        $wsSar.Columns.Item(5).ColumnWidth = 22
         for ($i = 0; $i -lt $chemMols.Count; $i++) {
             $r = $i + 2
             $wsSar.Rows.Item($r).RowHeight = 52
@@ -902,17 +915,17 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
             $wsSar.Cells.Item($r, 2).Value2 = $chemMols[$i][1]
         }
         $c = Start-FeatureClip -Id 'excel-sar-screening' -HostApp 'excel' -MainHwnd $xHwnd -OfficePid $xPid `
-            -TitleEn 'Recipe: Substructure Search (SMILES.MATCH) & Similarity Ranking' `
-            -TitleKo '레시피: 부분구조 검색(SMILES.MATCH) & Tanimoto 유사도 스크리닝' `
-            -CaptionEn 'Filter scaffolds with =SMILES.MATCH, highlight matching rings, and score Tanimoto similarity.' `
-            -CaptionKo '=SMILES.MATCH로 골격 포함 여부를 판별하고 유사도 점수와 하이라이트 그림을 계산합니다.'
+            -TitleEn 'Recipe: Substructure Search (SMILES.MATCH) & Scaffold Highlighting' `
+            -TitleKo '레시피: 부분구조 검색(SMILES.MATCH) & 골격 하이라이트 스크리닝' `
+            -CaptionEn 'Filter scaffolds with =SMILES.MATCH and highlight matching rings with hl:SMARTS.' `
+            -CaptionKo '=SMILES.MATCH로 골격 포함 여부를 판별하고 hl: 옵션으로 매칭 고리를 강조합니다.'
         Select-ExcelCell $excel $wsSar 'C2' 350
         $c.Snap(4, 600, 500)
-        $c.AddCue(1.8, 'Run =SMILES.MATCH(B2,"c1ccccc1") and =SMILES.SIMILARITY(B2,$B$2) across rows.', '=SMILES.MATCH와 =SMILES.SIMILARITY, 하이라이트 이미지를 순차 생성합니다.')
+        $c.AddCue(1.8, 'Run =SMILES.MATCH(B2,"c1ccccc1") and highlight benzene rings across rows.', '=SMILES.MATCH 부분구조 검색과 하이라이트 이미지를 순차 생성합니다.')
         for ($r = 2; $r -le 5; $r++) {
             $wsSar.Range("C$r").Formula2 = "=SMILES2IMG(B$r, `"`", `"hl:c1ccccc1`")"
             $wsSar.Range("D$r").Formula2 = "=SMILES.MATCH(B$r, `"c1ccccc1`")"
-            $wsSar.Range("E$r").Formula2 = "=SMILES.SIMILARITY(B$r, `$B`$2)"
+            $wsSar.Range("E$r").Formula2 = "=SMILES.MATCH(B$r, `"C(=O)O`")"
             Start-Sleep -Milliseconds 500
             $c.Snap(4, 720, (490 + ($r - 2) * 80))
         }
@@ -967,12 +980,12 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         # --- 1.11 excel-sdf-workflow ---
         $sdfPath = (Resolve-Path (Join-Path $publicDir 'sample_compounds.sdf')).Path
         $c = Start-FeatureClip -Id 'excel-sdf-workflow' -HostApp 'excel' -MainHwnd $xHwnd -OfficePid $xPid `
-            -TitleEn 'Recipe: Import & Export .SDF Chemical Database Tables' `
-            -TitleKo '레시피: .SDF 화학 데이터베이스 12열 표 가져오기 & 내보내기' `
-            -CaptionEn 'Click [SMILES] -> [SDF File] -> [Import SDF] to generate a 12-column live SAR sheet.' `
-            -CaptionKo '리본 [SDF File] -> [Import SDF]로 12개 약물성 열이 갖춰진 엑셀 표를 즉시 생성합니다.'
+            -TitleEn 'Recipe: Import .SDF Chemical Database Tables' `
+            -TitleKo '레시피: .SDF 화학 데이터베이스 11열 표 가져오기' `
+            -CaptionEn 'Click [SMILES] -> [Import SDF] to generate an 11-column live SAR sheet.' `
+            -CaptionKo '리본 [SMILES] -> [Import SDF]로 11개 물성 열이 갖춰진 엑셀 표를 즉시 생성합니다.'
         $c.Snap(4, $ptSdf.X, $ptSdf.Y)
-        $c.ClickAt($ptSdf.X, $ptSdf.Y, 'Open [SDF File] -> [Import SDF File (.sdf)...] to load sample_compounds.sdf.', '[SDF File] -> [Import SDF File (.sdf)...]를 클릭해 파일을 불러옵니다.')
+        $c.ClickAt($ptSdf.X, $ptSdf.Y, 'Click [Import SDF] to load sample_compounds.sdf.', '[Import SDF]를 클릭해 sample_compounds.sdf 파일을 불러옵니다.')
         $wsSdf = Invoke-ComRetry { $wb.Worksheets.Add() }
         Invoke-ComRetry { $wsSdf.Name = 'SDFImport' }
         Invoke-ComRetry { $wsSdf.Activate() }
@@ -985,11 +998,10 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
             @('MW (g/mol)',     'SMILES2MW',         9.0),
             @('Exact Mass',     'SMILES2EXACTMASS',  8.5),
             @('LogP',           'SMILES2LOGP',       5.0),
+            @('TPSA',           'SMILES2TPSA',       5.5),
             @('Rings',          'SMILES2RINGS',      5.5),
             @('Aromatic Rings', 'SMILES2AROMATIC',  11.5),
-            @('Fsp3',           'SMILES2FSP3',       5.5),
-            @('Chiral Centers', 'SMILES2CHIRAL',    11.0),
-            @('Lipinski',       'SMILES2LIPINSKI',   7.5)
+            @('Fsp3',           'SMILES2FSP3',       5.5)
         )
         for ($ci = 0; $ci -lt $sdfCols.Count; $ci++) {
             $colNum = $ci + 1
@@ -1030,7 +1042,7 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         $excel.ActiveWindow.ScrollColumn = 1
         $excel.ActiveWindow.ScrollRow = 1
         Select-ExcelCell $excel $wsSdf 'B2' 450
-        $c.AddCue(1.8, "Imported $imported compounds into a 12-column structure & complexity worksheet.", "$imported 개 화합물을 12열 구조·물성·3D 복잡도 시트로 불러왔습니다.")
+        $c.AddCue(1.8, "Imported $imported compounds into an 11-column structure & complexity worksheet.", "$imported 개 화합물을 11열 구조·물성·3D 복잡도 시트로 불러왔습니다.")
         $c.CaptureShot(@())
         $c.Snap(8, -1, -1)
         Complete-FeatureClip $c
@@ -1204,13 +1216,13 @@ if ($Section -eq 'All' -or $Section -eq 'Word') {
         $c = Start-FeatureClip -Id 'word-ch3-compound-table' -HostApp 'word' -MainHwnd $wHwnd -OfficePid $wPid `
             -TitleEn 'Word Ch. 3: Compound Tables & Molecule Info Copy (TSV / Markdown)' `
             -TitleKo 'Word 3장: 논문 화합물 표 삽입 및 Molecule Info 물성 복사' `
-            -CaptionEn 'Insert structures inside Word table cells and open Molecule Info to copy 17-col TSV rows.' `
-            -CaptionKo '워드 표 셀 안에 구조식을 넣고 Molecule Info 창에서 12개 물성 행과 17열 TSV를 복사합니다.'
+            -CaptionEn 'Insert structures inside Word table cells and open Molecule Info to copy 12-col TSV rows.' `
+            -CaptionKo '워드 표 셀 안에 구조식을 넣고 Molecule Info 창에서 계산된 물성과 12열 TSV를 복사합니다.'
         $c.Snap(4, $ptMolInfo.X, $ptMolInfo.Y)
         $c.ClickAt($ptMolInfo.X, $ptMolInfo.Y, 'Select a structure in the table and open Molecule Info.', '표 안의 구조식을 선택하고 Molecule Info를 엽니다.')
         $c.RunWithModal('Molecule Info', 2200, {
             Show-LiveMoleculeInfoOverHost -OwnerHwnd $wHwnd -SmilesOrKet $ibuprofenSmiles -HoldMs 2200
-        }, 'Inspect all 12 property rows or export a 17-column TSV row straight into Word.', '12개 물성 행을 확인하고 17열 TSV 행이나 개별 물성을 복사할 수 있습니다.')
+        }, 'Inspect calculated property rows or export a 12-column TSV row straight into Word.', '물성 행을 확인하고 12열 TSV 행이나 개별 물성을 복사할 수 있습니다.')
         $c.Snap(5, -1, -1)
         Complete-FeatureClip $c
 
@@ -1477,7 +1489,7 @@ if ($Section -eq 'All' -or $Section -eq 'PowerPoint') {
             $tbMol.TextFrame.TextRange.Text = $card.Smiles
             $tbMol.Select()
             [void]$pptObj.ExecuteRibbonAction('OnQuickInsert')
-            $tbMol.Delete()
+            try { $tbMol.Delete() } catch {}
             $pic = $sGrid.Shapes.Item($sGrid.Shapes.Count)
             $pic.LockAspectRatio = -1
             $pic.Width = 176
@@ -1587,7 +1599,7 @@ if ($Section -eq 'All' -or $Section -eq 'PowerPoint') {
         $c.Snap(6, $ptPaste.X, $ptPaste.Y)
         $c.ClickAt($ptPaste.X, $ptPaste.Y, 'Click [Paste Structure] while the SMILES TextBox is selected.', 'SMILES 텍스트 상자가 선택된 상태에서 [Paste Structure]를 클릭합니다.')
         [void]$pptObj.ExecuteRibbonAction('OnQuickInsert')
-        $tbDemo.Delete()
+        try { $tbDemo.Delete() } catch {}
         $picTb = $sTb.Shapes.Item($sTb.Shapes.Count)
         $picTb.Select()
         [void]$pptObj.ExecuteRibbonAction('OnBatchStyleDark')
@@ -1600,8 +1612,8 @@ if ($Section -eq 'All' -or $Section -eq 'PowerPoint') {
         $sGrid.Select()
         $sGrid.Shapes.Item($sGrid.Shapes.Count).Select()
         $c = Start-FeatureClip -Id 'powerpoint-slide-live-qa-info' -HostApp 'powerpoint' -MainHwnd $pHwnd -OfficePid $pPid `
-            -TitleEn 'PowerPoint Gallery: Check MW & Lipinski During Live Q&A' `
-            -TitleKo 'PowerPoint 갤러리: 발표 질의응답 중 분자량·약물성 즉시 확인' `
+            -TitleEn 'PowerPoint Gallery: Check MW, LogP & TPSA During Live Q&A' `
+            -TitleKo 'PowerPoint 갤러리: 발표 질의응답 중 분자량·LogP·TPSA 즉시 확인' `
             -CaptionEn 'Select any slide molecule and click [Molecule Info] to inspect all descriptors live.' `
             -CaptionKo '발표 도중 구조식 도형을 선택하고 [Molecule Info]를 눌러 분자량·물성을 즉시 확인합니다.'
         $c.Snap(4, $ptMolInfo.X, $ptMolInfo.Y)
@@ -1715,10 +1727,10 @@ if ($Section -eq 'All' -or $Section -eq 'Common') {
         $c = Start-FeatureClip -Id 'common-molecule-info' -HostApp 'common' -MainHwnd $wHwnd -OfficePid $wPid `
             -TitleEn 'Detailed Molecule Info Window & 5 Copy Formats' `
             -TitleKo '상세 분자 정보 창 (Molecule Info) & 5가지 서식 내보내기' `
-            -CaptionEn 'Inspect 12 property rows with a 2D preview and copy 17-column TSV, Multi-Line, Markdown, or JSON.' `
-            -CaptionKo '2D 미리보기와 함께 12개 물성 행을 확인하고 17열 TSV·마크다운·JSON으로 즉시 복사합니다.'
+            -CaptionEn 'Inspect calculated property rows with a 2D preview and copy 12-column TSV, Multi-Line, Markdown, or JSON.' `
+            -CaptionKo '2D 미리보기와 함께 계산된 물성 행을 확인하고 12열 TSV·마크다운·JSON으로 즉시 복사합니다.'
         $c.Snap(8, $ptWMolInfo.X, $ptWMolInfo.Y)
-        $c.ClickAt($ptWMolInfo.X, $ptWMolInfo.Y, 'Click [Molecule Info] to inspect 12 calculated properties and export formats.', '리본의 [Molecule Info]를 클릭해 12개 물성과 복사 서식을 확인합니다.')
+        $c.ClickAt($ptWMolInfo.X, $ptWMolInfo.Y, 'Click [Molecule Info] to inspect calculated properties and export formats.', '리본의 [Molecule Info]를 클릭해 물성과 복사 서식을 확인합니다.')
         $c.RunWithModal('Molecule Info', 2200, {
             Show-LiveMoleculeInfoOverHost -OwnerHwnd $wHwnd -SmilesOrKet $aspirinSmiles -HoldMs 2200
         }, 'Live MoleculeInfoDialog with GDI+ property icons and 1-click Copy All format export.', 'GDI+ 벡터 아이콘과 원클릭 복사 버튼을 갖춘 실제 Molecule Info 대화상자입니다.', @(
@@ -1732,8 +1744,8 @@ if ($Section -eq 'All' -or $Section -eq 'Common') {
         $c = Start-FeatureClip -Id 'common-about-dialog' -HostApp 'common' -MainHwnd $wHwnd -OfficePid $wPid `
             -TitleEn 'About func_SMILES2IMG & One-Click Update Check' `
             -TitleKo 'About func_SMILES2IMG 정보 창 & 원클릭 업데이트 확인' `
-            -CaptionEn 'Standard 3-tab About dialog showing version v1.8.0, third-party engines, and license notices.' `
-            -CaptionKo 'v1.8.0 버전, 내장 엔진 버전, 오픈소스 라이선스와 업데이트 확인을 제공하는 표준 3-탭 정보 창입니다.'
+            -CaptionEn "Standard 3-tab About dialog showing version v$addinVersion, third-party engines, and license notices." `
+            -CaptionKo "v$addinVersion 버전, 내장 엔진 버전, 오픈소스 라이선스와 업데이트 확인을 제공하는 표준 3-탭 정보 창입니다."
         $c.Snap(8, $ptWAbout.X, $ptWAbout.Y)
         $c.ClickAt($ptWAbout.X, $ptWAbout.Y, 'Click [About func_SMILES2IMG] to view version info and check for updates.', '[About func_SMILES2IMG]를 눌러 버전 정보 및 업데이트 확인을 실행합니다.')
         $c.RunWithModal('About func_SMILES2IMG', 2200, {

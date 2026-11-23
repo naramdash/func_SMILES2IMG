@@ -25,6 +25,7 @@
 | **SMILES / InChI / KET ➔ 물질명** | `=SMILES2NAME(A2)` · `=INCHI2NAME(A2)` · `=KET2NAME(A2)` | `Aspirin` |
 | **SMILES / KET ➔ IUPAC InChI** | `=SMILES2INCHI(A2)` · `=KET2INCHI(A2)` | `InChI=1S/C9H8O4/c1-6(10)...` |
 | **InChI ➔ 표준 SMILES** | `=INCHI2SMILES(A2)` | `CC(=O)Oc1ccccc1C(=O)O` |
+| **KET ➔ 표준 SMILES** | `=KET2SMILES(A2)` | `CC(=O)Oc1ccccc1C(=O)O` |
 | **SMILES / InChI / KET ➔ InChIKey** | `=SMILES2INCHIKEY(A2)` · `=INCHI2INCHIKEY(A2)` · `=KET2INCHIKEY(A2)` | `BSYNRYMUTXBXSQ-UHFFFAOYSA-N` |
 
 ## 2. `InChIKey` 로 서로 다른 DB 간 중복 화합물 100% 잡아내기
@@ -41,6 +42,6 @@
 
 ## 관련 가이드
 
-- [**부분구조 · 유사도 검색**](/ko/excel/sar) — `=SMILES.MATCH` 골격 필터링 및 Tanimoto 유사도 순위 산출
-- [**SDF 파일 입출력**](/ko/excel/sdf) — 외부 `.sdf`/`.mol` 파일을 12열 라이브 시트로 불러오거나 시트를 `.sdf` 로 내보내기
-- [**40개 함수 전체 개요**](/ko/excel/formulas) — 전체 엑셀 수식 규격 및 반환 타입 한눈에 보기
+- [**부분구조 검색 (SAR)**](/ko/excel/sar) — `=SMILES.MATCH`, `=INCHI.MATCH`, `=KET.MATCH` 골격 필터링
+- [**SDF 파일 가져오기**](/ko/excel/sdf) — 외부 `.sdf`/`.mol` 파일을 11열 라이브 수식 시트로 불러오기
+- [**49개 함수 전체 개요**](/ko/excel/formulas) — 전체 49개 엑셀 수식 규격 및 반환 타입 한눈에 보기

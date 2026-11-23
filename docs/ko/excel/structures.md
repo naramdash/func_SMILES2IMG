@@ -34,12 +34,12 @@
 | 작업 | 조작 방법 | 동작 결과 |
 | :--- | :--- | :--- |
 | **새 분자 그리기** | 셀 선택 ➔ **`[SMILES]` ➔ `[Insert / Edit (SMILES)]`** (또는 `InChI`) ➔ Ketcher 작성 후 <kbd>Ctrl</kbd> + <kbd>Enter</kbd> | 활성 셀에 `=SMILES2IMG("...")` (또는 `=INCHI2IMG(...)`) 자동 입력 |
-| **0.1초 즉시 변환** | SMILES/InChI 복사 또는 텍스트 셀 선택 ➔ **`[SMILES]` ➔ `[Paste Structure]`** 클릭 | 편집기를 열지 않고 즉시 구조식 수식으로 변환 |
-| **더블클릭 재편집** | 렌더링된 구조식 셀 또는 `.FLOAT` 그림 **더블클릭** | `0.05초` 만에 기존 분자가 로드된 채 **Ketcher 2D** 실행 |
+| **0.1초 즉시 변환** | SMILES/InChI/KET/이름/CAS 복사 또는 텍스트 셀 선택 ➔ **`[SMILES]` ➔ `[Paste Structure]`** 클릭 | `=SMILES2IMG(...)` 또는 `=KET2IMG(...)` 수식으로 즉시 변환 (일반 물질명·모호한 짧은 영단어는 확인 후 삽입) |
+| **더블클릭 재편집** | 렌더링된 구조식 셀 또는 `.FLOAT` 그림 **더블클릭** | `0.05초` 만에 기존 분자가 로드된 채 **Ketcher 2D** 실행 (모호한 일반 단어 셀에서는 안전하게 빈 캔버스로 열림) |
 
 ## 관련 가이드
 
-- [**시약명 · 용매 · CAS**](/ko/excel/name-cas) — `=NAME2IMG` 로 영문 이름, `THF`/`HATU`, `"50-78-2"` 즉시 그리기
+- [**시약명 · 용매 · CAS**](/ko/excel/name-cas) — `=NAME2IMG` 로 영문 이름, `THF`/`DMSO`, `"50-78-2"` 즉시 그리기 (내장 0ms 사전 + PubChem 30일 로컬 캐시)
 - [**합성 반응식 (KET)**](/ko/excel/reactions) — `=KET2IMG` 로 화살표·촉매 포함 반응식 무손실 저장
 - [**스타일 · 하이라이트**](/ko/excel/styles-reactions) — `[배경색]`, `[스타일]` (`"bw"`, `"hl:..."`, `"num stereo"`), `[변형]` 옵션 활용
 - [**구버전 Excel (.FLOAT)**](/ko/excel/legacy-float) — Excel 2016~2021용 셀 고정 도형 수식 안내

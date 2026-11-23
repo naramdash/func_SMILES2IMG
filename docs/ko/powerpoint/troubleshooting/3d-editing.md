@@ -6,13 +6,13 @@ PowerPoint에서 Mol\* `.glb` 3D 단백질 삽입·회전 오류와 `.pptx` 용�
 
 * **지원 Office 버전 확인:** PowerPoint 내장 3D `.glb` 마우스 회전과 **모핑(Morph)** 카메라 전환은 **PowerPoint 2019, 2021, 2024, Microsoft 365** 에서 지원됩니다.
 * **PowerPoint 2016 · 저용량 배포본 · 초대형 리보솜/캡시드:** Mol\* 상단 툴바를 **`3D Model (GLB)`** 에서 **`2D Picture`** (`BG: Transparent`) 로 바꾸면 용량이 작고 모든 PowerPoint 버전에서 선명하게 표시되는 투명 PNG가 들어갑니다.
-* **기관 방화벽으로 PDB 다운로드가 막힌 경우:** Mol\* 창에서 **`Open File...`** 을 눌러 내 PC의 `.pdb`, `.cif`, `.bcif`, `.sdf` 파일을 100% 오프라인으로 여세요 ([오프라인 PDB 파일](/ko/editor/troubleshooting/offline-pdb)).
+* **기관 방화벽으로 PDB 다운로드가 막힌 경우:** Mol\* 창에서 **`Open File...`** 을 눌러 내 PC의 `.pdb`, `.cif`, `.bcif`, `.ent`, `.mol`, `.sdf`, `.molj`, `.molx` 파일을 100% 오프라인으로 여세요 ([오프라인 PDB 파일](/ko/editor/troubleshooting/offline-pdb)).
 
 ## 2. 슬라이드에서 더블클릭해도 Ketcher / Mol\* 이 열리지 않음 {#double-click}
 
 `func_SMILES2IMG` 는 **`Shape.Tags`** (`KET`, `SMILES`, `MOLSTAR`) 와 **대체 텍스트(Alt Text)**, 그리고 3D 세션용 `CustomXMLParts` 로 편집 가능한 슬라이드 도형을 식별합니다.
 
-* **일반 캡처 이미지:** 외부 스크린샷이나 PDF 복사 이미지에는 화학 태그가 없어 PowerPoint 기본 그림 서식 창이 열립니다. **`[Insert / Edit Structure]`** 나 **`[Paste Structure]`** 로 다시 삽입하세요.
+* **일반 캡처 이미지 · 캔버스 밖 클릭:** 외부 스크린샷이나 PDF 복사 이미지에는 화학 태그가 없어 PowerPoint 기본 그림 서식 창이 열립니다. **`[Insert / Edit Structure]`** 나 **`[Paste Structure]`** 로 다시 삽입하세요. *(참고: 더블클릭 편집은 일반 편집 보기의 슬라이드 캔버스 영역에서만 동작합니다.)*
 * **도형으로 변환한 SVG:** **`[Copy SVG]`** 로 붙여넣고 `그룹 해제(도형으로 변환)` 한 벡터 다각형은 더 이상 Ketcher에 연결되어 있지 않습니다. 원본 KET 도형을 숨김 백업 슬라이드에 남겨 두세요.
 * **태그 확인 · 리본 메뉴 실행:** 도형 **우클릭 ➔ 대체 텍스트 보기**에서 `SMILES:`, `KET:`, `MOLSTAR:` 접두어가 남아 있는지 확인하세요. 언제든 도형을 선택한 뒤 상단 **`[SMILES]` ➔ `[Insert / Edit Structure]`** (2D) 또는 **`[3D Structure (Mol*)]`** (3D) 로 열 수 있습니다. `[SMILES]` 탭이 안 보이면 [리본 탭 미표시](/ko/guide/troubleshooting/ribbon-tab)를 점검하세요.
 

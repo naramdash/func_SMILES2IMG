@@ -41,6 +41,6 @@ Preparing a group meeting or conference deck from your paper? Click any KET reac
 
 ## Related Guides
 
-- [**2. SAR Tables & Experimental Properties**](/word/tables-properties) — Lock table column widths and populate 17 descriptors automatically
+- [**2. SAR Tables & Experimental Properties**](/word/tables-properties) — Lock table column widths and populate 12 descriptors automatically
 - [**Style & Export Reference**](/editor/publishing) — Complete breakdown of all 4 `Batch Style` presets and 5 `Molecule Info` clipboard formats
 - [**Document Sharing Guide**](/guide/troubleshooting/document-sharing) — How `.docx`, `.pptx`, and `.xlsx` files behave across macOS and add-in-free PCs

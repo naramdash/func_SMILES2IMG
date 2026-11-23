@@ -11,7 +11,7 @@
 [![Mol* Viewer](https://img.shields.io/badge/Mol*--Viewer-v5.13.1-teal.svg)](https://molstar.org/)
 
 > **Stop copy-pasting chemical structures into Office.**  
-> Type a compound name or SMILES to auto-render 2D chemical structures, molecular weights, and Lipinski Rule of 5 across hundreds of Excel rows. Double-click any cell or picture to sketch in 2D with embedded EPAM Ketcher, or rotate 3D proteins with Mol\* — **free, open-source, and local-first (no admin rights required).**
+> Type a compound name or SMILES to auto-render 2D chemical structures, molecular weights, LogP/TPSA, and 3D complexity metrics across hundreds of Excel rows. Double-click any cell or picture to sketch in 2D with embedded EPAM Ketcher, or rotate 3D proteins with Mol\* — **free, open-source, and local-first (no admin rights required).**
 
 <p align="center">
   <img src="assets/hero-demo.webp" alt="func_SMILES2IMG Demo — Auto-render in Excel and double-click to edit in Ketcher 2D" width="820" />
@@ -23,7 +23,7 @@
 
 * 🇰🇷 **[한국어 공식 가이드 및 1분 시작하기](https://naramdash.github.io/func_SMILES2IMG/ko/)**
 * 🇺🇸 **[English Documentation & 1-Min Quickstart](https://naramdash.github.io/func_SMILES2IMG/)**
-* 📊 **[📥 Download Self-Contained Excel Playbook (.xlsx)](https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/examples/func_SMILES2IMG_Excel_Playbook.xlsx)** — 10-tab interactive workbook with live formulas, Lipinski & 3D complexity KPIs, SMARTS dictionary, stoichiometry & hit-to-lead workflows, KET reactions, `.FLOAT`, and all 40 functions.
+* 📊 **[📥 Download Self-Contained Excel Playbook (.xlsx)](https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/examples/func_SMILES2IMG_Excel_Playbook.xlsx)** — 10-tab interactive workbook with live formulas, physicochemical & 3D complexity KPIs, SMARTS dictionary, stoichiometry & hit-to-lead workflows, KET reactions, `.FLOAT`, and all 49 functions.
 * 📝 **[📥 Download Self-Contained Word Playbook (.docx)](https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/examples/func_SMILES2IMG_Word_Playbook.docx)** — 6-page hands-on manuscript with live double-click-editable structures, journal SAR table, KET synthesis schemes, Mol\* 3D `1CRN` figure, and 1-click ACS B&W exercise.
 * 🎨 **[📥 Download Self-Contained PowerPoint Playbook (.pptx)](https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/examples/func_SMILES2IMG_PowerPoint_Playbook.pptx)** — 8-slide dark-mode interactive deck with 0.1s TextBox conversion lab, 4-card screening grid, KET mechanism slide, Mol\* 3D target, live Q&A `Molecule Info`, and speaker notes.
 
@@ -34,7 +34,7 @@
 Open **PowerShell** and run this single command to automatically install, configure security, and register the add-in across Microsoft Office (Excel, Word, PowerPoint):
 
 ```powershell
-# Latest stable release (v1.8.1)
+# Latest stable release (v1.9.0)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
@@ -51,8 +51,8 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 ## ✨ Key Features
 
 * ⚡ **Real-Time In-Cell Chemical Rendering:** `=SMILES2IMG(A2)`, `=KET2IMG(A2)`, `=INCHI2IMG(A2)`, and `=NAME2IMG(A2)` render native cell pictures in Microsoft Excel that scale with row/column sizing and recalculate dynamically, with substructure highlighting (`"hl:c1ccccc1"`).
-* 🔬 **Comprehensive Cheminformatics & Drug-Likeness Formulas:** Direct cell formulas `=SMILES2NAME`, `=NAME2SMILES`, `=SMILES2MW`, `=SMILES2EXACTMASS`, `=SMILES2FORMULA`, `=SMILES2INCHI`, `=SMILES2INCHIKEY`, `=SMILES2LOGP`, `=SMILES2TPSA`, `=SMILES2HBD`, `=SMILES2HBA`, `=SMILES2ROTBONDS`, `=SMILES2LIPINSKI`, `=SMILES2HEAVY`, `=SMILES2RINGS`, `=SMILES2AROMATIC`, `=SMILES2FSP3`, `=SMILES2CHIRAL`, `=SMILES.MATCH`, and `=SMILES.SIMILARITY`.
-* 📋 **One-Click Molecule Info, Vector SVG Copy & Batch Style:** Right-click context submenu and Ribbon tools across Excel, Word, and PowerPoint to copy Substance Name, Formula, MW, SMILES, InChI, InChIKey, or crisp **Vector SVG (`Copy SVG`)**, normalize all structures in one click (**`Batch Style`**), and import/export 12-column `.sdf` chemical database tables in Excel (**`SDF File`**).
+* 🔬 **Comprehensive Offline Cheminformatics (SMILES · InChI · KET Parity):** Direct cell formulas `=SMILES2NAME`, `=NAME2SMILES`, `=KET2SMILES`, `*2MW`, `*2EXACTMASS`, `*2FORMULA`, `*2INCHI`, `*2INCHIKEY`, `*2LOGP`, `*2TPSA`, `*2HEAVY`, `*2RINGS`, `*2AROMATIC`, `*2FSP3`, `=SMILES.MATCH`, `=INCHI.MATCH`, and `=KET.MATCH`.
+* 📋 **One-Click Molecule Info, Vector SVG Copy & Lossless Batch Style:** Right-click context submenu and Ribbon tools across Excel, Word, and PowerPoint to copy Substance Name, Formula, MW, SMILES, InChI, InChIKey, or crisp **Vector SVG (`Copy SVG`)**, normalize structure styles losslessly while keeping highlights and rotations (**`Batch Style`**), and import 11-column `.sdf` chemical database tables in Excel (**`Import SDF`**).
 * ✏️ **Embedded Ketcher 2D Visual Sketcher:** 100% offline molecular editor with warm WebView2 instance pooling (`<0.05s` instant reopen) supporting atoms, bonds, rings, charges, and multi-step reaction schemes.
 * 🧬 **Embedded Mol\* 3D Macromolecular Viewer:** Visualize proteins, nucleic acids, and complexes directly across Excel, PowerPoint, and Word. Download PDB structures by ID, insert rotatable 3D GLB models or 2D publication images, and re-edit anytime with double-click.
 * 🔄 **Lossless Document Persistence:** KET coordinates, chemical annotations, and Mol* 3D session recipes (`.molj`) are stored losslessly inside document XML metadata (`CustomXMLParts`), allowing seamless re-editing when sharing files with collaborators.
@@ -121,12 +121,12 @@ func_SMILES2IMG/
 │   │   ├── Notifications/              # Non-intrusive floating badges and notification service
 │   │   └── COM/                        # Shared Office COM interfaces (IDTExtensibility2, IRibbonExtensibility)
 │   ├── Smiles2Img.Excel/               # Excel-DNA standalone XLL add-in (net48)
-│   │   ├── Functions.cs                # 36 in-cell UDFs (=SMILES2IMG, =SMILES2MW, =SMILES2FSP3, =SMILES.MATCH, etc.)
+│   │   ├── Functions.cs                # 48 in-cell UDFs (=SMILES2IMG, =INCHI2*, =KET2*, =SMILES.MATCH, etc.)
 │   │   ├── FloatFunctions.cs           # 4 floating shape UDFs (.FLOAT for Excel 2016-2021)
 │   │   ├── CellImages.cs               # In-cell image cache manager
 │   │   ├── FloatingPictures.cs         # Cell-anchored floating shape manager
 │   │   ├── SmilesRibbon.cs             # [SMILES] ribbon tab & right-click context menu callbacks
-│   │   ├── KetcherEditor.cs            # Ketcher commands, quick paste, SDF I/O, molecule info & double-click hooks
+│   │   ├── KetcherEditor.cs            # Ketcher commands, quick paste, SDF import, molecule info & double-click hooks
 │   │   ├── KetcherEditor.ShapesAndCells.cs # KET canvas shape & formula cell extraction/insertion helpers
 │   │   └── ExcelMolstarManager.cs      # Mol* 3D viewer integration, floating GLB/PNG insertion & session re-editing
 │   ├── Smiles2Img.Word/                # Word COM add-in DLL (net48)
@@ -211,15 +211,15 @@ npm run docs:preview
 
 ## 🧪 Automated Testing & Verification
 
-### 1. Category 1 Unit Tests (18 Suites) + Category 2 WebView2 / WinForms UI E2E (6 Suites)
-Runs **24 test suites** (no Microsoft Office installation required): verifies 2D PNG/SVG rendering, chiral/stereochemical rules, transforms, molecule properties and complexity descriptors (`Formula`, `MW`, `Exact Mass`, `LogP`, `TPSA`, `Lipinski`, `Heavy Atoms`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`), Excel/Word/PowerPoint Ribbon & ContextMenu XML (`ValidateRibbonXml` + `VerifiedValidOfficeImageMsos`), WinForms dialogs (`MoleculeInfoDialog`, `AboutDialog`, `CopiedToast`), and live WebView2 Ketcher v3.18.0 + Mol\* v5.13.1 round-trip UI capture:
+### 1. Category 1 Unit Tests (25 Suites) + Category 2 WebView2 / WinForms UI E2E (6 Suites)
+Runs **31 test suites** (no Microsoft Office installation required): verifies 2D PNG/SVG rendering, stereochemical rendering, transforms, molecule properties and complexity descriptors (`Formula`, `MW`, `Exact Mass`, `LogP`, `TPSA`, `Heavy Atoms`, `Rings`, `Aromatic Rings`, `Fsp3`), a 57-compound real-substance benchmark & SMILES↔InChI↔KET parity matrix (`RealSubstanceEdgeCaseTests`), Excel/Word/PowerPoint Ribbon & ContextMenu XML (`ValidateRibbonXml` + `VerifiedValidOfficeImageMsos`), `ExcelFormulaRewriter`, `ThreadMouseDoubleClickHook` filtering, WinForms dialogs (`MoleculeInfoDialog`, `AboutDialog`, `CopiedToast`), and live WebView2 Ketcher v3.18.0 + Mol\* v5.13.1 round-trip UI capture:
 
 ```powershell
 dotnet run --project tests -c Release
 ```
 
-### 2. Full End-to-End Test Suite Including Live Office COM/XLL Automation (25 Suites)
-Executes all 24 Unit & WebView2 UI suites plus live Microsoft **Word (COM)**, **PowerPoint (COM)**, and **Excel (Live `.xll` + 21 UDFs + SDF Round-Trip + Modal UI popups)** automation:
+### 2. Full End-to-End Test Suite Including Live Office COM/XLL Automation (32 Suites)
+Executes all 31 Unit & WebView2 UI suites plus live Microsoft **Word (COM)**, **PowerPoint (COM)**, and **Excel (Live `.xll` UDFs, SDF Import, Batch Style & Modal UI popups)** automation:
 
 ```powershell
 dotnet run --project tests -c Release -- --full

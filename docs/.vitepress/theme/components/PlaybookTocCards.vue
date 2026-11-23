@@ -12,7 +12,7 @@ const cards = computed(() => [
     name: 'Excel',
     icon: '/icons/excel.svg',
     href: isKo.value ? '/ko/excel/playbook' : '/excel/playbook',
-    meta: isKo.value ? '10개 탭 · .xlsx · 40개 함수' : '10 tabs · .xlsx · 40 formulas'
+    meta: isKo.value ? '10개 탭 · .xlsx · 49개 함수' : '10 tabs · .xlsx · 49 formulas'
   },
   {
     id: 'word',

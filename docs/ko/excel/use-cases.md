@@ -5,11 +5,11 @@
 | 시나리오 | 해결하는 작업 | 핵심 기능 |
 | :--- | :--- | :--- |
 | [**1. 유기 합성 ELN · 당량 칭량**](#synthesis-eln) | 시약명·CAS만으로 SMILES, 구조식, 분자량, 칭량 `mg` 자동 계산 | `=NAME2SMILES`, `=SMILES2MW` |
-| [**2. Hit-to-Lead SAR 선별**](#sar-triage) | 기준 쿼리 셀(`$B$2`)로 부분구조 필터·하이라이트·Lipinski 동시 판정 | `=SMILES.MATCH`, `"hl:"` |
+| [**2. Hit-to-Lead SAR 선별**](#sar-triage) | 기준 쿼리 셀(`$B$2`)로 부분구조 필터·하이라이트·LogP 동시 선별 | `=SMILES.MATCH`, `"hl:"` |
 | [**3. 시약 재고 · 중복 화합물 제거**](#deduplication) | 표기 순서가 다른 SMILES를 `InChIKey` 로 표준화해 중복 검출·병합 | `=SMILES2INCHIKEY` |
-| [**4. SDF 불러오기 · 보고서 연동**](#sdf-handoff) | `.sdf` 파일을 12열 수식 시트로 열고 Word 논문·PPT 발표로 바로 이동 | `[Import SDF]`, `[Batch Style]` |
-| [**5. R-그룹 유도체 자동 조합**](#rgroup-enumeration) | `SUBSTITUTE` 치환기 조합만으로 구조식과 MW·LogP·Lipinski 0ms 예측 | `=SUBSTITUTE`, `=SMILES2IMG` |
-| [**6. 드롭다운 리드 비교 · FILTER 보드**](#dynamic-comparison) | `XLOOKUP`·`FILTER` 로 인셀 구조식 이미지를 동적으로 추출·비교 (365+) | `=SMILES.SIMILARITY` |
+| [**4. SDF 불러오기 · 보고서 연동**](#sdf-handoff) | `.sdf` 파일을 11열 수식 시트로 열고 Word 논문·PPT 발표로 바로 이동 | `[Import SDF]`, `[Batch Style]` |
+| [**5. R-그룹 유도체 자동 조합**](#rgroup-enumeration) | `SUBSTITUTE` 치환기 조합만으로 구조식·MW·화학식 0ms 예측 | `=SUBSTITUTE`, `=SMILES2IMG` |
+| [**6. 드롭다운 리드 비교 · FILTER 보드**](#dynamic-comparison) | `XLOOKUP`·`FILTER` 로 인셀 구조식 이미지를 동적으로 추출·비교 (365+) | `=XLOOKUP`, `=FILTER` |
 
 ---
 
@@ -39,7 +39,7 @@
 
 ## 2. Hit-to-Lead SAR 선별 {#sar-triage}
 
-수백 행의 유도체 시트를 고정 쿼리 셀(`$B$2`) 하나에 연결하면, 찾을 SMARTS 패턴을 바꿨을 때 부분구조 통과 여부, 골격 컬러 강조, Lipinski 우선 순위 판정이 동시에 갱신됩니다.
+수백 행의 유도체 시트를 고정 쿼리 셀(`$B$2`) 하나에 연결하면, 찾을 SMARTS 패턴을 바꿨을 때 부분구조 통과 여부, 골격 컬러 강조, LogP 기준 선별 등급이 동시에 갱신됩니다.
 
 <FeatureMedia id="excel-sar-screening" />
 
@@ -51,12 +51,12 @@
   title="동적 쿼리 SAR 선별 시트"
   :columns='["대상 SMILES", "쿼리 ($B$2)", "포함 여부", "하이라이트 2D", "선별 등급"]'
   :rows='[
-    { cells: ["CC(=O)Oc1ccccc1C(=O)O", "c1ccncc1", "=SMILES.MATCH(A2, $B$2)", "=SMILES2IMG(A2, \"\", \"hl:\"&$B$2)", "=IF(AND(SMILES2LIPINSKI(A2)=\"PASS\", SMILES.MATCH(A2, $B$2)), \"Priority\", \"Monitor\")"], desc: "아스피린 vs. 피리딘 쿼리", out: "Monitor" },
-    { cells: ["CN1CCCC1c2cccnc2", "", "=SMILES.MATCH(A3, $B$2)", "=SMILES2IMG(A3, \"\", \"hl:\"&$B$2)", "=IF(AND(SMILES2LIPINSKI(A3)=\"PASS\", SMILES.MATCH(A3, $B$2)), \"Priority\", \"Monitor\")"], desc: "니코틴 — $B$2 피리딘 포함", out: "Priority" }
+    { cells: ["CC(=O)Oc1ccccc1C(=O)O", "c1ccncc1", "=SMILES.MATCH(A2, $B$2)", "=SMILES2IMG(A2, \"\", \"hl:\"&$B$2)", "=IF(AND(SMILES2LOGP(A2)<=4.0, SMILES.MATCH(A2, $B$2)), \"Priority\", \"Monitor\")"], desc: "아스피린 vs. 피리딘 쿼리", out: "Monitor" },
+    { cells: ["CN1CCCC1c2cccnc2", "", "=SMILES.MATCH(A3, $B$2)", "=SMILES2IMG(A3, \"\", \"hl:\"&$B$2)", "=IF(AND(SMILES2LOGP(A3)<=4.0, SMILES.MATCH(A3, $B$2)), \"Priority\", \"Monitor\")"], desc: "니코틴 — $B$2 피리딘 포함", out: "Priority" }
   ]'
 />
 
-* **관련 가이드:** [**부분구조 · 유사도 (SAR)**](/ko/excel/sar) · [**Lipinski · ADME · 3D**](/ko/excel/lipinski-adme) · Playbook **Tab 2 & Tab 3**
+* **관련 가이드:** [**부분구조 검색 (SAR)**](/ko/excel/sar) · [**LogP · TPSA · 3D 복잡도**](/ko/excel/lipinski-adme) · Playbook **Tab 2 & Tab 3**
 
 ---
 
@@ -90,19 +90,19 @@ RDKit, KNIME, DataWarrior, PubChem에서 내보낸 `.sdf` 화학 DB를 엑셀 �
 
 <FeatureMedia id="excel-sdf-workflow" />
 
-1. **1클릭 12열 수식 표 생성:** **`[SMILES]` ➔ `[SDF File]` ➔ `[Import SDF File (.sdf)...]`** 를 누르면 `Name`, `Structure`, `SMILES`, `Formula`, `MW`, `Exact Mass`, `LogP`, `Rings`, `Aromatic Rings`, `Fsp3`, `Chiral Centers`, `Lipinski` 열이 자동 완성됩니다.
+1. **1클릭 11열 수식 표 생성:** **`[SMILES]` ➔ `[Import SDF]`** 를 누르면 `Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `TPSA`, `Rings`, `Aromatic Rings`, `Fsp3` 열이 자동 완성됩니다.
 2. **1초 스타일 통일:** 상위 히트만 필터링한 뒤 **`[SMILES]` ➔ `[Batch Style]` ➔ `[Publication B&W]`** (또는 `Dark Mode`)를 적용합니다.
 3. **Word · PowerPoint 연동:**
    - **Word 논문 표로:** 물성 행을 복사해 붙이거나, 구조식 셀에서 **`[Copy SMILES]`** / **`[Copy KET]`** 후 Word에서 **`[Paste Structure]`** 를 누르세요 ([Word 활용 사례](/ko/word/use-cases)).
    - **PowerPoint 발표로:** 셀에서 복사 후 슬라이드에 **`[Paste Structure]`** ➔ **`[Batch Style]` ➔ `[Dark Mode]`** 를 적용하세요 ([PowerPoint 활용 사례](/ko/powerpoint/use-cases)).
 
-* **관련 가이드:** [**SDF 파일 입출력**](/ko/excel/sdf) · [**일괄 스타일 · TSV · 3D**](/ko/excel/tools-export) · Playbook **Tab 9**
+* **관련 가이드:** [**SDF 파일 가져오기**](/ko/excel/sdf) · [**일괄 스타일 · TSV · 3D**](/ko/excel/tools-export) · Playbook **Tab 9**
 
 ---
 
 ## 5. R-그룹 유도체 자동 조합 {#rgroup-enumeration}
 
-Python이나 RDKit 없이 엑셀 기본 함수 **`SUBSTITUTE`** 만으로 치환기별 구조식과 물성을 시뮬레이션할 수 있습니다. `A` 열에 치환기 SMILES 조각만 추가하면 유도체 구조식·분자량·Lipinski 통과 여부가 0ms 만에 계산됩니다.
+Python이나 RDKit 없이 엑셀 기본 함수 **`SUBSTITUTE`** 만으로 치환기별 구조식과 물성을 시뮬레이션할 수 있습니다. `A` 열에 치환기 SMILES 조각만 추가하면 유도체 구조식·분자량·화학식·LogP가 0ms 만에 계산됩니다.
 
 <FeatureMedia id="excel-cheminformatics" />
 
@@ -112,15 +112,15 @@ Python이나 RDKit 없이 엑셀 기본 함수 **`SUBSTITUTE`** 만으로 치환
 
 <FormulaTable
   title="R-그룹 유도체 자동 조합 시트"
-  :columns='["R-그룹", "템플릿 ($B$2)", "조합 SMILES", "2D 구조식", "MW", "Lipinski"]'
+  :columns='["R-그룹", "템플릿 ($B$2)", "조합 SMILES", "2D 구조식", "MW", "화학식"]'
   :rows='[
-    { cells: ["O", "CC(=O)Nc1ccc([R])cc1", "=SUBSTITUTE($B$2, \"[R]\", A2)", "=SMILES2IMG(C2)", "=SMILES2MW(C2)", "=SMILES2LIPINSKI(C2)"], desc: "4-OH 유도체 (파라세타몰)", out: "151.16 · PASS" },
-    { cells: ["F", "", "=SUBSTITUTE($B$2, \"[R]\", A3)", "=SMILES2IMG(C3)", "=SMILES2MW(C3)", "=SMILES2LIPINSKI(C3)"], desc: "4-Fluoro 유도체", out: "153.16 · PASS" },
-    { cells: ["C(F)(F)F", "", "=SUBSTITUTE($B$2, \"[R]\", A4)", "=SMILES2IMG(C4)", "=SMILES2MW(C4)", "=SMILES2LIPINSKI(C4)"], desc: "4-CF3 유도체", out: "203.16 · PASS" }
+    { cells: ["O", "CC(=O)Nc1ccc([R])cc1", "=SUBSTITUTE($B$2, \"[R]\", A2)", "=SMILES2IMG(C2)", "=SMILES2MW(C2)", "=SMILES2FORMULA(C2)"], desc: "4-OH 유도체 (파라세타몰)", out: "151.16 · C8H9NO2" },
+    { cells: ["F", "", "=SUBSTITUTE($B$2, \"[R]\", A3)", "=SMILES2IMG(C3)", "=SMILES2MW(C3)", "=SMILES2FORMULA(C3)"], desc: "4-Fluoro 유도체", out: "153.16 · C8H8FNO" },
+    { cells: ["C(F)(F)F", "", "=SUBSTITUTE($B$2, \"[R]\", A4)", "=SMILES2IMG(C4)", "=SMILES2MW(C4)", "=SMILES2FORMULA(C4)"], desc: "4-CF3 유도체", out: "203.16 · C9H8F3NO" }
   ]'
 />
 
-* **관련 가이드:** [**SMILES · InChI**](/ko/excel/structures) · [**Lipinski · ADME · 3D**](/ko/excel/lipinski-adme)
+* **관련 가이드:** [**SMILES · InChI**](/ko/excel/structures) · [**LogP · TPSA · 3D 복잡도**](/ko/excel/lipinski-adme)
 
 ---
 
@@ -130,17 +130,17 @@ Python이나 RDKit 없이 엑셀 기본 함수 **`SUBSTITUTE`** 만으로 치환
 
 <FeatureMedia id="excel-formula-table" />
 
-1. **드롭다운 1:1 리드 비교 카드:** `B2`와 `C2` 셀에 `Library` 시트 화합물명 드롭다운을 두고, `=XLOOKUP(B2, Library!$A:$A, Library!$C:$C)` 로 라이브 구조식 셀을 불러온 뒤 `=SMILES.SIMILARITY(B3, C3)` 및 `ΔMW` / `ΔLogP` 비교 행을 연결합니다.
+1. **드롭다운 1:1 리드 비교 카드:** `B2`와 `C2` 셀에 `Library` 시트 화합물명 드롭다운을 두고, `=XLOOKUP(B2, Library!$A:$A, Library!$C:$C)` 로 라이브 구조식 셀을 불러온 뒤 `=SMILES.MATCH(B3, Library!$B$1)` 및 `ΔMW` / `ΔLogP` 비교 행을 연결합니다.
 2. **실시간 조건별 `FILTER` 보드:** 조건을 만족하는 후보만 구조식 그림과 함께 자동 추출할 수 있습니다:
    ```text
-   =FILTER(Library!A2:F200, (Library!E2:E200="PASS")*(Library!F2:F200<=90))
+   =FILTER(Library!A2:F200, (Library!E2:E200<=4.0)*(Library!F2:F200<=90))
    ```
 
 ::: info Microsoft 365 / Excel 2024+ 전용 기능
 `XLOOKUP` · `FILTER` 로 구조식 그림까지 이동시키는 기능은 네이티브 인셀 이미지(`=SMILES2IMG`) 환경에서 동작하며, 구버전 `.FLOAT` 도형에는 적용되지 않습니다.
 :::
 
-* **관련 가이드:** [**SMILES · InChI**](/ko/excel/structures) · [**부분구조 · 유사도 (SAR)**](/ko/excel/sar)
+* **관련 가이드:** [**SMILES · InChI**](/ko/excel/structures) · [**부분구조 검색 (SAR)**](/ko/excel/sar)
 
 ---
 

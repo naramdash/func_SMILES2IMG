@@ -11,7 +11,7 @@ Turn any PowerPoint slide into an interactive 3D structural biology showcase: fe
    If a slide TextBox already displays a 4-character PDB ID like `1CRN` or `6LU7` (or a local `.pdb`/`.cif` path), select it **before** clicking **`[3D Structure (Mol*)]`**—Mol\* loads that entry automatically on startup.
    :::
 2. Click **`[SMILES]` ➔ `[3D Structure (Mol*)]`** on the PowerPoint ribbon (or right-click ➔ **`Chemical Structure` ➔ `3D Structure (Mol*)...`**).
-3. Type a 4-character PDB ID (`1CRN`, `4HHB`, `6LU7`, `1BNA`) and click **`Fetch`**, or click **`Open File...`** to load local `.pdb`, `.cif`, `.bcif`, `.sdf`, `.mol`, or `.mol2` structures offline.
+3. Type a 4-character PDB ID (`1CRN`, `4HHB`, `6LU7`, `1BNA`) and click **`Fetch`**, or click **`Open File...`** to load local `.pdb`, `.cif`, `.bcif`, `.ent`, `.mol`, `.sdf`, `.molj`, or `.molx` structures offline.
 4. Style **Cartoon**, **Surface**, or **Ball & Stick** ligand pockets, choose your output mode on the top toolbar, and press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (**`Apply to Slide`**):
 
 | Mol\* Output Mode | How It Works on Slides | Best Slide Use Case |

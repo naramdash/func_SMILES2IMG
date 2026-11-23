@@ -24,19 +24,19 @@ features:
     link: /excel/
   - icon:
       src: /icons/pill.svg
-      alt: Properties & Lipinski Drug-Likeness
+      alt: Physicochemical & 3D Complexity Descriptors
       width: '28'
       height: '28'
-    title: "Properties & Lipinski Ro5"
-    details: "Calculate Molecular Weight, Formula, Exact Mass, LogP, TPSA, and Lipinski Rule of 5 locally across hundreds of rows."
+    title: "Physicochemical & 3D Descriptors"
+    details: "Calculate Molecular Weight, Formula, Exact Mass, LogP, TPSA, Heavy Atoms, Rings, and Fsp3 locally across hundreds of rows."
     link: /excel/properties
   - icon:
       src: /icons/database.svg
-      alt: Conversion, SAR Screening & SDF Database
+      alt: Conversion, SAR Screening & SDF Import
       width: '28'
       height: '28'
-    title: "Conversion, SAR & .sdf I/O"
-    details: "Convert between Name, CAS, SMILES, and InChIKey, run substructure/similarity screening, or import/export .sdf files."
+    title: "Conversion, SAR & .sdf Import"
+    details: "Convert between Name, CAS, SMILES, KET, InChI, and InChIKey, run SMARTS substructure screening, or import .sdf libraries."
     link: /excel/formulas
   - icon:
       src: /icons/excel.svg
@@ -44,7 +44,7 @@ features:
       width: '28'
       height: '28'
     title: "Microsoft Excel"
-    details: "In-cell formulas, 40 chemical functions, double-click 2D editing, and full support for Excel 365 & 2016–2021."
+    details: "In-cell formulas, 49 chemical functions with SMILES/InChI/KET parity, double-click 2D editing, and Excel 2016–365 support."
     link: /excel/
   - icon:
       src: /icons/word.svg

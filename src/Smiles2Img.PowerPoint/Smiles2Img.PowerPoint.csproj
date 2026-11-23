@@ -4,6 +4,7 @@
     <AssemblyName>Smiles2Img.PowerPoint</AssemblyName>
     <RootNamespace>Smiles2Img.PowerPoint</RootNamespace>
     <Platforms>AnyCPU</Platforms>
+    <Description>Chemical structure renderer, Ketcher 2D editor, Mol* 3D viewer, and slide styling tools for PowerPoint.</Description>
     <NoWarn>$(NoWarn);1762</NoWarn>
   </PropertyGroup>
 

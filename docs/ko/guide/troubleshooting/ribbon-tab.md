@@ -20,7 +20,7 @@
 
 ## 3. 활성 추가 기능 체크 상태 확인
 
-* **Microsoft Excel:** **파일** ➔ **옵션** ➔ **추가 기능** ➔ **관리: Excel 추가 기능** ➔ **이동...** 버튼을 눌러 `func_SMILES2IMG` (`Smiles2Img.Excel-AddIn64-packed.xll` 등)가 체크되어 있는지 확인합니다.
+* **Microsoft Excel:** **파일** ➔ **옵션** ➔ **추가 기능** ➔ **관리: Excel 추가 기능** ➔ **이동...** 버튼을 눌러 `func_SMILES2IMG` (`Smiles2Img-AddIn64-packed.xll` / `Smiles2Img-AddIn-packed.xll`)가 체크되어 있는지 확인합니다.
 * **Microsoft Word / PowerPoint:** **파일** ➔ **옵션** ➔ **추가 기능** ➔ **관리: COM 추가 기능** ➔ **이동...** 버튼을 눌러 `func_SMILES2IMG`가 체크되어 있는지 확인합니다.
 
 ## 4. 10초 만에 레지스트리 및 파일 복구

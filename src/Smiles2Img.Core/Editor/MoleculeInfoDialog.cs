@@ -56,7 +56,9 @@ public sealed class MoleculeInfoDialog : Form
             ? "Reaction Structure (Indigo Engine)"
             : (_info.IsMacromolecule
                 ? $"{_info.IupacName}  ·  Macromolecular Complex"
-                : $"{_info.Formula}  ·  MW {_info.MolecularWeight:F2} g/mol  ·  Lipinski: {(_info.PassesLipinski ? "Pass" : "Violation")}");
+                : (_info.HasQueryOrDummyAtoms
+                    ? "Query / R-group Structure"
+                    : $"{_info.Formula}  ·  MW {_info.MolecularWeight:F2} g/mol  ·  LogP {_info.LogP:F2}  ·  TPSA {_info.Tpsa:F1} Å²"));
 
         PictureBox? picPreview = null;
         _previewImage = TryRenderPreview(_info);
@@ -229,16 +231,12 @@ public sealed class MoleculeInfoDialog : Form
                 if (_info.ExactMass > 0)
                     AddPropertyRow("Monoisotopic Mass", $"{_info.ExactMass:F4}", _info.ExactMass.ToString("F4"));
                 AddPropertyRow("LogP / TPSA", $"LogP: {_info.LogP:F2}   |   TPSA: {_info.Tpsa:F1} Å²", $"LogP: {_info.LogP:F2}, TPSA: {_info.Tpsa:F1}");
-                var lipinskiStatus = _info.PassesLipinski ? "Pass" : "Violation";
-                AddPropertyRow("Lipinski Rule of 5",
-                    $"{lipinskiStatus} (HBD: {_info.HBondDonors}, HBA: {_info.HBondAcceptors}, RotBonds: {_info.RotatableBonds})",
-                    $"{lipinskiStatus} (HBD={_info.HBondDonors}, HBA={_info.HBondAcceptors}, RotBonds={_info.RotatableBonds})");
                 AddPropertyRow("Rings & Aromaticity",
                     $"Rings: {_info.RingCount} (Aromatic: {_info.AromaticRingCount})   |   Heavy Atoms: {_info.HeavyAtomCount}",
                     $"Rings={_info.RingCount}, AromaticRings={_info.AromaticRingCount}, HeavyAtoms={_info.HeavyAtomCount}");
                 AddPropertyRow("3D Complexity (Fsp3)",
-                    $"Fsp3: {_info.Fsp3:F2}   |   Chiral Centers: {_info.ChiralCenters}",
-                    $"Fsp3={_info.Fsp3:F2}, ChiralCenters={_info.ChiralCenters}");
+                    $"Fsp3: {_info.Fsp3:F2}",
+                    _info.Fsp3.ToString("F2"));
             }
         }
 

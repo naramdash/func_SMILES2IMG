@@ -23,7 +23,7 @@ $coreDll = (Resolve-Path (Join-Path $repoRoot 'dist\x64\Word\Smiles2Img.Core.dll
 [System.Reflection.Assembly]::LoadFrom($coreDll) | Out-Null
 [Smiles2Img.Rendering.NativeIndigo]::Initialize((Split-Path $coreDll -Parent))
 
-$addinVersion = '1.8.1'
+$addinVersion = '1.9.0'
 try {
     $propsXml = [xml](Get-Content (Join-Path $repoRoot 'Directory.Build.props') -Raw)
     if ($propsXml.Project.PropertyGroup.Version) { $addinVersion = [string]$propsXml.Project.PropertyGroup.Version }
@@ -294,7 +294,7 @@ function Get-CompoundProps([string]$name, [string]$smiles) {
         MW       = [Math]::Round($info.MolecularWeight, 2)
         LogP     = [Math]::Round($info.LogP, 2)
         TPSA     = [Math]::Round($info.Tpsa, 1)
-        Lipinski = if ($info.PassesLipinski) { 'PASS (0 viol.)' } else { 'FAIL' }
+        Stereo3D = ("{0:F2}" -f $info.Fsp3)
     }
 }
 
@@ -370,7 +370,7 @@ try {
         @('Insert Structure', 'Paste Structure',         'Ribbon or Right-Click',       'Converts selected text (SMILES, InChI, KET, or compound name) or clipboard into an inline structure in 0.1s.'),
         @('Structure Tools',  'Copy SMILES / InChI / KET','Ribbon or Right-Click',      'Extracts the exact SMILES, IUPAC InChI, or lossless KET JSON from any selected structure picture.'),
         @('Structure Tools',  'Copy SVG',                'Ribbon or Right-Click',       'Copies lossless vector SVG graphics directly to clipboard for Adobe Illustrator or Inkscape.'),
-        @('Structure Tools',  'Molecule Info',           'Ribbon or Right-Click',       'Displays 17 descriptors + 2D preview; copies Summary, 17-col TSV, Multi-Line List, Markdown, or JSON.'),
+                @('Structure Tools',  'Molecule Info',           'Ribbon or Right-Click',       'Displays 12 descriptors + 2D preview; copies Summary, 12-col TSV, Multi-Line List, Markdown, or JSON.'),
         @('Structure Tools',  'Batch Style',             'Ribbon -> Batch Style',       '1-click document-wide restyle: Standard Color, Publication B&W (ACS), White Background, or Dark Mode.'),
         @('Right-Click Menu', 'Chemical Structure > ...','Right-Click Text / Picture',  '3-level cascading menu exposing Insert/Edit, Mol* 3D, Paste Structure, Copy SVG, and Copy Molecule Info.'),
         @('About',            'Online Docs · About',     'Ribbon -> [SMILES]',          'Online Docs opens /word/ guides in browser; About shows version, engines, licenses, and updates.')
@@ -411,13 +411,13 @@ try {
     # =========================================================================
     Write-Host '[3/6] Building Page 3: Chapter 2 — Publication Compound Summary Table...' -ForegroundColor Yellow
     Add-ChapterHeading $doc '2.' 'Real-World Use Case: Journal Compound Summary & SAR Table' $true
-    Add-Para $doc 'Medicinal chemistry manuscripts require crisp 2D structures aligned beside exact molecular formulas, weights, LogP/TPSA, and Lipinski Rule of 5 assessments. The table below uses Fixed Column Width (Right-Click Table -> AutoFit -> Fixed Column Width) so editing any structure in place never distorts adjacent text columns.' 10 $false $false 0x262626 2 8 | Out-Null
+    Add-Para $doc 'Medicinal chemistry manuscripts require crisp 2D structures aligned beside exact molecular formulas, weights, LogP/TPSA, and 3D complexity (Fsp3). The table below uses Fixed Column Width (Right-Click Table -> AutoFit -> Fixed Column Width) so editing any structure in place never distorts adjacent text columns.' 10 $false $false 0x262626 2 8 | Out-Null
 
-    $sarHeaders = @('Compound', '2D Structure (Double-Click)', 'Formula', 'MW (g/mol)', 'LogP / TPSA', 'Lipinski Ro5')
+    $sarHeaders = @('Compound', '2D Structure (Double-Click)', 'Formula', 'MW (g/mol)', 'LogP / TPSA', 'Fsp3')
     $sarWidths  = @(78, 146, 62, 66, 82, 70)
     $sarRows = @()
     foreach ($c in $compList) {
-        $sarRows += ,@($c.Name, '', $c.Formula, ("{0:F2}" -f $c.MW), ("{0:F2} / {1:F1}" -f $c.LogP, $c.TPSA), $c.Lipinski)
+        $sarRows += ,@($c.Name, '', $c.Formula, ("{0:F2}" -f $c.MW), ("{0:F2} / {1:F1}" -f $c.LogP, $c.TPSA), $c.Stereo3D)
     }
     $sarTbl = Add-StyledWordTable $doc $sarHeaders $sarRows $sarWidths 0x1E3A8A
     for ($i = 0; $i -lt $compList.Count; $i++) {
@@ -431,8 +431,8 @@ try {
         '1. Click ANY structure inside Table 2 above (e.g., Ibuprofen), then click [SMILES] -> [Molecule Info] (or Right-Click -> Chemical Structure -> Copy Molecule Info).',
         '2. Try these 3 time-saving copy formats:',
         '   • Copy All Summary (Text)          — pastes a clean 2-row Header + Value summary table.',
-        '   • Copy as Excel Row (TSV Columns)  — pastes all 17 descriptors across tab-separated columns.',
-        '   • Detailed Molecule Info Window... — inspect all 17 descriptors with a live 2D thumbnail, double-click any row to copy a single value, or export Markdown / JSON.'
+        '   • Copy as Excel Row (TSV Columns)  — pastes all 12 descriptors across tab-separated columns.',
+        '   • Detailed Molecule Info Window... — inspect all 12 descriptors with a live 2D thumbnail, double-click any row to copy a single value, or export Markdown / JSON.'
     ) 0x6E760F 0xF4FBF9
 
     # =========================================================================

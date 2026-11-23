@@ -144,8 +144,8 @@ internal static class WebView2EditorE2ETests
             var rowLabels = new List<string>();
             for (int i = 0; i < grid!.Rows.Count; i++)
                 rowLabels.Add(Convert.ToString(grid.Rows[i].Cells[1].Value) ?? "");
-            Check(rowLabels.Contains("Rings & Aromaticity") && rowLabels.Contains("3D Complexity (Fsp3)") && rowLabels.Contains("Lipinski Rule of 5"),
-                "Small-molecule MoleculeInfoDialog displays Rings & Aromaticity, 3D Complexity (Fsp3), and Lipinski Rule of 5 rows");
+            Check(rowLabels.Contains("LogP / TPSA") && rowLabels.Contains("Rings & Aromaticity") && rowLabels.Contains("3D Complexity (Fsp3)") && !rowLabels.Contains("Lipinski Rule of 5"),
+                "Small-molecule MoleculeInfoDialog displays LogP / TPSA, Rings & Aromaticity, and 3D Complexity (Fsp3) rows without Lipinski");
 
             // Render entire dialog (including custom CellPainting vector icons & action pills) to bitmap
             using (var bmp = new Bitmap(dlg.Width, dlg.Height))
@@ -163,7 +163,7 @@ internal static class WebView2EditorE2ETests
             Check(btn != null, "MoleculeInfoDialog Copy All button found");
             btn!.PerformClick();
             Application.DoEvents();
-            Check(SafeClipboard.GetText()?.Contains("Heavy Atoms") == true, "MoleculeInfoDialog live button click copied 17-col TSV with header");
+            Check(SafeClipboard.GetText()?.Contains("Heavy Atoms") == true && !SafeClipboard.GetText()!.Contains("Lipinski") && !SafeClipboard.GetText()!.Contains("Chiral"), "MoleculeInfoDialog live button click copied 12-col TSV with header");
 
             dlg.Close();
         }
@@ -181,7 +181,7 @@ internal static class WebView2EditorE2ETests
             var rowLabels = new List<string>();
             for (int i = 0; i < grid.Rows.Count; i++)
                 rowLabels.Add(Convert.ToString(grid.Rows[i].Cells[1].Value) ?? "");
-            Check(!rowLabels.Contains("Lipinski Rule of 5") && !rowLabels.Contains("3D Complexity (Fsp3)"),
+            Check(!rowLabels.Contains("LogP / TPSA") && !rowLabels.Contains("3D Complexity (Fsp3)"),
                 "Macromolecule MoleculeInfoDialog suppresses small-molecule-only rows");
 
             using (var bmp = new Bitmap(macroDlg.Width, macroDlg.Height))

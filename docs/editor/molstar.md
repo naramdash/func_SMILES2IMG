@@ -26,7 +26,7 @@ Type a 4-letter PDB code (e.g., `1CRN`, `4HHB`, `6LU7`) or open a local structur
 * 💡 **Excel Shortcut:** If your selected Excel cell already contains a 4-letter PDB code like `1CRN` or `4HHB`, opening Mol\* loads that structure automatically!
 
 ### Step 2. Load & Style Your Structure
-1. Enter a **4-character PDB ID** in the top bar and click **`Fetch`**, or click **`Open File...`** to load a local `.pdb`, `.cif`, `.bcif`, `.sdf`, `.mol`, or `.mol2` file.
+1. Enter a **4-character PDB ID** in the top bar and click **`Fetch`**, or click **`Open File...`** to load a local `.pdb`, `.cif`, `.bcif`, `.ent`, `.mol`, `.sdf`, `.molj`, or `.molx` file.
 2. Customize the visual style:
    * **Cartoon / Ribbon:** Highlight α-helices, β-sheets, and loops.
    * **Ball & Stick / Surface:** Inspect binding pockets, active-site residues, and cofactors.

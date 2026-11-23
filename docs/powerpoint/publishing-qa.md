@@ -18,8 +18,8 @@ Standard PNG or JPG captures look fine on a laptop screen, then turn jagged and 
 
 In full-screen Slide Show mode, PowerPoint hides the Ribbon and right-click add-in menus. Use this realistic two-step Q&A workflow instead:
 
-* **Before Stepping on Stage (Zero-Switch Prep):** For key candidates, select each structure shape ➔ click **`[SMILES]` ➔ `[Molecule Info]` ➔ `[Copy as Multi-Line List]`**, and paste Formula, Exact Mass, LogP, TPSA, `Fsp3`, and Lipinski status straight into **Speaker Notes** (visible only to you in Presenter View).
-* **During Deep-Dive Q&A / Group Meetings:** Press <kbd>Esc</kbd> to return to Normal view, click the structure (or highlight any SMILES/name text), and open **`[Molecule Info]` ➔ `[Detailed Molecule Info Window...]`** to display all 17 descriptors with a clean 2D preview—double-click any row to copy a single number. *(See [Style & Export Reference](/editor/publishing) for all 5 copy formats.)*
+* **Before Stepping on Stage (Zero-Switch Prep):** For key candidates, select each structure shape ➔ click **`[SMILES]` ➔ `[Molecule Info]` ➔ `[Copy as Multi-Line List]`**, and paste Formula, Exact Mass, LogP, TPSA, and `Fsp3` straight into **Speaker Notes** (visible only to you in Presenter View).
+* **During Deep-Dive Q&A / Group Meetings:** Press <kbd>Esc</kbd> to return to Normal view, click the structure (or highlight any SMILES/name text), and open **`[Molecule Info]` ➔ `[Detailed Molecule Info Window...]`** to display all 12 descriptors with a clean 2D preview—double-click any row to copy a single number. *(See [Style & Export Reference](/editor/publishing) for all 5 copy formats.)*
 
 ### Step 3: Verify Podium PC, macOS & PDF Handouts
 

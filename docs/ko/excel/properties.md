@@ -24,7 +24,7 @@
 | **화학식 (Hill Formula)** | `=SMILES2FORMULA(A2)` | `=INCHI2FORMULA(A2)` · `=KET2FORMULA(A2)` | `C9H8O4` | **0ms 오프라인** · 표준 힐 표기법 (`String`) |
 | **분자량 (MW)** | `=SMILES2MW(A2)` | `=INCHI2MW(A2)` · `=KET2MW(A2)` | `180.16` | **0ms 오프라인** · 사칙연산 가능한 실수 `Double` (g/mol) |
 | **정밀 질량 (Exact Mass)** | `=SMILES2EXACTMASS(A2)` | `=INCHI2EXACTMASS(A2)` · `=KET2EXACTMASS(A2)` | `180.0423` | **0ms 오프라인** · 단일동위원소 질량 `Double` (Da, 소수 4자리) |
-| **물질 일반명 (Name)** | `=SMILES2NAME(A2)` | `=INCHI2NAME(A2)` · `=KET2NAME(A2)` | `Aspirin` | PubChem / IUPAC 조회 + 로컬 영구 캐시 (`String`) |
+| **물질 일반명 (Name)** | `=SMILES2NAME(A2)` | `=INCHI2NAME(A2)` · `=KET2NAME(A2)` | `Aspirin` | 내장 사전 0ms + PubChem 조회 (로컬 30일 캐시, `String`) |
 
 ## 2. 실전 템플릿 ①: 유기 합성 당량(ELN) 시약 칭량 계산기
 
@@ -49,8 +49,14 @@
 | **`[M + Na]+`** | `=ROUND(SMILES2EXACTMASS(A2) + 22.989218, 4)` | `203.0315` |
 | **`[M - H]-`** *(ESI 음이온)* | `=ROUND(SMILES2EXACTMASS(A2) - 1.007276, 4)` | `179.0350` |
 
+::: info 염(Salt) · 동위원소 · 비분자 입력 처리
+* **염 및 짝이온 (Salt / Counterion):** `CN(C)C(=N)NC(=N)N.Cl` 또는 `[Na+].CC(=O)[O-]` 같은 다성분 염은 그려진 전체 조성(짝이온 포함)을 기준으로 분자량·화학식·LogP·TPSA가 계산됩니다.
+* **동위원소 치환 (`[2H]`, `[13CH3]`):** `MW`와 `Exact Mass`는 동위원소 질량을 정확히 반영해 계산되며, `=SMILES2FORMULA`는 표준 Hill 표기법(예: DMSO-d₆ ➔ `C2H6OS`)을 따릅니다.
+* **쿼리 R-기 & 반응식 가드:** 와일드카드·R-기(`*`, `[R1]`)나 반응식(`>>`)을 단일 분자 스칼라 물성 함수에 전달하면 잘못된 수치를 내지 않고 `#N/A`를 반환합니다.
+:::
+
 ## 관련 가이드
 
-- [**Lipinski · ADME · 3D**](/ko/excel/lipinski-adme) — 경구 흡수성, CNS BBB 기준, 3D 복잡도(`Fsp3`) 및 `IF`/`AND` 선별식
+- [**LogP · TPSA · 3D**](/ko/excel/lipinski-adme) — Crippen `LogP`, Ertl `TPSA`, 고리 수, 3D 복잡도(`Fsp3`) 및 `IF`/`AND` 선별식
 - [**표기법 변환 · InChIKey**](/ko/excel/data-sdf) — 시약명·CAS·표준 SMILES·InChIKey 상호 변환
-- [**예제 파일 (.xlsx)**](/ko/excel/playbook) — `2. Properties & Lipinski` · `7. Real-World Workflows` 탭에서 라이브 템플릿 복사
+- [**예제 파일 (.xlsx)**](/ko/excel/playbook) — `2. Properties & 3D` · `7. Real-World Workflows` 탭에서 라이브 템플릿 복사

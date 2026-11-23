@@ -447,39 +447,47 @@ public static partial class PowerPointStructureManager
             }
             catch { }
 
+            var hwnd = GetHwnd(app);
             GetSelectedShapeOrText(app, out var selectedShape, out var selectedText);
             if (!string.IsNullOrWhiteSpace(selectedText) &&
-                MoleculeActionHelper.TryRenderQuickInsertInput(selectedText, RenderOptions.Default, out var selPng, out var selKet, out var selSmiles) &&
-                selPng != null)
+                MoleculeActionHelper.TryResolveQuickInsertInput(selectedText, RenderOptions.Default, out var selRes) &&
+                selRes != null && selRes.PngBytes != null && selRes.PngBytes.Length > 0)
             {
+                if (!MoleculeActionHelper.ConfirmQuickInsertIfNeeded(selRes, hwnd))
+                    return;
+
                 if (isShapeSelection && IsReplaceableTextShape(selectedShape))
                 {
                     var (slideWidth, slideHeight) = GetSlideDimensions(app);
                     var (left, top, width, height) = StructureMetadata.FitTextBoxReplacementBounds(
                         selectedShape!.Left, selectedShape.Top, selectedShape.Width, selectedShape.Height,
-                        slideWidth, slideHeight, selPng);
+                        slideWidth, slideHeight, selRes.PngBytes);
                     selectedShape.Delete();
-                    InsertMoleculeAsPictureAt(slide, selKet, selSmiles ?? "", selPng, left, top, width, height);
+                    InsertMoleculeAsPictureAt(slide, selRes.Ket, selRes.Smiles ?? "", selRes.PngBytes, left, top, width, height);
                     return;
                 }
 
-                InsertMoleculeAsPicture(app, slide, selKet, selSmiles ?? "", selPng);
+                InsertMoleculeAsPicture(app, slide, selRes.Ket, selRes.Smiles ?? "", selRes.PngBytes);
                 return;
             }
 
             if (SafeClipboard.ContainsText())
             {
                 var clipText = SafeClipboard.GetText()?.Trim();
-                if (MoleculeActionHelper.TryRenderQuickInsertInput(clipText, RenderOptions.Default, out var clipPng, out var clipKet, out var clipSmiles) && clipPng != null)
+                if (MoleculeActionHelper.TryResolveQuickInsertInput(clipText, RenderOptions.Default, out var clipRes) &&
+                    clipRes != null && clipRes.PngBytes != null && clipRes.PngBytes.Length > 0)
                 {
-                    InsertMoleculeAsPicture(app, slide, clipKet, clipSmiles ?? "", clipPng);
+                    if (!MoleculeActionHelper.ConfirmQuickInsertIfNeeded(clipRes, hwnd))
+                        return;
+
+                    InsertMoleculeAsPicture(app, slide, clipRes.Ket, clipRes.Smiles ?? "", clipRes.PngBytes);
                     return;
                 }
             }
 
             DialogHelper.ShowInfo(
-                "No valid SMILES, InChI, KET, or chemical name/CAS found in clipboard or selected text.\nPlease select a TextBox or copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) or compound name (e.g. Aspirin) first.",
-                GetHwnd(app));
+                "No valid SMILES, InChI, KET, or chemical name/CAS found in clipboard or selected text.\nPlease select a TextBox or copy a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O), CAS number (e.g. 50-78-2), or compound name (e.g. Aspirin) first.",
+                hwnd);
         }
         catch (Exception ex)
         {

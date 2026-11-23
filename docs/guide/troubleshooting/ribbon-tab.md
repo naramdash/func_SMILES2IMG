@@ -20,7 +20,7 @@ If Office crashed previously, it may place an add-in into its **Disabled Items**
 
 ## 3. Verify the Active Add-In Checkbox
 
-* **Microsoft Excel:** Open **File** ➔ **Options** ➔ **Add-ins** ➔ **Manage: Excel Add-ins** ➔ **Go...**, and make sure **`func_SMILES2IMG`** (`Smiles2Img.Excel-AddIn64-packed.xll` or `...AddIn-packed.xll`) is checked.
+* **Microsoft Excel:** Open **File** ➔ **Options** ➔ **Add-ins** ➔ **Manage: Excel Add-ins** ➔ **Go...**, and make sure **`func_SMILES2IMG`** (`Smiles2Img-AddIn64-packed.xll` or `Smiles2Img-AddIn-packed.xll`) is checked.
 * **Microsoft Word / PowerPoint:** Open **File** ➔ **Options** ➔ **Add-ins** ➔ **Manage: COM Add-ins** ➔ **Go...**, and make sure **`func_SMILES2IMG`** is checked.
 
 ## 4. Repair Registry & Files in 10 Seconds

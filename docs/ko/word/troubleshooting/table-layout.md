@@ -28,5 +28,5 @@ Word 본문이나 화합물 표 안에서 인라인 구조식의 윗부분이 �
 ## 관련 가이드
 
 - [**더블클릭 · 재편집**](/ko/word/troubleshooting/double-click) — 더블클릭 시 그림 서식 창이 열릴 때 대체 텍스트 점검 및 복구
-- [**2. 화합물 표(SAR) & 실험 물성(SI)**](/ko/word/tables-properties) — 깨지지 않는 고정 열 너비 SAR 표 구성 및 17종 물성 복사
+- [**2. 화합물 표(SAR) & 실험 물성(SI)**](/ko/word/tables-properties) — 깨지지 않는 고정 열 너비 SAR 표 구성 및 12종 물성 복사
 - [**4. 투고 마감 · 벡터 SVG · 공동저자 공유**](/ko/word/publishing) — 학술지 투고 전 문서 전체 ACS 흑백 통일 및 SVG 벡터 내보내기

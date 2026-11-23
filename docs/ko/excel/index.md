@@ -1,11 +1,11 @@
 # Excel 개요
 
-Microsoft Excel에서 **`func_SMILES2IMG`** 를 사용하면 간단한 셀 수식으로 수백 행의 2D 화학 구조식을 렌더링하고, 분자 물성·Lipinski 약물성·SMARTS 부분구조 검색을 0ms 지연 없이 로컬에서 계산하며, `.sdf` 화학 데이터베이스를 원클릭으로 가져오고 내보낼 수 있습니다.
+Microsoft Excel에서 **`func_SMILES2IMG`** 를 사용하면 간단한 셀 수식으로 수백 행의 2D 화학 구조식을 렌더링하고, 분자 물성·LogP/TPSA·3D 복잡도·SMARTS 부분구조 검색을 0ms 지연 없이 로컬에서 계산하며, `.sdf` 화학 데이터베이스를 원클릭으로 가져올 수 있습니다.
 
 <FeatureMedia id="excel-overview" />
 
 ::: tip 10개 탭 자체 완결형 Excel Playbook 다운로드
-웹 문서 없이 엑셀 파일 하나만으로 40개 전체 함수, 실전 합성 당량·Hit-to-Lead 템플릿, 오프라인 함수 사전까지 바로 실습해 보세요:  
+웹 문서 없이 엑셀 파일 하나만으로 49개 전체 함수, 실전 합성 당량·Hit-to-Lead 템플릿, 오프라인 함수 사전까지 바로 실습해 보세요:  
 <a href="/func_SMILES2IMG/examples/func_SMILES2IMG_Excel_Playbook.xlsx" download="func_SMILES2IMG_Excel_Playbook.xlsx"><strong>func_SMILES2IMG_Excel_Playbook.xlsx</strong></a> · [10개 탭 구성 및 추천 실습 코스 →](/ko/excel/playbook)
 :::
 
@@ -42,8 +42,8 @@ Microsoft Excel에서 **`func_SMILES2IMG`** 를 사용하면 간단한 셀 수�
 
 | 섹션 | 세부 페이지 | 핵심 수식 · 리본 도구 |
 | :--- | :--- | :--- |
-| **시작하기** | [**예제 파일 (.xlsx)**](/ko/excel/playbook) · [**활용 사례**](/ko/excel/use-cases) · [**40개 함수 전체 개요**](/ko/excel/formulas) | `=<입력>2<출력>` 통합 규격, 6가지 실전 시나리오 & 10개 탭 실습 파일 |
+| **시작하기** | [**예제 파일 (.xlsx)**](/ko/excel/playbook) · [**활용 사례**](/ko/excel/use-cases) · [**49개 함수 전체 개요**](/ko/excel/formulas) | `=<입력>2<출력>` 통합 규격, 6가지 실전 시나리오 & 10개 탭 실습 파일 |
 | **구조식 이미지** | [**SMILES · InChI**](/ko/excel/structures) · [**시약명 · 용매 · CAS**](/ko/excel/name-cas) · [**합성 반응식 (KET)**](/ko/excel/reactions) · [**스타일 · 하이라이트**](/ko/excel/styles-reactions) | `=SMILES2IMG`, `=NAME2IMG`, `=INCHI2IMG`, `=KET2IMG`, `.FLOAT` |
-| **물성 · 약물성** | [**화학식 · 분자량 · 정밀질량**](/ko/excel/properties) · [**Lipinski · ADME · 3D**](/ko/excel/lipinski-adme) | `=SMILES2MW`, `=SMILES2EXACTMASS`, `=SMILES2LIPINSKI`, `=SMILES2FSP3` |
-| **SAR · 식별자** | [**부분구조 · 유사도 검색**](/ko/excel/sar) · [**표기법 변환 · InChIKey**](/ko/excel/data-sdf) | `=SMILES.MATCH`, `=SMILES.SIMILARITY`, `=NAME2SMILES`, `=SMILES2INCHIKEY` |
-| **시트 도구 · 3D** | [**SDF 파일 입출력**](/ko/excel/sdf) · [**일괄 스타일 · TSV · 3D**](/ko/excel/tools-export) · [**리본 · 우클릭 메뉴**](/ko/excel/ribbon) | `[SDF File]`, `[Batch Style]`, `[Copy TSV]`, `[3D Structure (Mol*)]` |
+| **물성 · 3D 지표** | [**화학식 · 분자량 · 정밀질량**](/ko/excel/properties) · [**LogP · TPSA · 3D**](/ko/excel/lipinski-adme) | `=SMILES2MW`, `=INCHI2LOGP`, `=KET2TPSA`, `=SMILES2FSP3` |
+| **SAR · 식별자** | [**부분구조 검색 (SMARTS)**](/ko/excel/sar) · [**표기법 변환 · InChIKey**](/ko/excel/data-sdf) | `=SMILES.MATCH`, `=INCHI.MATCH`, `=KET2SMILES`, `=SMILES2INCHIKEY` |
+| **시트 도구 · 3D** | [**SDF 파일 가져오기**](/ko/excel/sdf) · [**일괄 스타일 · TSV · 3D**](/ko/excel/tools-export) · [**리본 · 우클릭 메뉴**](/ko/excel/ribbon) | `[Import SDF]`, `[Batch Style]`, `[Copy TSV]`, `[3D Structure (Mol*)]` |

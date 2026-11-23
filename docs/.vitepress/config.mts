@@ -79,11 +79,11 @@ export default defineConfig({
           { text: navApp('powerpoint', 'PowerPoint'), link: '/powerpoint/', activeMatch: '^/powerpoint/' },
           { text: 'Editor', link: '/editor/', activeMatch: '^/editor/' },
           {
-            text: 'v1.8.1',
+            text: 'v1.9.0',
             items: [
               {
-                text: 'Release Notes (v1.8.1)',
-                link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.8.1'
+                text: 'Release Notes (v1.9.0)',
+                link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.9.0'
               },
               {
                 text: 'All Releases',
@@ -137,7 +137,7 @@ export default defineConfig({
                 { text: 'Overview', link: '/excel/' },
                 { text: 'Playbook (.xlsx)', link: '/excel/playbook' },
                 { text: 'Use Cases', link: '/excel/use-cases' },
-                { text: 'All 40 Functions', link: '/excel/formulas' }
+                { text: 'All 49 Functions', link: '/excel/formulas' }
               ]
             },
             {
@@ -152,18 +152,18 @@ export default defineConfig({
               ]
             },
             {
-              text: sidebarMathF('Properties & ADME'),
+              text: sidebarMathF('Properties & 3D'),
               collapsed: false,
               items: [
                 { text: 'Formula, MW, Exact Mass', link: '/excel/properties' },
-                { text: 'Lipinski, ADME, 3D', link: '/excel/lipinski-adme' }
+                { text: 'LogP, TPSA & 3D', link: '/excel/lipinski-adme' }
               ]
             },
             {
               text: sidebarMathF('SAR & Identifiers'),
               collapsed: false,
               items: [
-                { text: 'Substructure & Similarity', link: '/excel/sar' },
+                { text: 'Substructure Search', link: '/excel/sar' },
                 { text: 'Identifier Conversion', link: '/excel/data-sdf' }
               ]
             },
@@ -171,7 +171,7 @@ export default defineConfig({
               text: 'Sheet Tools & 3D',
               collapsed: false,
               items: [
-                { text: 'SDF Import & Export', link: '/excel/sdf' },
+                { text: 'SDF Import', link: '/excel/sdf' },
                 { text: 'Batch Style, TSV, 3D', link: '/excel/tools-export' },
                 { text: 'Ribbon & Context Menus', link: '/excel/ribbon' }
               ]
@@ -330,11 +330,11 @@ export default defineConfig({
           { text: navApp('powerpoint', 'PowerPoint'), link: '/ko/powerpoint/', activeMatch: '^/ko/powerpoint/' },
           { text: 'Editor', link: '/ko/editor/', activeMatch: '^/ko/editor/' },
           {
-            text: 'v1.8.1',
+            text: 'v1.9.0',
             items: [
               {
-                text: '최신 릴리스 노트 (v1.8.1)',
-                link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.8.1'
+                text: '최신 릴리스 노트 (v1.9.0)',
+                link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.9.0'
               },
               {
                 text: '전체 버전 릴리스 목록',
@@ -388,7 +388,7 @@ export default defineConfig({
                 { text: '개요', link: '/ko/excel/' },
                 { text: '예제 파일 (.xlsx)', link: '/ko/excel/playbook' },
                 { text: '활용 사례', link: '/ko/excel/use-cases' },
-                { text: '40개 함수 전체 개요', link: '/ko/excel/formulas' }
+                { text: '49개 함수 전체 개요', link: '/ko/excel/formulas' }
               ]
             },
             {
@@ -403,18 +403,18 @@ export default defineConfig({
               ]
             },
             {
-              text: sidebarMathF('물성 · 약물성'),
+              text: sidebarMathF('물성 · 3D 지표'),
               collapsed: false,
               items: [
                 { text: '화학식 · 분자량 · 정밀질량', link: '/ko/excel/properties' },
-                { text: 'Lipinski · ADME · 3D', link: '/ko/excel/lipinski-adme' }
+                { text: 'LogP · TPSA · 3D', link: '/ko/excel/lipinski-adme' }
               ]
             },
             {
               text: sidebarMathF('SAR · 식별자'),
               collapsed: false,
               items: [
-                { text: '부분구조 · 유사도 검색', link: '/ko/excel/sar' },
+                { text: '부분구조 검색 (SMARTS)', link: '/ko/excel/sar' },
                 { text: '표기법 변환 · InChIKey', link: '/ko/excel/data-sdf' }
               ]
             },
@@ -422,7 +422,7 @@ export default defineConfig({
               text: '시트 도구 · 3D',
               collapsed: false,
               items: [
-                { text: 'SDF 파일 입출력', link: '/ko/excel/sdf' },
+                { text: 'SDF 파일 가져오기', link: '/ko/excel/sdf' },
                 { text: '일괄 스타일 · TSV · 3D', link: '/ko/excel/tools-export' },
                 { text: '리본 · 우클릭 메뉴', link: '/ko/excel/ribbon' }
               ]

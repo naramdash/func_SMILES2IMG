@@ -390,6 +390,7 @@ public static class LiveCaptureEngine
         string autoCloseTitleSubstring,
         int holdMsBeforeClose)
     {
+        _modalDone.WaitOne(2500);
         _recordingModal = true;
         _modalDone.Reset();
         LastModalFrameIndex = startIndex;

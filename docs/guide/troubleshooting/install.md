@@ -23,7 +23,7 @@ Files downloaded through a web browser carry a Windows Mark-of-the-Web security 
 ## 3. Corporate Firewall or Offline Workstation
 
 * **Installing Without Direct GitHub Access:** Follow the [Offline Manual ZIP Install](/guide/install#offline-zip) procedure.
-* **What Works Offline:** Core 2D rendering (`=SMILES2IMG`, `=KET2IMG`, `=INCHI2IMG`), all physicochemical/Lipinski/SAR calculations, built-in solvent/drug/CAS dictionary, Ketcher 2D editing, `.sdf` import/export, Batch Style, and SVG copy run 100% locally.
+* **What Works Offline:** Core 2D rendering (`=SMILES2IMG`, `=KET2IMG`, `=INCHI2IMG`), all physicochemical/3D/SAR calculations, built-in solvent/drug/CAS dictionary, Ketcher 2D editing, `.sdf` import, Batch Style, and SVG copy run 100% locally.
 * **What Requires Internet:** Uncached PubChem name/CAS lookups (`=NAME2IMG` for rare compounds), fetching public 4-letter PDB IDs in Mol\*, and clicking **`[Check for Updates]`**.
 
 ## Related Troubleshooting

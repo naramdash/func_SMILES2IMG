@@ -3,7 +3,9 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <AssemblyName>Smiles2Img</AssemblyName>
     <RootNamespace>Smiles2Img</RootNamespace>
-    <ExcelDnaAddInName>SMILES2IMG</ExcelDnaAddInName>
+    <ExcelAddInName>func_SMILES2IMG</ExcelAddInName>
+    <ExcelAddInUseVersionAsOutputVersion>true</ExcelAddInUseVersionAsOutputVersion>
+    <Description>Chemical structure formulas, Ketcher 2D editor, Mol* 3D viewer, and SDF/property tools for Excel.</Description>
     <ExcelDnaCreate32BitAddIn>true</ExcelDnaCreate32BitAddIn>
     <ExcelDnaCreate64BitAddIn>true</ExcelDnaCreate64BitAddIn>
     <ExcelDnaPackNativeLibraryDependencies>false</ExcelDnaPackNativeLibraryDependencies>

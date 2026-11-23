@@ -9,7 +9,7 @@ Every `func_SMILES2IMG` picture embeds a chemical tag inside **Alt Text** (`SMIL
 * **Image came from a screenshot or PDF paste:** Plain bitmaps carry no chemical metadata. Re-insert the molecule using **`[SMILES]` ➔ `[Insert / Edit Structure]`** or **`[Paste Structure]`**.
 * **Alt Text was manually cleared or stripped:** Right-click the image ➔ **View Alt Text** to confirm the `SMILES:`, `KET:`, or `MOLSTAR:` prefix is still present.
 * **Word COM add-in is disabled:** If the **`[SMILES]`** tab is missing from your ribbon as well, inspect **File ➔ Options ➔ Add-ins ➔ COM Add-ins / Disabled Items** ([Missing Ribbon Tab](/guide/troubleshooting/ribbon-tab)).
-* **Floating picture event was temporarily bypassed:** Switch once between text wrapping modes (*Inline* vs. *Square*) or trigger the editor directly from the ribbon.
+* **Floating picture event was temporarily bypassed:** Switch once between text wrapping modes (*Inline* vs. *Square*) or trigger the editor directly from the ribbon. *(Note: double-click interception is scoped to the Word document canvas `_WwG` client area so ribbon or task-pane clicks are never hijacked.)*
 
 ## 2. Sharing With Mac Co-Authors & Preserving Metadata {#sharing}
 

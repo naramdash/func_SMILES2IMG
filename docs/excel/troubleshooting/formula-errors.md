@@ -13,18 +13,20 @@ Excel displays `#NAME?` when it does not recognize the function name:
 
 ## 2. `#VALUE!` Error
 
-Excel displays `#VALUE!` when the formula ran, but the input could not be parsed as a valid chemical structure.
+Excel displays `#VALUE!` when the formula ran, but the input or query string is invalid:
 
-1. **Check Chemical Syntax:** Look for unclosed ring numbers (e.g., `c1ccccc` missing the closing `1`), unmatched parentheses, or stray spaces/line breaks.
-2. **Empty or Merged Cells:** When referencing a merged range, always point to its **top-left cell**.
-3. **Inspect Exact Parser Logs (`Diagnostics`):** Click **`[SMILES]` ➔ `[Diagnostics]`** on the ribbon to read the exact EPAM Indigo parser error message for the failing cell.
+1. **Empty or Over-Limit Input:** Blank/whitespace-only cells and inputs exceeding **16,384 characters** return `#VALUE!`.
+2. **Check Chemical Syntax & Valence:** Look for unclosed ring numbers (e.g., `c1ccccc` missing the closing `1`), unmatched or empty parentheses (`CC(=O`), bad atomic valence (e.g., neutral pentavalent carbon `C(C)(C)(C)(C)C`), non-InChI strings passed to `INCHI2*`, non-KET JSON passed to `KET2*`, or invalid SMARTS patterns in `*.MATCH`.
+3. **Empty or Merged Cells:** When referencing a merged range, always point to its **top-left cell**.
+4. **Inspect Exact Parser Logs (`Diagnostics`):** Click **`[SMILES]` ➔ `[Diagnostics]`** on the ribbon to read the failing formula function name and exact EPAM Indigo parser error message (for example, `SMILES2IMG: Indigo: ...`).
 
-## 3. `#N/A` Shown Momentarily (~0.1s)
+## 3. `#N/A` Status & Guardrails
 
-* **Normal Async Indicator:** When rendering a new structure for the first time—or looking up an uncached compound name/CAS from PubChem—Excel briefly shows `#N/A` and **automatically replaces it** once rendering finishes.
-* **Stuck on `#N/A` for `=NAME2IMG` / `=NAME2SMILES`:** The name may not exist in the built-in offline dictionary or PubChem, or your PC is offline for an uncached lookup. Try a standard IUPAC name, CAS number (`"50-78-2"`), or direct SMILES string.
+* **Brief Async Indicator (~0.1s):** When rendering a structure for the first time—or looking up an uncached compound name/CAS from PubChem—Excel briefly shows `#N/A` and **automatically replaces it** once complete.
+* **Unknown Names & Invalid CAS Numbers:** If a compound name is not in the built-in offline dictionary (or PubChem is unreachable/returns no match), or if a CAS number fails mathematical check-digit validation (e.g., `"50-78-3"`), `=NAME2*` immediately returns `#N/A` without waiting on a failed network call.
+* **Queries & Reactions in Single-Molecule Descriptors:** Passing query atoms / R-groups (`*`) or reaction schemes (`>>`) to single-molecule scalar property functions (`=SMILES2MW`, `=SMILES2LOGP`, `=SMILES2FSP3`, etc.) returns `#N/A` instead of miscomputing a false number.
 
 ## Related Guides
 
 - [**Image Sizing & .FLOAT**](/excel/troubleshooting/image-sizing) — Resize small structure cells cleanly and handle Excel 2016–2021 `.FLOAT` shapes
-- [**All 40 Functions**](/excel/formulas) — Verify exact formula signatures, return data types, and style keywords
+- [**All 49 Functions**](/excel/formulas) — Verify exact formula signatures, return data types, and style keywords

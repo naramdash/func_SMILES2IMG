@@ -191,31 +191,36 @@ public static partial class WordStructureManager
     }
 
     /// <summary>
-    /// Intercepts WM_LBUTTONDBLCLK on floating Word shapes and 3D models whose double-click event
-    /// is otherwise swallowed by Word's Picture/3D Format pane.
+    /// Performs a non-modal selection check inside WH_MOUSE for floating Word shapes and 3D models,
+    /// returning a deferred UI action to execute outside the hook callback.
     /// </summary>
-    public static bool TryHandleFloatingDoubleClick(MSWord.Application app)
+    public static Action? TryPrepareFloatingDoubleClickAction(MSWord.Application app)
     {
-        if (_isDoubleClickHandling) return false;
+        if (_isDoubleClickHandling) return null;
         try
         {
             var sel = app.Selection;
             if (TryGetSelectedGraphic(sel, out var inlineShape, out _, out var altText, out var title) &&
-                inlineShape == null)
+                inlineShape == null &&
+                (StructureMetadata.IsMolstar(altText, title) || !string.IsNullOrEmpty(ExtractStructure(altText, title))))
             {
-                _isDoubleClickHandling = true;
-                try
+                return () =>
                 {
-                    return TryOpenGraphicForDoubleClick(app, altText, title);
-                }
-                finally
-                {
-                    _isDoubleClickHandling = false;
-                }
+                    if (_isDoubleClickHandling) return;
+                    _isDoubleClickHandling = true;
+                    try
+                    {
+                        TryOpenGraphicForDoubleClick(app, altText, title);
+                    }
+                    finally
+                    {
+                        _isDoubleClickHandling = false;
+                    }
+                };
             }
         }
         catch { }
-        return false;
+        return null;
     }
 
     /// <summary>
@@ -382,20 +387,24 @@ public static partial class WordStructureManager
             }
 
             var sel = app.Selection;
+            var hwnd = GetHwnd(app);
             bool TryInsertCandidate(string? raw, bool clearSelection = false)
             {
                 var candidate = CleanWordText(raw);
                 if (candidate == null ||
-                    !MoleculeActionHelper.TryRenderQuickInsertInput(candidate, RenderOptions.Default, out var png, out var ket, out var smiles) ||
-                    png == null)
+                    !MoleculeActionHelper.TryResolveQuickInsertInput(candidate, RenderOptions.Default, out var res) ||
+                    res == null || res.PngBytes == null || res.PngBytes.Length == 0)
                 {
                     return false;
                 }
 
+                if (!MoleculeActionHelper.ConfirmQuickInsertIfNeeded(res, hwnd))
+                    return true; // Handled: user cancelled insertion without modifying selection
+
                 if (clearSelection && sel != null)
                     sel.Text = "";
 
-                InsertMoleculeAsPicture(app, ket, smiles ?? "", png);
+                InsertMoleculeAsPicture(app, res.Ket, res.Smiles ?? "", res.PngBytes);
                 return true;
             }
 
@@ -410,8 +419,8 @@ public static partial class WordStructureManager
                 return;
 
             DialogHelper.ShowInfo(
-                "No valid SMILES, InChI, KET, or chemical name/CAS found in selection or clipboard.\nPlease copy or highlight a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O) or compound name (e.g. Aspirin) first.",
-                GetHwnd(app));
+                "No valid SMILES, InChI, KET, or chemical name/CAS found in selection or clipboard.\nPlease copy or highlight a SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O), CAS number (e.g. 50-78-2), or compound name (e.g. Aspirin) first.",
+                hwnd);
         }
         catch (Exception ex)
         {

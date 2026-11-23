@@ -25,8 +25,8 @@ Native in-cell picture formulas (`=SMILES2IMG`, `=NAME2IMG`, `=KET2IMG`, `=INCHI
 ## 2. How `.FLOAT` Shapes Behave
 
 * Shapes are anchored to their host cell (`xlMoveAndSize`), so resizing row height or column width scales the structure cleanly while keeping aspect ratio locked.
-* All shared `[background]`, `[style]`, and `[transform]` keywords (`"bw"`, `"white"`, `"hl:..."`, `"num stereo"`, `"ink=#HEX"`) work identically to the in-cell formulas.
-* All property, Lipinski, SAR, and conversion formulas (`=SMILES2MW`, `=SMILES2LIPINSKI`, `=SMILES.MATCH`, `=NAME2SMILES`, etc.) return standard Excel numbers/text and work on **every Excel version (2016–365)** without `.FLOAT`.
+* All shared `[background]`, `[style]`, and `[transform]` keywords (`"bw"`, `"white"`, `"hl:..."`, `"num stereo"`, `"ink=#HEX"`, `"rot90"`) work identically to the in-cell formulas.
+* All 41 scalar property, substructure search, and conversion formulas (`=SMILES2MW`, `=SMILES2LOGP`, `=SMILES2TPSA`, `=SMILES.MATCH`, `=NAME2SMILES`, etc.) return standard Excel numbers/text and work on **every Excel version (2016–365)** without `.FLOAT`.
 
 ## Related Guides
 

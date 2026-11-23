@@ -23,7 +23,7 @@ When submitting a paper to a print journal or switching a presentation to a dark
 | **⬛ `Dark Mode (White Ink)`** | Transparent BG + crisp white ink | Dark-themed conference slide decks | `=SMILES2IMG(A2, "trans", "white")` |
 
 ### How Scope Works in Each App
-* **📗 Excel:** Converts all chemical formulas in your highlighted cell range—or across the **entire active worksheet** if only a single cell is selected.
+* **📗 Excel:** Converts all chemical formulas in your highlighted cell range—or across the **entire active worksheet** if only a single cell is selected (losslessly preserving `hl:`, `num`, `stereo`, rotations, and dynamic cell expressions).
 * **📘 Word:** Converts structures within your highlighted text/table selection—or across the **entire Word document** if nothing is highlighted.
 * **📙 PowerPoint:** Converts your selected slide shapes—or every chemical structure across the **entire presentation** if no shape is selected.
 
@@ -46,29 +46,28 @@ Clicking **`[SMILES] ➔ [Copy SVG]`** (or right-clicking ➔ **`Chemical Struct
 
 <FeatureMedia id="common-molecule-info" />
 
-### 10+ Calculated Properties at a Glance
+### Key Calculated Properties at a Glance
 1. **Substance Name:** Common IUPAC / PubChem name (`Aspirin`)
 2. **Chemical Formula:** Standard Hill notation (`C9H8O4`)
 3. **Molecular Weight (MW):** Standard weight (`180.16 g/mol`)
 4. **Monoisotopic Exact Mass:** High-resolution MS mass (`180.0423 Da`)
 5. **LogP & TPSA:** Octanol/water partition (`1.31`) & polar surface area (`63.60 Å²`)
-6. **Lipinski Rule of 5:** Oral bioavailability status (`PASS`/`FAIL`) plus HBD (`1`), HBA (`4`), and Rotatable Bonds (`3`)
-7. **Rings, Aromaticity & 3D Complexity:** Heavy Atoms (`13`), Total Rings (`1`), Aromatic Rings (`1`), Fraction Csp3 (`Fsp3: 0.11`), and Chiral Centers (`0`)
-8. **Standard Identifiers:** Canonical SMILES, IUPAC InChI, and 27-character InChIKey
+6. **Rings, Aromaticity & 3D Complexity:** Heavy Atoms (`13`), Total Rings (`1`), Aromatic Rings (`1`), and Fraction Csp3 (`Fsp3: 0.11`)
+7. **Standard Identifiers:** Canonical SMILES, IUPAC InChI, and 27-character InChIKey
 
 ### 📋 5 Copy Formats Tailored to Where You're Pasting
 
-#### ① Start a New Table — 17-Column Header + Data Row (`Copy All Summary (Text)`)
-Copies a **2-row table (17 headers on Row 1 + 17 values on Row 2)** as both TSV text and a formatted HTML table. Paste into an empty Excel range or Word page to create a complete 17-column table in one step:
+#### ① Start a New Table — 12-Column Header + Data Row (`Copy All Summary (Text)`)
+Copies a **2-row table (12 headers on Row 1 + 12 values on Row 2)** as both TSV text and a formatted HTML table. Paste into an empty Excel range or Word page to create a complete 12-column table in one step:
 ```text
-Name	Formula	MW (g/mol)	Exact Mass	LogP	TPSA (Å²)	HBD	HBA	RotB	Heavy Atoms	Rings	Aromatic Rings	Fsp3	Chiral Centers	Lipinski	SMILES	InChIKey
-Aspirin	C9H8O4	180.16	180.0423	1.31	63.6	1	4	3	13	1	1	0.11	0	Pass	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
+Name	Formula	MW (g/mol)	Exact Mass	LogP	TPSA (Å²)	Heavy Atoms	Rings	Aromatic Rings	Fsp3	SMILES	InChIKey
+Aspirin	C9H8O4	180.16	180.0423	1.31	63.6	13	1	1	0.11	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 ```
 
-#### ② Append to an Existing Table — 17-Column Data Row Only (`Copy as Excel Row (TSV Columns)`)
-Copies **only the 17 tab-separated values without headers**. **Pressing <kbd>Ctrl</kbd> + <kbd>V</kbd> in the next empty row of an Excel sheet or Word/PowerPoint table automatically splits each property into its own adjacent cell!**
+#### ② Append to an Existing Table — 12-Column Data Row Only (`Copy as Excel Row (TSV Columns)`)
+Copies **only the 12 tab-separated values without headers**. **Pressing <kbd>Ctrl</kbd> + <kbd>V</kbd> in the next empty row of an Excel sheet or Word/PowerPoint table automatically splits each property into its own adjacent cell!**
 ```text
-Aspirin	C9H8O4	180.16	180.0423	1.31	63.6	1	4	3	13	1	1	0.11	0	Pass	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
+Aspirin	C9H8O4	180.16	180.0423	1.31	63.6	13	1	1	0.11	CC(=O)Oc1ccccc1C(=O)O	BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 ```
 
 #### ③ PowerPoint Slides & Experimental Summaries (`Copy as Multi-Line List`)
@@ -81,14 +80,9 @@ Molecular Weight: 180.16 g/mol
 Exact Mass: 180.0423
 LogP: 1.31
 TPSA: 63.6 Å²
-H-Bond Donors: 1
-H-Bond Acceptors: 4
-Rotatable Bonds: 3
 Heavy Atoms: 13
 Rings (Total / Aromatic): 1 / 1
 Fraction Csp3 (Fsp3): 0.11
-Chiral Centers: 0
-Lipinski Rule of 5: Passed
 SMILES: CC(=O)Oc1ccccc1C(=O)O
 InChI: InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)
 InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
@@ -105,11 +99,9 @@ InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
 | **Exact Mass** | 180.0423 |
 | **LogP** | 1.31 |
 | **TPSA** | 63.6 Å² |
-| **HBD / HBA / RotB** | 1 / 4 / 3 |
-| **Heavy Atoms / Chiral** | 13 / 0 |
+| **Heavy Atoms** | 13 |
 | **Rings (Total / Aromatic)** | 1 / 1 |
 | **Fraction Csp3 (Fsp3)** | 0.11 |
-| **Lipinski Rule of 5** | Passed |
 | **SMILES** | `CC(=O)Oc1ccccc1C(=O)O` |
 | **InChI** | `InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)` |
 | **InChIKey** | `BSYNRYMUTXBXSQ-UHFFFAOYSA-N` |
@@ -126,15 +118,10 @@ Inside the **Detailed Molecule Info Window**, select **JSON** from the format dr
   "exactMass": 180.0423,
   "logP": 1.31,
   "tpsa": 63.6,
-  "hBondDonors": 1,
-  "hBondAcceptors": 4,
-  "rotatableBonds": 3,
   "heavyAtomCount": 13,
   "ringCount": 1,
   "aromaticRingCount": 1,
   "fsp3": 0.11,
-  "chiralCenters": 0,
-  "passesLipinski": true,
   "smiles": "CC(=O)Oc1ccccc1C(=O)O",
   "inchi": "InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)",
   "inchiKey": "BSYNRYMUTXBXSQ-UHFFFAOYSA-N"
@@ -143,5 +130,5 @@ Inside the **Detailed Molecule Info Window**, select **JSON** from the format dr
 
 ## 🚀 Continue Exploring
 
-- [**All 40 Excel Functions**](/excel/formulas) — Complete parameter catalog, data types, and shared rendering options for all 40 chemical functions
+- [**All 49 Excel Functions**](/excel/formulas) — Complete parameter catalog, data types, and shared rendering options for all 49 chemical functions
 - [**FAQ & Troubleshooting**](/guide/faq) — Quick answers for installation, Excel formulas, styling, SVG copy, and local-first privacy

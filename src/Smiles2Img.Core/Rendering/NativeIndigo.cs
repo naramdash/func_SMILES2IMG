@@ -137,6 +137,15 @@ public static class NativeIndigo
         return cacheDir;
     }
 
+    [DllImport("indigo.dll", EntryPoint = "indigoGetLastError", CallingConvention = CallingConvention.Cdecl)]
+    private static extern IntPtr IndigoGetLastError();
+
+    internal static string GetLastIndigoError()
+    {
+        var ptr = IndigoGetLastError();
+        return ptr == IntPtr.Zero ? "" : (Marshal.PtrToStringAnsi(ptr) ?? "");
+    }
+
     [DllImport("kernel32.dll", EntryPoint = "LoadLibraryExW", CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern IntPtr LoadLibraryEx(string fileName, IntPtr file, uint flags);
 

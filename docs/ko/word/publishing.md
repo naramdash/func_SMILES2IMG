@@ -41,6 +41,6 @@ ACS, RSC, Wiley, Elsevier, Nature 등 학술지나 특허청 제출 직전, Micr
 
 ## 관련 가이드
 
-- [**2. 화합물 표(SAR) & 실험 물성(SI)**](/ko/word/tables-properties) — 열 너비 고정 SAR 표 구성 및 `Molecule Info` 17종 물성 추출
+- [**2. 화합물 표(SAR) & 실험 물성(SI)**](/ko/word/tables-properties) — 열 너비 고정 SAR 표 구성 및 `Molecule Info` 12종 물성 추출
 - [**스타일 & 출력 상세 매뉴얼**](/ko/editor/publishing) — `Batch Style` 4종 프리셋 및 `Molecule Info` 5가지 복사 서식 전체 예시
 - [**문서 공유 가이드**](/ko/guide/troubleshooting/document-sharing) — macOS·추가 기능 없는 PC에서의 `.docx` / `.pptx` / `.xlsx` 동작 방식

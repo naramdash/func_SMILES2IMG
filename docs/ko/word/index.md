@@ -17,7 +17,7 @@
 <FeatureMedia id="word-ch6-publication-finish" />
 
 ### 3. 오타 없는 화학식·HRMS 정밀질량 복사 & 3D 단백질 Figure (`Mol*`)
-구조식 그림(또는 드래그한 텍스트)에서 화학식·분자량·HRMS 정밀질량(`Da`)·LogP·Lipinski 판정을 즉시 복사해 Experimental Section을 채우고, 4자리 PDB 코드(`1CRN`, `6LU7`)로 논문용 3D 단백질 그림까지 바로 삽입합니다.
+구조식 그림(또는 드래그한 텍스트)에서 화학식·분자량·HRMS 정밀질량(`Da`)·LogP·TPSA를 즉시 복사해 Experimental Section을 채우고, 4자리 PDB 코드(`1CRN`, `6LU7`)로 논문용 3D 단백질 그림까지 바로 삽입합니다.
 
 <FeatureMedia id="word-ch5-edit-and-molstar" />
 
@@ -27,7 +27,7 @@
 | :--- | :--- | :--- |
 | **화합물 표 안 구조식 오타 수정** | 외부 툴 재오픈 → PNG 재저장 → 삭제·재삽입 → 열 너비 재조정 | **구조식 더블클릭 → Ketcher 수정 → <kbd>Ctrl</kbd> + <kbd>Enter</kbd>** |
 | **투고 전 컬러 초안 30개 흑백 변환** | 파일 수십 개를 하나씩 흑백으로 다시 저장해 교체 | **`[SMILES]` ➔ `[Batch Style]` ➔ `[Publication B&W]` 1클릭** |
-| **Experimental 화학식 · HRMS 기재** | 별도 계산·검색 후 직접 타이핑(오타·반올림 실수 위험) | **`[Molecule Info]`로 17종 물성·정밀질량 1클릭 복사** |
+| **Experimental 화학식 · HRMS 기재** | 별도 계산·검색 후 직접 타이핑(오타·반올림 실수 위험) | **`[Molecule Info]`로 12종 물성·정밀질량 1클릭 복사** |
 | **Mac 공동저자 · 심사위원 `.docx` 공유** | 전용 OLE 개체 깨짐 또는 Mac에서 편집/렌더링 오류 | **표준 고해상도 PNG + `.glb` 저장 — Mac·웹·PDF 100% 호환** |
 | **결합 포켓 3D 단백질 Figure 제작** | PyMOL/ChimeraX 실행 → 캡처·여백 크롭 → 각도 바꿀 때마다 재캡처 | **`[3D Structure (Mol*)]`로 삽입 & 더블클릭 시 카메라 각도 그대로 재오픈** |
 

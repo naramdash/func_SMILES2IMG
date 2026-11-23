@@ -40,8 +40,8 @@
 Ketcher에서 특정 입체 배치나 좌표를 직접 그려 단일 분자 KET JSON 으로 저장한 셀도 일반 SMILES 셀처럼 물성·식별자 수식에 바로 연결할 수 있습니다:
 
 * **화학식 · 분자량 · 정밀질량:** `=KET2FORMULA(A2)`, `=KET2MW(A2)`, `=KET2EXACTMASS(A2)`
-* **이름 · InChI · InChIKey:** `=KET2NAME(A2)`, `=KET2INCHI(A2)`, `=KET2INCHIKEY(A2)`
-* **ADME · Lipinski 약물성:** `=SMILES2LIPINSKI(A2)`, `=SMILES2LOGP(A2)`, `=SMILES2TPSA(A2)` *(모든 `SMILES2*` 물성 함수는 단일 분자 KET 셀도 자동 인식)*
+* **SMILES · 이름 · InChI · InChIKey:** `=KET2SMILES(A2)`, `=KET2NAME(A2)`, `=KET2INCHI(A2)`, `=KET2INCHIKEY(A2)`
+* **LogP · TPSA · 3D 지표:** `=KET2LOGP(A2)`, `=KET2TPSA(A2)`, `=KET2HEAVY(A2)`, `=KET2RINGS(A2)`, `=KET2AROMATIC(A2)`, `=KET2FSP3(A2)`, `=KET.MATCH(A2, "smarts")` *(`SMILES2*` / `SMILES.MATCH` 와 1:1 동등 지원)*
 
 ## 관련 가이드
 

@@ -11,7 +11,7 @@
    슬라이드 텍스트 상자에 `1CRN`이나 `6LU7` 같은 4자리 PDB 코드(또는 로컬 `.pdb`/`.cif` 경로)가 적혀 있다면 **텍스트 상자를 선택한 상태에서 `[3D Structure (Mol*)]`를 클릭**하세요. Mol\*이 해당 단백질을 자동으로 즉시 로드합니다.
    :::
 2. 상단 리본 **`[SMILES]` ➔ `[3D Structure (Mol*)]`** (또는 우클릭 ➔ **`Chemical Structure` ➔ `3D Structure (Mol*)...`**)를 클릭합니다.
-3. 4자리 PDB 코드(`1CRN`, `4HHB`, `6LU7`, `1BNA`) 입력 후 **`Fetch`** 를 누르거나, **`Open File...`** 로 내 PC의 `.pdb`, `.cif`, `.bcif`, `.sdf`, `.mol`, `.mol2` 파일을 오프라인으로 엽니다.
+3. 4자리 PDB 코드(`1CRN`, `4HHB`, `6LU7`, `1BNA`) 입력 후 **`Fetch`** 를 누르거나, **`Open File...`** 로 내 PC의 `.pdb`, `.cif`, `.bcif`, `.ent`, `.mol`, `.sdf`, `.molj`, `.molx` 파일을 오프라인으로 엽니다.
 4. **Cartoon**, **Surface**, **Ball & Stick** 결합 포켓 스타일을 맞춘 뒤 상단 툴바에서 출력 모드를 고르고 <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (**`Apply to Slide`**)를 누릅니다:
 
 | Mol\* 출력 모드 | 슬라이드 동작 특징 | 추천 용도 |

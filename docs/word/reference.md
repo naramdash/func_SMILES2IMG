@@ -13,7 +13,7 @@ Complete command reference for the Microsoft Word **`[SMILES]`** ribbon tab and 
 | | `Paste Structure` | Converts highlighted SMILES, InChI, KET, or compound name/CAS in-place in `0.1s` (or converts clipboard data when nothing is highlighted) |
 | **Structure Tools** | `Copy SMILES` / `Copy InChI` / `Copy KET` | Extracts canonical SMILES, IUPAC InChI, or lossless Ketcher JSON from the selected structure picture or highlighted chemical text |
 | | `Copy SVG` | Copies lossless vector SVG graphics + `<svg>` XML text to the clipboard for TOC graphics, Illustrator, or Inkscape |
-| | `Molecule Info` | Copies individual properties, 17-column tables, multi-line SI lists, Markdown, or opens the 17-property inspection dialog |
+| | `Molecule Info` | Copies individual properties, 12-column tables, multi-line SI lists, Markdown, or opens the detailed property inspection dialog |
 | | `Batch Style` | Restyles structures inside the highlighted selection—or across the **entire Word document** when nothing is highlighted (`Mol*` figures skipped) |
 | **About** | `Online Docs` | Opens the official Word documentation portal (`/word/`) in your web browser |
 | | `About func_SMILES2IMG` | Displays installed version, embedded engine versions, open-source licenses, and 1-click update check |
