@@ -1,6 +1,6 @@
 # 2. 화합물 표(SAR) & 실험 물성(SI)
 
-Word 논문용 SAR·화합물 요약 표의 열 너비 틀어짐과 그림 잘림을 원천 차단하고, **`Molecule Info`** 로 화학식·분자량·HRMS 정밀질량·LogP·TPSA를 오타 없이 즉시 복사해 채웁니다.
+Word 논문용 SAR·화합물 요약 표의 열 너비 틀어짐과 그림 잘림을 방지하고, **`Molecule Info`** 로 화학식·분자량·HRMS 정밀질량·LogP·TPSA의 계산된 값을 복사해 채웁니다.
 
 <FeatureMedia id="word-ch3-compound-table" />
 
@@ -13,7 +13,7 @@ Word 기본 표 설정에서는 구조식을 넣을 때 열이 찌그러지거�
 3. **음영 셀 배경 맞춤:** 표 행에 회색이나 컬러 음영이 들어가 있다면 **`[SMILES]` ➔ `[Batch Style]` ➔ `[Standard Color (Transparent)]`** 로 투명하게 녹이거나 **`[White Background (Color)]`** 로 흰 배경 프레임을 씌워 시인성을 높입니다.
 
 ::: tip 꿀팁: SMILES/물질명이 적힌 표 열을 한 행씩 빠르게 구조식으로 바꾸기
-이미 Word 표에 `Aspirin`, `Caffeine`, `50-78-2` 또는 SMILES가 적힌 열이 있다면 텍스트를 드래그하고 **`[SMILES]` ➔ `[Paste Structure]`** (또는 우클릭 ➔ **`Chemical Structure` ➔ `Paste Structure`**)를 클릭해 `0.1초` 만에 비율 고정 구조식으로 치환할 수 있습니다.
+이미 Word 표에 `Aspirin`, `Caffeine`, `50-78-2` 또는 SMILES가 적힌 열이 있다면 텍스트를 드래그하고 **`[SMILES]` ➔ `[Paste Structure]`** (또는 우클릭 ➔ **`Chemical Structure` ➔ `Paste Structure`**)를 클릭해 비율 고정 구조식으로 치환할 수 있습니다.
 :::
 
 ## 2. `Molecule Info`로 표 · Experimental Section 오타 없이 채우기
@@ -43,5 +43,5 @@ Word의 구조식 그림을 선택하거나—**본문에 적힌 SMILES/화합�
 ## 관련 가이드
 
 - [**스타일 & 출력 상세 매뉴얼**](/ko/editor/publishing) — `Molecule Info` 5가지 클립보드 복사 서식(Summary, TSV, Multi-Line, Markdown, JSON) 실제 출력 예시
-- [**4. 투고 마감 · 벡터 SVG · 공동저자 공유**](/ko/word/publishing) — 투고 직전 표와 본문의 모든 구조식을 클릭 한 번으로 ACS 흑백 통일하기
+- [**4. 투고 마감 · 벡터 SVG · 공동저자 공유**](/ko/word/publishing) — 투고 전 표와 본문의 구조식을 ACS 흑백으로 일괄 통일하기
 - [**표 잘림 · 일괄 스타일 문제 해결**](/ko/word/troubleshooting/table-layout) — 표 셀 상단 그림 잘림, 줄 간격 `고정값` 해제, `Batch Style` 범위 문제 해결

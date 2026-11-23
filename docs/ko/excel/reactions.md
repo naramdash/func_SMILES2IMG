@@ -13,12 +13,12 @@
 
 <FeatureMedia id="excel-reactions-ket" />
 
-## 1. 반응식 삽입 및 0.05초 무손실 재편집 방법
+## 1. 반응식 삽입 및 무손실 재편집 방법
 
 1. 빈 셀을 선택하고 상단 리본에서 **`[SMILES]` ➔ `[Insert / Edit (KET)]`** 를 클릭합니다. *(참고: **`[Insert / Edit (SMILES)]`** 에서 화살표나 다중 분자를 그려도 자동으로 `=KET2IMG(...)` 수식으로 저장됩니다.)*
 2. 오프라인 **Ketcher 2D 편집기**에서 반응물, `+`, 반응 화살표(`➔`), 화살표 위·아래의 시약/촉매/온도 텍스트, 생성물을 그립니다.
 3. <kbd>Ctrl</kbd> + <kbd>Enter</kbd> 를 누르면 `=KET2IMG("...")` (Excel 2016~2021은 `=KET2IMG.FLOAT("...")`) 수식으로 삽입됩니다.
-4. 추후 해당 셀을 **더블클릭**하면 `0.05초` 만에 Ketcher 2D 가 다시 열리며 화살표 위치·각도·시약 주석이 100% 그대로 복원됩니다.
+4. 추후 해당 셀을 **더블클릭**하면 Ketcher 2D 가 다시 열리며 화살표 위치·각도·시약 주석이 그대로 복원됩니다.
 
 ::: tip `=SMILES2IMG` 에서도 KET JSON 을 자동 감지합니다
 한 열에 단일 SMILES 문자열과 Ketcher KET 문자열이 섞여 있더라도 `=SMILES2IMG(A2)` 가 KET JSON 을 자동으로 판별해 반응식 렌더러로 처리합니다.
@@ -46,5 +46,5 @@ Ketcher에서 특정 입체 배치나 좌표를 직접 그려 단일 분자 KET 
 ## 관련 가이드
 
 - [**스타일 · 하이라이트**](/ko/excel/styles-reactions) — 8개 이미지 함수 공용 `[bg]`, `[style]`, `[transform]` 키워드 전체 정리
-- [**SMILES · InChI**](/ko/excel/structures) — 대량 SMILES/InChI 구조식 표 및 `0.05초` 더블클릭 편집
+- [**SMILES · InChI**](/ko/excel/structures) — 대량 SMILES/InChI 구조식 표 및 더블클릭 편집
 - [**Ketcher 2D 편집기 상세 매뉴얼**](/ko/editor/) — 반응 화살표, 원자 매핑, 입체 중심 그리기 단축키 안내

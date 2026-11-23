@@ -7,12 +7,12 @@ Practice all 49 Excel chemical formulas, physicochemical & 3D screening tables, 
 ::: tip How to Use This Playbook
 1. Make sure **`func_SMILES2IMG`** is installed ([Installation](/guide/install)).
 2. Download <a href="/func_SMILES2IMG/examples/func_SMILES2IMG_Excel_Playbook.xlsx" download="func_SMILES2IMG_Excel_Playbook.xlsx"><strong>func_SMILES2IMG_Excel_Playbook.xlsx (.xlsx)</strong></a> and open it directly in **Microsoft Excel**.
-3. Follow one of the recommended 3-minute practice tracks below, or copy the ready-made stoichiometry and SAR templates straight into your own lab workbooks.
+3. Follow one of the recommended practice tracks below, or copy the ready-made stoichiometry and SAR templates straight into your own lab workbooks.
 :::
 
 ## Recommended Practice Tracks
 
-| Track | Tabs to Open | What You Will Master in 3 Minutes |
+| Track | Tabs to Open | Key Walkthrough Tasks |
 | :--- | :--- | :--- |
 | **1. First-Time Quickstart** | `0. Start Here` ➔ `1. Structure Rendering` | Edit a SMILES/Name cell, resize row height, and **double-click** a structure cell to edit in **Ketcher 2D** |
 | **2. Organic Synthesis Lab (ELN)** | `6. Reactions & KET` ➔ `7. Real-World Workflows` | Double-click a multi-step `=KET2IMG` synthesis scheme and auto-calculate reagent masses (`mg`) and `% yield` from `=SMILES2MW` |
@@ -22,7 +22,7 @@ Practice all 49 Excel chemical formulas, physicochemical & 3D screening tables, 
 
 | Sheet Tab | What You Can Practice & Copy | Key Formulas / Features |
 | :--- | :--- | :--- |
-| **`0. Start Here`** | 3-minute interactive sandbox & 10-tab learning roadmap | Top 10 live formulas & double-click editing |
+| **`0. Start Here`** | Interactive sandbox & 10-tab learning roadmap | Top 10 live formulas & double-click editing |
 | **`1. Structure Rendering`** | Render 2D structures from common names, CAS numbers, SMILES, and IUPAC InChI | `=NAME2IMG`, `=SMILES2IMG`, `=INCHI2IMG`, `=NAME2SMILES` |
 | **`2. Properties & 3D`** | 15-column medicinal chemistry screening table + live `AVERAGE` / `COUNTIF` KPI row | `=SMILES2FORMULA`, `=SMILES2MW`, `=SMILES2LOGP`, `=SMILES2TPSA`, `=SMILES2FSP3` |
 | **`3. SAR & SMARTS`** | Editable query SMARTS (`$B$3`), red scaffold highlighting, InChI parity & 12-group SMARTS dictionary | `=SMILES.MATCH`, `=INCHI.MATCH`, `=SMILES2IMG(..., "hl:...")` |
@@ -36,5 +36,5 @@ Practice all 49 Excel chemical formulas, physicochemical & 3D screening tables, 
 ## Related Guides
 
 - [**All 49 Functions**](/excel/formulas) — Full parameter reference, data types, and shared styling tokens
-- [**SMILES, InChI**](/excel/structures) · [**Names, Solvents, CAS**](/excel/name-cas) — Step-by-step setup for structure tables and zero-SMILES name lookups
+- [**SMILES, InChI**](/excel/structures) · [**Names, Solvents, CAS**](/excel/name-cas) — Step-by-step setup for structure tables and name-only lookups
 - [**Interactive Playbooks Hub**](/guide/playbooks) — Compare all three Office Playbooks ([Word .docx](/word/playbook) · [PowerPoint .pptx](/powerpoint/playbook))

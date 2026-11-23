@@ -7,13 +7,13 @@ next:
   link: /editor/troubleshooting/webview2-loading
 ---
 
-# 1-Click ACS Journal B&W, Vector SVG, Property Table Export
+# ACS Journal B&W Batch Style, Vector SVG & Property Table Export
 
-Convert every chemical structure in an Excel sheet, Word manuscript, or PowerPoint deck into **ACS Black & White** or **Dark Mode** in a single click—and copy lossless **SVG vectors** straight into Adobe Illustrator.
+Convert chemical structures in an Excel sheet, Word manuscript, or PowerPoint deck into **ACS Black & White** or **Dark Mode** with Batch Style, and copy lossless **SVG vectors** directly into Adobe Illustrator.
 
-## 1. 🎨 Restyle Your Entire Document in 1 Click (`Batch Style`)
+## 1. 🎨 Restyle Your Entire Document (`Batch Style`)
 
-When submitting a paper to a print journal or switching a presentation to a dark theme, you never need to redraw dozens of molecules one by one. Click **`[SMILES]`** ➔ **`[Batch Style]`** on the top ribbon to convert all chemical structures in your selection (or entire sheet/document/slide deck) in one click:
+When submitting a paper to a print journal or switching a presentation to a dark theme, you do not need to redraw molecules one by one. Click **`[SMILES]`** ➔ **`[Batch Style]`** on the top ribbon to update all chemical structures in your selection (or entire sheet/document/slide deck):
 
 | `Batch Style` Preset | Background & Bond Style | Best For | Equivalent Excel Formula |
 | :--- | :--- | :--- | :--- |
@@ -37,12 +37,12 @@ Clicking **`[SMILES] ➔ [Copy SVG]`** (or right-clicking ➔ **`Chemical Struct
 | Target Application | How It Works & Why It's Better |
 | :--- | :--- |
 | **Adobe Illustrator / Inkscape** | Press <kbd>Ctrl</kbd> + <kbd>V</kbd> to paste editable vector paths and atom labels directly onto your artboard—customize bond thickness, colors, or layout freely. |
-| **Conference Posters (A0 Print)** | Scale structures up to any poster size with zero pixelation or jagged edges. |
+| **Conference Posters (A0 Print)** | Scale structures up to any poster size without pixelation or jagged edges. |
 | **Code & Web Editors (VS Code, HTML)** | Because both the `image/svg+xml` stream and raw `<svg>...</svg>` XML text are copied simultaneously, pasting into a text editor gives you clean inline SVG markup immediately. |
 
 ## 3. 🔬 Molecule Info Window & 5 Multi-Format Exports
 
-**Right-click** any chemical cell or picture ➔ **`Chemical Structure ➔ Copy Molecule Info`** (or click **`[Molecule Info]`** on the ribbon) to inspect calculated properties and copy them in the exact format your document needs. Clicking **`Detailed Molecule Info Window...`** opens the standard Windows dialog with a live 2D structure thumbnail preview, 1-click row **`Copy`** buttons, and a bottom format selector:
+**Right-click** any chemical cell or picture ➔ **`Chemical Structure ➔ Copy Molecule Info`** (or click **`[Molecule Info]`** on the ribbon) to inspect calculated properties and copy them in the format your document needs. Clicking **`Detailed Molecule Info Window...`** opens a standard Windows dialog with a 2D structure thumbnail preview, row **`Copy`** buttons, and a bottom format selector:
 
 <FeatureMedia id="common-molecule-info" />
 

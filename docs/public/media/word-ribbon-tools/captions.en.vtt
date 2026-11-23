@@ -4,7 +4,7 @@ WEBVTT
 Insert / Edit Structure (Ketcher 2D) and 3D Structure (Mol*).
 
 00:00:01.833 --> 00:00:02.803
-Paste Structure converts selected SMILES or clipboard data in 0.1s.
+Paste Structure converts selected SMILES or clipboard data in place.
 
 00:00:02.833 --> 00:00:04.033
 Copy SVG, Molecule Info, Batch Style, and About func_SMILES2IMG.

@@ -17,8 +17,8 @@ Click **Copy All** and paste into cell **`A1`** to populate inputs (`A2:A5`) alo
   :rows='[
     { input: "CCO", formula: "=SMILES2IMG(A2)", desc: "2D IUPAC color structure from SMILES in A2", out: "2D Ethanol" },
     { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2IMG(A3, \"\", \"bw\")", desc: "ACS journal monochrome B&W structure from A3", out: "B&W Aspirin" },
-    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2MW(A4)", desc: "Molecular weight in g/mol (0ms offline)", out: "180.16" },
-    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2TPSA(A5)", desc: "Topological Polar Surface Area (0ms offline)", out: "63.60" },
+    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2MW(A4)", desc: "Molecular weight in g/mol (offline)", out: "180.16" },
+    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2TPSA(A5)", desc: "Topological Polar Surface Area (offline)", out: "63.60" },
     { input: "", formula: "=NAME2IMG(\"Aspirin\")", desc: "Standalone 2D structure from name or CAS #", out: "2D Aspirin" }
   ]'
 />
@@ -52,7 +52,7 @@ All 4 input formats share `(input, [bg], [style], [transform])` ([SMILES, InChI]
 
 ## 2. Formula, MW, Exact Mass, Name (`12`)
 
-Except for online common-name lookups (`*2NAME`, cached locally after 1 query), all property calculations run **0ms purely offline** ([Formula, MW, Exact Mass](/excel/properties)):
+Except for online common-name lookups (`*2NAME`, cached locally after 1 query), all property calculations run **locally offline** ([Formula, MW, Exact Mass](/excel/properties)):
 
 | Output | SMILES Input | InChI Input | KET Input | Type | Aspirin (`A2`) |
 | :--- | :--- | :--- | :--- | :---: | :--- |

@@ -1,19 +1,19 @@
 # 설치 (Installation)
 
-**관리자 권한 없이 10초 만에** Microsoft Excel, Word, PowerPoint 전체에 `func_SMILES2IMG`를 설치합니다.
+**관리자 권한 없이** Microsoft Excel, Word, PowerPoint 전체에 `func_SMILES2IMG`를 설치합니다.
 
-## 1. 10초 PowerShell 자동 설치
+## 1. PowerShell 자동 설치
 
-1. 실행 중인 Excel, Word, PowerPoint 창을 모두 닫습니다.
-2. Windows 시작 메뉴에서 **PowerShell**을 열고 아래 한 줄을 붙여넣어 실행합니다:
+1. 실행 중인 **Excel**, **Word**, **PowerPoint** 창을 모두 닫습니다.
+2. 아래 명령어 상자 오른쪽의 청록색 **복사** 버튼을 클릭합니다 *(직접 입력할 필요 없음)*:
 
-```powershell
-irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
-```
+<QuickInstallBox inline />
 
-::: tip `v1.9.0` 정식 포함 기능
-위 명령어를 실행하면 Office 비트(32비트/64비트)를 자동 감지해 `func_SMILES2IMG v1.9.0` 패키지를 내려받고 파일 차단 해제(`Unblock-File`) 및 HKCU 레지스트리 등록까지 자동 완료합니다. Excel·Word·PowerPoint 통합 `Chemical Structure >` 우클릭 메뉴, 49개 엑셀 함수, Ketcher 2D, Mol\* 3D, 11열 `.sdf` 가져오기가 모두 포함됩니다.
-:::
+3. 작업표시줄의 **Windows 시작 버튼(`⊞`)을 마우스 우클릭**한 뒤, **`터미널(Terminal)`** *(Windows 11)* 또는 **`Windows PowerShell`** *(Windows 10 — 일반 모드, **관리자 권한 불필요**)*을 클릭합니다.
+4. 열린 PowerShell 창 **안쪽을 마우스로 우클릭**하면 복사한 명령어가 자동으로 붙여넣어집니다.
+5. <kbd>Enter</kbd>를 누르고 **`[SUCCESS]`** 메시지가 나오면 설치가 완료됩니다.
+
+<FeatureMedia id="common-install-walkthrough" />
 
 ## 2. 오피스 재시작 & `[SMILES]` 리본 탭 확인
 
@@ -37,7 +37,7 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 ## 4. 설치 시 보안 경고 해결
 
 ::: details 🛡️ Windows 11 스마트 앱 컨트롤(SAC) 차단 또는 설치 후 `#NAME?` 오류
-Windows 11의 **스마트 앱 컨트롤**이 강제 켜짐 상태면 서명되지 않은 오픈소스 `.xll` 추가 기능 실행을 차단할 수 있습니다. 이를 꺼도 **Microsoft Defender 백신(실시간 바이러스 감시)은 100% 그대로 유지**됩니다.
+Windows 11의 **스마트 앱 컨트롤**이 강제 켜짐 상태면 서명되지 않은 오픈소스 `.xll` 추가 기능 실행을 차단할 수 있습니다. 이를 꺼도 **Microsoft Defender 백신(실시간 바이러스 감시)은 그대로 유지**됩니다.
 1. Windows **설정** (<kbd>Win</kbd> + <kbd>I</kbd>) ➔ **개인 정보 및 보안** ➔ **Windows 보안**
 2. **앱 및 브라우저 컨트롤** ➔ **스마트 앱 컨트롤 설정**
 3. **꺼짐(Off)** 상태로 변경한 뒤 오피스를 다시 시작합니다.
@@ -57,5 +57,5 @@ Windows 11의 **스마트 앱 컨트롤**이 강제 켜짐 상태면 서명되�
 
 ## 다음 단계
 
-- [**시작하기: 1분 만에 첫 분자 그리기**](/ko/guide/getting-started) — Excel 첫 수식 입력, Word 인라인 삽입, PowerPoint 3D 슬라이드를 바로 따라 해보세요.
+- [**시작하기: 첫 분자 그리기**](/ko/guide/getting-started) — Excel 첫 수식 입력, Word 인라인 삽입, PowerPoint 3D 슬라이드를 순서대로 따라 해보세요.
 - [**자주 묻는 질문 (FAQ)**](/ko/guide/faq) — #NAME? · #VALUE! 해결, 구형 Excel(.FLOAT), 문서 공유, SVG 내보내기 안내

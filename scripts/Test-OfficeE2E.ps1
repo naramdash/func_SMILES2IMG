@@ -1,11 +1,11 @@
-<#
+﻿<#
 .SYNOPSIS
     True End-to-End (E2E) Automated UI & Functional Verification for func_SMILES2IMG (Word, PowerPoint, Excel)
     - Syncs freshly built dist\x64 binaries to %APPDATA%\Microsoft\AddIns\Smiles2Img
     - Launches visible Office windows and verifies HWND visibility
     - Drives Word & PowerPoint via their in-process COMAddIn.Object.ExecuteRibbonAction(...)
     - Verifies live modal UI dialogs (MoleculeInfoDialog & AboutDialog) pop up and render inside Word, PowerPoint, and Excel
-    - Drives Excel via RegisterXLL, live cell formula evaluation (v1.0 ~ v1.9.0), and $excel.Run(...)
+    - Drives Excel via RegisterXLL, live cell formula evaluation (v1.0 ~ v1.9.1), and $excel.Run(...)
 #>
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Windows.Forms

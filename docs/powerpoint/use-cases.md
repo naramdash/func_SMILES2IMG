@@ -5,8 +5,8 @@ Explore 5 practical ways **`func_SMILES2IMG`** elevates chemistry slides and pos
 | Use Case | What You Can Do | Key Tool |
 | :--- | :--- | :--- |
 | [**1. Conference Talk & 3D Motion**](#conference-talk) | Match dark templates cleanly and animate native `.glb` 3D protein fly-ins via Morph | `[Batch Style]`, `[3D Structure (Mol*)]` |
-| [**2. Weekly Lab Meeting SAR Grid**](#sar-review) | Convert candidate TextBoxes in `0.1s` and keep 4-card layouts aligned between tweaks | `[Paste Structure]`, Double-Click |
-| [**3. A0 Posters & Print Handouts**](#a0-posters) | Paste scalable `SVG` paths onto A0 canvases and switch a deck copy to ACS B&W in 1s | `[Copy SVG]`, `[Publication B&W]` |
+| [**2. Weekly Lab Meeting SAR Grid**](#sar-review) | Convert candidate TextBoxes in-place and keep 4-card layouts aligned between tweaks | `[Paste Structure]`, Double-Click |
+| [**3. A0 Posters & Print Handouts**](#a0-posters) | Paste scalable `SVG` paths onto A0 canvases and switch a deck copy to ACS B&W | `[Copy SVG]`, `[Publication B&W]` |
 | [**4. Mechanism Seminar & Q&A Notes**](#qa-seminar) | Move `KET` schemes from Word/Excel onto dark slides and preload Q&A Speaker Notes | `[Copy KET]`, `Multi-Line List` |
 | [**5. Step-by-Step SVG Animation**](#svg-step-animation) | Split pasted SVG drawings into native PowerPoint shapes for custom highlight & click build | `[Copy SVG]` ➔ `Convert to Shape` |
 
@@ -14,7 +14,7 @@ Explore 5 practical ways **`func_SMILES2IMG`** elevates chemistry slides and pos
 
 ## 1. Conference Talk & 3D Motion {#conference-talk}
 
-Replace flat PyMOL screenshots and codec-risky MP4 videos with zero-white-box dark-mode structures and native **3D `.glb` proteins** that spin continuously on slide, zoom smoothly into binding pockets via **Morph**, and run natively on any podium PC or Mac.
+Replace flat PyMOL screenshots and codec-risky MP4 videos with transparent dark-mode structures and native **3D `.glb` proteins** that spin continuously on slide, zoom smoothly into binding pockets via **Morph**, and run natively on podium PCs or Macs.
 
 <FeatureMedia id="powerpoint-slide-molstar-3d" />
 
@@ -23,7 +23,7 @@ Replace flat PyMOL screenshots and codec-risky MP4 videos with zero-white-box da
 3. **Animate Motion Natively in PowerPoint:**
    - **Continuous Spin (`Animations`):** Select the `.glb` protein and apply **`Turntable`** (smooth 360° spin), **`Swing`** (gentle front rock preserving pocket view), or **`Arrive`**.
    - **Pocket Fly-In (`Transitions ➔ Morph`):** Duplicate the slide, rotate and zoom the `.glb` model on Slide B tightly onto the binding pocket, and enable **Morph** to animate the camera smoothly between slides.
-4. **Zero-Risk Podium Playback:** Embedded `.png`, `.glb`, 3D animations, and Morph transitions play natively on conference PCs and macOS without installing `func_SMILES2IMG`.
+4. **Venue Podium Playback:** Embedded `.png`, `.glb`, 3D animations, and Morph transitions play natively on conference PCs and macOS without installing `func_SMILES2IMG`.
 
 * **Next:** [**3. 360° 3D Protein Slides (`Mol*` & Morph)**](/powerpoint/3d-proteins) · [**2. Dark Mode, Cards, Deck Restyle**](/powerpoint/dark-mode) · Playbook **Slides 1 & 6**
 
@@ -31,14 +31,14 @@ Replace flat PyMOL screenshots and codec-risky MP4 videos with zero-white-box da
 
 ## 2. Weekly Lab Meeting SAR Grid {#sar-review}
 
-Assemble aligned 4–8 analog comparison slides in minutes and tweak substituents for next week's group meeting with a quick double-click instead of rebuilding textboxes and picture alignment from scratch.
+Assemble aligned 4–8 analog comparison slides and tweak substituents for next week's group meeting with a double-click instead of rebuilding textboxes and picture alignment from scratch.
 
 <FeatureMedia id="powerpoint-slide-candidate-grid" />
 
-1. **Convert TextBoxes In-Place (`0.1s`):** Lay out 4 candidate cards with TextBoxes containing SMILES or compound names (`Aspirin`, `Caffeine`, `Paracetamol`), select each TextBox border, and click **`[SMILES]` ➔ `[Paste Structure]`**.
-2. **Unify Visual Style in 1s:** Run **`[SMILES]` ➔ `[Batch Style]`** (`Dark Mode` or `Standard Color`; ungroup cards first if grouped with `Ctrl+G`).
-3. **Add Verified ADME Footnotes:** Click each candidate and choose **`[Molecule Info]` ➔ `[Copy as Multi-Line List]`** to paste Formula, MW, LogP, TPSA, and `Fsp3` beneath the card.
-4. **Update Next Week in Seconds:** **Double-click** any card's structure in Normal view to modify R-groups in Ketcher—its card center and footprint stay locked automatically.
+1. **Convert TextBoxes In-Place:** Lay out 4 candidate cards with TextBoxes containing SMILES or compound names (`Aspirin`, `Caffeine`, `Paracetamol`), select each TextBox border, and click **`[SMILES]` ➔ `[Paste Structure]`**.
+2. **Unify Visual Style:** Run **`[SMILES]` ➔ `[Batch Style]`** (`Dark Mode` or `Standard Color`; ungroup cards first if grouped with `Ctrl+G`).
+3. **Add Computed ADME Footnotes:** Click each candidate and choose **`[Molecule Info]` ➔ `[Copy as Multi-Line List]`** to paste Formula, MW, LogP, TPSA, and `Fsp3` beneath the card.
+4. **Update Without Re-Aligning:** **Double-click** any card's structure in Normal view to modify R-groups in Ketcher—its card center and footprint stay locked automatically.
 
 * **Next:** [**2. Dark Mode, Cards, Deck Restyle**](/powerpoint/dark-mode) · [**1. 2D Structures & Reaction Slides**](/powerpoint/slides-structures) · Playbook **Slides 3 & 4**
 
@@ -46,12 +46,12 @@ Assemble aligned 4–8 analog comparison slides in minutes and tweak substituent
 
 ## 3. A0 Posters & Print Handouts {#a0-posters}
 
-Avoid jagged bitmaps when printing **90 × 120 cm A0 conference posters** at 300 DPI, and generate clean black-and-white PDF handouts from the exact same `.pptx` file in one click.
+Avoid jagged bitmaps when printing **90 × 120 cm A0 conference posters** at 300 DPI, and generate clean black-and-white PDF handouts from a duplicate `.pptx` file.
 
 <FeatureMedia id="powerpoint-slide-batch-style" />
 
-1. **Paste Infinite-Resolution Vector `SVG`:** Select any 2D molecule or reaction scheme (or highlight SMILES/name text inside a TextBox), click **`[SMILES]` ➔ `[Copy SVG]`**, and press <kbd>Ctrl</kbd> + <kbd>V</kbd> onto your PowerPoint A0 poster (Office 2019+/365) or into **Adobe Illustrator / Inkscape**.
-2. **Export Monochrome Handouts in 1s:** Save a copy of your dark deck, click empty canvas so nothing is selected, and run **`[SMILES]` ➔ `[Batch Style]` ➔ `[Publication B&W (ACS Monochrome)]`** before exporting to PDF.
+1. **Paste Scalable Vector `SVG`:** Select any 2D molecule or reaction scheme (or highlight SMILES/name text inside a TextBox), click **`[SMILES]` ➔ `[Copy SVG]`**, and press <kbd>Ctrl</kbd> + <kbd>V</kbd> onto your PowerPoint A0 poster (Office 2019+/365) or into **Adobe Illustrator / Inkscape**.
+2. **Export Monochrome Handouts:** Save a copy of your dark deck, click empty canvas so nothing is selected, and run **`[SMILES]` ➔ `[Batch Style]` ➔ `[Publication B&W (ACS Monochrome)]`** before exporting to PDF.
 
 * **Next:** [**4. A0 Posters (SVG), Q&A, Podium Sharing**](/powerpoint/publishing-qa) · [**2. Dark Mode, Cards, Deck Restyle**](/powerpoint/dark-mode) · Playbook **Slides 7 & 8**
 
@@ -63,7 +63,7 @@ Bring `KET` reaction schemes directly over from your Word paper onto dark semina
 
 <FeatureMedia id="powerpoint-slide-reaction" />
 
-1. **Reuse Paper Schemes in 3s:** Select any `KET` reaction scheme in Word or Excel and click **`[SMILES]` ➔ `[Copy KET]`**. Switch to PowerPoint, click **`[Paste Structure]`**, and run **`[Batch Style]` ➔ `[Dark Mode]`** *(apply PowerPoint animations after finishing chemical edits)*.
+1. **Reuse Paper Schemes:** Select any `KET` reaction scheme in Word or Excel and click **`[SMILES]` ➔ `[Copy KET]`**. Switch to PowerPoint, click **`[Paste Structure]`**, and run **`[Batch Style]` ➔ `[Dark Mode]`** *(apply PowerPoint animations after finishing chemical edits)*.
 2. **Preload Q&A Speaker Notes:** Click **`[Molecule Info]` ➔ `[Copy as Multi-Line List]`** on key compounds and paste into **Speaker Notes** so exact values appear privately in Presenter View.
 3. **Inspect All 12 Descriptors Live:** After finishing full-screen slides (<kbd>Esc</kbd>), click any structure and open **`[Molecule Info]` ➔ `[Detailed Molecule Info Window...]`** to show calculated properties side by side.
 
@@ -94,5 +94,5 @@ Once converted into raw polygons, a shape is no longer linked to Ketcher (`Alt T
 
 ## Next Steps
 
-- [**Practice in the 8-Slide PowerPoint Playbook (.pptx)**](/powerpoint/playbook) — Test TextBox `0.1s` conversion, 4-card dark grids, `KET` mechanisms, and `1CRN` Morph transitions in PowerPoint.
-- [**10-Second Install Guide**](/guide/install) — Install across PowerPoint, Word, and Excel with one PowerShell command.
+- [**Practice in the 8-Slide PowerPoint Playbook (.pptx)**](/powerpoint/playbook) — Test TextBox in-place conversion, 4-card dark grids, `KET` mechanisms, and `1CRN` Morph transitions in PowerPoint.
+- [**Install Guide**](/guide/install) — Install across PowerPoint, Word, and Excel with a PowerShell command.

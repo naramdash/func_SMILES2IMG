@@ -9,8 +9,8 @@
 | Office 앱 | 주요 활용 | 가이드 |
 | :--- | :--- | :--- |
 | <AppBadge app="excel" /> | 화합물명·CAS·SMILES·InChI를 셀 안 2D 구조식(`=SMILES2IMG`, `=NAME2IMG`)으로 자동 렌더링하고, 49개 물성·3D·변환·SAR 함수 계산과 `.sdf` 가져오기를 한 번에 처리합니다. | <span class="s2i-nowrap">[개요 보기 →](/ko/excel/)</span> |
-| <AppBadge app="word" /> | 논문 본문과 화합물 SAR 표에 인라인 구조식을 배치하고, `Molecule Info`로 물성을 오타 없이 복사하며, 클릭 한 번의 ACS 학술지 흑백 변환과 벡터 SVG 복사를 지원합니다. | <span class="s2i-nowrap">[개요 보기 →](/ko/word/)</span> |
-| <AppBadge app="powerpoint" /> | 슬라이드 텍스트 상자를 0.1초 만에 투명 다크 모드 구조식으로 변환하고, 발표 중 360° 회전하는 3D 단백질(`.glb`) 삽입과 덱 전체 `Batch Style` 전환을 지원합니다. | <span class="s2i-nowrap">[개요 보기 →](/ko/powerpoint/)</span> |
+| <AppBadge app="word" /> | 논문 본문과 화합물 SAR 표에 인라인 구조식을 배치하고, `Molecule Info`로 물성을 정확히 복사하며, ACS 학술지 흑백 일괄 변환과 벡터 SVG 복사를 지원합니다. | <span class="s2i-nowrap">[개요 보기 →](/ko/word/)</span> |
+| <AppBadge app="powerpoint" /> | 슬라이드 텍스트 상자를 투명 다크 모드 구조식으로 변환하고, 발표 중 360° 회전하는 3D 단백질(`.glb`) 삽입과 덱 전체 `Batch Style` 전환을 지원합니다. | <span class="s2i-nowrap">[개요 보기 →](/ko/powerpoint/)</span> |
 
 세 앱 모두 오프라인 **[Ketcher 2D](/ko/editor/)** 편집기와 **[Mol\* 3D](/ko/editor/molstar)** 단백질 뷰어가 내장되어 있어, 삽입된 구조식이나 반응식을 더블클릭하면 레이아웃을 깨뜨리지 않고 즉시 수정할 수 있습니다.
 
@@ -24,7 +24,7 @@
 | **지원 오피스 앱** | **Excel + Word + PowerPoint 통합** | Excel + Word + PowerPoint | Word 전용 |
 | **엑셀 구조식 방식** | **네이티브 인셀 이미지(`=SMILES2IMG`)** 및 `.FLOAT` 도형 (별도 시트 변환 불필요) | 전용 시트 변환(Convert Worksheet) 또는 전용 객체 필요 | 미지원 |
 | **3D 단백질 뷰어** | **Mol\* 내장 (360° 회전 `.glb` 모델 & 2D 캡처)** | 별도 3D 프로그램 필요 | 미지원 |
-| **설치 권한** | **관리자 권한 불필요** (10초 유저 영역 설치) | 관리자(Admin) 설치 및 라이선스 인증 필요 | 설치 마법사 실행 |
+| **설치 권한** | **관리자 권한 불필요** (유저 영역 설치) | 관리자(Admin) 설치 및 라이선스 인증 필요 | 설치 마법사 실행 |
 
 ## 로컬 우선(Local-First) 보안 & 문서 공유 {#privacy}
 
@@ -50,6 +50,6 @@
 
 ## 다음 단계
 
-- [**설치 (10초 원클릭 셋업)**](/ko/guide/install) — 관리자 권한 없이 PowerShell 한 줄로 Excel · Word · PowerPoint 전체에 자동 설치합니다.
-- [**시작하기 (1분 첫 분자 그리기)**](/ko/guide/getting-started) — Excel, Word, PowerPoint에서 첫 구조식을 만들어 보세요.
+- [**설치 (PowerShell 자동 설치)**](/ko/guide/install) — 관리자 권한 없이 PowerShell 한 줄로 Excel · Word · PowerPoint 전체에 자동 설치합니다.
+- [**시작하기 (첫 분자 그리기)**](/ko/guide/getting-started) — Excel, Word, PowerPoint에서 첫 구조식을 만들어 보세요.
 - [**예제 파일 (Playbooks)**](/ko/guide/playbooks) — Excel(10개 탭) · Word(6페이지) · PowerPoint(8슬라이드) 자체 완결형 공식 Playbook을 받아보세요.

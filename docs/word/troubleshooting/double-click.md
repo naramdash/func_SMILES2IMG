@@ -15,7 +15,7 @@ Every `func_SMILES2IMG` picture embeds a chemical tag inside **Alt Text** (`SMIL
 
 * **Co-authors without the add-in:** Embedded 2D PNGs and 3D `.glb` models display and print identically on **macOS**, Windows, and Word Online—no `func_SMILES2IMG` installation needed on the reader's machine.
 * **Round-trip editing survives reviews:** Because chemical tags live inside standard `.docx` **Alt Text** and `CustomXMLParts`, your colleagues can edit prose or track changes on macOS, and double-click editing still works when you reopen the file on Windows ([Document Sharing](/guide/troubleshooting/document-sharing)).
-* **Vector Illustrator / TOC graphics:** Select any scheme and run **`[SMILES]` ➔ `[Copy SVG]`** to paste editable infinite-resolution vector paths.
+* **Vector Illustrator / TOC graphics:** Select any scheme and run **`[SMILES]` ➔ `[Copy SVG]`** to paste editable vector paths.
 
 ## 3. Alternative Ways to Re-Open the Editor
 

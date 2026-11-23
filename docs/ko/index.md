@@ -52,7 +52,7 @@ features:
       width: '28'
       height: '28'
     title: "Microsoft Word"
-    details: "논문 본문과 화합물 표에 구조식을 삽입하고, 클릭 한 번으로 학술지 흑백(ACS) 변환 및 벡터 SVG 복사를 지원합니다."
+    details: "논문 본문과 화합물 표에 구조식을 삽입하고, 학술지 흑백(ACS) 일괄 변환 및 벡터 SVG 복사를 지원합니다."
     link: /ko/word/
   - icon:
       src: /icons/powerpoint.svg

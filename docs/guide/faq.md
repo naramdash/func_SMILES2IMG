@@ -5,14 +5,14 @@ Answers to common workflow questions about styling, vector SVG copy, `.sdf` file
 ## 1. Styling & Vector Graphics
 
 ### Q. How do I switch to ACS Black & White, Dark Mode, or a custom bond color?
-* **1-Click Whole-Document Restyle:** In Excel, Word, or PowerPoint, click **`[SMILES]` ➔ `[Batch Style]`** on the ribbon to convert all structures in your selection or document to **Publication B&W (ACS style)**, **Dark Mode (White Ink)**, **Standard Color**, or **White Background** in one click.
+* **Whole-Document Restyle:** In Excel, Word, or PowerPoint, click **`[SMILES]` ➔ `[Batch Style]`** on the ribbon to convert structures in your selection or document to **Publication B&W (ACS style)**, **Dark Mode (White Ink)**, **Standard Color**, or **White Background**.
 * **Per-Formula Styling in Excel (Including Custom Ink Color):**
   - Black & White line art: `=SMILES2IMG(A2, "", "bw")`
   - Dark Mode (White Ink + Transparent BG): `=SMILES2IMG(A2, "trans", "white")`
   - Custom bond/atom ink color: `=SMILES2IMG(A2, "", "ink=#1e40af")`
 
 ### Q. Can I copy lossless vector graphics (`.svg`) for Adobe Illustrator or Inkscape?
-Yes! Select any molecule cell or picture and click **`[SMILES]` ➔ `[Copy SVG]`** on the ribbon (or right-click ➔ **`Chemical Structure` ➔ `Copy Vector SVG`**). Paste directly into Adobe Illustrator, Inkscape, or vector editors with zero pixelation.
+Yes! Select any molecule cell or picture and click **`[SMILES]` ➔ `[Copy SVG]`** on the ribbon (or right-click ➔ **`Chemical Structure` ➔ `Copy Vector SVG`**). Paste directly into Adobe Illustrator, Inkscape, or vector editors without pixelation.
 
 ## 2. `.sdf` Files & Molecular Property Export
 
@@ -37,7 +37,7 @@ Yes! Click **`[SMILES]` ➔ `[Import SDF]`** on the Excel ribbon:
 * **Excel 2016 / 2019 / 2021:** Append `.FLOAT` (`=SMILES2IMG.FLOAT(A2)`) to create cell-anchored floating shapes (`xlMoveAndSize`).
 
 ### Q. How do I check for updates or upgrade?
-Click **`[SMILES]` ➔ `[About func_SMILES2IMG]`** on the ribbon and press **`[Check for Updates]`**, or re-run the [10-Second PowerShell Install](/guide/install) command anytime to upgrade to the latest release:
+Click **`[SMILES]` ➔ `[About func_SMILES2IMG]`** on the ribbon and press **`[Check for Updates]`**, or re-run the [PowerShell Install](/guide/install) command anytime to upgrade to the latest release:
 
 <FeatureMedia id="common-about-dialog" />
 

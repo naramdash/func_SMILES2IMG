@@ -1,12 +1,12 @@
 # 화학식 · 분자량 · 정밀질량
 
-표준 Hill 화학식, 평균 분자량(`MW`), HRMS 단일동위원소 정밀질량, 물질 이름을 **0ms 로컬 오프라인**으로 계산하고, 반환된 실제 숫자를 유기 합성 ELN 칭량 당량 계산기와 LC-MS / HRMS 이온 피크 계산표에 바로 연결합니다.
+표준 Hill 화학식, 평균 분자량(`MW`), HRMS 단일동위원소 정밀질량, 물질 이름을 **로컬 오프라인**으로 계산하고, 반환된 실제 숫자를 유기 합성 ELN 칭량 당량 계산기와 LC-MS / HRMS 이온 피크 계산표에 바로 연결합니다.
 
 <FormulaTable
-  title="화학식 · 분자량 · 정밀질량 시트 (0ms 오프라인)"
+  title="화학식 · 분자량 · 정밀질량 시트 (오프라인)"
   :columns='["SMILES", "수식"]'
   :rows='[
-    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2FORMULA(A2)", desc: "표준 Hill 표기법 화학식 (0ms 오프라인)", out: "C9H8O4" },
+    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2FORMULA(A2)", desc: "표준 Hill 표기법 화학식 (오프라인)", out: "C9H8O4" },
     { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2MW(A3)", desc: "당량 계산용 평균 분자량 (g/mol 실수)", out: "180.16" },
     { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2EXACTMASS(A4)", desc: "HRMS 단일동위원소 정밀질량 (소수 4자리)", out: "180.0423" },
     { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2NAME(A5)", desc: "IUPAC / PubChem 영문 물질명 (캐시 지원)", out: "Aspirin" }
@@ -21,10 +21,10 @@
 
 | 출력 항목 | SMILES 입력 | InChI / KET 입력 시 | 아스피린 (`A2`) | 처리 방식 및 반환 타입 |
 | :--- | :--- | :--- | :---: | :--- |
-| **화학식 (Hill Formula)** | `=SMILES2FORMULA(A2)` | `=INCHI2FORMULA(A2)` · `=KET2FORMULA(A2)` | `C9H8O4` | **0ms 오프라인** · 표준 힐 표기법 (`String`) |
-| **분자량 (MW)** | `=SMILES2MW(A2)` | `=INCHI2MW(A2)` · `=KET2MW(A2)` | `180.16` | **0ms 오프라인** · 사칙연산 가능한 실수 `Double` (g/mol) |
-| **정밀 질량 (Exact Mass)** | `=SMILES2EXACTMASS(A2)` | `=INCHI2EXACTMASS(A2)` · `=KET2EXACTMASS(A2)` | `180.0423` | **0ms 오프라인** · 단일동위원소 질량 `Double` (Da, 소수 4자리) |
-| **물질 일반명 (Name)** | `=SMILES2NAME(A2)` | `=INCHI2NAME(A2)` · `=KET2NAME(A2)` | `Aspirin` | 내장 사전 0ms + PubChem 조회 (로컬 30일 캐시, `String`) |
+| **화학식 (Hill Formula)** | `=SMILES2FORMULA(A2)` | `=INCHI2FORMULA(A2)` · `=KET2FORMULA(A2)` | `C9H8O4` | **오프라인** · 표준 힐 표기법 (`String`) |
+| **분자량 (MW)** | `=SMILES2MW(A2)` | `=INCHI2MW(A2)` · `=KET2MW(A2)` | `180.16` | **오프라인** · 사칙연산 가능한 실수 `Double` (g/mol) |
+| **정밀 질량 (Exact Mass)** | `=SMILES2EXACTMASS(A2)` | `=INCHI2EXACTMASS(A2)` · `=KET2EXACTMASS(A2)` | `180.0423` | **오프라인** · 단일동위원소 질량 `Double` (Da, 소수 4자리) |
+| **물질 일반명 (Name)** | `=SMILES2NAME(A2)` | `=INCHI2NAME(A2)` · `=KET2NAME(A2)` | `Aspirin` | 내장 사전 + PubChem 조회 (로컬 30일 캐시, `String`) |
 
 ## 2. 실전 템플릿 ①: 유기 합성 당량(ELN) 시약 칭량 계산기
 

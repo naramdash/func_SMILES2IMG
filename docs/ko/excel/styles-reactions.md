@@ -48,7 +48,7 @@
 * **배경·선 색상 별칭:** 투명 배경은 `""`, `"trans"`, `"transparent"`, `"none"`, `"clear"`, `"nobg"` 모두 동일하게 처리되며, 단색 배경에는 `"bg=#HEX"`, 선 색상에는 `"ink=#HEX"`, `"line=#HEX"`, `"base=#HEX"` 를 지원합니다.
 * **순수 EPAM Indigo 원소 표기 규칙:** 별도 `"h"`·`"all-c"` 옵션이 없으면 중원자 4개 이하는 Indigo `terminal-hetero`, 5개 이상은 `hetero` 표준 라벨 규칙만 사용합니다(임의 휴리스틱 변형 없음).
 * **입체화학 보존 (반전 옵션 무시):** `"rot90"`, `"rot180"`, `"rot270"` 평면 회전은 R/S 절대 배열을 보존합니다. 레거시 거울 반전 키워드(`flip`, `flipx`, `flipy`)는 입체 왜곡 방지를 위해 조용히 무시됩니다.
-* **무손실 시트 일괄 변환:** 기존 수식 수백 행을 클릭 한 번에 ACS 흑백이나 다크 모드로 바꾸려면 **`[SMILES]` ➔ `[Batch Style]`** 을 사용하세요. 기존 `hl:`, `num`, `stereo`, `h`, `all-c` 와 회전 인수는 그대로 유지됩니다 ([일괄 스타일 · TSV · 3D](/ko/excel/tools-export)).
+* **무손실 시트 일괄 변환:** 기존 수식 수백 행을 ACS 흑백이나 다크 모드로 일괄 변환하려면 **`[SMILES]` ➔ `[Batch Style]`** 을 사용하세요. 기존 `hl:`, `num`, `stereo`, `h`, `all-c` 와 회전 인수는 그대로 유지됩니다 ([일괄 스타일 · TSV · 3D](/ko/excel/tools-export)).
 
 ## 관련 가이드
 

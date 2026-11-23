@@ -46,7 +46,10 @@ public static class LiveMenuCapture
 
     [DllImport("user32.dll")] public static extern bool SetProcessDpiAwarenessContext(IntPtr val);
     [DllImport("user32.dll")] public static extern bool SetProcessDPIAware();
+    [DllImport("user32.dll")] public static extern uint GetDpiForWindow(IntPtr hwnd);
+    [DllImport("user32.dll")] public static extern uint GetDpiForSystem();
     [DllImport("user32.dll")] public static extern bool SetWindowPos(IntPtr h, IntPtr after, int x, int y, int cx, int cy, uint flags);
+    [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr h, int nCmdShow);
     [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h, out RECT r);
     [DllImport("user32.dll")] public static extern bool PrintWindow(IntPtr h, IntPtr hdc, uint f);
     [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr h);
@@ -63,6 +66,46 @@ public static class LiveMenuCapture
     {
         try { if (SetProcessDpiAwarenessContext(new IntPtr(-4))) return; } catch { }
         try { SetProcessDPIAware(); } catch { }
+    }
+
+    public static double GetWindowDpiScale(IntPtr hwnd)
+    {
+        uint dpi = 0;
+        try { if (hwnd != IntPtr.Zero) dpi = GetDpiForWindow(hwnd); } catch { }
+        if (dpi == 0)
+        {
+            try { dpi = GetDpiForSystem(); } catch { }
+        }
+        if (dpi < 96) dpi = 96;
+        return dpi / 96.0;
+    }
+
+    public static Size SetMainWindowSizeLogical(IntPtr hwnd, int logicalX, int logicalY, int logicalW, int logicalH)
+    {
+        ShowWindow(hwnd, 9);
+        SetWindowPos(hwnd, IntPtr.Zero, logicalX, logicalY, 800, 450, 0x0040);
+        System.Threading.Thread.Sleep(60);
+
+        double scale = GetWindowDpiScale(hwnd);
+        int physX = (int)Math.Round(logicalX * scale / 2.25);
+        int physY = (int)Math.Round(logicalY * scale / 2.25);
+        int physW = ((int)Math.Round(logicalW * scale) / 2) * 2;
+        int physH = ((int)Math.Round(logicalH * scale) / 2) * 2;
+        try
+        {
+            var bounds = System.Windows.Forms.Screen.FromHandle(hwnd).Bounds;
+            int maxW = Math.Max(640, bounds.Width - 16);
+            int maxH = Math.Max(360, bounds.Height - 16);
+            if (physW > maxW || physH > maxH)
+            {
+                double clamp = Math.Min((double)maxW / physW, (double)maxH / physH);
+                physW = ((int)Math.Floor(physW * clamp) / 2) * 2;
+                physH = ((int)Math.Floor(physH * clamp) / 2) * 2;
+            }
+        }
+        catch { }
+        SetWindowPos(hwnd, IntPtr.Zero, physX, physY, physW, physH, 0x0040);
+        return new Size(physW, physH);
     }
 
     public static void RightClickScreen(int screenX, int screenY)
@@ -94,17 +137,28 @@ public static class LiveMenuCapture
 
     public static void SanitizeTitleBarAccount(Bitmap bmp)
     {
+        SanitizeTitleBarAccount(bmp, 2.25);
+    }
+
+    public static void SanitizeTitleBarAccount(Bitmap bmp, double dpiScale)
+    {
         int w = bmp.Width;
-        if (w < 900 || bmp.Height < 120) return;
+        double s = dpiScale > 0.5 ? dpiScale : 1.0;
+        if (w < (int)Math.Round(450 * s) || bmp.Height < (int)Math.Round(60 * s)) return;
         // Sample clean Office title bar strip just right of the Search bar
-        Color sample = bmp.GetPixel(Math.Max(10, w - 860), 45);
+        int sampleX = Math.Max(10, w - (int)Math.Round(415 * s));
+        int sampleY = Math.Max(4, Math.Min(bmp.Height - 4, (int)Math.Round(20 * s)));
+        Color sample = bmp.GetPixel(sampleX, sampleY);
         using (var br = new SolidBrush(sample))
         using (var g = Graphics.FromImage(bmp))
         {
-            // Cover top-right account avatar & upgrade pill seamlessly before window controls (Max/Close)
-            int boxW = 570;
-            int boxX = Math.Max(0, w - 800);
-            g.FillRectangle(br, boxX, 4, boxW, 86);
+            // Cover top-right account avatar & upgrade pill seamlessly before window controls (Min/Max/Close)
+            int boxX = Math.Max(0, w - (int)Math.Round(380 * s));
+            int boxRight = Math.Max(boxX, w - (int)Math.Round(150 * s));
+            int boxW = Math.Max(1, boxRight - boxX);
+            int boxY = Math.Max(2, (int)Math.Round(2 * s));
+            int boxH = Math.Max(20, (int)Math.Round(38 * s));
+            g.FillRectangle(br, boxX, boxY, boxW, boxH);
         }
     }
 
@@ -162,7 +216,7 @@ public static class LiveMenuCapture
                     PrintWindow(mainHwnd, hdc, 2);
                     mg.ReleaseHdc(hdc);
                 }
-                SanitizeTitleBarAccount(mainBmp);
+                SanitizeTitleBarAccount(mainBmp, GetWindowDpiScale(mainHwnd));
                 g.DrawImage(mainBmp, 0, 0, mw, mh);
             }
 
@@ -270,7 +324,7 @@ if ($TargetApp -eq 'All' -or $TargetApp -eq 'Word') {
         $hwnd = [IntPtr]$word.ActiveWindow.Hwnd
         [uint32]$wPid = 0
         [void][LiveMenuCapture]::GetWindowThreadProcessId($hwnd, [ref]$wPid)
-        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 8, 8, 2768, 1556, 0x0040)
+        [void][LiveMenuCapture]::SetMainWindowSizeLogical($hwnd, 8, 8, 1230, 692)
         Start-Sleep -Milliseconds 600
         Select-RibbonTab $hwnd 'SMILES'
 
@@ -333,7 +387,7 @@ if ($TargetApp -eq 'All' -or $TargetApp -eq 'Excel') {
         $hwnd = [IntPtr]$excel.Hwnd
         [uint32]$xPid = 0
         [void][LiveMenuCapture]::GetWindowThreadProcessId($hwnd, [ref]$xPid)
-        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 8, 8, 2768, 1556, 0x0040)
+        [void][LiveMenuCapture]::SetMainWindowSizeLogical($hwnd, 8, 8, 1230, 692)
         Start-Sleep -Milliseconds 600
         Select-RibbonTab $hwnd 'SMILES'
 
@@ -413,7 +467,7 @@ if ($TargetApp -eq 'All' -or $TargetApp -eq 'PowerPoint') {
         $hwnd = [IntPtr]$ppt.HWND
         [uint32]$pPid = 0
         [void][LiveMenuCapture]::GetWindowThreadProcessId($hwnd, [ref]$pPid)
-        [void][LiveMenuCapture]::SetWindowPos($hwnd, [IntPtr]::Zero, 8, 8, 2768, 1556, 0x0040)
+        [void][LiveMenuCapture]::SetMainWindowSizeLogical($hwnd, 8, 8, 1230, 692)
         Start-Sleep -Milliseconds 600
         Select-RibbonTab $hwnd 'SMILES'
 

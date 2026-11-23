@@ -8,7 +8,7 @@
 | [**2. Hit-to-Lead SAR 선별**](#sar-triage) | 기준 쿼리 셀(`$B$2`)로 부분구조 필터·하이라이트·LogP 동시 선별 | `=SMILES.MATCH`, `"hl:"` |
 | [**3. 시약 재고 · 중복 화합물 제거**](#deduplication) | 표기 순서가 다른 SMILES를 `InChIKey` 로 표준화해 중복 검출·병합 | `=SMILES2INCHIKEY` |
 | [**4. SDF 불러오기 · 보고서 연동**](#sdf-handoff) | `.sdf` 파일을 11열 수식 시트로 열고 Word 논문·PPT 발표로 바로 이동 | `[Import SDF]`, `[Batch Style]` |
-| [**5. R-그룹 유도체 자동 조합**](#rgroup-enumeration) | `SUBSTITUTE` 치환기 조합만으로 구조식·MW·화학식 0ms 예측 | `=SUBSTITUTE`, `=SMILES2IMG` |
+| [**5. R-그룹 유도체 자동 조합**](#rgroup-enumeration) | `SUBSTITUTE` 치환기 조합만으로 구조식·MW·화학식 오프라인 산출 | `=SUBSTITUTE`, `=SMILES2IMG` |
 | [**6. 드롭다운 리드 비교 · FILTER 보드**](#dynamic-comparison) | `XLOOKUP`·`FILTER` 로 인셀 구조식 이미지를 동적으로 추출·비교 (365+) | `=XLOOKUP`, `=FILTER` |
 
 ---
@@ -62,7 +62,7 @@
 
 ## 3. 시약 재고 · 중복 화합물 제거 {#deduplication}
 
-공급처나 논문마다 동일 분자의 SMILES 원자 순서가 달라(`c1ccccc1C(=O)O` vs `O=C(O)c1ccccc1`) 일반 텍스트 비교로는 중복을 놓치기 쉽습니다. 원자 순서와 무관한 27자리 **`InChIKey`** 로 정규화하면 `COUNTIF` 중복 표시, `XLOOKUP` 시트 병합, **중복된 항목 제거**가 완벽하게 동작합니다.
+공급처나 논문마다 동일 분자의 SMILES 원자 순서가 달라(`c1ccccc1C(=O)O` vs `O=C(O)c1ccccc1`) 일반 텍스트 비교로는 중복을 놓치기 쉽습니다. 원자 순서와 무관한 27자리 **`InChIKey`** 로 정규화하면 `COUNTIF` 중복 표시, `XLOOKUP` 시트 병합, **중복된 항목 제거**를 정확하게 수행할 수 있습니다.
 
 <FeatureMedia id="excel-conversions" />
 
@@ -90,8 +90,8 @@ RDKit, KNIME, DataWarrior, PubChem에서 내보낸 `.sdf` 화학 DB를 엑셀 �
 
 <FeatureMedia id="excel-sdf-workflow" />
 
-1. **1클릭 11열 수식 표 생성:** **`[SMILES]` ➔ `[Import SDF]`** 를 누르면 `Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `TPSA`, `Rings`, `Aromatic Rings`, `Fsp3` 열이 자동 완성됩니다.
-2. **1초 스타일 통일:** 상위 히트만 필터링한 뒤 **`[SMILES]` ➔ `[Batch Style]` ➔ `[Publication B&W]`** (또는 `Dark Mode`)를 적용합니다.
+1. **11열 수식 표 생성:** **`[SMILES]` ➔ `[Import SDF]`** 를 누르면 `Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `TPSA`, `Rings`, `Aromatic Rings`, `Fsp3` 열이 자동 생성됩니다.
+2. **스타일 일괄 통일:** 상위 히트만 필터링한 뒤 **`[SMILES]` ➔ `[Batch Style]` ➔ `[Publication B&W]`** (또는 `Dark Mode`)를 적용합니다.
 3. **Word · PowerPoint 연동:**
    - **Word 논문 표로:** 물성 행을 복사해 붙이거나, 구조식 셀에서 **`[Copy SMILES]`** / **`[Copy KET]`** 후 Word에서 **`[Paste Structure]`** 를 누르세요 ([Word 활용 사례](/ko/word/use-cases)).
    - **PowerPoint 발표로:** 셀에서 복사 후 슬라이드에 **`[Paste Structure]`** ➔ **`[Batch Style]` ➔ `[Dark Mode]`** 를 적용하세요 ([PowerPoint 활용 사례](/ko/powerpoint/use-cases)).
@@ -102,7 +102,7 @@ RDKit, KNIME, DataWarrior, PubChem에서 내보낸 `.sdf` 화학 DB를 엑셀 �
 
 ## 5. R-그룹 유도체 자동 조합 {#rgroup-enumeration}
 
-Python이나 RDKit 없이 엑셀 기본 함수 **`SUBSTITUTE`** 만으로 치환기별 구조식과 물성을 시뮬레이션할 수 있습니다. `A` 열에 치환기 SMILES 조각만 추가하면 유도체 구조식·분자량·화학식·LogP가 0ms 만에 계산됩니다.
+Python이나 RDKit 없이 엑셀 기본 함수 **`SUBSTITUTE`** 만으로 치환기별 구조식과 물성을 시뮬레이션할 수 있습니다. `A` 열에 치환기 SMILES 조각만 추가하면 유도체 구조식·분자량·화학식·LogP가 로컬에서 계산됩니다.
 
 <FeatureMedia id="excel-cheminformatics" />
 
@@ -147,4 +147,4 @@ Python이나 RDKit 없이 엑셀 기본 함수 **`SUBSTITUTE`** 만으로 치환
 ## 다음 단계
 
 - [**10개 탭 Excel Playbook (.xlsx) 실습하기**](/ko/excel/playbook) — 위 템플릿이 모두 담긴 통합 실습 시트를 바로 열어 보세요.
-- [**10초 원클릭 설치 가이드**](/ko/guide/install) — Excel·Word·PowerPoint 통합 설치 명령어를 확인하세요.
+- [**설치 가이드**](/ko/guide/install) — Excel·Word·PowerPoint 통합 설치 명령어를 확인하세요.

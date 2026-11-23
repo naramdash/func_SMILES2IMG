@@ -46,7 +46,7 @@ $coreDll = (Resolve-Path (Join-Path $repoRoot 'dist\x64\Word\Smiles2Img.Core.dll
 [System.Reflection.Assembly]::LoadFrom($coreDll) | Out-Null
 [Smiles2Img.Rendering.NativeIndigo]::Initialize((Split-Path $coreDll -Parent))
 
-$addinVersion = '1.9.0'
+$addinVersion = '1.9.1'
 try {
     $propsXml = [xml](Get-Content (Join-Path $repoRoot 'Directory.Build.props') -Raw)
     if ($propsXml.Project.PropertyGroup.Version) { $addinVersion = [string]$propsXml.Project.PropertyGroup.Version }
@@ -298,7 +298,7 @@ try {
         "No web documentation needed! Explore all 10 tabs from basics to real-world lab workflows. SMILES/InChI/KET rendering, all 41 property/SAR/conversion formulas, and Ketcher 2D run locally offline; optional PubChem Name/CAS lookup and Mol* PDB fetch use the network once and cache locally." `
         0x6E760F
 
-    Add-SectionHeader $s0 4 7 'A. 3-Minute Interactive Sandbox — Try Editing Any Input (Col C) or Double-Click Any Structure Cell (Col E)!'
+    Add-SectionHeader $s0 4 7 'A. Interactive Sandbox — Try Editing Any Input (Col C) or Double-Click Any Structure Cell (Col E)'
     $t0Headers = @('#', 'Capability', 'Editable Input', 'Formula Syntax (Copyable)', 'Live Result (In-Cell)', 'How to Try It Right Now', 'What You Learn')
     $t0Widths  = @(5, 22, 26, 36, 26, 30, 48)
     $t0Rows = @(
@@ -307,7 +307,7 @@ try {
         @(3, 'SMILES -> 2D Structure', 'CC(=O)Oc1ccccc1C(=O)O',                '=SMILES2IMG(C8)',                '', 'Double-click Col E to open Ketcher',    'Offline local Indigo rendering; scales cleanly when resizing rows/columns'),
         @(4, 'InChI -> 2D Structure',  'InChI=1S/C8H9NO2/c1-6(10)9-7-2-4-8(11)5-3-7/h2-5,11H,1H3,(H,9,10)', '=INCHI2IMG(C9)', '', 'Edit InChI or double-click cell', 'Direct rendering from IUPAC Standard InChI identifiers'),
         @(5, 'Molecular Weight (MW)',  'CC(=O)Oc1ccccc1C(=O)O',                '=SMILES2MW(C10)',                '', 'Use in math: =SMILES2MW(C10)*10',       'Returns a native Excel Double (180.16) for stoichiometry & mass formulas'),
-        @(6, 'Chemical Formula',       'CC(=O)Oc1ccccc1C(=O)O',                '=SMILES2FORMULA(C11)',           '', 'Combine with text: & operator',         'Instant offline Hill formula (C9H8O4) with zero server calls'),
+        @(6, 'Chemical Formula',       'CC(=O)Oc1ccccc1C(=O)O',                '=SMILES2FORMULA(C11)',           '', 'Combine with text: & operator',         'Local offline Hill formula (C9H8O4) without server calls'),
         @(7, 'TPSA (Polar Surface)',   'CC(=O)Oc1ccccc1C(=O)O',                '=SMILES2TPSA(C12)',              '', 'Pass TRUE: =SMILES2TPSA(C12,TRUE)',     'Indigo Ertl TPSA (A^2; optional TRUE includes S/P atoms)'),
         @(8, 'Substructure Match',     'CC(=O)Oc1ccccc1C(=O)O',                '=SMILES.MATCH(C13, "c1ccccc1")', '', 'Swap "c1ccccc1" -> "C(=O)O"',           'Returns TRUE/FALSE for SMARTS/SMILES pharmacophore filtering'),
         @(9, 'ACS Publication B&W',    'CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O',      '=SMILES2IMG(C14, , "bw stereo")','', 'Or click Ribbon -> Batch Style',        'Combine tokens: pure black ACS journal line art + chiral R/S labels'),
@@ -332,7 +332,7 @@ try {
     Add-SectionHeader $s0 17 7 'B. Playbook Roadmap — What Each Tab Teaches (Click Any Tab Below to Jump In)'
     $mapHeaders = @('Tab', 'Sheet Name', 'Level', 'Primary Goal', 'Key Functions / Tools Demonstrated', 'Hands-On Exercise Included', 'Best For')
     $mapRows = @(
-        @('0', '0. Start Here',            'Beginner',     'Instant orientation & live sandbox',           'Top 10 formulas + double-click edit',             'Edit Col C & double-click Col E',           'First-time users'),
+        @('0', '0. Start Here',            'Beginner',     'Quick orientation & live sandbox',             'Top 10 formulas + double-click edit',             'Edit Col C & double-click Col E',           'First-time users'),
         @('1', '1. Structure Rendering',   'Beginner',     'Render from Name, CAS, SMILES & InChI',        '=NAME2IMG, =SMILES2IMG, =INCHI2IMG',              'Drag down across 12 compound rows',         'Catalogs & inventories'),
         @('2', '2. Properties & 3D',       'Intermediate', '14-col medicinal chemistry screening table',   'All 9 SMILES property & 3D complexity UDFs',      'Live AVERAGE & SUM dashboard',              'Drug discovery & ADMET'),
         @('3', '3. SAR & SMARTS',          'Intermediate', 'Substructure highlighting & InChI parity',     '=SMILES.MATCH, =INCHI.MATCH, hl:SMARTS',          'Edit Query B3 + built-in 12-group SMARTS',  'SAR & scaffold filters'),
@@ -365,7 +365,7 @@ try {
         @(5,  'CAS Number',  '50-78-2',                                                                   '=NAME2IMG(C8)',   '', '=NAME2SMILES(C8)',   '=SMILES2NAME(F8)',   'Aspirin CAS number — no SMILES required'),
         @(6,  'CAS Number',  '58-08-2',                                                                   '=NAME2IMG(C9)',   '', '=NAME2SMILES(C9)',   '=SMILES2NAME(F9)',   'Caffeine CAS registry lookup'),
         @(7,  'CAS Number',  '103-90-2',                                                                  '=NAME2IMG(C10)',  '', '=NAME2SMILES(C10)',  '=SMILES2NAME(F10)',  'Acetaminophen / Paracetamol CAS lookup'),
-        @(8,  'SMILES',      'c1ccccc1',                                                                  '=SMILES2IMG(C11)','', 'c1ccccc1',           '=SMILES2NAME(C11)',  'Benzene — offline rendering (0 ms network)'),
+        @(8,  'SMILES',      'c1ccccc1',                                                                  '=SMILES2IMG(C11)','', 'c1ccccc1',           '=SMILES2NAME(C11)',  'Benzene — local offline rendering (no network)'),
         @(9,  'SMILES',      'CCO',                                                                       '=SMILES2IMG(C12)','', 'CCO',                '=SMILES2NAME(C12)',  'Ethanol — primary aliphatic alcohol'),
         @(10, 'SMILES',      'CN1CCC[C@H]1c2cccnc2',                                                      '=SMILES2IMG(C13)','', 'CN1CCC[C@H]1c2cccnc2','=SMILES2NAME(C13)', 'Nicotine — chiral pyrrolidine + pyridine'),
         @(11, 'SMILES',      'O=Cc1ccc(O)c(OC)c1',                                                        '=SMILES2IMG(C14)','', 'O=Cc1ccc(O)c(OC)c1', '=SMILES2NAME(C14)',  'Vanillin — phenolic aromatic aldehyde'),
@@ -400,7 +400,7 @@ try {
         @{ H = 'Med-Chem Note';  W = 36; Fn = $null }
     )
     Set-BannerAndCallout $s2 $t2Cols.Length `
-        '2. Physicochemical Descriptors & 3D Complexity Dashboard (100% Offline)' `
+        '2. Physicochemical Descriptors & 3D Complexity Dashboard (Offline Engine)' `
         'EPAM Indigo Wildman-Crippen LogP & Ertl TPSA paired with 3D complexity metrics: Fsp3 >= 0.25 and fewer Aromatic Rings help improve solubility. All numeric outputs work directly inside AVERAGE / SUM / COUNTIF / IF!' `
         0x417C10
 
@@ -530,7 +530,7 @@ try {
     $s4 = $sheets[4]
     Set-BannerAndCallout $s4 9 `
         '4. Cross-Notation Conversions & Chemical Library Deduplication (SMILES <-> InChI <-> InChIKey <-> Name)' `
-        'Real-World Trick: Two chemists often write different valid SMILES for the exact same molecule (see Rows 8 & 9 below). Use =SMILES2INCHIKEY to automatically detect duplicates with 100% accuracy!' `
+        'Real-World Trick: Two chemists often write different valid SMILES for the exact same molecule (see Rows 8 & 9 below). Use =SMILES2INCHIKEY to detect duplicates reliably via IUPAC InChIKey!' `
         0x8F5E00
 
     $t4Headers = @('#', 'Label / Source', 'Raw SMILES Input', '2D Structure', 'IUPAC InChI (=SMILES2INCHI)', 'InChIKey (=SMILES2INCHIKEY)', 'Round-Trip SMILES (=INCHI2SMILES)', 'MW via InChI (=INCHI2MW)', 'Duplicate Check (vs Row Above)')
@@ -777,21 +777,21 @@ try {
     $r9Headers = @('Ribbon Group', 'Exact Button / Menu Label', 'How to Access', 'Primary Action', 'Output / Export Options', 'Tips & Cross-App Notes')
     $r9Widths  = @(18, 28, 22, 34, 32, 42)
     $r9Rows = @(
-        @('Insert Structure', 'Insert / Edit (SMILES)',     'Ribbon / Double-Click',       'Opens EPAM Ketcher 2D editor',                    'Inserts =SMILES2IMG or =KET2IMG',          'Double-click any molecule cell to edit in 0.05s'),
+        @('Insert Structure', 'Insert / Edit (SMILES)',     'Ribbon / Double-Click',       'Opens EPAM Ketcher 2D editor',                    'Inserts =SMILES2IMG or =KET2IMG',          'Double-click any molecule cell to edit in place'),
         @('Insert Structure', 'Insert / Edit (InChI)',      'Ribbon -> [SMILES]',          'Opens Ketcher / inserts IUPAC InChI formula',     'Inserts =INCHI2IMG(...)',                  'Best for regulatory & PubChem InChI tables'),
         @('Insert Structure', 'Insert / Edit (KET)',        'Ribbon -> [SMILES]',          'Inserts lossless KET reaction / canvas formula',  'Inserts =KET2IMG(...)',                    'Preserves reaction arrows, +, and labels'),
         @('Insert Structure', '3D Structure (Mol*)',        'Ribbon -> [SMILES]',          'Opens Mol* 3D protein viewer (PDB / local file)', '3D Model (.glb) or Transparent 2D PNG',    'Try PDB IDs: 1CRN, 4HHB, 6LU7, 1BNA'),
-        @('Insert Structure', 'Paste Structure',            'Ribbon or Right-Click',       'Converts clipboard SMILES/InChI/KET/Name in 0.1s','Instant structure without opening editor', 'Confirmation prompt guards ambiguous words/names'),
+        @('Insert Structure', 'Paste Structure',            'Ribbon or Right-Click',       'Converts clipboard SMILES/InChI/KET/Name',        'Places structure directly on the sheet',   'Confirmation prompt guards ambiguous words/names'),
         @('Structure Tools',  'Copy SMILES / InChI / KET',  'Ribbon or Right-Click',       'Extracts exact identifier from selected cell',    'Plain text onto clipboard',                'Right-click -> Chemical Structure > ...'),
         @('Structure Tools',  'Copy SVG',                   'Ribbon or Right-Click',       'Copies lossless vector SVG graphics',             'Paste into Illustrator / Inkscape',        'Crisp at any poster/journal DPI'),
         @('Structure Tools',  'Molecule Info',              'Ribbon or Right-Click',       'Inspects 12 descriptors + 2D preview dialog',     'Summary, 12-col TSV, List, Markdown, JSON','Double-click any row to copy single value'),
-        @('Structure Tools',  'Batch Style',                'Ribbon -> Batch Style',       '1-click restyle across selection or entire sheet','Color, ACS B&W, White BG, Dark Mode',      'Losslessly preserves hl:, num, stereo & rot*'),
+        @('Structure Tools',  'Batch Style',                'Ribbon -> Batch Style',       'Batch restyle across selection or entire sheet',  'Color, ACS B&W, White BG, Dark Mode',      'Losslessly preserves hl:, num, stereo & rot*'),
         @('Structure Tools',  'Import SDF',                 'Ribbon -> [Import SDF]',      'Imports V2000/V3000 .sdf into live formula sheet','11-col table (MW, LogP, TPSA, Fsp3, etc.)','Live Indigo descriptors refresh on edit'),
         @('Diagnostics/About','Diagnostics, Docs & About',  'Ribbon -> [SMILES]',          'Inspects Indigo logs, opens /excel/ docs, updates', 'Logs, Online Docs, 3rd-party notices',   'Open Diagnostics on #VALUE!; Online Docs for guides')
     )
     Add-StyledTable $s9 5 $r9Headers $r9Rows @{} 0x475569 $r9Widths 30 @(1,2,3,4,5,6) @()
 
-    Add-SectionHeader $s9 17 6 'B. Complete 49-Function Excel UDF Catalog (Grouped by Category — Zero Web Docs Needed)'
+    Add-SectionHeader $s9 17 6 'B. Complete 49-Function Excel UDF Catalog (Grouped by Category — Self-Contained Reference)'
     $f9Headers = @('Category', 'Function Name', 'Syntax', 'Return Type', 'Network?', 'Description')
     $f9Rows = @(
         @('In-Cell Image (4)',    'SMILES2IMG',        '=SMILES2IMG(smiles, [bg], [style], [transform])', 'In-Cell Picture', 'Offline',  'Render 2D structure from SMILES string'),

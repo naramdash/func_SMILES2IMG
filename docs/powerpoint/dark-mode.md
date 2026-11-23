@@ -1,19 +1,19 @@
 # 2. Dark Mode, Candidate Cards, Deck Restyle
 
-Render crisp white-ink chemical structures over dark navy, slate, or gradient slides with zero white rectangles—and switch an entire multi-slide presentation between Dark Mode, bright seminar templates, and monochrome handouts in one click.
+Render crisp white-ink chemical structures over dark navy, slate, or gradient slides without white rectangles—and switch a multi-slide presentation between Dark Mode, bright seminar templates, and monochrome handouts using Batch Style.
 
-## 1. Two Ways to Eliminate White Boxes on Dark Slides
+## 1. Two Ways to Avoid White Boxes on Dark Slides
 
-Standard screenshots leave blinding white boxes on dark conference themes. With `func_SMILES2IMG`, both background and ink adapt cleanly:
+Standard screenshots leave white boxes on dark conference themes. With `func_SMILES2IMG`, both background and ink adapt to the slide theme:
 
 <FeatureMedia id="powerpoint-slide-dark-mode" />
 
 * **Method A — Before Inserting (Ketcher / Mol\*):** Switch Ketcher's top bar to **`[Background: Transparent]`** (or Mol\*'s **`BG: Transparent`**) before pressing <kbd>Ctrl</kbd> + <kbd>Enter</kbd>.
-* **Method B — After Inserting (1-Click `Batch Style`):** Select one or more shapes (or leave nothing selected to convert the **entire deck**) and click **`[SMILES]` ➔ `[Batch Style]` ➔ `[Dark Mode (White Ink)]`**.
+* **Method B — After Inserting (`Batch Style`):** Select one or more shapes (or leave nothing selected to update the **entire deck**) and click **`[SMILES]` ➔ `[Batch Style]` ➔ `[Dark Mode (White Ink)]`**.
 
 ## 2. 4-Card Lead Candidate SAR Grid Recipe
 
-Build polished Hit-to-Lead and SAR comparison slides where structures, potency tags, and ADME summaries line up pixel-for-pixel:
+Build polished Hit-to-Lead and SAR comparison slides where structures, potency tags, and ADME summaries line up cleanly:
 
 <FeatureMedia id="powerpoint-slide-candidate-grid" />
 
@@ -23,9 +23,9 @@ Build polished Hit-to-Lead and SAR comparison slides where structures, potency t
 4. Click each structure and choose **`[SMILES]` ➔ `[Molecule Info]` ➔ `[Copy as Multi-Line List]`** (or **`Copy Molecular Weight`** / **`Detailed Window`**) to paste verified Formula, MW, LogP, TPSA, and `Fsp3` metrics into the text area below.
 5. **Tweak Substituents Without Re-Aligning:** **Double-click** any card's molecule anytime to modify R-groups in Ketcher—when applied, the structure stays centered inside its original card footprint.
 
-## 3. Switch an Entire Presentation's Theme in 1 Second (`Batch Style`)
+## 3. Switch an Entire Presentation's Theme (`Batch Style`)
 
-Reusing slides from a dark auditorium conference deck inside a white lab-meeting template or printed handout takes one click across every slide at once:
+Reusing slides from a dark conference deck inside a white lab-meeting template or printed handout takes one Batch Style pass across every slide:
 
 <FeatureMedia id="powerpoint-slide-batch-style" />
 
@@ -44,6 +44,6 @@ PowerPoint `Batch Style` scans top-level slide shapes. If you **Grouped** (<kbd>
 
 ## Related Guides
 
-- [**1. 2D Structures & Reaction Slides**](/powerpoint/slides-structures) — 0.1s TextBox conversion, Ketcher reactions, and double-click editing
+- [**1. 2D Structures & Reaction Slides**](/powerpoint/slides-structures) — TextBox conversion, Ketcher reactions, and double-click editing
 - [**4. A0 Posters (SVG), Q&A, Podium Sharing**](/powerpoint/publishing-qa) — Copy vector SVG for A0 posters and prepare speaker notes for Q&A
 - [**Dark Slides & Grouped Shapes Troubleshooting**](/powerpoint/troubleshooting/dark-slides) — Fix white boxes, low-contrast bonds, or skipped grouped shapes

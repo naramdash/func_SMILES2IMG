@@ -1,6 +1,6 @@
 # Getting Started
 
-Once **`func_SMILES2IMG`** is installed and the **`[SMILES]`** ribbon tab is visible, try rendering your first molecule in Excel, Word, or PowerPoint in under 1 minute.
+Once **`func_SMILES2IMG`** is installed and the **`[SMILES]`** ribbon tab is visible, try rendering your first molecule in Excel, Word, or PowerPoint.
 
 ## 1. Microsoft Excel — First Formula (`=NAME2IMG` / `=SMILES2IMG`)
 
@@ -31,7 +31,7 @@ Prefer practicing hands-on directly inside Excel, Word, or PowerPoint? Visit [In
 
 ## 3. Microsoft PowerPoint — Dark Mode & 3D Slides
 
-Insert alpha-transparent white-ink structures onto dark presentation templates, convert textboxes containing SMILES/names in 0.1s with **`[Paste Structure]`**, or embed 360°-rotatable 3D protein models via **`[3D Structure (Mol*)]`**.
+Insert alpha-transparent white-ink structures onto dark presentation templates, convert textboxes containing SMILES/names with **`[Paste Structure]`**, or embed 360°-rotatable 3D protein models via **`[3D Structure (Mol*)]`**.
 
 <FeatureMedia id="powerpoint-overview" />
 
@@ -39,5 +39,5 @@ Insert alpha-transparent white-ink structures onto dark presentation templates, 
 
 - [**Excel Guide**](/excel/) — Structure tables, Name/CAS lookup, LogP/TPSA/3D screening, `.sdf` import, and all 49 formulas
 - [**Word Guide**](/word/) — Inline manuscript structures, fixed-width SAR tables, KET reaction schemes, Mol\* 3D figures, and ACS B&W submission
-- [**PowerPoint Guide**](/powerpoint/) — Dark-mode structure cards, 0.1s TextBox conversion, synthesis slides, and 360°-rotatable 3D proteins
+- [**PowerPoint Guide**](/powerpoint/) — Dark-mode structure cards, TextBox conversion, synthesis slides, and 360°-rotatable 3D proteins
 - **[Editor — Ketcher 2D, Mol\* 3D, Export](/editor/)** — Master the 2D sketcher, 3D protein viewer, ACS B&W Batch Style, and lossless SVG copy

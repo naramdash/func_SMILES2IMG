@@ -1,6 +1,6 @@
 # Identifier Conversions & `InChIKey` Deduplication
 
-Standardize and deduplicate chemical identifiers across **Name**, **CAS Registry Number**, **Canonical SMILES**, **IUPAC InChI**, and **27-character `InChIKey` hashes**—enabling exact `XLOOKUP` joins and one-click duplicate removal across merged vendor or literature tables.
+Standardize and deduplicate chemical identifiers across **Name**, **CAS Registry Number**, **Canonical SMILES**, **IUPAC InChI**, and **27-character `InChIKey` hashes**—enabling exact `XLOOKUP` joins and duplicate removal across merged vendor or literature tables.
 
 <FormulaTable
   title="Identifier Conversion Sheet"
@@ -17,7 +17,7 @@ Standardize and deduplicate chemical identifiers across **Name**, **CAS Registry
 
 ## 1. Cross-Notation Conversion Functions
 
-Every identifier conversion returns a native Excel text `String` (`*2NAME` resolves via offline catalog + cached PubChem lookup; SMILES/InChI/KET structural conversions compute 100% offline in 0ms):
+Every identifier conversion returns a native Excel text `String` (`*2NAME` resolves via offline catalog + cached PubChem lookup; SMILES/InChI/KET structural conversions compute offline):
 
 | Conversion Direction | Excel Formula | Example Output (`Aspirin`) |
 | :--- | :--- | :--- |
@@ -36,9 +36,9 @@ Add a canonical helper column using `=SMILES2INCHIKEY(B2)`—because the 27-char
 
 | Task | Copy-Ready Excel Recipe (`D` = `=SMILES2INCHIKEY(B2)`) | Result |
 | :--- | :--- | :--- |
-| **Flag Duplicates Live** | `=IF(COUNTIF($D$2:$D$500, D2)>1, "Duplicate", "Unique")` | Highlights overlapping compounds instantly across sheets |
+| **Flag Duplicates Live** | `=IF(COUNTIF($D$2:$D$500, D2)>1, "Duplicate", "Unique")` | Highlights overlapping compounds automatically across sheets |
 | **Exact Vendor Cross-Lookup** | `=XLOOKUP(D2, VendorB!$D:$D, VendorB!$E:$E, "Not Found")` | Joins assay data or pricing reliably even when SMILES strings differ |
-| **Clean Master Table** | Select your table ➔ Excel **`[Data]` ➔ `[Remove Duplicates]`** on the `InChIKey` column | Strips chemically identical duplicates with 100% accuracy |
+| **Clean Master Table** | Select your table ➔ Excel **`[Data]` ➔ `[Remove Duplicates]`** on the `InChIKey` column | Removes chemically identical duplicate rows consistently |
 
 ## Related Guides
 

@@ -23,7 +23,7 @@ $coreDll = (Resolve-Path (Join-Path $repoRoot 'dist\x64\Word\Smiles2Img.Core.dll
 [System.Reflection.Assembly]::LoadFrom($coreDll) | Out-Null
 [Smiles2Img.Rendering.NativeIndigo]::Initialize((Split-Path $coreDll -Parent))
 
-$addinVersion = '1.9.0'
+$addinVersion = '1.9.1'
 try {
     $propsXml = [xml](Get-Content (Join-Path $repoRoot 'Directory.Build.props') -Raw)
     if ($propsXml.Project.PropertyGroup.Version) { $addinVersion = [string]$propsXml.Project.PropertyGroup.Version }
@@ -342,7 +342,7 @@ try {
     $bc = $bannerTbl.Cell(1, 1)
     $bc.Shading.BackgroundPatternColor = 0x6E760F # Deep Teal #0F766E (BGR)
     $bc.TopPadding = 10; $bc.BottomPadding = 10; $bc.LeftPadding = 14; $bc.RightPadding = 14
-    $bc.Range.Text = "func_SMILES2IMG v$addinVersion — Microsoft Word Interactive Playbook`rSelf-Contained Manuscript & Hands-On Workbook (Zero Web Docs Needed)"
+    $bc.Range.Text = "func_SMILES2IMG v$addinVersion — Microsoft Word Interactive Playbook`rSelf-Contained Manuscript & Hands-On Workbook"
     $bc.Range.Font.Name = 'Segoe UI'
     $bc.Range.Font.Color = 0xFFFFFF
     $bc.Range.Paragraphs.Item(1).Range.Font.Size = 16.5
@@ -353,11 +353,11 @@ try {
 
     Add-Para $doc '' 2 $false $false 0x262626 0 2
 
-    Add-CalloutBox $doc 'How to Use This Playbook (100% Interactive Inside Word)' @(
+    Add-CalloutBox $doc 'How to Use This Playbook (Interactive Inside Word)' @(
         '• Every chemical structure, reaction scheme, and 3D protein figure in this document was inserted using the real func_SMILES2IMG Word Add-in with live embedded metadata (Alt Text + CustomXMLParts).',
         '• Double-click ANY 2D structure or reaction scheme to reopen EPAM Ketcher 2D in place — edit bonds/arrows and press Ctrl+Enter without breaking paragraph layout or table column widths.',
-        '• Try the hands-on exercise boxes in Chapters 1-5 to master 0.1s Paste Structure, Molecule Info table export, Mol* 3D proteins, 1-click ACS B&W Batch Style, and lossless Vector SVG copy.',
-        '• Local-First Privacy: 2D rendering, Ketcher 2D, reaction KET storage, SVG export, and all property calculations run 100% offline. Only optional PubChem name lookup and RCSB PDB fetch use the network.'
+        '• Try the hands-on exercise boxes in Chapters 1-5 to practice Paste Structure, Molecule Info table export, Mol* 3D proteins, Batch Style ACS B&W, and vector SVG copy.',
+        '• Local-First Privacy: 2D rendering, Ketcher 2D, reaction KET storage, SVG export, and all property calculations run offline. Only optional PubChem name lookup and RCSB PDB fetch use the network.'
     ) 0x6E760F 0xF4FBF9
 
     Add-ChapterHeading $doc '0.' 'Microsoft Word [SMILES] Ribbon & 3-Level Right-Click Menu Reference' $false
@@ -367,21 +367,21 @@ try {
     $ribbonRows = @(
         @('Insert Structure', 'Insert / Edit Structure', 'Ribbon / Double-Click', 'Opens EPAM Ketcher 2D to draw molecules or reaction schemes, or re-edit selected figure in place.'),
         @('Insert Structure', '3D Structure (Mol*)',     'Ribbon -> [SMILES]',          'Opens Mol* 3D viewer to load PDB IDs (1CRN, 4HHB, 6LU7) or local .pdb/.cif files as 2D PNG or 3D GLB.'),
-        @('Insert Structure', 'Paste Structure',         'Ribbon or Right-Click',       'Converts selected text (SMILES, InChI, KET, or compound name) or clipboard into an inline structure in 0.1s.'),
+        @('Insert Structure', 'Paste Structure',         'Ribbon or Right-Click',       'Converts selected text (SMILES, InChI, KET, or compound name) or clipboard into an inline structure.'),
         @('Structure Tools',  'Copy SMILES / InChI / KET','Ribbon or Right-Click',      'Extracts the exact SMILES, IUPAC InChI, or lossless KET JSON from any selected structure picture.'),
         @('Structure Tools',  'Copy SVG',                'Ribbon or Right-Click',       'Copies lossless vector SVG graphics directly to clipboard for Adobe Illustrator or Inkscape.'),
                 @('Structure Tools',  'Molecule Info',           'Ribbon or Right-Click',       'Displays 12 descriptors + 2D preview; copies Summary, 12-col TSV, Multi-Line List, Markdown, or JSON.'),
-        @('Structure Tools',  'Batch Style',             'Ribbon -> Batch Style',       '1-click document-wide restyle: Standard Color, Publication B&W (ACS), White Background, or Dark Mode.'),
+        @('Structure Tools',  'Batch Style',             'Ribbon -> Batch Style',       'Document-wide restyle: Standard Color, Publication B&W (ACS), White Background, or Dark Mode.'),
         @('Right-Click Menu', 'Chemical Structure > ...','Right-Click Text / Picture',  '3-level cascading menu exposing Insert/Edit, Mol* 3D, Paste Structure, Copy SVG, and Copy Molecule Info.'),
         @('About',            'Online Docs · About',     'Ribbon -> [SMILES]',          'Online Docs opens /word/ guides in browser; About shows version, engines, licenses, and updates.')
     )
     Add-StyledWordTable $doc $ribbonHeaders $ribbonRows $ribbonWidths 0x6E760F 8.5 2.5 | Out-Null
 
     # =========================================================================
-    # PAGE 2: Chapter 1 — Inline Structures & 0.1-Second Text Conversion
+    # PAGE 2: Chapter 1 — Inline Structures & Text-to-Structure Conversion
     # =========================================================================
-    Write-Host '[2/6] Building Page 2: Chapter 1 — Inline Structures & 0.1s Quick Convert...' -ForegroundColor Yellow
-    Add-ChapterHeading $doc '1.' 'Inline Structures & 0.1-Second Text-to-Structure Conversion' $true
+    Write-Host '[2/6] Building Page 2: Chapter 1 — Inline Structures & Quick Convert...' -ForegroundColor Yellow
+    Add-ChapterHeading $doc '1.' 'Inline Structures & Text-to-Structure Conversion' $true
     Add-Para $doc 'Structures inserted in Word are embedded as aspect-ratio-locked InlineShapes so they flow cleanly with manuscript text and never drift when paragraphs shift. Below are two live structures embedded with genuine chemical metadata — double-click either one to reopen it in Ketcher 2D!' 10 $false $false 0x262626 2 8 | Out-Null
 
     $pEx1 = Add-Para $doc 'Example 1A — Acetylsalicylic Acid (Aspirin, SMILES embedded; double-click to edit):' 10 $true $false 0x1E293B 4 4
@@ -396,7 +396,7 @@ try {
 
     Add-Para $doc '' 4 $false $false 0x262626 4 4 | Out-Null
 
-    Add-CalloutBox $doc 'Hands-On Exercise 1 — Convert Plain Text into a Structure in 0.1 Seconds!' @(
+    Add-CalloutBox $doc 'Hands-On Exercise 1 — Convert Plain Text into a Structure' @(
         'Try it right now inside this box: highlight ANY of the three chemical identifiers below, then click [SMILES] -> [Paste Structure] (or Right-Click -> Chemical Structure -> Paste Structure):',
         '',
         '  1) SMILES string   :  CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O',
@@ -427,7 +427,7 @@ try {
         [void](Insert-LiveWordStructure $word $wordObj $imgCell.Range $compList[$i].Smiles 115)
     }
 
-    Add-CalloutBox $doc 'Hands-On Exercise 2 — Zero-Typo Property Extraction via [Molecule Info]' @(
+    Add-CalloutBox $doc 'Hands-On Exercise 2 — Computed Property Extraction via [Molecule Info]' @(
         '1. Click ANY structure inside Table 2 above (e.g., Ibuprofen), then click [SMILES] -> [Molecule Info] (or Right-Click -> Chemical Structure -> Copy Molecule Info).',
         '2. Try these 3 time-saving copy formats:',
         '   • Copy All Summary (Text)          — pastes a clean 2-row Header + Value summary table.',
@@ -504,9 +504,9 @@ try {
     # PAGE 6: Chapter 5 — Pre-Submission ACS B&W Polish, Vector SVG & Troubleshooting
     # =========================================================================
     Write-Host '[6/6] Building Page 6: Chapter 5 — Pre-Submission Polish, SVG & Troubleshooting...' -ForegroundColor Yellow
-    Add-ChapterHeading $doc '5.' 'Pre-Submission Polish: 1-Click ACS B&W, Vector SVG & Troubleshooting' $true
+    Add-ChapterHeading $doc '5.' 'Pre-Submission Polish: ACS B&W Batch Style, Vector SVG & Troubleshooting' $true
 
-    Add-CalloutBox $doc 'Hands-On Exercise 4 — Convert This Entire Playbook to ACS Monochrome in 1 Click!' @(
+    Add-CalloutBox $doc 'Hands-On Exercise 4 — Convert This Entire Playbook to ACS Monochrome!' @(
         '1. Make sure NO single structure is selected (click empty paragraph text), then click [SMILES] -> [Batch Style] -> [Publication B&W].',
         '2. Scroll back through Chapters 1-3: every 2D molecule and reaction scheme across the entire manuscript is now crisp ACS / Nature black-and-white line art!',
         '3. Click [SMILES] -> [Batch Style] -> [Standard Color] anytime to restore IUPAC element colors.',
@@ -518,10 +518,10 @@ try {
     $tsHeaders = @('Issue / Question', 'Root Cause', 'Exact Solution')
     $tsWidths  = @(130, 168, 206)
     $tsRows = @(
-        @('Sharing .docx with macOS / co-authors without add-in', 'Word structures are stored as standard embedded PNG/GLB media.', 'Co-authors view and print every figure at full resolution with zero add-in required. Chemical metadata stays safely preserved inside the file.'),
+        @('Sharing .docx with macOS / co-authors without add-in', 'Word structures are stored as standard embedded PNG/GLB media.', 'Co-authors view and print every figure at full resolution with no add-in required. Chemical metadata stays safely preserved inside the file.'),
         @('Double-clicking a structure does not open Ketcher',    'Plain screenshot lacks Alt Text metadata, or Word COM add-in disabled.', 'Insert structures via [Insert / Edit Structure] or [Paste Structure]. Verify File -> Options -> Add-ins -> Manage: COM Add-ins -> func_SMILES2IMG is checked.'),
         @('Table columns shift after editing a structure',        'Word AutoFit to Contents dynamically resizes columns on replacement.', 'Right-click the table -> AutoFit -> Fixed Column Width so adjacent text columns remain locked.'),
-        @('Mol* cannot fetch PDB IDs behind corporate firewall',  'HTTPS requests to RCSB PDB / PDBe are blocked by network proxy.', 'Download the .pdb or .cif file manually and load it 100% offline via [Open File...] in the Mol* toolbar.')
+        @('Mol* cannot fetch PDB IDs behind corporate firewall',  'HTTPS requests to RCSB PDB / PDBe are blocked by network proxy.', 'Download the .pdb or .cif file manually and load it offline via [Open File...] in the Mol* toolbar.')
     )
     Add-StyledWordTable $doc $tsHeaders $tsRows $tsWidths 0x3B291E | Out-Null
 

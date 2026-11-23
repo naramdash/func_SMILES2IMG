@@ -7,22 +7,22 @@
 ::: tip 활용 방법
 1. 먼저 `func_SMILES2IMG`를 설치합니다 ([설치 가이드](/ko/guide/install)).
 2. <a href="/func_SMILES2IMG/examples/func_SMILES2IMG_Excel_Playbook.xlsx" download="func_SMILES2IMG_Excel_Playbook.xlsx"><strong>func_SMILES2IMG_Excel_Playbook.xlsx (.xlsx)</strong></a>를 내려받아 **Microsoft Excel**에서 바로 엽니다.
-3. 아래 **목적별 3분 실습 코스**를 따라 해 보거나, 당량 계산기·Hit-to-Lead 시트를 본인 연구 파일에 그대로 복사해 활용해 보세요.
+3. 아래 **목적별 실습 코스**를 따라 해 보거나, 당량 계산기·Hit-to-Lead 시트를 본인 연구 파일에 그대로 복사해 활용해 보세요.
 :::
 
-## 목적별 3분 추천 실습 코스
+## 목적별 추천 실습 코스
 
-| 추천 코스 | 열어볼 시트 탭 | 3분 동안 직접 해볼 핵심 실습 |
+| 추천 코스 | 열어볼 시트 탭 | 핵심 실습 내용 |
 | :--- | :--- | :--- |
 | **1. 처음 시작하는 입문 코스** | `0. Start Here` ➔ `1. Structure Rendering` | 입력 셀의 SMILES·시약명을 바꿔 보고, 구조식 셀을 **더블클릭**해 **Ketcher 2D** 제자리 수정을 체험합니다. |
 | **2. 유기 합성 실험노트 (ELN) 코스** | `6. Reactions & KET` ➔ `7. Real-World Workflows` | 다단계 합성 반응식(`=KET2IMG`)을 더블클릭해 촉매 조건을 수정하고, `=SMILES2MW` 연동 당량 계산기로 시약 칭량(`mg`)과 수율(`%`)을 자동 산출합니다. |
-| **3. 의약화학 SAR 스크리닝 코스** | `2. Properties & 3D` ➔ `3. SAR & SMARTS` | 쿼리 셀(`$B$3`)의 SMARTS 패턴 하나만 바꿔 `=SMILES.MATCH`, 빨간색 골격 하이라이트(`hl:`), `=INCHI.MATCH` 일치가 실시간 갱신되는 것을 확인합니다. |
+| **3. 의약화학 SAR 스크리닝 코스** | `2. Properties & 3D` ➔ `3. SAR & SMARTS` | 쿼리 셀(`$B$3`)의 SMARTS 패턴 하나만 바꿔 `=SMILES.MATCH`, 빨간색 골격 하이라이트(`hl:`), `=INCHI.MATCH` 일치가 갱신되는 것을 확인합니다. |
 
 ## 시트별 상세 구성 (10개 탭)
 
 | 시트 탭 | 수록된 실습 내용 및 활용법 | 대표 수식 · 기능 |
 | :--- | :--- | :--- |
-| **`0. Start Here`** | 3분 체험 샌드박스(셀 수정·더블클릭 실습) 및 10개 탭 전체 학습 로드맵 | 핵심 수식 10종 & 더블클릭 편집 |
+| **`0. Start Here`** | 체험 샌드박스(셀 수정·더블클릭 실습) 및 10개 탭 전체 학습 로드맵 | 핵심 수식 10종 & 더블클릭 편집 |
 | **`1. Structure Rendering`** | 영문 화합물명, CAS 번호, SMILES, IUPAC InChI 12종 자동 2D 렌더링 | `=NAME2IMG`, `=SMILES2IMG`, `=INCHI2IMG`, `=NAME2SMILES` |
 | **`2. Properties & 3D`** | 15열 신약 SAR·3D 복잡도 표 + `AVERAGE` / `COUNTIF` 실시간 KPI 요약 행 | `=SMILES2FORMULA`, `=SMILES2MW`, `=SMILES2LOGP`, `=SMILES2TPSA`, `=SMILES2FSP3` |
 | **`3. SAR & SMARTS`** | 쿼리 셀(`$B$3`) 수정 시 즉시 반응하는 하이라이트, `INCHI.MATCH` & 12종 SMARTS 사전 | `=SMILES.MATCH`, `=INCHI.MATCH`, `=SMILES2IMG(..., "hl:...")` |

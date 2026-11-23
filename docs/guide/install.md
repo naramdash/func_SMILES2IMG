@@ -1,19 +1,19 @@
 # Installation
 
-Install **`func_SMILES2IMG`** across Microsoft Excel, Word, and PowerPoint in 10 seconds—**no administrator rights required**.
+Install **`func_SMILES2IMG`** across Microsoft Excel, Word, and PowerPoint—**no administrator rights required**.
 
-## 1. 10-Second Auto-Install (PowerShell)
+## 1. Auto-Install (PowerShell)
 
-1. Close any open Excel, Word, or PowerPoint windows.
-2. Open **PowerShell** from the Windows Start menu, paste the command below, and press <kbd>Enter</kbd>:
+1. Close any open **Excel**, **Word**, or **PowerPoint** windows.
+2. Click the teal **Copy** button on the command box below *(no typing needed)*:
 
-```powershell
-irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
-```
+<QuickInstallBox inline />
 
-::: tip What's Included in `v1.9.0`
-Running the command above automatically detects your Office bitness (32-bit vs. 64-bit), downloads **`func_SMILES2IMG v1.9.0`**, unblocks files (`Unblock-File`), and registers the add-in in HKCU for Excel, Word, and PowerPoint—featuring unified `Chemical Structure >` context menus, 49 Excel functions, Ketcher 2D, Mol\* 3D, and 11-column `.sdf` import.
-:::
+3. **Right-click** the **Windows Start button (`⊞`)** on your taskbar and click **`Terminal`** *(Windows 11)* or **`Windows PowerShell`** *(Windows 10 — regular mode, **no Administrator rights required**)*.
+4. **Right-click once** inside the opened PowerShell window to automatically paste the command.
+5. Press <kbd>Enter</kbd> and wait until **`[SUCCESS]`** appears.
+
+<FeatureMedia id="common-install-walkthrough" />
 
 ## 2. Restart Office & Verify the `[SMILES]` Ribbon Tab
 

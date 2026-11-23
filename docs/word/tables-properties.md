@@ -1,6 +1,6 @@
 # 2. SAR Tables & Experimental Properties
 
-Build manuscript SAR and compound summary tables that never collapse column widths or clip structure tops—and copy locally calculated Chemical Formula, Molecular Weight, HRMS Exact Mass, LogP, and TPSA data with zero manual typing errors.
+Build manuscript SAR and compound summary tables that never collapse column widths or clip structure tops—and copy locally calculated Chemical Formula, Molecular Weight, HRMS Exact Mass, LogP, and TPSA data without manual transcription.
 
 <FeatureMedia id="word-ch3-compound-table" />
 
@@ -13,10 +13,10 @@ Word automatically resizes columns and clips tall inline graphics unless you con
 3. **Match Shaded Row Backgrounds:** If your SAR table has gray headers or alternating row shading, click **`[SMILES]` ➔ `[Batch Style]` ➔ `[Standard Color (Transparent)]`** so structures sit cleanly over the cell fill, or choose **`[White Background (Color)]`** for crisp white framing.
 
 ::: tip Power Tip: Convert Pre-Typed Name or SMILES Columns Row by Row
-If you already drafted a Word table with a `SMILES` or `Compound` column (`Aspirin`, `Caffeine`, `50-78-2`), highlight the text in a cell and click **`[SMILES]` ➔ `[Paste Structure]`** (or right-click ➔ **`Chemical Structure` ➔ `Paste Structure`**) to swap each cell into an aspect-ratio-locked structure in `0.1s`.
+If you already drafted a Word table with a `SMILES` or `Compound` column (`Aspirin`, `Caffeine`, `50-78-2`), highlight the text in a cell and click **`[SMILES]` ➔ `[Paste Structure]`** (or right-click ➔ **`Chemical Structure` ➔ `Paste Structure`**) to swap each cell into an aspect-ratio-locked structure.
 :::
 
-## 2. Zero-Typo Experimental & Table Data via `Molecule Info`
+## 2. Experimental & Table Data via `Molecule Info`
 
 Select any inserted structure picture—**or simply highlight a SMILES string or compound name in your manuscript prose**—and click **`[SMILES]` ➔ `[Molecule Info]`** (or right-click ➔ **`Chemical Structure` ➔ `Copy Molecule Info`**). All 12 property columns are computed locally on your PC:
 
@@ -43,5 +43,5 @@ Already calculated your library's MW, LogP, TPSA, `Fsp3`, and substructure match
 ## Related Guides
 
 - [**Style & Export Reference**](/editor/publishing) — Exact clipboard output samples for all 5 `Molecule Info` formats (Summary, TSV, Multi-Line, Markdown, JSON)
-- [**4. Journal Finish, SVG, Sharing**](/word/publishing) — Restyle all table and prose structures to ACS monochrome B&W in 1 click before submission
+- [**4. Journal Finish, SVG, Sharing**](/word/publishing) — Restyle table and prose structures to ACS monochrome B&W before submission
 - [**Table Clipping & Batch Style Troubleshooting**](/word/troubleshooting/table-layout) — Fixes for clipped table images, shading contrast, and `Batch Style` selection scope

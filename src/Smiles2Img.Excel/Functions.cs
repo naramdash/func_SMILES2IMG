@@ -499,7 +499,7 @@ public static class Functions
         => EvaluateKetFunction(ket, "KET.MATCH", k => SmilesMatch(k, query));
 
     [ExcelFunction(Name = "NAME2SMILES", Category = "SMILES",
-        Description = "Resolves name/CAS to canonical SMILES. 104 built-in offline + CAS checksum (0ms); else PubChem API (30d local cache, #N/A if offline/unknown).", IsMacroType = false)]
+        Description = "Resolves name/CAS to canonical SMILES. 104 built-in offline + CAS checksum; else PubChem API (30d local cache, #N/A if offline/unknown).", IsMacroType = false)]
     public static object NameSmiles(
         [ExcelArgument(Name = "name", Description = ArgNameDesc)] string name)
     {

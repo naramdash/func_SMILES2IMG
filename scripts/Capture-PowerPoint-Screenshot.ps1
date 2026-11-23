@@ -57,7 +57,7 @@ try {
     $titleBox.TextFrame.TextRange.Font.Color.RGB = 0xFFFFFF
 
     $subBox = $slide.Shapes.AddTextbox(1, 40, 70, 880, 25)
-    $subBox.TextFrame.TextRange.Text = "EPAM Indigo Vector Renderer & Ketcher 2D Integration • Instant In-Place Slide Editing"
+    $subBox.TextFrame.TextRange.Text = "EPAM Indigo Vector Renderer & Ketcher 2D Integration • In-Place Slide Editing"
     $subBox.TextFrame.TextRange.Font.Name = "Segoe UI"
     $subBox.TextFrame.TextRange.Font.Size = 13
     $subBox.TextFrame.TextRange.Font.Color.RGB = 0x94A3B8

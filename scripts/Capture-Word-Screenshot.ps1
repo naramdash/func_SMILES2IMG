@@ -115,7 +115,7 @@ try {
 
     # Note
     $notePara = $doc.Paragraphs.Add()
-    $notePara.Range.Text = "* Double-clicking any chemical structure launches the embedded EPAM Ketcher 2D editor for instant in-place editing."
+    $notePara.Range.Text = "* Double-clicking any chemical structure launches the embedded EPAM Ketcher 2D editor for in-place editing."
     $notePara.Range.Font.Name = "Segoe UI"
     $notePara.Range.Font.Size = 9
     $notePara.Range.Font.Italic = 1

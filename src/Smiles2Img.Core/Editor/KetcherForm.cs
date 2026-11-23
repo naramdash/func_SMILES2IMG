@@ -39,7 +39,7 @@ public sealed class KetcherForm : Form
     public bool ToggleWhiteBackgroundForTest { get; set; }
 
     /// <summary>
-    /// Rents a warm, reusable KetcherForm instance so subsequent editor launches open in &lt;50ms
+    /// Rents a warm, reusable KetcherForm instance so subsequent editor launches open quickly
     /// without re-initializing WebView2 or reloading the Ketcher React bundle.
     /// </summary>
     public static KetcherForm Rent(string cellAddress, string initialStructure)

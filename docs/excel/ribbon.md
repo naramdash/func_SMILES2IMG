@@ -12,7 +12,7 @@ Complete command reference for the Excel **`[SMILES]`** ribbon tab, the 3-level 
 | | `Insert / Edit (InChI)` | Opens Ketcher 2D and writes `=INCHI2IMG("...")` into the active cell |
 | | `Insert / Edit (KET)` | Opens Ketcher 2D and writes lossless `=KET2IMG("...")` JSON into the active cell |
 | | `3D Structure (Mol*)` | Opens Mol\* 3D (auto-loads any 4-character PDB ID in the active cell) to insert a `.glb` 3D model or `.png` picture |
-| | `Paste Structure` | Converts explicit SMILES/InChI/KET/CAS inputs in 0.1s; prompts for confirmation on ambiguous short tokens or compound names |
+| | `Paste Structure` | Converts explicit SMILES/InChI/KET/CAS inputs to formula cells; prompts for confirmation on ambiguous short tokens or compound names |
 | **Structure Tools** | `Copy SMILES` / `Copy InChI` / `Copy KET` | Extracts canonical SMILES, IUPAC InChI, or KET JSON from the selected formula cell or picture |
 | | `Copy SVG` | Copies lossless vector SVG graphics + XML text to the clipboard for Illustrator, Inkscape, or Office |
 | | `Molecule Info` | Copies individual properties, 12-column TSV/Markdown/Multi-Line summaries, or opens the detailed Molecule Info dialog |
@@ -20,7 +20,7 @@ Complete command reference for the Excel **`[SMILES]`** ribbon tab, the 3-level 
 | | `Import SDF` | Imports an MDL `.sdf` / `.mol` file into a formatted 11-column live formula worksheet |
 | **Diagnostics** | `Diagnostics` | Opens the EPAM Indigo parser log window to inspect exact chemical syntax errors behind `#VALUE!` cells |
 | **About** | `Online Docs` | Opens the official Excel documentation portal (`/excel/`) in your web browser |
-| | `About func_SMILES2IMG` | Displays installed version, embedded engine versions, open-source licenses, and 1-click update check |
+| | `About func_SMILES2IMG` | Displays installed version, embedded engine versions, open-source licenses, and update check |
 
 ## 2. Right-Click Context Menus (4 Targets)
 

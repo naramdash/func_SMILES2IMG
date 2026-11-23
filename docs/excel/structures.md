@@ -15,7 +15,7 @@ Render high-resolution 2D molecular structures directly inside Excel cells from 
 
 ## 1. Unified Image Syntax (`SMILES` & `InChI`)
 
-Both formulas share the exact same **4-argument signature `(input, [background], [style], [transform])`** and run 100% offline in 0ms:
+Both formulas share the exact same **4-argument signature `(input, [background], [style], [transform])`** and run locally offline:
 
 | Input Column | Modern Excel (365 / 2024+) | Legacy Excel (2016–2021) | Notes |
 | :--- | :--- | :--- | :--- |
@@ -29,17 +29,17 @@ Both formulas share the exact same **4-argument signature `(input, [background],
 3. Set **row height** (`62–80 pt` recommended) and widen column `C`—the structure scales while locking bond aspect ratio and stays locked to its row when filtering or sorting.
 4. Drag the fill handle down to render hundreds of compounds at once.
 
-## 3. Sketch, Convert in 0.1s & Double-Click to Edit
+## 3. Sketch, Paste & Double-Click to Edit
 
 | Action | How to Do It | Result |
 | :--- | :--- | :--- |
 | **Draw a Molecule** | Select a cell ➔ **`[SMILES]` ➔ `[Insert / Edit (SMILES)]`** (or `InChI`) ➔ sketch in Ketcher ➔ <kbd>Ctrl</kbd> + <kbd>Enter</kbd> | Writes `=SMILES2IMG("...")` (or `=INCHI2IMG(...)`) directly into the cell |
-| **0.1s Instant Convert** | Copy SMILES/InChI/KET/Name/CAS text or select a cell ➔ **`[SMILES]` ➔ `[Paste Structure]`** | Writes `=SMILES2IMG(...)` or `=KET2IMG(...)` directly; shows a quick confirmation dialog for chemical names or ambiguous short English words |
-| **In-Place Re-Editing** | **Double-click** any rendered structure cell or `.FLOAT` picture | Reopens **Ketcher 2D** in `0.05s` with the molecule preloaded (ambiguous plain words are safely skipped when preloading empty cells) |
+| **Paste Structure** | Copy SMILES/InChI/KET/Name/CAS text or select a cell ➔ **`[SMILES]` ➔ `[Paste Structure]`** | Writes `=SMILES2IMG(...)` or `=KET2IMG(...)` directly; shows a confirmation dialog for chemical names or ambiguous short English words |
+| **In-Place Re-Editing** | **Double-click** any rendered structure cell or `.FLOAT` picture | Reopens **Ketcher 2D** with the molecule preloaded (ambiguous plain words are skipped when preloading empty cells) |
 
 ## Related Guides
 
-- [**Names, Solvents, CAS**](/excel/name-cas) — Render `Aspirin`, `THF`, `DMSO`, or `"50-78-2"` directly with `=NAME2IMG` (built-in offline dictionary + 30-day local PubChem cache; invalid CAS check digits rejected in 0ms)
+- [**Names, Solvents, CAS**](/excel/name-cas) — Render `Aspirin`, `THF`, `DMSO`, or `"50-78-2"` directly with `=NAME2IMG` (built-in offline dictionary + 30-day local PubChem cache; invalid CAS check digits rejected locally)
 - [**Reaction Schemes (KET)**](/excel/reactions) — Store multi-step reactions cleanly inside cells with `=KET2IMG`
 - [**Styles & Highlights**](/excel/styles-reactions) — Customize `[bg]`, `[style]` (`"bw"`, `"hl:..."`, `"num stereo"`), and `[transform]`
 - [**Legacy Excel (.FLOAT)**](/excel/legacy-float) — Cell-anchored shapes for Excel 2016, 2019, and 2021

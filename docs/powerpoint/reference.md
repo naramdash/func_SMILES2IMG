@@ -10,13 +10,13 @@ Complete command reference for the Microsoft PowerPoint **`[SMILES]`** ribbon ta
 | :--- | :--- | :--- |
 | **Insert Structure** | `Insert / Edit Structure` | Opens Ketcher 2D to insert onto the active slide (preloads selected TextBox text if present), or re-edits a selected 2D shape |
 | | `3D Structure (Mol*)` | Opens Mol\* 3D to insert a rotatable `3D Model (GLB)` or transparent `2D Picture` (auto-loads selected PDB ID), or re-edits a 3D shape |
-| | `Paste Structure` | Converts a selected TextBox (`SMILES`, `InChI`, `KET`, or compound name/CAS) in-place in `0.1s`, or pastes clipboard structure centered on slide |
+| | `Paste Structure` | Converts a selected TextBox (`SMILES`, `InChI`, `KET`, or compound name/CAS) in place, or pastes clipboard structure centered on slide |
 | **Structure Tools** | `Copy SMILES` / `Copy InChI` / `Copy KET` | Extracts canonical SMILES, IUPAC InChI, or lossless KET JSON (`Shape.Tags["KET"]`) from the selected shape or TextBox text |
 | | `Copy SVG` | Copies lossless vector SVG graphics + `<svg>` XML text to the clipboard for A0 posters, Illustrator, or Inkscape |
 | | `Molecule Info` | Copies individual properties, multi-line speaker-note/card lists, 12-column tables, or opens the detailed property window |
 | | `Batch Style` | Restyles selected shapes—or every ungrouped 2D structure across the **entire presentation deck** when nothing is selected |
 | **About** | `Online Docs` | Opens the official PowerPoint documentation portal (`/powerpoint/`) in your web browser |
-| | `About func_SMILES2IMG` | Displays installed version, embedded engine versions, open-source licenses, and 1-click update check |
+| | `About func_SMILES2IMG` | Displays installed version, embedded engine versions, open-source licenses, and update check |
 
 ## 2. Right-Click Context Menus (5 Slide Contexts)
 

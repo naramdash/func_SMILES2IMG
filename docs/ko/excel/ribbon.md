@@ -12,7 +12,7 @@ Microsoft Excel 상단 **`[SMILES]`** 리본 탭의 전체 명령, 4가지 대�
 | | `Insert / Edit (InChI)` | 선택한 셀에 대해 Ketcher 2D를 열고 `=INCHI2IMG("...")` 수식을 삽입 |
 | | `Insert / Edit (KET)` | 선택한 셀에 대해 Ketcher 2D를 열고 무손실 `=KET2IMG("...")` JSON 수식을 삽입 |
 | | `3D Structure (Mol*)` | Mol\* 3D 뷰어 실행 (활성 셀에 4자리 PDB 코드가 적혀 있으면 자동 로드하여 `.glb` 또는 `.png` 삽입) |
-| | `Paste Structure` | SMILES/InChI/KET 및 검증된 CAS 번호를 0.1초 만에 변환하며, 모호한 짧은 영단어나 시약명은 확인창 후 안전하게 삽입 |
+| | `Paste Structure` | SMILES/InChI/KET 및 검증된 CAS 번호를 수식 셀로 변환하며, 모호한 짧은 영단어나 시약명은 확인창 후 안전하게 삽입 |
 | **Structure Tools** | `Copy SMILES` / `Copy InChI` / `Copy KET` | 선택한 수식 셀이나 그림에서 표준 SMILES, IUPAC InChI, KET JSON 추출 복사 |
 | | `Copy SVG` | Illustrator, Inkscape, Office 포스터용 무손실 벡터 SVG 그래픽 + XML 코드 복사 |
 | | `Molecule Info` | 개별 물성, 12열 TSV·요약·목록·Markdown 복사 또는 상세 물성 창 열기 |
@@ -20,7 +20,7 @@ Microsoft Excel 상단 **`[SMILES]`** 리본 탭의 전체 명령, 4가지 대�
 | | `Import SDF` | `.sdf` / `.mol` 파일을 11열 라이브 수식 시트로 바로 가져오기 |
 | **Diagnostics** | `Diagnostics` | `#VALUE!` 수식 오류의 정확한 화학 문법 원인을 기록한 EPAM Indigo 파서 진단 로그 창 열기 |
 | **About** | `Online Docs` | 웹 브라우저에서 Excel 공식 문서 카테고리 인트로(`/excel/`) 즉시 열기 |
-| | `About func_SMILES2IMG` | 설치 버전, 내장 엔진 버전, 서드파티 라이선스 확인 및 원클릭 최신 업데이트 체크 |
+| | `About func_SMILES2IMG` | 설치 버전, 내장 엔진 버전, 서드파티 라이선스 확인 및 업데이트 체크 |
 
 ## 2. 우클릭 컨텍스트 메뉴 (4가지 대상 지원)
 

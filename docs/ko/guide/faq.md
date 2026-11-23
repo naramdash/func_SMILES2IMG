@@ -5,7 +5,7 @@
 ## 1. 논문용 스타일 · 벡터(SVG)
 
 ### Q. 논문 투고용 흑백(ACS 스타일), 다크 모드, 또는 원하는 선 색상으로 바꿀 수 있나요?
-* **클릭 한 번으로 문서 전체 변환:** Excel, Word, PowerPoint 상단 리본에서 **`[SMILES]` ➔ `[Batch Style]`** 메뉴를 클릭하면 선택한 영역이나 문서 전체의 구조식을 **논문용 흑백**(`Publication B&W`), **다크 모드**(`Dark Mode`), **표준 컬러**(`Standard Color`), **흰색 배경**(`White Background`)으로 즉시 통일합니다.
+* **문서 전체 일괄 변환:** Excel, Word, PowerPoint 상단 리본에서 **`[SMILES]` ➔ `[Batch Style]`** 메뉴를 클릭하면 선택한 영역이나 문서 전체의 구조식을 **논문용 흑백**(`Publication B&W`), **다크 모드**(`Dark Mode`), **표준 컬러**(`Standard Color`), **흰색 배경**(`White Background`)으로 통일합니다.
 * **엑셀 수식에서 개별 지정 (커스텀 선 색상 포함):**
   - 흑백 선화: `=SMILES2IMG(A2, "", "bw")`
   - 다크 모드 (투명 배경 + 흰색 선): `=SMILES2IMG(A2, "trans", "white")`
@@ -37,11 +37,11 @@
 * **Excel 2016 / 2019 / 2021:** 뒤에 `.FLOAT`를 붙인 `=SMILES2IMG.FLOAT(A2)`를 사용하면 셀 크기에 맞춰 움직이는 그림 도형으로 생성됩니다.
 
 ### Q. 새 버전 업데이트는 어떻게 하나요?
-상단 리본 **`[SMILES]` ➔ `[About func_SMILES2IMG]`** 창에서 **`[Check for Updates]`** 버튼을 누르거나, [10초 PowerShell 설치 명령](/ko/guide/install)을 다시 실행하면 최신 버전으로 자동 업그레이드됩니다:
+상단 리본 **`[SMILES]` ➔ `[About func_SMILES2IMG]`** 창에서 **`[Check for Updates]`** 버튼을 누르거나, [PowerShell 설치 명령](/ko/guide/install)을 다시 실행하면 최신 버전으로 업그레이드됩니다:
 
 <FeatureMedia id="common-about-dialog" />
 
 ## 관련 가이드
 
-- [**설치 가이드 (10초 셋업)**](/ko/guide/install) — PowerShell 1줄 자동 설치, 오프라인 기업망 수동 설치 및 업데이트/제거 방법
+- [**설치 가이드**](/ko/guide/install) — PowerShell 1줄 자동 설치, 오프라인 기업망 수동 설치 및 업데이트/제거 방법
 - [**49개 엑셀 함수 전체 개요**](/ko/excel/formulas) — 전체 49종 함수 규격, 반환 데이터 형식 및 공용 스타일 키워드 사전

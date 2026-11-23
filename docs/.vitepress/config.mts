@@ -55,7 +55,10 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
 
-  head: [],
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/func_SMILES2IMG/favicon.svg' }],
+    ['link', { rel: 'alternate icon', type: 'image/png', sizes: '64x64', href: '/func_SMILES2IMG/favicon.png' }]
+  ],
 
   locales: {
     root: {
@@ -79,11 +82,11 @@ export default defineConfig({
           { text: navApp('powerpoint', 'PowerPoint'), link: '/powerpoint/', activeMatch: '^/powerpoint/' },
           { text: 'Editor', link: '/editor/', activeMatch: '^/editor/' },
           {
-            text: 'v1.9.0',
+            text: 'v1.9.1',
             items: [
               {
-                text: 'Release Notes (v1.9.0)',
-                link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.9.0'
+                text: 'Release Notes (v1.9.1)',
+                link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.9.1'
               },
               {
                 text: 'All Releases',
@@ -330,11 +333,11 @@ export default defineConfig({
           { text: navApp('powerpoint', 'PowerPoint'), link: '/ko/powerpoint/', activeMatch: '^/ko/powerpoint/' },
           { text: 'Editor', link: '/ko/editor/', activeMatch: '^/ko/editor/' },
           {
-            text: 'v1.9.0',
+            text: 'v1.9.1',
             items: [
               {
-                text: '최신 릴리스 노트 (v1.9.0)',
-                link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.9.0'
+                text: '최신 릴리스 노트 (v1.9.1)',
+                link: 'https://github.com/naramdash/func_SMILES2IMG/releases/tag/v1.9.1'
               },
               {
                 text: '전체 버전 릴리스 목록',
@@ -562,6 +565,11 @@ export default defineConfig({
   },
 
   themeConfig: {
+    logo: {
+      light: '/logo-light.svg',
+      dark: '/logo-dark.svg',
+      alt: 'func_SMILES2IMG'
+    },
     socialLinks: [
       { icon: 'github', link: 'https://github.com/naramdash/func_SMILES2IMG' }
     ],

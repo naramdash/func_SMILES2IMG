@@ -541,14 +541,14 @@ public static class PubChemResolver
 
     /// <summary>
     /// Resolves a chemical name, IUPAC name, or CAS registry number to a canonical SMILES string.
-    /// Checks 0ms built-in dictionary first, then persistent local cache, then PubChem REST API.
+    /// Checks the built-in dictionary first, then persistent local cache, then PubChem REST API.
     /// </summary>
     public static string? ResolveNameToSmiles(string? nameOrCas, int timeoutMs = 3000)
     {
         if (string.IsNullOrWhiteSpace(nameOrCas)) return null;
         var q = nameOrCas!.Trim();
 
-        // Reject malformed CAS-style numeric triplets with invalid check digits in 0ms without querying PubChem.
+        // Reject malformed CAS-style numeric triplets with invalid check digits locally without querying PubChem.
         if (IsNumericTriplet(q) && !IsValidCasNumber(q))
             return null;
 

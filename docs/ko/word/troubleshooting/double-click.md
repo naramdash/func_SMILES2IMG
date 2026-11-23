@@ -13,7 +13,7 @@ Microsoft Word에서 구조식을 더블클릭했을 때 **Ketcher 2D**나 **Mol
 
 ## 2. Mac 공동저자 공유 · 메타데이터 유지 {#sharing}
 
-* **추가 기능 없는 Mac · PC 열람:** 삽입된 2D PNG와 3D `.glb` 모델은 Word 표준 개체이므로, 열람자는 추가 기능 설치 없이 Windows·**macOS**·웹 Word에서 100% 동일하게 볼 수 있습니다.
+* **추가 기능 없는 Mac · PC 열람:** 삽입된 2D PNG와 3D `.glb` 모델은 Word 표준 개체이므로, 열람자는 추가 기능 설치 없이 Windows·**macOS**·웹 Word에서 동일하게 볼 수 있습니다.
 * **왕복 재편집 유지:** 화학 메타데이터가 표준 **Alt Text** 와 `CustomXMLParts` 에 저장되므로, Mac을 쓰는 공동저자가 본문을 수정해 돌려보내더라도 Windows에서 다시 열면 더블클릭 편집이 그대로 동작합니다 ([문서 공유 가이드](/ko/guide/troubleshooting/document-sharing)).
 * **대형 인쇄 · 일러스트레이터 편집:** 그림 선택 후 **`[SMILES]` ➔ `[Copy SVG]`** 로 벡터 패스를 복사해 Adobe Illustrator나 Inkscape에 바로 붙여넣을 수 있습니다.
 

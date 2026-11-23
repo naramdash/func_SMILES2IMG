@@ -19,6 +19,8 @@ public static class LiveCaptureEngine
 
     [DllImport("user32.dll")] public static extern bool SetProcessDpiAwarenessContext(IntPtr val);
     [DllImport("user32.dll")] public static extern bool SetProcessDPIAware();
+    [DllImport("user32.dll")] public static extern uint GetDpiForWindow(IntPtr hwnd);
+    [DllImport("user32.dll")] public static extern uint GetDpiForSystem();
     [DllImport("user32.dll")] public static extern bool SetWindowPos(IntPtr h, IntPtr after, int x, int y, int cx, int cy, uint flags);
     [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr h, int nCmdShow);
     [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h, out RECT r);
@@ -34,6 +36,25 @@ public static class LiveCaptureEngine
     {
         try { if (SetProcessDpiAwarenessContext(new IntPtr(-4))) return; } catch { }
         try { SetProcessDPIAware(); } catch { }
+    }
+
+    public static double GetWindowDpiScale(IntPtr hwnd)
+    {
+        uint dpi = 0;
+        try { if (hwnd != IntPtr.Zero) dpi = GetDpiForWindow(hwnd); } catch { }
+        if (dpi == 0)
+        {
+            try { dpi = GetDpiForSystem(); } catch { }
+        }
+        if (dpi < 96) dpi = 96;
+        return dpi / 96.0;
+    }
+
+    public static Size GetWindowSize(IntPtr hwnd)
+    {
+        RECT mr;
+        if (hwnd == IntPtr.Zero || !GetWindowRect(hwnd, out mr)) return Size.Empty;
+        return new Size(Math.Max(0, mr.R - mr.L), Math.Max(0, mr.B - mr.T));
     }
 
     public static uint GetPidForHwnd(IntPtr hwnd)
@@ -58,6 +79,36 @@ public static class LiveCaptureEngine
             }
         }
         catch { }
+    }
+
+    public static Size SetMainWindowSizeLogical(IntPtr hwnd, int logicalX, int logicalY, int logicalW, int logicalH)
+    {
+        ShowWindow(hwnd, 9); // SW_RESTORE
+        SetWindowPos(hwnd, IntPtr.Zero, logicalX, logicalY, 800, 450, 0x0040);
+        Thread.Sleep(60);
+
+        double scale = GetWindowDpiScale(hwnd);
+        int physX = (int)Math.Round(logicalX * scale / 2.25);
+        int physY = (int)Math.Round(logicalY * scale / 2.25);
+        int physW = ((int)Math.Round(logicalW * scale) / 2) * 2;
+        int physH = ((int)Math.Round(logicalH * scale) / 2) * 2;
+
+        try
+        {
+            var bounds = System.Windows.Forms.Screen.FromHandle(hwnd).Bounds;
+            int maxW = Math.Max(640, bounds.Width - 16);
+            int maxH = Math.Max(360, bounds.Height - 16);
+            if (physW > maxW || physH > maxH)
+            {
+                double clamp = Math.Min((double)maxW / physW, (double)maxH / physH);
+                physW = ((int)Math.Floor(physW * clamp) / 2) * 2;
+                physH = ((int)Math.Floor(physH * clamp) / 2) * 2;
+            }
+        }
+        catch { }
+
+        SetMainWindowSize(hwnd, physX, physY, physW, physH);
+        return new Size(physW, physH);
     }
 
     public static bool SelectRibbonTab(IntPtr mainHwnd, string tabName)
@@ -111,51 +162,64 @@ public static class LiveCaptureEngine
 
     public static void SanitizeTitleBar(Bitmap bmp)
     {
+        SanitizeTitleBar(bmp, 2.25);
+    }
+
+    public static void SanitizeTitleBar(Bitmap bmp, double dpiScale)
+    {
         int w = bmp.Width;
-        if (w < 900 || bmp.Height < 120) return;
-        Color sample = bmp.GetPixel(Math.Max(10, w - 860), 45);
+        double s = dpiScale > 0.5 ? dpiScale : 1.0;
+        if (w < (int)Math.Round(450 * s) || bmp.Height < (int)Math.Round(60 * s)) return;
+        int sampleX = Math.Max(10, w - (int)Math.Round(415 * s));
+        int sampleY = Math.Max(4, Math.Min(bmp.Height - 4, (int)Math.Round(20 * s)));
+        Color sample = bmp.GetPixel(sampleX, sampleY);
         using (var br = new SolidBrush(sample))
         using (var g = Graphics.FromImage(bmp))
         {
-            int boxW = 570;
-            int boxX = Math.Max(0, w - 800);
-            g.FillRectangle(br, boxX, 4, boxW, 86);
+            int boxX = Math.Max(0, w - (int)Math.Round(380 * s));
+            int boxRight = Math.Max(boxX, w - (int)Math.Round(150 * s));
+            int boxW = Math.Max(1, boxRight - boxX);
+            int boxY = Math.Max(2, (int)Math.Round(2 * s));
+            int boxH = Math.Max(20, (int)Math.Round(38 * s));
+            g.FillRectangle(br, boxX, boxY, boxW, boxH);
         }
     }
 
-    private static void DrawCursor(Graphics g, int x, int y, float ripple)
+    private static void DrawCursor(Graphics g, int x, int y, float ripple, float scale)
     {
         if (x < 0 || y < 0) return;
         g.SmoothingMode = SmoothingMode.AntiAlias;
+        float sc = scale > 0.25f ? scale : 1.0f;
 
         if (ripple > 0f && ripple <= 1f)
         {
-            int r = (int)(12 + ripple * 34);
+            float r = (12f + ripple * 34f) * sc;
             int alpha = (int)(220 * (1f - ripple));
-            using (var pen = new Pen(Color.FromArgb(alpha, 16, 185, 129), 4f))
+            using (var pen = new Pen(Color.FromArgb(alpha, 16, 185, 129), Math.Max(1.5f, 4f * sc)))
             {
-                g.DrawEllipse(pen, x - r, y - r, r * 2, r * 2);
+                g.DrawEllipse(pen, x - r, y - r, r * 2f, r * 2f);
             }
         }
 
-        Point[] pts = new[]
+        PointF[] pts = new[]
         {
-            new Point(x, y),
-            new Point(x, y + 34),
-            new Point(x + 9, y + 26),
-            new Point(x + 17, y + 40),
-            new Point(x + 23, y + 37),
-            new Point(x + 15, y + 23),
-            new Point(x + 26, y + 23)
+            new PointF(x, y),
+            new PointF(x, y + 34f * sc),
+            new PointF(x + 9f * sc, y + 26f * sc),
+            new PointF(x + 17f * sc, y + 40f * sc),
+            new PointF(x + 23f * sc, y + 37f * sc),
+            new PointF(x + 15f * sc, y + 23f * sc),
+            new PointF(x + 26f * sc, y + 23f * sc)
         };
         using (var shadow = new SolidBrush(Color.FromArgb(90, 0, 0, 0)))
         {
-            g.TranslateTransform(2, 2);
+            float sh = Math.Max(1f, 2f * sc);
+            g.TranslateTransform(sh, sh);
             g.FillPolygon(shadow, pts);
             g.ResetTransform();
         }
         using (var fill = new SolidBrush(Color.FromArgb(255, 15, 23, 42)))
-        using (var border = new Pen(Color.White, 2.5f))
+        using (var border = new Pen(Color.White, Math.Max(1.2f, 2.5f * sc)))
         {
             g.FillPolygon(fill, pts);
             g.DrawPolygon(border, pts);
@@ -225,7 +289,7 @@ public static class LiveCaptureEngine
             var hdc = g.GetHdc();
             PrintWindow(mainHwnd, hdc, 2);
             g.ReleaseHdc(hdc);
-            SanitizeTitleBar(bmp);
+            SanitizeTitleBar(bmp, GetWindowDpiScale(mainHwnd));
 
             var overlays = new List<IntPtr>();
             EnumWindows((h, _) =>
@@ -282,7 +346,7 @@ public static class LiveCaptureEngine
                 }
             }
 
-            DrawCursor(g, cursorX, cursorY, ripple);
+            DrawCursor(g, cursorX, cursorY, ripple, Math.Max(0.45f, mw / 2768.0f));
 
             var dir = Path.GetDirectoryName(outPngPath);
             if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);

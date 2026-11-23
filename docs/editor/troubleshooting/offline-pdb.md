@@ -8,9 +8,9 @@ Entering a 4-character PDB code (such as `1CRN`, `4HHB`, or `6LU7`) and clicking
 
 If your lab or enterprise network restricts external HTTPS endpoints, the remote fetch will time out or fail.
 
-## 2. Load Local 3D Structure Files 100% Offline
+## 2. Load Local 3D Structure Files Offline
 
-The Mol\* 3D viewer runtime itself is bundled locally inside `func_SMILES2IMG`, so local structure files require **zero internet access**:
+The Mol\* 3D viewer runtime itself is bundled locally inside `func_SMILES2IMG`, so local structure files require no internet access:
 
 1. Obtain the structure file locally (`.pdb`, `.cif`, `.bcif`, `.ent`, `.mol`, `.sdf`, `.molj`, or `.molx`).
 2. Click **`[SMILES]` ➔ `[3D Structure (Mol*)]`** on the ribbon.

@@ -1,0 +1,16 @@
+WEBVTT
+
+00:00.000 --> 00:05.200
+Step 1: Click the teal Copy button on the install command box.
+
+00:05.200 --> 00:10.600
+Step 2: Right-click the Windows Start button on your taskbar.
+
+00:10.600 --> 00:15.000
+Step 3: Click "Terminal" (Win 11) or "Windows PowerShell" (Win 10) - no Admin rights needed.
+
+00:15.000 --> 00:19.800
+Step 4: Right-click inside the PowerShell window to paste automatically.
+
+00:19.800 --> 00:27.000
+Step 5: Press Enter, wait until [SUCCESS] appears, then reopen Office.

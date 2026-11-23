@@ -23,7 +23,7 @@ $coreDll = (Resolve-Path (Join-Path $repoRoot 'dist\x64\PowerPoint\Smiles2Img.Co
 [System.Reflection.Assembly]::LoadFrom($coreDll) | Out-Null
 [Smiles2Img.Rendering.NativeIndigo]::Initialize((Split-Path $coreDll -Parent))
 
-$addinVersion = '1.9.0'
+$addinVersion = '1.9.1'
 try {
     $propsXml = [xml](Get-Content (Join-Path $repoRoot 'Directory.Build.props') -Raw)
     if ($propsXml.Project.PropertyGroup.Version) { $addinVersion = [string]$propsXml.Project.PropertyGroup.Version }
@@ -249,7 +249,7 @@ try {
 
     Add-Text $s1 48 48 420 26 "func_SMILES2IMG v$addinVersion  ·  INTERACTIVE PLAYBOOK" 11 $true $C_TEAL | Out-Null
     Add-Text $s1 48 80 560 94 "Chemical Structures & 3D Proteins`rfor Microsoft PowerPoint" 32 $true $C_WHITE | Out-Null
-    Add-Text $s1 48 184 540 60 "Self-contained hands-on slide deck — zero web documentation required. Every molecule, reaction, and 3D figure carries live metadata so you can double-click to edit, convert textboxes in 0.1s, and switch slide themes with 1-click Batch Style." 12.5 $false $C_TEXT_MUTED | Out-Null
+    Add-Text $s1 48 184 540 60 "Self-contained hands-on slide deck — no external docs required. Every molecule, reaction, and 3D figure carries embedded metadata so you can double-click to edit, convert textboxes in-place, and switch slide themes together with Batch Style." 12.5 $false $C_TEXT_MUTED | Out-Null
 
     # Hero live Dark-Mode Caffeine preview on right side of Slide 1
     [void](Add-Card $s1 620 56 296 226 $C_CARD_DARK $C_TEAL_DARK)
@@ -259,9 +259,9 @@ try {
 
     # 3 Roadmap Cards along bottom
     $roadCards = @(
-        @{ Title = 'Slides 2–3 · Core Skills';      Body = 'Complete [SMILES] Ribbon & Right-Click Menu map + live 0.1s TextBox-to-Structure conversion lab.' },
+        @{ Title = 'Slides 2–3 · Core Skills';      Body = 'Complete [SMILES] Ribbon & Right-Click Menu map + live TextBox-to-Structure conversion lab.' },
         @{ Title = 'Slides 4–6 · Real-World Deck';  Body = '4-Card Dark Mode candidate grid, multi-step Ketcher KET synthesis slide, and Mol* 3D protein target (1CRN).' },
-        @{ Title = 'Slides 7–8 · Q&A & Delivery';   Body = 'Live conference Q&A via Molecule Info, 1-click deck-wide Batch Style, A0 Poster Vector SVG & sharing.' }
+        @{ Title = 'Slides 7–8 · Q&A & Delivery';   Body = 'Live conference Q&A via Molecule Info, deck-wide Batch Style, A0 Poster Vector SVG & sharing.' }
     )
     for ($i = 0; $i -lt 3; $i++) {
         $cx = 48 + $i * 296
@@ -269,7 +269,7 @@ try {
         Add-Text $s1 ($cx + 16) 332 244 26 $roadCards[$i].Title 12.5 $true $C_SKY | Out-Null
         Add-Text $s1 ($cx + 16) 364 244 92 $roadCards[$i].Body 10.5 $false $C_TEXT_MUTED | Out-Null
     }
-    Add-Text $s1 48 492 864 24 'Local-First Privacy: 2D rendering, Ketcher 2D, reaction KET, SVG & properties run 100% offline. Optional PubChem name & RCSB PDB fetch use the network.' 9.5 $false 0x9E8B7B | Out-Null
+    Add-Text $s1 48 492 864 24 'Local-First Privacy: 2D rendering, Ketcher 2D, reaction KET, SVG & properties run offline. Optional PubChem name & RCSB PDB fetch use the network.' 9.5 $false 0x9E8B7B | Out-Null
     $s1.NotesPage.Shapes.Placeholders.Item(2).TextFrame.TextRange.Text = "Welcome to the func_SMILES2IMG PowerPoint Playbook! Start by double-clicking the Caffeine molecule on the right side of Slide 1 to open EPAM Ketcher 2D directly inside PowerPoint."
 
     # =========================================================================
@@ -289,11 +289,11 @@ try {
         @('Group / Menu',      'Command',                  'How to Access',              'Action in Microsoft PowerPoint'),
         @('Insert Structure',  'Insert / Edit Structure',  'Ribbon / Double-Click',      'Open Ketcher 2D to sketch or re-edit selected molecule/reaction in place'),
         @('Insert Structure',  '3D Structure (Mol*)',      'Ribbon -> [SMILES]',         'Load PDB ID (1CRN, 4HHB, 6LU7) or local .pdb/.cif as 3D GLB or 2D PNG'),
-        @('Insert Structure',  'Paste Structure',          'Ribbon / Right-Click',       'Convert selected TextBox (SMILES/InChI/Name) or clipboard in 0.1s'),
+        @('Insert Structure',  'Paste Structure',          'Ribbon / Right-Click',       'Convert selected TextBox (SMILES/InChI/Name) or clipboard in-place'),
         @('Structure Tools',   'Copy SMILES / InChI / KET','Ribbon / Right-Click',       'Extract exact chemical identifier or lossless KET JSON from any slide shape'),
         @('Structure Tools',   'Copy SVG',                 'Ribbon / Right-Click',       'Copy lossless Vector SVG straight into Adobe Illustrator / A0 posters'),
                 @('Structure Tools',   'Molecule Info',            'Ribbon / Right-Click',       'Inspect 12 descriptors live or copy Multi-Line List / TSV / Markdown / JSON'),
-        @('Structure Tools',   'Batch Style',              'Ribbon -> Batch Style',      '1-click restyle: Dark Mode (White Ink), Color, ACS B&W, or White BG'),
+        @('Structure Tools',   'Batch Style',              'Ribbon -> Batch Style',      'Restyle selection or deck: Dark Mode (White Ink), Color, ACS B&W, or White BG'),
         @('Right-Click Menu',  'Chemical Structure > ...', 'Right-Click Shape / Text',   '3-level cascading menu for editing, copying, and Molecule Info formats')
     )
     for ($r = 1; $r -le 9; $r++) {
@@ -311,11 +311,11 @@ try {
     }
 
     # =========================================================================
-    # SLIDE 3: Hands-On Lab — 0.1-Second TextBox-to-Structure Conversion
+    # SLIDE 3: Hands-On Lab — TextBox-to-Structure Conversion
     # =========================================================================
-    Write-Host '[3/8] Building Slide 3: Hands-On 0.1s TextBox Conversion Lab...' -ForegroundColor Yellow
-    $s3 = New-DarkSlide $pres 'Slide 3 · Hands-On Exercise' 'Convert Slide TextBoxes to Structures in 0.1 Seconds' 'Select any amber TextBox on the left -> click [SMILES] -> [Paste Structure] (then [Batch Style] -> [Dark Mode])' `
-        'Exercise: Click one of the 3 plain-text boxes on the left so its border is selected, then click [Paste Structure] on the [SMILES] Ribbon tab. It instantly converts into a crisp, aspect-ratio-locked structure!'
+    Write-Host '[3/8] Building Slide 3: Hands-On TextBox Conversion Lab...' -ForegroundColor Yellow
+    $s3 = New-DarkSlide $pres 'Slide 3 · Hands-On Exercise' 'Convert Slide TextBoxes to Structures In-Place' 'Select any amber TextBox on the left -> click [SMILES] -> [Paste Structure] (then [Batch Style] -> [Dark Mode])' `
+        'Exercise: Click one of the 3 plain-text boxes on the left so its border is selected, then click [Paste Structure] on the [SMILES] Ribbon tab to replace it in-place with an aspect-ratio-locked structure.'
 
     [void](Add-Card $s3 36 112 456 382 $C_CARD_DARK $C_CARD_LINE)
     Add-Text $s3 56 126 416 26 'TRY IT LIVE — SELECT ANY TEXTBOX BELOW & CLICK [PASTE STRUCTURE]' 10.5 $true $C_AMBER | Out-Null
@@ -340,7 +340,7 @@ try {
     [void](Add-Card $s3 516 112 408 382 $C_CARD_DARK $C_TEAL_DARK)
     Add-Text $s3 536 126 368 26 'EXPECTED RESULT (LIVE DARK-MODE STRUCTURE)' 10.5 $true $C_TEAL | Out-Null
     [void](Insert-LivePptStructure $ppt $pptObj $s3 $aspirinSmiles 556 168 328 210 $true)
-    Add-Text $s3 536 392 368 84 "• Transparent background — zero opaque white rectangle!`r• Aspect ratio locked automatically (never stretched).`r• Double-click the Aspirin structure above to open Ketcher 2D and modify any functional group in place." 10.5 $false $C_TEXT_MUTED | Out-Null
+    Add-Text $s3 536 392 368 84 "• Transparent background — no opaque white rectangle.`r• Aspect ratio locked automatically (never stretched).`r• Double-click the Aspirin structure above to open Ketcher 2D and modify any functional group in place." 10.5 $false $C_TEXT_MUTED | Out-Null
 
     # =========================================================================
     # SLIDE 4: Real-World Use Case — 4-Card Dark Mode Candidate Screening Grid
@@ -416,10 +416,10 @@ try {
     Add-Text $s6 572 400 320 60 "2D Picture (BG: Transparent)`rCrisp high-DPI transparent PNG for lightweight decks, PDFs & older PowerPoint versions." 9.8 $false $C_TEXT_MUTED | Out-Null
 
     # =========================================================================
-    # SLIDE 7: Live Conference Q&A (Molecule Info) & 1-Click Deck Batch Style
+    # SLIDE 7: Live Conference Q&A (Molecule Info) & Deck Batch Style
     # =========================================================================
     Write-Host '[7/8] Building Slide 7: Live Q&A Molecule Info & Batch Style Lab...' -ForegroundColor Yellow
-    $s7 = New-DarkSlide $pres 'Slide 7 · Hands-On Lab' 'Live Conference Q&A (Molecule Info) & 1-Click Batch Style' 'Inspect exact descriptors mid-talk or switch your entire presentation theme in a single click' `
+    $s7 = New-DarkSlide $pres 'Slide 7 · Hands-On Lab' 'Live Conference Q&A (Molecule Info) & Batch Style' 'Inspect exact descriptors mid-talk or switch your entire presentation theme together' `
         'Exercise 1: Select the Ibuprofen structure on the left and click [Molecule Info] to inspect MW, Exact Mass, LogP, TPSA, and Fsp3 live. Exercise 2: Unselect all shapes and click [Batch Style] -> [White Background] or [Publication B&W], then switch back to [Dark Mode]!'
 
     [void](Add-Card $s7 36 114 448 374 $C_CARD_DARK $C_CARD_LINE)
@@ -430,7 +430,7 @@ try {
 
     [void](Add-Card $s7 508 114 416 374 $C_CARD_DARK $C_TEAL_DARK)
     Add-Text $s7 528 128 376 26 '2. DECK-WIDE [BATCH STYLE] — TRY IT RIGHT NOW!' 10.5 $true $C_TEAL | Out-Null
-    Add-Text $s7 528 160 376 62 'Click empty background (no shape selected), then click [SMILES] -> [Batch Style] to instantly convert EVERY 2D structure across your slide deck:' 10.5 $false $C_WHITE | Out-Null
+    Add-Text $s7 528 160 376 62 'Click empty background (no shape selected), then click [SMILES] -> [Batch Style] to convert EVERY 2D structure across your slide deck:' 10.5 $false $C_WHITE | Out-Null
 
     $presets = @(
         @{ Name = 'Dark Mode (White Ink)'; Desc = 'Transparent canvas + crisp white carbon bonds — ideal for dark decks.' },
@@ -456,12 +456,12 @@ try {
         @{
             Title = '1. Sharing to Any Conference PC / Mac'
             Color = $C_TEAL
-            Body  = "• Every 2D figure and 3D .glb model is saved natively inside the .pptx file.`r`r• Co-authors on macOS, PowerPoint Web, or venue AV laptops view and present with ZERO add-in installed.`r`r• Chemical metadata (Shape.Tags + Alt Text) stays preserved so you can still double-click to edit later on Windows."
+            Body  = "• Every 2D figure and 3D .glb model is saved natively inside the .pptx file.`r`r• Co-authors on macOS, PowerPoint Web, or venue AV laptops view and present with NO add-in installed.`r`r• Chemical metadata (Shape.Tags + Alt Text) stays preserved so you can still double-click to edit later on Windows."
         },
         @{
             Title = '2. Large A0 Conference Poster Export'
             Color = $C_SKY
-            Body  = "• Never scale low-res screenshots onto an A0/A1 poster.`r`r• Right-click any slide molecule -> Chemical Structure -> Copy Vector SVG (or Ribbon [Copy SVG]).`r`r• Press Ctrl+V straight into Adobe Illustrator, Inkscape, or CorelDRAW for infinite-DPI vector artwork."
+            Body  = "• Never scale low-res screenshots onto an A0/A1 poster.`r`r• Right-click any slide molecule -> Chemical Structure -> Copy Vector SVG (or Ribbon [Copy SVG]).`r`r• Press Ctrl+V straight into Adobe Illustrator, Inkscape, or CorelDRAW for resolution-independent vector artwork."
         },
         @{
             Title = '3. Built-In Quick Troubleshooting'

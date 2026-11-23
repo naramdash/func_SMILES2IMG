@@ -6,7 +6,7 @@ PowerPoint에서 Mol\* `.glb` 3D 단백질 삽입·회전 오류와 `.pptx` 용�
 
 * **지원 Office 버전 확인:** PowerPoint 내장 3D `.glb` 마우스 회전과 **모핑(Morph)** 카메라 전환은 **PowerPoint 2019, 2021, 2024, Microsoft 365** 에서 지원됩니다.
 * **PowerPoint 2016 · 저용량 배포본 · 초대형 리보솜/캡시드:** Mol\* 상단 툴바를 **`3D Model (GLB)`** 에서 **`2D Picture`** (`BG: Transparent`) 로 바꾸면 용량이 작고 모든 PowerPoint 버전에서 선명하게 표시되는 투명 PNG가 들어갑니다.
-* **기관 방화벽으로 PDB 다운로드가 막힌 경우:** Mol\* 창에서 **`Open File...`** 을 눌러 내 PC의 `.pdb`, `.cif`, `.bcif`, `.ent`, `.mol`, `.sdf`, `.molj`, `.molx` 파일을 100% 오프라인으로 여세요 ([오프라인 PDB 파일](/ko/editor/troubleshooting/offline-pdb)).
+* **기관 방화벽으로 PDB 다운로드가 막힌 경우:** Mol\* 창에서 **`Open File...`** 을 눌러 내 PC의 `.pdb`, `.cif`, `.bcif`, `.ent`, `.mol`, `.sdf`, `.molj`, `.molx` 파일을 오프라인으로 여세요 ([오프라인 PDB 파일](/ko/editor/troubleshooting/offline-pdb)).
 
 ## 2. 슬라이드에서 더블클릭해도 Ketcher / Mol\* 이 열리지 않음 {#double-click}
 

@@ -9,14 +9,14 @@ next:
 
 # Draw 2D Structures & Reaction Schemes (Ketcher)
 
-Draw molecules and multi-step reaction schemes from scratch from the **`[SMILES]`** ribbon tab, or **double-click any existing structure** in Excel, Word, or PowerPoint to reopen and edit it in place in 0.05 seconds.
+Draw molecules and multi-step reaction schemes from scratch from the **`[SMILES]`** ribbon tab, or **double-click any existing structure** in Excel, Word, or PowerPoint to reopen and edit it in place.
 
 <FeatureMedia id="common-ketcher-2d" />
 
 ::: tip 💡 Two-Way Round-Trip Editing Across Excel, Word & PowerPoint
-* **Double-Click Re-Editing (<0.05s):** Every structure inserted into an Excel cell, Word page, or PowerPoint slide retains its lossless chemical coordinates—just **double-click** it anytime to modify atoms, bonds, or reaction arrows!
-* **Top Toolbar & Live Property Lookup:** Use **`Background: White` / `Background: Transparent`**, **`Cancel (Esc)`**, and **`Apply (Ctrl+Enter)`** in the top toolbar; inspect live Formula, MW, and Exact Mass anytime via Ketcher's built-in **Calculated Values** tool or Office's **`[Molecule Info]`** menu.
-* **100% Offline & Confidential:** Runs entirely on your local PC without internet access.
+* **Double-Click Re-Editing:** Every structure inserted into an Excel cell, Word page, or PowerPoint slide retains its chemical coordinates—**double-click** it anytime to modify atoms, bonds, or reaction arrows.
+* **Top Toolbar & Property Lookup:** Use **`Background: White` / `Background: Transparent`**, **`Cancel (Esc)`**, and **`Apply (Ctrl+Enter)`** in the top toolbar; inspect Formula, MW, and Exact Mass via Ketcher's built-in **Calculated Values** tool or Office's **`[Molecule Info]`** menu.
+* **Offline Execution:** Runs locally on your PC without internet access.
 :::
 
 ## 1. Draw & Edit in 3 Steps
@@ -43,7 +43,7 @@ Ketcher automatically picks the best lossless format based on what you draw:
 | Feature | Single Molecule Sketch | Multi-Step Reaction Scheme (with Arrows · `+` · Text) |
 | :--- | :--- | :--- |
 | **Auto-Detected When** | Only a single chemical structure is drawn | Reaction arrows (`➔`), `+` signs, or catalyst/condition labels are present |
-| **Excel Formula** | `=SMILES2IMG("...")` | `=KET2IMG("...")` (preserves 2D layout, arrows, and text labels 100%) |
+| **Excel Formula** | `=SMILES2IMG("...")` | `=KET2IMG("...")` (preserves 2D layout, arrows, and text labels) |
 | **Word / PPT Picture** | High-DPI image + embedded SMILES metadata | High-DPI image + embedded KET JSON metadata |
 | **Double-Click Re-Edit** | Restores the exact molecule | Restores every arrow angle, reagent label, and coordinate |
 

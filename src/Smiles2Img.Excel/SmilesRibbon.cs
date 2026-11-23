@@ -56,7 +56,7 @@ public class SmilesRibbon : ExcelRibbon
           <button id=""btnQuickInsert""
                   label=""Paste Structure""
                   screentip=""Paste Structure from Clipboard or Cell""
-                  supertip=""Instantly converts clipboard or active-cell SMILES, InChI, KET, or chemical names/CAS (e.g. Aspirin) into a structure formula without opening the editor.""
+                  supertip=""Converts clipboard or active-cell SMILES, InChI, KET, or chemical names/CAS (e.g. Aspirin) into a structure formula without opening the editor.""
                   imageMso=""Paste""
                   size=""large""
                   onAction=""OnQuickInsert"" />
@@ -94,7 +94,7 @@ public class SmilesRibbon : ExcelRibbon
 {RibbonXmlBuilder.BuildRibbonBatchStyleMenu(
     "menuRibbonExcelBatchStyle",
     "Batch Normalize Molecule Styles",
-    "Convert all molecular structures on the active worksheet to a unified style preset in one click.",
+    "Convert all molecular structures on the active worksheet to a unified style preset.",
     "btnBatchStyleColorTrans",
     "btnBatchStyleBw",
     "btnBatchStyleWhiteBg",

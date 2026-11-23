@@ -1,10 +1,10 @@
 # 4. Journal Finish, Vector SVG, Co-Author Sharing
 
-Run this 5-minute pre-submission checklist right before exporting your Microsoft Word manuscript to PDF or uploading to ACS, RSC, Wiley, Elsevier, Nature, or patent portals.
+Run this pre-submission checklist before exporting your Microsoft Word manuscript to PDF or uploading to ACS, RSC, Wiley, Elsevier, Nature, or patent portals.
 
 <FeatureMedia id="word-ch6-publication-finish" />
 
-## 5-Minute Pre-Submission Checklist
+## Pre-Submission Checklist
 
 ### Step 1: Unify Every 2D Structure & Scheme to ACS B&W (`Batch Style`)
 
@@ -23,7 +23,7 @@ Standard bitmaps pixelate when resized or edited inside **Adobe Illustrator**, *
 
 1. Click any 2D structure or KET reaction scheme in your Word manuscript (or highlight a SMILES string in prose).
 2. Click **`[SMILES]` ➔ `[Copy SVG]`** (or right-click ➔ **`Chemical Structure` ➔ `Copy Vector SVG`**).
-3. Press <kbd>Ctrl</kbd> + <kbd>V</kbd> inside Illustrator, Inkscape, or modern Microsoft 365 documents—every bond path, wedge, and atom label pastes as editable infinite-resolution vector paths.
+3. Press <kbd>Ctrl</kbd> + <kbd>V</kbd> inside Illustrator, Inkscape, or modern Microsoft 365 documents—every bond path, wedge, and atom label pastes as editable vector paths.
 
 ### Step 3: Extract Supporting Information (SI) Identifiers Without Typos
 
@@ -32,10 +32,10 @@ Standard bitmaps pixelate when resized or edited inside **Adobe Illustrator**, *
 
 ### Step 4: Verify Co-Author, macOS & PDF Sharing
 
-* **Zero Broken Images for Readers:** All 2D structures are embedded as standard high-DPI PNG images and 3D models as standard `.glb` objects. Co-authors on **macOS**, Windows PCs without `func_SMILES2IMG`, Word Online, and journal editorial PDF converters open and print the `.docx` identically.
+* **No Broken Images for Readers:** All 2D structures are embedded as standard high-DPI PNG images and 3D models as standard `.glb` objects. Co-authors on **macOS**, Windows PCs without `func_SMILES2IMG`, Word Online, and journal editorial PDF converters open and print the `.docx` identically.
 * **Round-Trip Editing Survives Co-Author Reviews:** Because chemical tags remain stored in picture **Alt Text** and `CustomXMLParts`, your co-authors can edit surrounding text or track changes on Mac, and when you reopen the `.docx` on Windows, double-click editing still works.
 
-::: tip Reuse Your Manuscript Schemes in PowerPoint in 3 Seconds
+::: tip Reuse Your Manuscript Schemes in PowerPoint
 Preparing a group meeting or conference deck from your paper? Click any KET reaction scheme in Word, press **`[SMILES]` ➔ `[Copy KET]`**, switch to PowerPoint, click **`[Paste Structure]`**, and run **`[Batch Style]` ➔ `[Dark Mode]`**—your entire synthesis scheme transforms into transparent white ink on your dark slides.
 :::
 

@@ -10,8 +10,7 @@
 [![EPAM Ketcher](https://img.shields.io/badge/EPAM%20Ketcher-v3.18.0-blueviolet.svg)](https://lifescience.opensource.epam.com/ketcher/)
 [![Mol* Viewer](https://img.shields.io/badge/Mol*--Viewer-v5.13.1-teal.svg)](https://molstar.org/)
 
-> **Stop copy-pasting chemical structures into Office.**  
-> Type a compound name or SMILES to auto-render 2D chemical structures, molecular weights, LogP/TPSA, and 3D complexity metrics across hundreds of Excel rows. Double-click any cell or picture to sketch in 2D with embedded EPAM Ketcher, or rotate 3D proteins with Mol\* — **free, open-source, and local-first (no admin rights required).**
+> Type a compound name or SMILES to render 2D chemical structures, molecular weights, LogP/TPSA, and 3D complexity metrics across Excel rows. Double-click any cell or picture to sketch in 2D with embedded EPAM Ketcher, or rotate 3D proteins with Mol\* — **free, open-source, and local-first (no admin rights required).**
 
 <p align="center">
   <img src="assets/hero-demo.webp" alt="func_SMILES2IMG Demo — Auto-render in Excel and double-click to edit in Ketcher 2D" width="820" />
@@ -21,20 +20,20 @@
 
 ## 📖 User Documentation
 
-* 🇰🇷 **[한국어 공식 가이드 및 1분 시작하기](https://naramdash.github.io/func_SMILES2IMG/ko/)**
-* 🇺🇸 **[English Documentation & 1-Min Quickstart](https://naramdash.github.io/func_SMILES2IMG/)**
+* 🇰🇷 **[한국어 공식 가이드 및 빠른 시작](https://naramdash.github.io/func_SMILES2IMG/ko/)**
+* 🇺🇸 **[English Documentation & Quickstart](https://naramdash.github.io/func_SMILES2IMG/)**
 * 📊 **[📥 Download Self-Contained Excel Playbook (.xlsx)](https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/examples/func_SMILES2IMG_Excel_Playbook.xlsx)** — 10-tab interactive workbook with live formulas, physicochemical & 3D complexity KPIs, SMARTS dictionary, stoichiometry & hit-to-lead workflows, KET reactions, `.FLOAT`, and all 49 functions.
-* 📝 **[📥 Download Self-Contained Word Playbook (.docx)](https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/examples/func_SMILES2IMG_Word_Playbook.docx)** — 6-page hands-on manuscript with live double-click-editable structures, journal SAR table, KET synthesis schemes, Mol\* 3D `1CRN` figure, and 1-click ACS B&W exercise.
-* 🎨 **[📥 Download Self-Contained PowerPoint Playbook (.pptx)](https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/examples/func_SMILES2IMG_PowerPoint_Playbook.pptx)** — 8-slide dark-mode interactive deck with 0.1s TextBox conversion lab, 4-card screening grid, KET mechanism slide, Mol\* 3D target, live Q&A `Molecule Info`, and speaker notes.
+* 📝 **[📥 Download Self-Contained Word Playbook (.docx)](https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/examples/func_SMILES2IMG_Word_Playbook.docx)** — 6-page hands-on manuscript with double-click-editable structures, journal SAR table, KET synthesis schemes, Mol\* 3D `1CRN` figure, and ACS B&W exercise.
+* 🎨 **[📥 Download Self-Contained PowerPoint Playbook (.pptx)](https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/examples/func_SMILES2IMG_PowerPoint_Playbook.pptx)** — 8-slide dark-mode interactive deck with TextBox conversion lab, 4-card screening grid, KET mechanism slide, Mol\* 3D target, Q&A `Molecule Info`, and speaker notes.
 
 ---
 
-## ⚡ 10-Second Quick Install (Excel · Word · PowerPoint)
+## ⚡ Quick Install (Excel · Word · PowerPoint)
 
 Open **PowerShell** and run this single command to automatically install, configure security, and register the add-in across Microsoft Office (Excel, Word, PowerPoint):
 
 ```powershell
-# Latest stable release (v1.9.0)
+# Latest stable release (v1.9.1)
 irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1 | iex
 ```
 
@@ -52,8 +51,8 @@ irm https://raw.githubusercontent.com/naramdash/func_SMILES2IMG/main/install.ps1
 
 * ⚡ **Real-Time In-Cell Chemical Rendering:** `=SMILES2IMG(A2)`, `=KET2IMG(A2)`, `=INCHI2IMG(A2)`, and `=NAME2IMG(A2)` render native cell pictures in Microsoft Excel that scale with row/column sizing and recalculate dynamically, with substructure highlighting (`"hl:c1ccccc1"`).
 * 🔬 **Comprehensive Offline Cheminformatics (SMILES · InChI · KET Parity):** Direct cell formulas `=SMILES2NAME`, `=NAME2SMILES`, `=KET2SMILES`, `*2MW`, `*2EXACTMASS`, `*2FORMULA`, `*2INCHI`, `*2INCHIKEY`, `*2LOGP`, `*2TPSA`, `*2HEAVY`, `*2RINGS`, `*2AROMATIC`, `*2FSP3`, `=SMILES.MATCH`, `=INCHI.MATCH`, and `=KET.MATCH`.
-* 📋 **One-Click Molecule Info, Vector SVG Copy & Lossless Batch Style:** Right-click context submenu and Ribbon tools across Excel, Word, and PowerPoint to copy Substance Name, Formula, MW, SMILES, InChI, InChIKey, or crisp **Vector SVG (`Copy SVG`)**, normalize structure styles losslessly while keeping highlights and rotations (**`Batch Style`**), and import 11-column `.sdf` chemical database tables in Excel (**`Import SDF`**).
-* ✏️ **Embedded Ketcher 2D Visual Sketcher:** 100% offline molecular editor with warm WebView2 instance pooling (`<0.05s` instant reopen) supporting atoms, bonds, rings, charges, and multi-step reaction schemes.
+* 📋 **Molecule Info, Vector SVG Copy & Lossless Batch Style:** Right-click context submenu and Ribbon tools across Excel, Word, and PowerPoint to copy Substance Name, Formula, MW, SMILES, InChI, InChIKey, or **Vector SVG (`Copy SVG`)**, normalize structure styles losslessly while keeping highlights and rotations (**`Batch Style`**), and import 11-column `.sdf` chemical database tables in Excel (**`Import SDF`**).
+* ✏️ **Embedded Ketcher 2D Visual Sketcher:** Offline molecular editor with warm WebView2 instance reuse supporting atoms, bonds, rings, charges, and multi-step reaction schemes.
 * 🧬 **Embedded Mol\* 3D Macromolecular Viewer:** Visualize proteins, nucleic acids, and complexes directly across Excel, PowerPoint, and Word. Download PDB structures by ID, insert rotatable 3D GLB models or 2D publication images, and re-edit anytime with double-click.
 * 🔄 **Lossless Document Persistence:** KET coordinates, chemical annotations, and Mol* 3D session recipes (`.molj`) are stored losslessly inside document XML metadata (`CustomXMLParts`), allowing seamless re-editing when sharing files with collaborators.
 * 🛡️ **Local-First & Privacy-Preserving:** Core 2D rendering (EPAM Indigo), 2D sketching (EPAM Ketcher), and all physicochemical/SAR calculations run locally on your PC. Internet access is only used optionally for uncached PubChem name/CAS lookups, RCSB PDB ID fetches in Mol\*, and manual update checks.
@@ -77,8 +76,8 @@ sequenceDiagram
     F->>C: Query cell image reference
     C->>Cache: Lookup hash key via Excel MATCH
     alt Cache Hit
-        Cache-->>F: Return existing cell ExcelReference (0ms)
-        F-->>User: Immediate image display
+        Cache-->>F: Return existing cell ExcelReference (cached)
+        F-->>User: Display cached image
     else Cache Miss
         C->>R: In-memory high-res PNG render
         R-->>C: Generated PNG byte stream
@@ -90,7 +89,7 @@ sequenceDiagram
 ```
 
 * **Local In-Memory Rendering:** Core structure rendering and property calculations execute locally in-process without external rendering servers or Node.js runtimes.
-* **Cache Persistence & Workbook Portability:** Images are cached in an internal hidden sheet (`__SMILES2IMG`), ensuring instant restoration when workbooks are saved and reopened.
+* **Cache Persistence & Workbook Portability:** Images are cached in an internal hidden sheet (`__SMILES2IMG`), allowing direct restoration when workbooks are saved and reopened.
 * **Aspect-Ratio Preserving Shape Updates:** Word and PowerPoint add-ins replace structure images in-place without altering coordinates, table cell widths, or margins.
 
 ---
@@ -156,7 +155,7 @@ func_SMILES2IMG/
 │   ├── Test-OfficeE2E.ps1              # Unified Live Word, PowerPoint, and Excel COM/XLL + UI E2E suite
 │   ├── Package-Release.ps1             # Builds Release, strips UTF-8 BOM from installers & creates ZIP archives
 │   ├── Generate-All-Playbooks.ps1      # Regenerates & verifies Excel, Word & PowerPoint Playbooks and syncs docs/public/examples/
-│   ├── Generate-Excel-Playbook.ps1     # 10-tab self-contained Excel Playbook generator + zero-error formula audit
+│   ├── Generate-Excel-Playbook.ps1     # 10-tab self-contained Excel Playbook generator + formula error audit
 │   ├── Generate-Word-Playbook.ps1      # 6-page live Word COM Playbook generator with embedded SMILES/KET/Mol* metadata
 │   ├── Generate-PowerPoint-Playbook.ps1 # 8-slide live PowerPoint COM Playbook generator with Shape.Tags & speaker notes
 │   ├── Capture-LiveDocsMedia.ps1       # Records live Office screenshots (.png), videos (.webm/.mp4), and captions (.vtt)
@@ -165,7 +164,7 @@ func_SMILES2IMG/
 │   ├── LiveCaptureEngine.cs            # Per-Monitor DPI-aware multi-HWND compositor & UIA helper for live captures
 │   ├── audit-docs-links.js             # Audits internal Markdown/HTML links & base paths across docs/
 │   └── audit-docs-media.js             # Verifies live PNG/WebM/MP4/VTT coverage & AGENTS.md naming compliance
-├── install.ps1                         # Unified Office add-in 1-click installer (clean-install/upgrade summary)
+├── install.ps1                         # Unified Office add-in installer (clean-install/upgrade summary)
 ├── uninstall.ps1                       # Unified Office add-in uninstaller (removal summary report)
 ├── THIRD_PARTY_NOTICES.md              # Open-source license acknowledgments
 └── README.md                           # Main developer documentation (this file)

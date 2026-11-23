@@ -1,9 +1,9 @@
 # Formula, MW, Exact Mass
 
-Compute standard Hill chemical formulas, average molecular weights (`MW`), HRMS monoisotopic exact masses, and substance names locally in **0ms**—and plug native numeric outputs straight into organic synthesis ELN stoichiometry calculators and LC-MS / HRMS adduct tables.
+Compute standard Hill chemical formulas, average molecular weights (`MW`), HRMS monoisotopic exact masses, and substance names locally—and plug native numeric outputs straight into organic synthesis ELN stoichiometry calculators and LC-MS / HRMS adduct tables.
 
 <FormulaTable
-  title="Formula, Mass, Name Sheet (0ms Offline)"
+  title="Formula, Mass, Name Sheet (Offline)"
   :columns='["SMILES", "Formula"]'
   :rows='[
     { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2FORMULA(A2)", desc: "Standard Hill molecular formula", out: "C9H8O4" },
@@ -17,14 +17,14 @@ Compute standard Hill chemical formulas, average molecular weights (`MW`), HRMS 
 
 ## 1. Core Identity & Mass Functions (`12` Total Across SMILES / InChI / KET)
 
-All four descriptors work seamlessly with SMILES, InChI, and single-molecule KET cells via a single `(input)` argument (`=INCHI2*` and `=KET2*` delegate directly to the same parser):
+All four descriptors work with SMILES, InChI, and single-molecule KET cells via a single `(input)` argument (`=INCHI2*` and `=KET2*` delegate directly to the same parser):
 
 | Property Output | SMILES Input | InChI / KET Input | Aspirin (`A2`) | Execution & Output Type |
 | :--- | :--- | :--- | :---: | :--- |
-| **Chemical Formula** | `=SMILES2FORMULA(A2)` | `=INCHI2FORMULA(A2)` · `=KET2FORMULA(A2)` | `C9H8O4` | **0ms Offline** · Standard Hill notation (`String`) |
-| **Molecular Weight (MW)** | `=SMILES2MW(A2)` | `=INCHI2MW(A2)` · `=KET2MW(A2)` | `180.16` | **0ms Offline** · Numeric `Double` in g/mol (2 decimals) |
-| **Exact Mass (HRMS)** | `=SMILES2EXACTMASS(A2)` | `=INCHI2EXACTMASS(A2)` · `=KET2EXACTMASS(A2)` | `180.0423` | **0ms Offline** · Monoisotopic mass in Da (4 decimals) |
-| **Substance Name** | `=SMILES2NAME(A2)` | `=INCHI2NAME(A2)` · `=KET2NAME(A2)` | `Aspirin` | Built-in 0ms dictionary + PubChem lookup (30-day local disk cache, `String`) |
+| **Chemical Formula** | `=SMILES2FORMULA(A2)` | `=INCHI2FORMULA(A2)` · `=KET2FORMULA(A2)` | `C9H8O4` | **Offline** · Standard Hill notation (`String`) |
+| **Molecular Weight (MW)** | `=SMILES2MW(A2)` | `=INCHI2MW(A2)` · `=KET2MW(A2)` | `180.16` | **Offline** · Numeric `Double` in g/mol (2 decimals) |
+| **Exact Mass (HRMS)** | `=SMILES2EXACTMASS(A2)` | `=INCHI2EXACTMASS(A2)` · `=KET2EXACTMASS(A2)` | `180.0423` | **Offline** · Monoisotopic mass in Da (4 decimals) |
+| **Substance Name** | `=SMILES2NAME(A2)` | `=INCHI2NAME(A2)` · `=KET2NAME(A2)` | `Aspirin` | Built-in dictionary + PubChem lookup (30-day local disk cache, `String`) |
 
 ## 2. Template 1: Organic Synthesis Stoichiometry Calculator (ELN)
 

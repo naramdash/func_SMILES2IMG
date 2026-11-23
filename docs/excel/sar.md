@@ -20,7 +20,7 @@ Instead of hardcoding a SMARTS pattern in every row, place your query motif in a
 
 | Column Purpose | Formula Referencing `$B$3` | What Happens When You Edit `$B$3` |
 | :--- | :--- | :--- |
-| **SMILES Substructure Match (`TRUE`/`FALSE`)** | `=SMILES.MATCH(A6, $B$3)` | Instantly flags every SMILES row containing the new query motif |
+| **SMILES Substructure Match (`TRUE`/`FALSE`)** | `=SMILES.MATCH(A6, $B$3)` | Flags every SMILES row containing the new query motif |
 | **InChI / KET Parity Match (`TRUE`/`FALSE`)** | `=INCHI.MATCH(A6, $B$3)` · `=KET.MATCH(A6, $B$3)` | Screens native InChI or KET canvas columns directly |
 | **Highlighted Structure Image** | `=SMILES2IMG(A6, "", "hl:"&$B$3)` | Colors the matching substructure atoms and bonds inside every cell image |
 

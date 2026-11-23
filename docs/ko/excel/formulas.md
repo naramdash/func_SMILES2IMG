@@ -17,8 +17,8 @@
   :rows='[
     { input: "CCO", formula: "=SMILES2IMG(A2)", desc: "A2 SMILES로 표준 컬러 구조식 렌더링", out: "에탄올 2D" },
     { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2IMG(A3, \"\", \"bw\")", desc: "A3 기준 논문 투고용 ACS 흑백 선화", out: "흑백 아스피린" },
-    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2MW(A4)", desc: "평균 분자량 (0ms 오프라인 실수)", out: "180.16" },
-    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2TPSA(A5)", desc: "위상 극성 표면적 TPSA (0ms 오프라인)", out: "63.60" },
+    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2MW(A4)", desc: "평균 분자량 (오프라인 계산)", out: "180.16" },
+    { input: "CC(=O)Oc1ccccc1C(=O)O", formula: "=SMILES2TPSA(A5)", desc: "위상 극성 표면적 TPSA (오프라인 계산)", out: "63.60" },
     { input: "", formula: "=NAME2IMG(\"Aspirin\")", desc: "화합물 이름·CAS 단독 2D 구조식", out: "아스피린 2D" }
   ]'
 />
@@ -52,7 +52,7 @@
 
 ## 2. 화학식 · 분자량 · 정밀질량 · 물질명 (`12종`)
 
-물질명 조회(`*2NAME`, 1회 조회 후 로컬 캐시)를 제외한 모든 계산은 **0ms 순수 오프라인**으로 동작합니다 ([화학식 · 분자량 · 정밀질량](/ko/excel/properties)):
+물질명 조회(`*2NAME`, 1회 조회 후 로컬 캐시)를 제외한 모든 계산은 **로컬 오프라인**으로 동작합니다 ([화학식 · 분자량 · 정밀질량](/ko/excel/properties)):
 
 | 출력값 | SMILES 입력 | InChI 입력 | KET 입력 | 반환 타입 | 아스피린 (`A2`) |
 | :--- | :--- | :--- | :--- | :---: | :--- |
@@ -107,7 +107,7 @@ SMILES, InChI, KET 모두 SMILES 및 SMARTS 부분구조 쿼리를 지원합니�
 | **선 잉크 색상** | `white` · `ink=#HEX` | `light`, `line=#HEX`, `base=#HEX` | 다크 모드 흰색 선 또는 커스텀 hex/CSS 선 색상 |
 | **부분구조 강조** | `hl:<smarts>` | `highlight:<smarts>`, `hl=<smarts>` | 일치하는 SMILES/SMARTS 골격을 컬러로 강조 |
 | **원자 라벨** | `num` · `stereo` · `h` · `all-c` | `idx`, `chiral`, `unfoldh`, `carbon` | 원자 번호, CIP 입체 표시, 수소 펼침, 탄소 `C` 표기 |
-| **평면 회전** | `rot90` · `rot180` · `rot270` | *(3번째 또는 4번째 인수에 사용)* | 2D 평면 시계 방향 회전 (카이랄 입체 100% 보존) |
+| **평면 회전** | `rot90` · `rot180` · `rot270` | *(3번째 또는 4번째 인수에 사용)* | 2D 평면 시계 방향 회전 (카이랄 입체 보존) |
 
 ## 7. 상태 및 오류 코드 안내
 

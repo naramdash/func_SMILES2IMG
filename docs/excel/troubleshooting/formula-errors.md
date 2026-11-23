@@ -22,7 +22,7 @@ Excel displays `#VALUE!` when the formula ran, but the input or query string is 
 
 ## 3. `#N/A` Status & Guardrails
 
-* **Brief Async Indicator (~0.1s):** When rendering a structure for the first time—or looking up an uncached compound name/CAS from PubChem—Excel briefly shows `#N/A` and **automatically replaces it** once complete.
+* **Brief Async Indicator:** When rendering a structure for the first time—or looking up an uncached compound name/CAS from PubChem—Excel briefly shows `#N/A` and **automatically replaces it** once complete.
 * **Unknown Names & Invalid CAS Numbers:** If a compound name is not in the built-in offline dictionary (or PubChem is unreachable/returns no match), or if a CAS number fails mathematical check-digit validation (e.g., `"50-78-3"`), `=NAME2*` immediately returns `#N/A` without waiting on a failed network call.
 * **Queries & Reactions in Single-Molecule Descriptors:** Passing query atoms / R-groups (`*`) or reaction schemes (`>>`) to single-molecule scalar property functions (`=SMILES2MW`, `=SMILES2LOGP`, `=SMILES2FSP3`, etc.) returns `#N/A` instead of miscomputing a false number.
 

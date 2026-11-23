@@ -440,7 +440,7 @@ internal static class RealSubstanceEdgeCaseTests
             AssertValidPng(MoleculeRenderer.Render(smiles!, RenderOptions.Default), $"Built-in '{key}'");
         }
 
-        // 2. Invalid CAS check-digit numbers must fail in 0ms without hitting network
+        // 2. Invalid CAS check-digit numbers must fail locally without hitting network
         string[] validCas = ["50-78-2", "58-08-2", "103-90-2", "15687-27-1", "33069-62-4", "141-78-6"];
         foreach (var c in validCas)
             Check(PubChemResolver.IsValidCasNumber(c) && MoleculeActionHelper.IsValidCasNumber(c), $"Valid CAS: {c}");

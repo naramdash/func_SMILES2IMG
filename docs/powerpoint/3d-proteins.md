@@ -21,7 +21,7 @@ Turn any PowerPoint slide into an interactive 3D structural biology showcase: fe
 
 5. **Camera-Preserving Re-Edit:** **Double-click** any inserted 3D model or 2D protein figure in Normal view to reopen Mol\* at the exact saved camera orientation, zoom, and style (`CustomXMLParts`).
 
-## 2. Killer Talk Effects: PowerPoint `Morph` & Built-In 3D Animations
+## 2. PowerPoint `Morph` & Built-In 3D Animations
 
 Because `Mol*` inserts a native **PowerPoint 3D Model (`.glb`)**, you can drive smooth protein motion directly with PowerPoint—without rendering MP4s or worrying about podium video codecs:
 
@@ -39,8 +39,8 @@ Select any inserted `.glb` protein on a slide and open PowerPoint's **Animations
 
 ## 3. File Size & Podium PC / macOS Compatibility
 
-* **Zero Add-In Needed at the Podium:** Inserted `.glb` models and `.png` figures are standard native PowerPoint shapes. Your 3D rotations and Morph animations play normally on **conference podium PCs and macOS** without `func_SMILES2IMG` installed.
-* **Keep Huge Complexes Lightweight:** Small-to-medium proteins (`1CRN`, `4HHB`, `6LU7`) load instantaneously as `.glb` models. For massive multi-subunit ribosomes or cryo-EM capsids—or if emailing a strict size-capped deck—choose **`2D Picture`** with **`BG: Transparent`**.
+* **No Add-In Needed at the Podium:** Inserted `.glb` models and `.png` figures are standard native PowerPoint shapes. Your 3D rotations and Morph animations play normally on **conference podium PCs and macOS** without `func_SMILES2IMG` installed.
+* **Keep Large Complexes Lightweight:** Small-to-medium proteins (`1CRN`, `4HHB`, `6LU7`) load quickly as `.glb` models. For large multi-subunit ribosomes or cryo-EM capsids—or if emailing a size-capped deck—choose **`2D Picture`** with **`BG: Transparent`**.
 
 ## Related Guides
 

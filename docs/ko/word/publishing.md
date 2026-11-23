@@ -1,10 +1,10 @@
 # 4. 투고 마감 · 벡터 SVG · 공동저자 공유
 
-ACS, RSC, Wiley, Elsevier, Nature 등 학술지나 특허청 제출 직전, Microsoft Word 원고와 PDF 변환본을 완벽하게 마무리하는 **투고 전 5분 체크리스트**입니다.
+ACS, RSC, Wiley, Elsevier, Nature 등 학술지나 특허청 제출 전, Microsoft Word 원고와 PDF 변환본을 점검하는 **투고 전 체크리스트**입니다.
 
 <FeatureMedia id="word-ch6-publication-finish" />
 
-## 투고 전 5분 마감 체크리스트
+## 투고 전 마감 체크리스트
 
 ### Step 1. 원고 전체 또는 특정 표만 ACS 흑백으로 통일 (`Batch Style`)
 
@@ -32,10 +32,10 @@ ACS, RSC, Wiley, Elsevier, Nature 등 학술지나 특허청 제출 직전, Micr
 
 ### Step 4. 공동저자(Mac) · 심사위원 `.docx` 호환성 확인
 
-* **설치 없는 환경에서도 100% 동일 출력:** Word 구조식은 표준 고해상도 PNG 그림과 표준 `.glb` 3D 모델로 문서에 내장됩니다. `func_SMILES2IMG`가 없는 **macOS**, Windows PC, Word 웹, 학술지 PDF 변환기에서도 그림 깨짐 없이 열람·인쇄됩니다.
+* **설치 없는 환경에서도 동일하게 표시:** Word 구조식은 표준 고해상도 PNG 그림과 표준 `.glb` 3D 모델로 문서에 내장됩니다. `func_SMILES2IMG`가 없는 **macOS**, Windows PC, Word 웹, 학술지 PDF 변환기에서도 그림 깨짐 없이 열람·인쇄됩니다.
 * **교정본 회신 후에도 재편집 유지:** 화학 메타데이터가 그림 **대체 텍스트(Alt Text)** 와 `CustomXMLParts`에 함께 저장되므로, Mac을 쓰는 공동저자가 본문을 수정해 돌려보내더라도 Windows에서 다시 열면 더블클릭 편집 기능이 그대로 동작합니다.
 
-::: tip 논문 반응식을 PowerPoint 다크모드 발표 자료로 3초 만에 옮기기
+::: tip 논문 반응식을 PowerPoint 다크모드 발표 자료로 옮기기
 논문 발표 슬라이드를 준비 중이라면 Word의 KET 반응식을 선택해 **`[SMILES]` ➔ `[Copy KET]`** 를 누른 뒤, PowerPoint로 이동해 **`[Paste Structure]`** ➔ **`[Batch Style]` ➔ `[Dark Mode]`** 를 실행하세요. 화살표와 촉매 주석까지 투명 흰색 선화로 즉시 전환됩니다.
 :::
 

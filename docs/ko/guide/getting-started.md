@@ -1,6 +1,6 @@
 # 시작하기 (Getting Started)
 
-**`func_SMILES2IMG`** 설치 후 상단에 **`[SMILES]`** 리본 탭이 보인다면, 1분 안에 Excel · Word · PowerPoint에서 첫 분자 구조식을 그려보세요.
+**`func_SMILES2IMG`** 설치 후 상단에 **`[SMILES]`** 리본 탭이 보인다면, Excel · Word · PowerPoint에서 첫 분자 구조식을 그려보세요.
 
 ## 1. Microsoft Excel — 첫 수식 입력 (`=NAME2IMG` / `=SMILES2IMG`)
 
@@ -31,7 +31,7 @@
 
 ## 3. Microsoft PowerPoint — 다크 모드 & 3D 단백질 슬라이드
 
-어두운 발표 템플릿에 흰색 테두리 없이 투명 배경 구조식을 배치하고, SMILES·화합물 이름이 적힌 텍스트 상자를 **`[Paste Structure]`** 버튼으로 0.1초 만에 변환하거나 **`[3D Structure (Mol*)]`** 버튼으로 360° 회전하는 3D 단백질을 삽입합니다.
+어두운 발표 템플릿에 흰색 테두리 없이 투명 배경 구조식을 배치하고, SMILES·화합물 이름이 적힌 텍스트 상자를 **`[Paste Structure]`** 버튼으로 변환하거나 **`[3D Structure (Mol*)]`** 버튼으로 360° 회전하는 3D 단백질을 삽입합니다.
 
 <FeatureMedia id="powerpoint-overview" />
 
@@ -39,5 +39,5 @@
 
 - [**Excel 가이드**](/ko/excel/) — 구조식 표, 이름·CAS 조회, LogP·TPSA·3D 지표, SAR 스크리닝, `.sdf` 가져오기 및 49개 함수 사전
 - [**Word 가이드**](/ko/word/) — 논문 본문 인라인 구조식, 화합물 SAR 표, KET 합성 반응식, Mol\* 3D 그림 및 ACS 흑백 변환
-- [**PowerPoint 가이드**](/ko/powerpoint/) — 다크 모드 투명 구조식, 텍스트 상자 0.1초 변환, 반응 메커니즘 및 360° 회전 3D 단백질 슬라이드
+- [**PowerPoint 가이드**](/ko/powerpoint/) — 다크 모드 투명 구조식, 텍스트 상자 구조 변환, 반응 메커니즘 및 360° 회전 3D 단백질 슬라이드
 - **[Editor — Ketcher 2D · Mol\* 3D · 출력](/ko/editor/)** — 2D 구조·반응식 편집기, 3D 단백질 뷰어, ACS 흑백 일괄 변환 및 벡터 SVG 복사 가이드

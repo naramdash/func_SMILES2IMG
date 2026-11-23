@@ -42,8 +42,8 @@ const tabs: PlaybookTab[] = [
     slides: [
       {
         img: '/examples/previews/excel-01.webp',
-        captionEn: 'Tab 0 · Start Here — 3-minute interactive sandbox & roadmap',
-        captionKo: '탭 0 · 시작하기 — 3분 체험 샌드박스 및 학습 로드맵'
+        captionEn: 'Tab 0 · Start Here — Interactive sandbox & roadmap',
+        captionKo: '탭 0 · 시작하기 — 체험 샌드박스 및 학습 로드맵'
       },
       {
         img: '/examples/previews/excel-02.webp',
@@ -105,8 +105,8 @@ const tabs: PlaybookTab[] = [
     slides: [
       {
         img: '/examples/previews/word-01.webp',
-        captionEn: 'Pages 1–2 of 6 · Ribbon Quick Map & 0.1s Text-to-Structure Lab',
-        captionKo: '1–2 / 6쪽 · 리본 메뉴 가이드 및 0.1초 텍스트 구조 변환 실습'
+        captionEn: 'Pages 1–2 of 6 · Ribbon Quick Map & Text-to-Structure Lab',
+        captionKo: '1–2 / 6쪽 · 리본 메뉴 가이드 및 텍스트 구조 변환 실습'
       },
       {
         img: '/examples/previews/word-02.webp',
@@ -115,7 +115,7 @@ const tabs: PlaybookTab[] = [
       },
       {
         img: '/examples/previews/word-03.webp',
-        captionEn: 'Pages 5–6 of 6 · Mol* 3D Protein (1CRN) & 1-Click ACS B&W Export',
+        captionEn: 'Pages 5–6 of 6 · Mol* 3D Protein (1CRN) & ACS B&W Export',
         captionKo: '5–6 / 6쪽 · Mol* 3D 단백질 그림(1CRN) 및 학술지 흑백 일괄 변환'
       }
     ]
@@ -143,8 +143,8 @@ const tabs: PlaybookTab[] = [
       },
       {
         img: '/examples/previews/ppt-03.webp',
-        captionEn: 'Slide 3 · 0.1s TextBox Conversion Lab (SMILES / Name / Chiral)',
-        captionKo: '슬라이드 3 · 0.1초 텍스트 상자 구조 변환 실습 (SMILES · 이름 · 카이랄)'
+        captionEn: 'Slide 3 · TextBox Conversion Lab (SMILES / Name / Chiral)',
+        captionKo: '슬라이드 3 · 텍스트 상자 구조 변환 실습 (SMILES · 이름 · 카이랄)'
       },
       {
         img: '/examples/previews/ppt-04.webp',
@@ -163,7 +163,7 @@ const tabs: PlaybookTab[] = [
       },
       {
         img: '/examples/previews/ppt-07.webp',
-        captionEn: 'Slide 7 · Live Q&A Molecule Info & 1-Click Batch Style Switching',
+        captionEn: 'Slide 7 · Q&A Molecule Info & Batch Style Switching',
         captionKo: '슬라이드 7 · 발표 Q&A용 분자 물성 조회 및 스타일 일괄 변환 실습'
       },
       {

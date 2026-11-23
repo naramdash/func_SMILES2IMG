@@ -52,7 +52,7 @@ features:
       width: '28'
       height: '28'
     title: "Microsoft Word"
-    details: "Insert inline structures into prose and compound tables, apply 1-click ACS B&W batch styles, and copy lossless SVG."
+    details: "Insert inline structures into prose and compound tables, apply ACS B&W batch styles, and copy lossless SVG."
     link: /word/
   - icon:
       src: /icons/powerpoint.svg
@@ -60,7 +60,7 @@ features:
       width: '28'
       height: '28'
     title: "Microsoft PowerPoint"
-    details: "Build dark-mode transparent structures, convert slide textboxes in 0.1s, and embed rotatable 3D protein models."
+    details: "Build dark-mode transparent structures, convert slide textboxes, and embed rotatable 3D protein models."
     link: /powerpoint/
 ---
 

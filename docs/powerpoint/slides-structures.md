@@ -1,8 +1,8 @@
 # 1. 2D Structures & Reaction Slides
 
-Convert PowerPoint TextBoxes containing SMILES strings or compound names in-place in `0.1s`, sketch full multi-step reaction mechanisms in **Ketcher 2D**, and double-click any structure shape anytime to edit in place without losing card alignment.
+Convert PowerPoint TextBoxes containing SMILES strings or compound names in-place, sketch multi-step reaction mechanisms in **Ketcher 2D**, and double-click any structure shape anytime to edit in place without losing card alignment.
 
-## 1. Fastest Ways to Put a 2D Molecule on a Slide
+## 1. Ways to Put a 2D Molecule on a Slide
 
 | Starting Point on Your Slide | What to Do | How PowerPoint Places It |
 | :--- | :--- | :--- |
@@ -11,7 +11,7 @@ Convert PowerPoint TextBoxes containing SMILES strings or compound names in-plac
 | **Typed name/SMILES you want to tweak first** | Select the TextBox or highlight text ➔ **`[Insert / Edit Structure]`** | **Preloads** that molecule into Ketcher 2D immediately so you can adjust groups before inserting |
 | **Blank slide** (drawing from scratch) | Click **`[SMILES]` ➔ `[Insert / Edit Structure]`** | Opens offline **Ketcher 2D**; press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to insert centered on the slide |
 
-::: tip Power Tip: Convert Slide TextBoxes In-Place (`0.1s`)
+::: tip Power Tip: Convert Slide TextBoxes In-Place
 <FeatureMedia id="powerpoint-slide-textbox-quick-insert" />
 
 When you select a plain-text TextBox (`CC(=O)Oc1ccccc1C(=O)O` or `Paracetamol`) and click **`[Paste Structure]`**, `func_SMILES2IMG` automatically replaces that TextBox right where it sits—expanding thin single-line TextBoxes cleanly into readable bounds while keeping everything inside the slide margins.
@@ -30,8 +30,8 @@ Build synthetic schemes complete with reaction arrows (`➔`), `+` signs, cataly
 
 ## 3. Double-Click In-Place Re-Editing & Cross-App Reuse
 
-* **Keeps Exact Card Position & Size:** Double-clicking any 2D molecule or reaction shape on the slide canvas in Normal view reopens Ketcher 2D in `0.05s` (ribbon and pane double-clicks are never intercepted). Pressing <kbd>Ctrl</kbd> + <kbd>Enter</kbd> swaps the image right inside the original bounding box (`Left`, `Top`, `Width`, `Height`) so multi-card slide alignment never shifts.
-* **Safe Name/CAS Confirmation & Cache:** SMILES, InChI, KET, and validated CAS numbers convert immediately, while compound names or ambiguous short English words prompt briefly on **`[Paste Structure]`**. PubChem lookups cache locally for **30 days** (`%LOCALAPPDATA%\Smiles2Img`), and malformed CAS check digits reject in `0ms`.
+* **Keeps Exact Card Position & Size:** Double-clicking any 2D molecule or reaction shape on the slide canvas in Normal view reopens Ketcher 2D directly (ribbon and pane double-clicks are never intercepted). Pressing <kbd>Ctrl</kbd> + <kbd>Enter</kbd> swaps the image right inside the original bounding box (`Left`, `Top`, `Width`, `Height`) so multi-card slide alignment never shifts.
+* **Safe Name/CAS Confirmation & Cache:** SMILES, InChI, KET, and validated CAS numbers convert immediately, while compound names or ambiguous short English words prompt briefly on **`[Paste Structure]`**. PubChem lookups cache locally for **30 days** (`%LOCALAPPDATA%\Smiles2Img`), and malformed CAS check digits are rejected before lookup.
 * **Animation Tip:** Because updating a shape replaces the underlying picture object, add PowerPoint **Appear / Fade** animations **after** finalizing your chemical edits (or re-apply them afterward).
 * **From Excel or Word to PowerPoint:**
   * **From Word manuscripts:** Select a reaction scheme in Word ➔ **`[Copy KET]`** (or **`[Copy SMILES]`** for a single molecule) ➔ switch to PowerPoint ➔ **`[Paste Structure]`** ➔ **`[Batch Style]` ➔ `[Dark Mode]`**.
@@ -39,6 +39,6 @@ Build synthetic schemes complete with reaction arrows (`➔`), `+` signs, cataly
 
 ## Related Guides
 
-- [**2. Dark Mode, Cards, Deck Restyle**](/powerpoint/dark-mode) — Remove white boxes, arrange 4-card SAR grids, and switch the whole deck's theme in 1s
+- [**2. Dark Mode, Cards, Deck Restyle**](/powerpoint/dark-mode) — Remove white boxes, arrange 4-card SAR grids, and switch the whole deck's theme together
 - [**Ketcher 2D Sketcher Manual**](/editor/) — Ring templates, reaction arrows, and keyboard shortcuts
 - [**Double-Click & 3D Editing Troubleshooting**](/powerpoint/troubleshooting/3d-editing#double-click) — What to check if double-click opens Format Picture instead of Ketcher

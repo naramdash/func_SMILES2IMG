@@ -18,7 +18,7 @@ Troubleshooting for Mol\* `.glb` 3D protein insertion, `.pptx` file size limits,
 
 ## 3. Presenting on Conference Podium PCs or macOS {#sharing}
 
-* **Zero Add-In Required on Podium Machines:** Inserted 2D PNGs and 3D `.glb` models are native PowerPoint shapes embedded inside `.pptx`—your slides, 3D **Turntable / Swing** animations, and **Morph** transitions play reliably on **conference PCs and macOS** without installing `func_SMILES2IMG` ([Document Sharing](/guide/troubleshooting/document-sharing)).
+* **Standalone Podium Playback (No Add-In Required):** Inserted 2D PNGs and 3D `.glb` models are native PowerPoint shapes embedded inside `.pptx`—your slides, 3D **Turntable / Swing** animations, and **Morph** transitions play reliably on **conference PCs and macOS** without installing `func_SMILES2IMG` ([Document Sharing](/guide/troubleshooting/document-sharing)).
 * **Exporting to PDF Handouts:** PDF flattens `.glb` objects at their current resting camera angle—verify every 3D slide rests on your intended pocket view before saving as PDF.
 
 ## Related Guides

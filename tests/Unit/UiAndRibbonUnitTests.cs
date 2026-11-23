@@ -218,6 +218,10 @@ internal static class UiAndRibbonUnitTests
         Check(UiIcons.Molstar3DIcon != null && UiIcons.Molstar3DIcon.Handle != IntPtr.Zero, "UiIcons.Molstar3DIcon has valid handle");
         Check(UiIcons.GetPropertyIcon("Rings & Aromaticity") != null, "UiIcons.GetPropertyIcon('Rings & Aromaticity') valid");
         Check(UiIcons.GetPropertyIcon("3D Complexity (Fsp3)") != null, "UiIcons.GetPropertyIcon('3D Complexity (Fsp3)') valid");
+        using (var appLogo = UiIcons.CreateAppLogoBitmap(64))
+        {
+            Check(appLogo.Width == 64 && appLogo.Height == 64, "UiIcons.CreateAppLogoBitmap(64) renders 64x64 brand mark");
+        }
 
         Check(AboutDialog.GetDocsUrl("Excel") == "https://naramdash.github.io/func_SMILES2IMG/excel/", "GetDocsUrl routes Excel to /excel/");
         Check(AboutDialog.GetDocsUrl("Word") == "https://naramdash.github.io/func_SMILES2IMG/word/", "GetDocsUrl routes Word to /word/");

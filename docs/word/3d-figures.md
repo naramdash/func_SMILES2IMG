@@ -1,6 +1,6 @@
 # 3. 3D Protein Figures (`Mol*`)
 
-Embed publication-grade 3D protein, nucleic acid, and ligand-pocket figures directly inside your Microsoft Word manuscript—fetching public entries by 4-character PDB ID or loading private `.pdb` / `.cif` files completely offline, with saved camera orientation for one-click re-editing.
+Embed 3D protein, nucleic acid, and ligand-pocket figures directly inside your Microsoft Word manuscript—fetching public entries by 4-character PDB ID or loading local `.pdb` / `.cif` files offline, with saved camera orientation for re-editing.
 
 <FeatureMedia id="word-ch5-edit-and-molstar" />
 
@@ -20,7 +20,7 @@ Embed publication-grade 3D protein, nucleic acid, and ligand-pocket figures dire
 
 | Word Output Mode | How It Behaves in `.docx` | Best Manuscript Use Case |
 | :--- | :--- | :--- |
-| **`2D Picture` (Recommended for Papers)** | Embeds a crisp high-DPI `.png` snapshot (`BG: White` or `Transparent`) | **ACS / Nature / Elsevier submissions, PDF conversion, and print manuscripts** across all Word versions |
+| **`2D Picture` (Recommended for Papers)** | Embeds a high-DPI `.png` snapshot (`BG: White` or `Transparent`) | **ACS / Nature / Elsevier submissions, PDF conversion, and print manuscripts** across all Word versions |
 | **`3D Model (GLB)`** | Embeds a native interactive 3D object users can rotate 360° inside the Word page | **Internal lab reports, grant review drafts, and interactive `.docx` reviews** (requires Word 2019 / 2021 / 2024 / Microsoft 365) |
 
 ::: info Choosing Background & Contrast for Word Figures
@@ -30,7 +30,7 @@ For standard white journal pages and PDF figure plates, **`BG: White`** or **`BG
 ## 3. Re-Editing Camera Angles & Binding-Pocket Views
 
 * **Exact View Preservation:** `func_SMILES2IMG` compresses and embeds the complete Mol\* viewer state (PDB target, camera coordinates, zoom, representation, and colors) inside Word's native **`CustomXMLParts`**, linked via the shape's `MOLSTAR:` Alt Text tag.
-* **Instant Refinement:** **Double-click** any inserted Mol\* 2D figure or 3D model in Word to reopen Mol\* at the exact camera orientation you left off—tweak rotation slightly or toggle ligand surfaces and apply in place without rebuilding the view from zero.
+* **Refinement in Place:** **Double-click** any inserted Mol\* 2D figure or 3D model in Word to reopen Mol\* at the exact camera orientation you left off—tweak rotation slightly or toggle ligand surfaces and apply in place without rebuilding the view from scratch.
 * **Protected From `Batch Style`:** Document-wide **`[Batch Style]`** (such as switching all 2D schemes to `Publication B&W`) automatically skips Mol\* 3D figures so your colored protein ribbons and surfaces stay intact.
 
 ## Related Guides

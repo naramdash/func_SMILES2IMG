@@ -4,9 +4,9 @@ Fixes when a 2D chemical structure shows an opaque white rectangle or dark invis
 
 ## 1. White Box Background or Invisible Dark Lines on Dark Slides {#dark-slides}
 
-Standard copy-pasted screenshots leave glaring white boxes over dark navy/slate presentation templates, while transparent images with black bonds disappear over dark backgrounds.
+Standard copy-pasted screenshots leave opaque white boxes over dark navy/slate presentation templates, while transparent images with black bonds disappear over dark backgrounds.
 
-* **Fix Existing Slide or Whole Deck in 1 Click:** Select the structure shape—or click empty slide background (nothing selected) to convert the **entire presentation deck**—and click **`[SMILES]` ➔ `[Batch Style]` ➔ `[Dark Mode (White Ink)]`**.
+* **Fix Existing Slide or Whole Deck Together:** Select the structure shape—or click empty slide background (nothing selected) to convert the **entire presentation deck**—and click **`[SMILES]` ➔ `[Batch Style]` ➔ `[Dark Mode (White Ink)]`**.
 * **Insert Transparently From the Start:** Before pressing <kbd>Ctrl</kbd> + <kbd>Enter</kbd>, set Ketcher's top bar to **`[Background: Transparent]`** (or Mol\*'s **`BG: Transparent`**) so no opaque rectangle is generated.
 
 ## 2. Grouped Cards Skipped by Batch Style {#grouped-shapes}
@@ -19,7 +19,7 @@ Standard copy-pasted screenshots leave glaring white boxes over dark navy/slate 
 You never need to redraw dark-mode structures when reusing conference slides inside a bright lab-meeting deck or printing monochrome handouts:
 
 * **Light Templates:** Click empty slide canvas ➔ **`[SMILES]` ➔ `[Batch Style]` ➔ `[Standard Color (Transparent)]`** restores IUPAC heteroatom colors with alpha transparency.
-* **Print Handouts / B&W PDFs:** Save a duplicate `.pptx` and run **`[Batch Style]` ➔ `[Publication B&W (ACS Monochrome)]`** to convert every slide structure to high-contrast black line art in 1 second.
+* **Print Handouts / B&W PDFs:** Save a duplicate `.pptx` and run **`[Batch Style]` ➔ `[Publication B&W (ACS Monochrome)]`** to convert every slide structure to high-contrast black line art.
 
 ::: tip Animated Shapes Tip
 If a structure has slide Entrance animations applied, wait until chemical edits are finished before adding animations, or re-apply the animation after `Batch Style` replaces the picture object.

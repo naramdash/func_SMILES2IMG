@@ -7,5 +7,5 @@ Explore the official **self-contained playbooks** for Microsoft Excel, Word, and
 ::: tip How to Use These Playbooks
 1. Make sure **`func_SMILES2IMG`** is installed ([Installation](/guide/install)).
 2. Select an Office app above to preview and download its playbook, then open it directly in **Excel**, **Word**, or **PowerPoint**.
-3. Follow the built-in exercises—edit SMILES inputs, double-click embedded structures or reaction schemes to reopen **Ketcher 2D** / **Mol\* 3D**, or test 1-click **`Batch Style`** right inside the file.
+3. Follow the built-in exercises—edit SMILES inputs, double-click embedded structures or reaction schemes to reopen **Ketcher 2D** / **Mol\* 3D**, or test **`Batch Style`** right inside the file.
 :::

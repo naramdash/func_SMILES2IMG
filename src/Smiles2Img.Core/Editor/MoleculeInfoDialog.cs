@@ -9,7 +9,7 @@ namespace Smiles2Img.Editor;
 
 /// <summary>
 /// Standard Windows Forms dialog displaying molecular properties, 2D structure preview,
-/// and one-click individual or spreadsheet-ready summary copy actions.
+/// and individual or spreadsheet-ready summary copy actions.
 /// </summary>
 public sealed class MoleculeInfoDialog : Form
 {

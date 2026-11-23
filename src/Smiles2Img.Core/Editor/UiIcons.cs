@@ -22,44 +22,103 @@ public static class UiIcons
     private static readonly Lazy<Icon?> _moleculeInfoIcon = new(CreateMoleculeInfoIcon);
     private static readonly Lazy<Icon?> _aboutIcon = new(CreateAboutIcon);
 
-    private static Icon? CreateChemicalIcon()
+    private static GraphicsPath CreateRoundedRectPath(RectangleF bounds, float radius)
+    {
+        float d = radius * 2f;
+        var path = new GraphicsPath();
+        path.AddArc(bounds.X, bounds.Y, d, d, 180f, 90f);
+        path.AddArc(bounds.Right - d, bounds.Y, d, d, 270f, 90f);
+        path.AddArc(bounds.Right - d, bounds.Bottom - d, d, d, 0f, 90f);
+        path.AddArc(bounds.X, bounds.Bottom - d, d, d, 90f, 90f);
+        path.CloseFigure();
+        return path;
+    }
+
+    private static void DrawHexFBrandMark(Graphics g, float size, Color inkColor, float insetPx = 0f)
+    {
+        float scale = Math.Max(0.1f, (size - insetPx * 2f) / 64f);
+        var state = g.Save();
+        try
+        {
+            g.TranslateTransform(insetPx, insetPx);
+            g.ScaleTransform(scale, scale);
+
+            PointF[] hex =
+            {
+                new(32f, 6f),
+                new(54.5f, 19f),
+                new(54.5f, 45f),
+                new(32f, 58f),
+                new(9.5f, 45f),
+                new(9.5f, 19f)
+            };
+            using (var hexPen = new Pen(inkColor, 4.2f) { LineJoin = LineJoin.Round })
+            {
+                g.DrawPolygon(hexPen, hex);
+            }
+
+            g.TranslateTransform(32f, 32f);
+            g.ScaleTransform(0.72f, 0.72f);
+
+            using var stemPath = new GraphicsPath();
+            stemPath.AddBezier(new PointF(9.6f, -15.4f), new PointF(8.2f, -19.2f), new PointF(3.3f, -19.0f), new PointF(2.0f, -11.5f));
+            stemPath.AddLine(new PointF(2.0f, -11.5f), new PointF(-2.0f, 11.5f));
+            stemPath.AddBezier(new PointF(-2.0f, 11.5f), new PointF(-3.3f, 19.0f), new PointF(-8.2f, 19.2f), new PointF(-9.6f, 15.4f));
+
+            using (var stemPen = new Pen(inkColor, 4.8f) { StartCap = LineCap.Round, EndCap = LineCap.Round, LineJoin = LineJoin.Round })
+            {
+                g.DrawPath(stemPen, stemPath);
+            }
+
+            using (var crossPen = new Pen(inkColor, 4.0f) { StartCap = LineCap.Round, EndCap = LineCap.Round })
+            {
+                g.DrawLine(crossPen, -6.0f, -2.6f, 6.8f, -2.6f);
+            }
+
+            using var dotBrush = new SolidBrush(inkColor);
+            g.FillEllipse(dotBrush, 9.6f - 2.3f, -15.4f - 2.3f, 4.6f, 4.6f);
+            g.FillEllipse(dotBrush, -9.6f - 2.3f, 15.4f - 2.3f, 4.6f, 4.6f);
+        }
+        finally
+        {
+            g.Restore(state);
+        }
+    }
+
+    /// <summary>
+    /// Renders the 1:1 monochrome Hex-f brand mark onto a transparent bitmap at the requested pixel size.
+    /// </summary>
+    public static Bitmap CreateAppLogoBitmap(int size = 64)
+    {
+        int px = Math.Max(16, size);
+        var bmp = new Bitmap(px, px, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        using var g = Graphics.FromImage(bmp);
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+        g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+        g.Clear(Color.Transparent);
+        DrawHexFBrandMark(g, px, Color.FromArgb(17, 17, 17), insetPx: 0f);
+        return bmp;
+    }
+
+    private static Icon? CreateBrandWindowIcon()
     {
         try
         {
-            using var bmp = new Bitmap(32, 32);
+            using var bmp = new Bitmap(32, 32, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             using var g = Graphics.FromImage(bmp);
             g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            g.Clear(Color.Transparent);
 
-            // Outer dark background rounded badge
-            using var bgBrush = new SolidBrush(Color.FromArgb(15, 23, 42));
-            g.FillEllipse(bgBrush, 1, 1, 30, 30);
-
-            // Hexagonal benzene ring
-            using var ringPen = new Pen(Color.FromArgb(56, 189, 248), 2.2f);
-            PointF[] points =
+            using (var bgPath = CreateRoundedRectPath(new RectangleF(1f, 1f, 30f, 30f), 7f))
+            using (var bgBrush = new SolidBrush(Color.White))
+            using (var rimPen = new Pen(Color.FromArgb(212, 212, 216), 1.0f))
             {
-                new(16, 5),
-                new(25, 10.5f),
-                new(25, 21.5f),
-                new(16, 27),
-                new(7, 21.5f),
-                new(7, 10.5f)
-            };
-            g.DrawPolygon(ringPen, points);
+                g.FillPath(bgBrush, bgPath);
+                g.DrawPath(rimPen, bgPath);
+            }
 
-            // Inner aromatic ring
-            using var innerPen = new Pen(Color.FromArgb(14, 165, 233), 1.2f);
-            g.DrawEllipse(innerPen, 11, 11, 10, 10);
-
-            // Colored atom nodes (Oxygen red, Nitrogen blue, Emerald green)
-            using var redBrush = new SolidBrush(Color.FromArgb(239, 68, 68));
-            using var blueBrush = new SolidBrush(Color.FromArgb(59, 130, 246));
-            using var greenBrush = new SolidBrush(Color.FromArgb(16, 185, 129));
-
-            g.FillEllipse(redBrush, 13.5f, 2.5f, 5, 5);
-            g.FillEllipse(blueBrush, 22.5f, 19, 5, 5);
-            g.FillEllipse(greenBrush, 4.5f, 19, 5, 5);
-
+            DrawHexFBrandMark(g, 32f, Color.FromArgb(17, 17, 17), insetPx: 3f);
             return ConvertBitmapToIcon(bmp);
         }
         catch
@@ -67,6 +126,8 @@ public static class UiIcons
             return null;
         }
     }
+
+    private static Icon? CreateChemicalIcon() => CreateBrandWindowIcon();
 
     private static Icon? CreateMolstar3DIcon()
     {
@@ -168,47 +229,7 @@ public static class UiIcons
         }
     }
 
-    private static Icon? CreateAboutIcon()
-    {
-        try
-        {
-            using var bmp = new Bitmap(32, 32);
-            using var g = Graphics.FromImage(bmp);
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-
-            // Outer Navy Blue (matching About dialog branding)
-            using var bgBrush = new SolidBrush(Color.FromArgb(20, 50, 85));
-            g.FillEllipse(bgBrush, 1, 1, 30, 30);
-
-            // White hexagon structure
-            using var ringPen = new Pen(Color.White, 2.0f);
-            PointF[] points =
-            {
-                new(16, 6),
-                new(24, 11),
-                new(24, 21),
-                new(16, 26),
-                new(8, 21),
-                new(8, 11)
-            };
-            g.DrawPolygon(ringPen, points);
-
-            // Glowing cyan inner badge
-            using var cyanBrush = new SolidBrush(Color.FromArgb(56, 189, 248));
-            g.FillEllipse(cyanBrush, 12.5f, 12.5f, 7, 7);
-
-            // Central info letter 'i'
-            using var textBrush = new SolidBrush(Color.FromArgb(20, 50, 85));
-            using var font = new Font("Arial", 6.5f, FontStyle.Bold);
-            g.DrawString("i", font, textBrush, 14.2f, 13.0f);
-
-            return ConvertBitmapToIcon(bmp);
-        }
-        catch
-        {
-            return null;
-        }
-    }
+    private static Icon? CreateAboutIcon() => CreateBrandWindowIcon();
 
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]

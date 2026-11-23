@@ -9,8 +9,8 @@ Instead of copy-pasting static screenshots from external drawing tools, write si
 | Office App | What You Can Do | Guide |
 | :--- | :--- | :--- |
 | <AppBadge app="excel" /> | Render compound names, CAS numbers, SMILES, or InChI into live in-cell 2D structures (`=SMILES2IMG`, `=NAME2IMG`), run 49 property, 3D complexity, conversion, and SAR formulas across tables, and import `.sdf` files. | <span class="s2i-nowrap">[Overview →](/excel/)</span> |
-| <AppBadge app="word" /> | Insert crisp inline structures into manuscripts and fixed-width SAR tables, copy descriptors without typos via `Molecule Info`, switch the whole document to ACS B&W in one click, and copy lossless Vector SVG. | <span class="s2i-nowrap">[Overview →](/word/)</span> |
-| <AppBadge app="powerpoint" /> | Convert slide textboxes into transparent dark-mode structures in 0.1s, embed 360°-rotatable 3D proteins (`.glb`), and switch deck themes instantly with 1-click `Batch Style`. | <span class="s2i-nowrap">[Overview →](/powerpoint/)</span> |
+| <AppBadge app="word" /> | Insert crisp inline structures into manuscripts and fixed-width SAR tables, copy descriptors cleanly via `Molecule Info`, switch the whole document to ACS B&W, and copy lossless Vector SVG. | <span class="s2i-nowrap">[Overview →](/word/)</span> |
+| <AppBadge app="powerpoint" /> | Convert slide textboxes into transparent dark-mode structures, embed 360°-rotatable 3D proteins (`.glb`), and switch deck themes with `Batch Style`. | <span class="s2i-nowrap">[Overview →](/powerpoint/)</span> |
 
 All three apps include the built-in offline **[Ketcher 2D](/editor/)** sketcher and **[Mol\* 3D](/editor/molstar)** macromolecular viewer—double-click any inserted structure or reaction scheme to re-edit it in place without disturbing your layout.
 
@@ -24,7 +24,7 @@ All three apps include the built-in offline **[Ketcher 2D](/editor/)** sketcher 
 | **Supported Office Apps** | **Excel + Word + PowerPoint** | Excel + Word + PowerPoint | Word only |
 | **Excel Structure Cells** | **Native in-cell formulas (`=SMILES2IMG`)** & `.FLOAT` shapes (no sheet conversion needed) | Requires worksheet conversion or proprietary objects | N/A |
 | **3D Macromolecules** | **Built-in Mol\* (rotatable `.glb` 3D models & 2D PNG)** | Requires separate 3D software | Not supported |
-| **Installation Rights** | **No Admin rights needed** (10-second per-user setup) | Requires Admin installer & license activation | Requires setup wizard |
+| **Installation Rights** | **No Admin rights needed** (per-user PowerShell setup) | Requires Admin installer & license activation | Requires setup wizard |
 
 ## Local-First Privacy & Cross-Platform Sharing {#privacy}
 
@@ -50,6 +50,6 @@ Internet access is used **only when you explicitly invoke** one of these optiona
 
 ## Next Steps
 
-- [**Installation (10-Second Setup)**](/guide/install) — Install across Excel, Word, and PowerPoint in one PowerShell line—no admin rights required.
-- [**Getting Started (First Molecule)**](/guide/getting-started) — Render your first structure in Excel, Word, or PowerPoint in under a minute.
+- [**Installation**](/guide/install) — Install across Excel, Word, and PowerPoint with one PowerShell command—no admin rights required.
+- [**Getting Started (First Molecule)**](/guide/getting-started) — Render your first structure in Excel, Word, or PowerPoint.
 - [**Interactive Playbooks**](/guide/playbooks) — Download the self-contained Excel (10 tabs), Word (6 pages), and PowerPoint (8 slides) playbooks.

@@ -1,6 +1,6 @@
 # Batch Style, 12-Column TSV, 3D (`Mol*`)
 
-Losslessly restyle formula-backed chemical tables across an entire Excel worksheet or selection in one click, expand a molecule cell into a 12-column TSV descriptor row, and place interactive 3D protein models (`Mol*`) straight from PDB codes in cells.
+Losslessly restyle formula-backed chemical tables across an entire Excel worksheet or selection with Batch Style, expand a molecule cell into a 12-column TSV descriptor row, and place interactive 3D protein models (`Mol*`) from PDB codes in cells.
 
 ## 1. Lossless Formula-Rewriting `Batch Style` Across Ranges or Sheets
 

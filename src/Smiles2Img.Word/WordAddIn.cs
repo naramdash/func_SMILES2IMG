@@ -137,7 +137,7 @@ public class WordAddIn : IDTExtensibility2, IRibbonExtensibility
 {RibbonXmlBuilder.BuildRibbonBatchStyleMenu(
     "menuRibbonWordBatchStyle",
     "Batch Normalize Document Molecule Styles",
-    "Convert all molecular structures in the active Word document to a unified style preset in one click.",
+    "Convert all molecular structures in the active Word document to a unified style preset.",
     "btnWordBatchStyleColorTrans",
     "btnWordBatchStyleBw",
     "btnWordBatchStyleWhiteBg",

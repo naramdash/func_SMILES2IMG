@@ -43,7 +43,7 @@ public sealed class AboutDialog : Form
             License = "Apache License 2.0",
             Website = "https://github.com/epam/Indigo",
             Copyright = "Copyright (c) 2009-2024 EPAM Systems, Inc.",
-            Description = "Cheminformatics engine providing molecular layout computation, aromatization, 0ms local property calculation, and high-resolution PNG rendering."
+            Description = "Cheminformatics engine providing molecular layout computation, aromatization, local property calculation, and high-resolution PNG rendering."
         },
         new()
         {
@@ -128,7 +128,7 @@ public sealed class AboutDialog : Form
         int btnH = Math.Max(28, (int)(28 * dpiScale));
 
         int iconSize = (int)(36 * dpiScale);
-        _logoBitmap = (UiIcons.ChemicalIcon ?? UiIcons.AboutIcon)?.ToBitmap();
+        _logoBitmap = UiIcons.CreateAppLogoBitmap(Math.Max(64, iconSize));
         var picLogo = new PictureBox
         {
             Size = new Size(iconSize, iconSize),
@@ -332,8 +332,8 @@ public sealed class AboutDialog : Form
         var (scrollHost, _) = DialogHelper.CreateScrollableWrappedLabel(
             "func_SMILES2IMG integrates chemical structure sketching, 49 worksheet formulas, and 3D macromolecular visualization directly inside Excel, Word, and PowerPoint.\r\n\r\n" +
             "• Microsoft Excel: In-cell (=SMILES2IMG, =INCHI2IMG, =KET2IMG, =NAME2IMG), floating (.FLOAT), 41 property/complexity/conversion/search UDFs across SMILES, InChI & KET (=SMILES2MW, =INCHI2LOGP, =KET2TPSA, =SMILES2FSP3, =SMILES.MATCH), and 11-column SDF import.\r\n" +
-            "• Microsoft Word: Inline and floating high-resolution structure images, lossless Vector SVG copy, 1-click Batch Style normalization, and live KET metadata round-trip editing.\r\n" +
-            "• Microsoft PowerPoint: Slide shapes with KET metadata, 3D Mol* (.glb / 2D) models, Batch Style presets, and instant property export.\r\n" +
+            "• Microsoft Word: Inline and floating high-resolution structure images, lossless Vector SVG copy, Batch Style normalization, and live KET metadata round-trip editing.\r\n" +
+            "• Microsoft PowerPoint: Slide shapes with KET metadata, 3D Mol* (.glb / 2D) models, Batch Style presets, and property export.\r\n" +
             "• Built-in Offline Engines: EPAM Ketcher, EPAM Indigo C++ Toolkit, Mol* 3D Viewer, and IUPAC InChI Library running locally without external servers.");
 
         grpCapabilities.Controls.Add(scrollHost);
@@ -585,11 +585,11 @@ public sealed class AboutDialog : Form
                 return "v" + v;
             }
             var ver = asm.GetName().Version;
-            return ver != null ? $"v{ver.Major}.{ver.Minor}.{ver.Build}" : "v1.9.0";
+            return ver != null ? $"v{ver.Major}.{ver.Minor}.{ver.Build}" : "v1.9.1";
         }
         catch
         {
-            return "v1.9.0";
+            return "v1.9.1";
         }
     }
 

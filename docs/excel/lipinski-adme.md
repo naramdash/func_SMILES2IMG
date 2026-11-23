@@ -1,6 +1,6 @@
 # LogP, TPSA & 3D Descriptors
 
-Evaluate octanol-water lipophilicity (`LogP`), polar surface area (`TPSA`), heavy atom/ring scaffold counts, and 3D carbon saturation (`Fsp3`) across hundreds of compounds in **0ms pure offline** inside Excel—with full **SMILES, InChI, and KET** input parity.
+Evaluate octanol-water lipophilicity (`LogP`), polar surface area (`TPSA`), heavy atom/ring scaffold counts, and 3D carbon saturation (`Fsp3`) across compounds **locally offline** inside Excel—with full **SMILES, InChI, and KET** input parity.
 
 <FormulaTable
   title="LogP, TPSA & 3D Complexity Sheet"
@@ -31,7 +31,7 @@ Every descriptor family provides strict input-validated **`SMILES2*`**, **`INCHI
 ::: info Scientific Accuracy Notes (EPAM Indigo Engine)
 * **TPSA Modes & Accepted Flags:** Default `=SMILES2TPSA(A2)` uses Ertl N/O-only PSA (matching RDKit). Pass `TRUE` (or `1`, `"yes"`, `"sp"`, `"s"`, `"p"`, `"pubchem"`, `"all"`) as the 2nd argument (`=SMILES2TPSA(A2, TRUE)`) to include sulfur and phosphorus atoms (matching PubChem).
 * **Formal Charge, Tautomers & Salt Scope:** Wildman-Crippen `LogP` and Ertl `TPSA` are sensitive to protonation/charge representation (e.g., zwitterionic vs neutral amino acids, `[N+](=O)[O-]` vs `N(=O)=O`, `[S+]([O-])` vs `S=O`) and mobile-H `InChI=1S` amide/enol tautomer shifts (`SMILES`/`KET` preserve your exact drawn tautomer). Salts and organometallic complexes are evaluated across all drawn fragments (`LogP` uses Indigo's Crippen fallback parameters, so treat inorganic/metal `LogP` as a heuristic descriptor rather than experimental partition data).
-* **No Black-Box HBD / HBA / Lipinski / Chiral Wrappers:** Definitions for HBD/HBA/RotBonds vary across toolkits, and perceived vs drawn stereocenters on flat SMILES can mislead triage. Combine `SMILES2MW`, `SMILES2LOGP`, `SMILES2TPSA`, `SMILES2FSP3`, and `SMILES2AROMATIC` explicitly in Excel formulas so your screening criteria stay 100% transparent.
+* **No Black-Box HBD / HBA / Lipinski / Chiral Wrappers:** Definitions for HBD/HBA/RotBonds vary across toolkits, and perceived vs drawn stereocenters on flat SMILES can mislead triage. Combine `SMILES2MW`, `SMILES2LOGP`, `SMILES2TPSA`, `SMILES2FSP3`, and `SMILES2AROMATIC` explicitly in Excel formulas so your screening criteria stay transparent.
 * **Query & Reaction Guardrails:** Passing query R-groups (`*`) or reactions (`>>`) returns `#N/A` on all scalar descriptor functions.
 :::
 

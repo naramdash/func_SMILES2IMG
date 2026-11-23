@@ -8,7 +8,7 @@ Explore 6 practical ways **`func_SMILES2IMG`** turns Microsoft Excel into a self
 | [**2. Hit-to-Lead SAR Triage**](#sar-triage) | Highlight query scaffolds and screen transparent ADME thresholds live | `=SMILES.MATCH`, `"hl:"` |
 | [**3. Reagent & Library Deduplication**](#deduplication) | Normalize vendor SMILES variations into `InChIKey` for `COUNTIF` & `XLOOKUP` | `=SMILES2INCHIKEY` |
 | [**4. SDF Import & Office Handoff**](#sdf-handoff) | Convert `.sdf` files to 11-column live tables and reuse schemes in Word/PPT | `[Import SDF]`, `[Batch Style]` |
-| [**5. R-Group Analog Enumeration**](#rgroup-enumeration) | Swap R-groups with `SUBSTITUTE` and preview analog structures & properties in 0ms | `=SUBSTITUTE`, `=SMILES2IMG` |
+| [**5. R-Group Analog Enumeration**](#rgroup-enumeration) | Swap R-groups with `SUBSTITUTE` and preview analog structures & properties offline | `=SUBSTITUTE`, `=SMILES2IMG` |
 | [**6. Dynamic Lead Comparison & FILTER**](#dynamic-comparison) | Compare in-cell structure images dynamically via `XLOOKUP` and `FILTER` (365+) | `=XLOOKUP`, `=FILTER` |
 
 ---
@@ -90,8 +90,8 @@ Import `.sdf` screening libraries exported from RDKit, KNIME, DataWarrior, or Pu
 
 <FeatureMedia id="excel-sdf-workflow" />
 
-1. **1-Click 11-Column Import:** Click **`[SMILES]` ➔ `[Import SDF]`** to generate formatted rows with `Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `TPSA`, `Rings`, `Aromatic Rings`, and `Fsp3`.
-2. **Restyle in 1 Click:** Filter down to top hits and run **`[SMILES]` ➔ `[Batch Style]` ➔ `[Publication B&W]`** (or `Dark Mode`).
+1. **11-Column Import:** Click **`[SMILES]` ➔ `[Import SDF]`** to generate formatted rows with `Name`, `Structure`, `SMILES`, `Formula`, `MW (g/mol)`, `Exact Mass`, `LogP`, `TPSA`, `Rings`, `Aromatic Rings`, and `Fsp3`.
+2. **Batch Restyle:** Filter down to top hits and run **`[SMILES]` ➔ `[Batch Style]` ➔ `[Publication B&W]`** (or `Dark Mode`).
 3. **Hand Off Without Redrawing:**
    - **To Word:** Copy filtered table rows into Word, or click **`[Copy SMILES]`** / **`[Copy KET]`** and run **`[Paste Structure]`** ([Word Use Cases](/word/use-cases)).
    - **To PowerPoint:** Paste hits onto slides with **`[Paste Structure]`**, then apply **`[Batch Style]` ➔ `[Dark Mode]`** ([PowerPoint Use Cases](/powerpoint/use-cases)).
@@ -102,7 +102,7 @@ Import `.sdf` screening libraries exported from RDKit, KNIME, DataWarrior, or Pu
 
 ## 5. R-Group Analog Enumeration {#rgroup-enumeration}
 
-Simulate entire analog series inside Excel using native **`SUBSTITUTE`**—no Python or RDKit scripts required. Adding a single substituent SMILES fragment renders the analog and updates MW, Formula, LogP, and TPSA in `0ms`.
+Simulate entire analog series inside Excel using native **`SUBSTITUTE`**—no Python or RDKit scripts required. Adding a single substituent SMILES fragment renders the analog and updates MW, Formula, LogP, and TPSA locally.
 
 <FeatureMedia id="excel-cheminformatics" />
 
@@ -147,4 +147,4 @@ Moving rendered structure images through `XLOOKUP` or `FILTER` requires native i
 ## Next Steps
 
 - [**Practice in the 10-Tab Excel Playbook (.xlsx)**](/excel/playbook) — Open live workbooks pre-loaded with all formulas above.
-- [**10-Second Install Guide**](/guide/install) — Install across Excel, Word, and PowerPoint with one PowerShell command.
+- [**Installation Guide**](/guide/install) — Install across Excel, Word, and PowerPoint with one PowerShell command.

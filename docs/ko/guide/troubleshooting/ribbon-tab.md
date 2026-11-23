@@ -23,9 +23,9 @@
 * **Microsoft Excel:** **파일** ➔ **옵션** ➔ **추가 기능** ➔ **관리: Excel 추가 기능** ➔ **이동...** 버튼을 눌러 `func_SMILES2IMG` (`Smiles2Img-AddIn64-packed.xll` / `Smiles2Img-AddIn-packed.xll`)가 체크되어 있는지 확인합니다.
 * **Microsoft Word / PowerPoint:** **파일** ➔ **옵션** ➔ **추가 기능** ➔ **관리: COM 추가 기능** ➔ **이동...** 버튼을 눌러 `func_SMILES2IMG`가 체크되어 있는지 확인합니다.
 
-## 4. 10초 만에 레지스트리 및 파일 복구
+## 4. 레지스트리 및 파일 복구
 
-[10초 PowerShell 자동 설치](/ko/guide/install) 명령어를 다시 실행하면 관리자 권한 없이 현재 사용자(`HKCU`) 레지스트리와 `%APPDATA%\Microsoft\AddIns\Smiles2Img` 바이너리를 안전하게 복구합니다.
+[PowerShell 자동 설치](/ko/guide/install) 명령어를 다시 실행하면 관리자 권한 없이 현재 사용자(`HKCU`) 레지스트리와 `%APPDATA%\Microsoft\AddIns\Smiles2Img` 바이너리를 안전하게 복구합니다.
 
 ## 관련 트러블슈팅
 
