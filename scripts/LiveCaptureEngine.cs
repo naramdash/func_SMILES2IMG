@@ -544,4 +544,85 @@ public static class LiveCaptureEngine
         _modalDone.WaitOne(2500);
         return LastModalFrameIndex;
     }
+
+    public static IntPtr FindChildWindowByTitle(IntPtr mainHwnd, uint officePid, string titleSub)
+    {
+        IntPtr found = IntPtr.Zero;
+        EnumWindows((h, _) =>
+        {
+            if (h == mainHwnd || !IsWindowVisible(h)) return true;
+            uint p;
+            GetWindowThreadProcessId(h, out p);
+            if (p != officePid) return true;
+            var clsSb = new StringBuilder(128);
+            GetClassName(h, clsSb, 128);
+            string cls = clsSb.ToString();
+            if (cls.Contains("InputIndicator") || cls.Contains("IME") || cls.Contains("Tooltip") || cls.Contains("MSCTFIME"))
+                return true;
+            var sb = new StringBuilder(256);
+            GetWindowText(h, sb, 256);
+            string title = sb.ToString();
+            if (string.IsNullOrWhiteSpace(title)) return true;
+            if (string.IsNullOrEmpty(titleSub) || title.IndexOf(titleSub, StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                found = h;
+                return false;
+            }
+            return true;
+        }, IntPtr.Zero);
+        return found;
+    }
+
+    public static void PositionChildWindowRelative(IntPtr mainHwnd, IntPtr childHwnd, int relX, int relY, int w, int h)
+    {
+        if (mainHwnd == IntPtr.Zero || childHwnd == IntPtr.Zero) return;
+        RECT mr;
+        if (!GetWindowRect(mainHwnd, out mr)) return;
+        ShowWindow(childHwnd, 9);
+        SetWindowPos(childHwnd, IntPtr.Zero, mr.L + relX, mr.T + relY, w, h, 0x0040);
+    }
+
+    public static void CloseWindow(IntPtr hwnd)
+    {
+        if (hwnd != IntPtr.Zero) PostMessage(hwnd, 0x0010, IntPtr.Zero, IntPtr.Zero);
+    }
+
+    public static bool DismissUiaButton(IntPtr mainHwnd, uint officePid, string buttonName)
+    {
+        try
+        {
+            var targets = new List<IntPtr>();
+            if (mainHwnd != IntPtr.Zero) targets.Add(mainHwnd);
+            EnumWindows((h, _) =>
+            {
+                if (!IsWindowVisible(h)) return true;
+                uint p;
+                GetWindowThreadProcessId(h, out p);
+                if (p == officePid && h != mainHwnd) targets.Add(h);
+                return true;
+            }, IntPtr.Zero);
+
+            var cond = new AndCondition(
+                new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button),
+                new PropertyCondition(AutomationElement.NameProperty, buttonName));
+            foreach (var h in targets)
+            {
+                try
+                {
+                    var root = AutomationElement.FromHandle(h);
+                    if (root == null) continue;
+                    var btn = root.FindFirst(TreeScope.Descendants, cond);
+                    if (btn != null)
+                    {
+                        var inv = (InvokePattern)btn.GetCurrentPattern(InvokePattern.Pattern);
+                        inv.Invoke();
+                        return true;
+                    }
+                }
+                catch { }
+            }
+        }
+        catch { }
+        return false;
+    }
 }

@@ -42,7 +42,7 @@ const content = computed(() => {
       cards: [
         {
           title: '🔒 Local-First Execution',
-          desc: '2D rendering (EPAM Indigo), Ketcher 2D, reaction KET storage, SVG export, and all 17 property calculations run offline on your PC—unpublished structures never leave your machine.'
+          desc: '2D rendering (EPAM Indigo), Ketcher 2D, reaction KET storage, SVG export, and all 12 property calculations run offline on your PC—unpublished structures never leave your machine.'
         },
         {
           title: '🍎 Compatible Anywhere You Share',
@@ -95,7 +95,7 @@ const content = computed(() => {
     cards: [
       {
         title: '🔒 Local-First Execution',
-        desc: '2D sketching (Ketcher), rendering (Indigo), SVG copy, and all 17 property lookups run locally on your machine—confidential SAR slides stay private.'
+        desc: '2D sketching (Ketcher), rendering (Indigo), SVG copy, and all 12 property lookups run locally on your machine—confidential SAR slides stay private.'
       },
       {
         title: '🎤 Safe on Any Podium PC & Mac',

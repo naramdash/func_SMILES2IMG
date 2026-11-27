@@ -24,6 +24,8 @@ Even when double-click is overridden by another add-in or Picture Format habit, 
 1. Select the image and click **`[SMILES]` ➔ `[Insert / Edit Structure]`** (2D) or **`[3D Structure (Mol*)]`** (3D) on the ribbon.
 2. Or right-click the image ➔ **`Chemical Structure` ➔ `Insert / Edit Structure...`** (2D) or **`3D Structure (Mol*)...`** (3D).
 
+![Word Chemical Structure right-click context menu](/word-context-menu-guide.png)
+
 ## Related Guides
 
 - [**Table Clipping & Batch Style**](/word/troubleshooting/table-layout) — Fix top-clipped inline structures, shifting table widths, and `Batch Style` selection scope

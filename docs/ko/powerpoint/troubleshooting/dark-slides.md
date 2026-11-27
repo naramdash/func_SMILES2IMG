@@ -9,6 +9,8 @@ PowerPoint 다크 테마 슬라이드에 하얀 사각형 배경이 남거나 �
 * **기존 도형 · 발표 덱 전체 일괄 해결:** 해당 구조식을 선택하거나 **빈 슬라이드 배경(선택 없음)** 을 클릭한 상태에서 **`[SMILES]` ➔ `[Batch Style]` ➔ `[Dark Mode (White Ink)]`** 를 실행하면 슬라이드 전체가 투명 흰색 선화로 바뀝니다.
 * **처음부터 투명하게 넣기:** <kbd>Ctrl</kbd> + <kbd>Enter</kbd> 를 누르기 전 Ketcher 상단 바를 **`[Background: Transparent]`** 로, Mol\* 상단 바를 **`BG: Transparent`** 로 설정해 두세요.
 
+<FeatureMedia id="powerpoint-slide-dark-mode" />
+
 ## 2. 그룹화(`Ctrl+G`)한 카드 안의 구조식이 `Batch Style` 에서 빠짐 {#grouped-shapes}
 
 * **원인:** `Batch Style` 은 슬라이드의 최상위 도형 목록(`slide.Shapes`)만 순회하며, 카드 텍스트 상자와 묶인 **그룹 도형(`Ctrl+G`)** 내부 구조는 레이아웃 흐트러짐을 막기 위해 의도적으로 건너뜁니다.

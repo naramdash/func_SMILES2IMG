@@ -49,7 +49,7 @@ $workTemp = Join-Path ([System.IO.Path]::GetTempPath()) ("s2i_install_vid_" + [G
 $framesDir = Join-Path $workTemp 'frames'
 New-Item -ItemType Directory -Path $framesDir -Force | Out-Null
 
-$browserShotPath = Join-Path $workTemp 'edge_install_1680x880.png'
+$browserShotPath = Join-Path $workTemp 'edge_install_1680x1080.png'
 $serverJsPath = Join-Path $workTemp 'serve.js'
 $portFilePath = Join-Path $workTemp 'port.txt'
 
@@ -124,9 +124,9 @@ try {
     }
     $port = ([System.IO.File]::ReadAllText($portFilePath, [System.Text.UTF8Encoding]::new($false))).Trim()
     $targetUrl = "http://127.0.0.1:$port/func_SMILES2IMG/guide/install.html"
-    Write-Host "[+] Capturing real Edge screenshot of $targetUrl (1680x880)..." -ForegroundColor Cyan
+    Write-Host "[+] Capturing real Edge screenshot of $targetUrl (1680x1080)..." -ForegroundColor Cyan
 
-    $edgeArgs = "--headless=new --disable-gpu --hide-scrollbars --lang=en-US --window-size=1680,880 --force-device-scale-factor=1 --virtual-time-budget=3000 --screenshot=`"$browserShotPath`" `"$targetUrl`""
+    $edgeArgs = "--headless=new --disable-gpu --hide-scrollbars --lang=en-US --window-size=1680,1080 --force-device-scale-factor=1 --virtual-time-budget=3000 --screenshot=`"$browserShotPath`" `"$targetUrl`""
     $edgeProc = Start-Process -FilePath $edgeExe -ArgumentList $edgeArgs -PassThru -Wait
     if ($edgeProc.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $browserShotPath)) {
         throw "Edge screenshot capture failed (ExitCode=$($edgeProc.ExitCode))."
@@ -138,7 +138,7 @@ try {
 }
 
 # -----------------------------------------------------------------------------
-# 2. Inline C# compositor for crisp 1920x1080 5-step beginner walkthrough frames
+# 2. Inline C# compositor for crisp 1920x1280 5-step beginner walkthrough frames
 # -----------------------------------------------------------------------------
 $rendererCs = @'
 using System;
@@ -441,15 +441,15 @@ public static class InstallWalkthroughRenderer
     {
         using (var bg = new SolidBrush(Color.FromArgb(255, 20, 25, 35)))
         {
-            g.FillRectangle(bg, 0, 1024, 1920, 56);
+            g.FillRectangle(bg, 0, 1224, 1920, 56);
         }
         using (var topLine = new Pen(Color.FromArgb(255, 51, 65, 85), 1f))
         {
-            g.DrawLine(topLine, 0, 1024, 1920, 1024);
+            g.DrawLine(topLine, 0, 1224, 1920, 1224);
         }
 
-        // Start button at bottom-left (18..62, 1030..1074), center = (40, 1052)
-        var startRect = new RectangleF(18f, 1030f, 44f, 44f);
+        // Start button at bottom-left (18..62, 1230..1274), center = (40, 1252)
+        var startRect = new RectangleF(18f, 1230f, 44f, 44f);
         if (startHover)
         {
             using (var hb = new SolidBrush(Color.FromArgb(70, 255, 255, 255)))
@@ -460,7 +460,7 @@ public static class InstallWalkthroughRenderer
             }
         }
         // 4 Windows 11 blue panes centered inside startRect
-        float px = 29f, py = 1041f, ps = 10f, gap = 2f;
+        float px = 29f, py = 1241f, ps = 10f, gap = 2f;
         using (var p1 = new SolidBrush(Color.FromArgb(255, 56, 189, 248)))
         using (var p2 = new SolidBrush(Color.FromArgb(255, 14, 165, 233)))
         {
@@ -471,7 +471,7 @@ public static class InstallWalkthroughRenderer
         }
 
         // Clean Edge taskbar icon (80..124) with active indicator
-        var edgeRect = new RectangleF(80f, 1030f, 44f, 44f);
+        var edgeRect = new RectangleF(80f, 1230f, 44f, 44f);
         using (var eb = new SolidBrush(Color.FromArgb(30, 255, 255, 255)))
         {
             FillRoundedRect(g, eb, edgeRect, 7f);
@@ -480,18 +480,18 @@ public static class InstallWalkthroughRenderer
         using (var ef = new Font("Segoe UI", 12f, FontStyle.Bold))
         using (var wb = new SolidBrush(Color.White))
         {
-            g.FillEllipse(ec, 89f, 1039f, 26f, 26f);
-            g.DrawString("e", ef, wb, 95f, 1040f);
+            g.FillEllipse(ec, 89f, 1239f, 26f, 26f);
+            g.DrawString("e", ef, wb, 95f, 1240f);
         }
         using (var ind = new SolidBrush(Color.FromArgb(255, 148, 163, 184)))
         {
-            FillRoundedRect(g, ind, new RectangleF(95f, 1070f, 14f, 3f), 1.5f);
+            FillRoundedRect(g, ind, new RectangleF(95f, 1270f, 14f, 3f), 1.5f);
         }
 
         // PowerShell taskbar icon once opened (136..180)
         if (showTerminalIcon)
         {
-            var termRect = new RectangleF(136f, 1030f, 44f, 44f);
+            var termRect = new RectangleF(136f, 1230f, 44f, 44f);
             using (var tb = new SolidBrush(Color.FromArgb(55, 255, 255, 255)))
             {
                 FillRoundedRect(g, tb, termRect, 7f);
@@ -500,12 +500,12 @@ public static class InstallWalkthroughRenderer
             using (var psFont = new Font("Consolas", 10.5f, FontStyle.Bold))
             using (var wb = new SolidBrush(Color.White))
             {
-                FillRoundedRect(g, psBg, new RectangleF(145f, 1039f, 26f, 26f), 5f);
-                g.DrawString(">_", psFont, wb, 147f, 1043f);
+                FillRoundedRect(g, psBg, new RectangleF(145f, 1239f, 26f, 26f), 5f);
+                g.DrawString(">_", psFont, wb, 147f, 1243f);
             }
             using (var ind = new SolidBrush(Color.FromArgb(255, 45, 212, 191)))
             {
-                FillRoundedRect(g, ind, new RectangleF(149f, 1070f, 18f, 3f), 1.5f);
+                FillRoundedRect(g, ind, new RectangleF(149f, 1270f, 18f, 3f), 1.5f);
             }
         }
 
@@ -513,15 +513,15 @@ public static class InstallWalkthroughRenderer
         using (var tf = new Font("Segoe UI", 9.5f, FontStyle.Regular))
         using (var tb = new SolidBrush(Color.FromArgb(255, 226, 232, 240)))
         {
-            g.DrawString("v" + versionLabel, tf, tb, 1760f, 1043f);
-            g.DrawString("10:30 AM", tf, tb, 1835f, 1033f);
-            g.DrawString("2026-11-23", tf, tb, 1830f, 1050f);
+            g.DrawString("v" + versionLabel, tf, tb, 1760f, 1243f);
+            g.DrawString("10:30 AM", tf, tb, 1835f, 1233f);
+            g.DrawString("2026-11-23", tf, tb, 1830f, 1250f);
         }
     }
 
     private static void DrawBrowserWindow(Graphics g, Bitmap browserBmp, Rectangle copyBtnLocalRect, bool copyHover, bool copyDone, bool showCopiedToast)
     {
-        var frameRect = new RectangleF(120f, 82f, 1680f, 926f);
+        var frameRect = new RectangleF(120f, 82f, 1680f, 1126f);
         using (var sh = new SolidBrush(Color.FromArgb(90, 0, 0, 0)))
         {
             FillRoundedRect(g, sh, new RectangleF(frameRect.X + 4f, frameRect.Y + 6f, frameRect.Width, frameRect.Height), 10f);
@@ -556,8 +556,8 @@ public static class InstallWalkthroughRenderer
             g.DrawString("https://naramdash.github.io/func_SMILES2IMG/guide/install", barFont, urlBrush, 472f, 94f);
         }
 
-        // 1:1 real headless Edge capture viewport (x=120, y=126, w=1680, h=880)
-        var dstRect = new Rectangle(120, 126, 1680, 880);
+        // 1:1 real headless Edge capture viewport (x=120, y=126, w=1680, h=1080)
+        var dstRect = new Rectangle(120, 126, 1680, 1080);
         g.DrawImage(browserBmp, dstRect, 0, 0, browserBmp.Width, browserBmp.Height, GraphicsUnit.Pixel);
 
         // Chrome border
@@ -663,7 +663,7 @@ public static class InstallWalkthroughRenderer
         float menuX = 20f;
         float menuW = 355f;
         float menuH = 446f;
-        float menuY = 1018f - menuH; // 572..1018
+        float menuY = 1218f - menuH; // 772..1218
         var menuRect = new RectangleF(menuX, menuY, menuW, menuH);
 
         using (var sh = new SolidBrush(Color.FromArgb(110, 0, 0, 0)))
@@ -745,7 +745,7 @@ public static class InstallWalkthroughRenderer
         bool showDoneBanner,
         string versionLabel)
     {
-        var winRect = new RectangleF(280f, 180f, 1360f, 690f);
+        var winRect = new RectangleF(280f, 240f, 1360f, 750f);
         using (var sh = new SolidBrush(Color.FromArgb(130, 0, 0, 0)))
         {
             FillRoundedRect(g, sh, new RectangleF(winRect.X + 6f, winRect.Y + 10f, winRect.Width, winRect.Height), 12f);
@@ -914,9 +914,9 @@ public static class InstallWalkthroughRenderer
 
             PointF ptIdleStart = new PointF(1460f, 520f);
             PointF ptCopyBtn = new PointF(120f + copyBtnLocalRect.X + copyBtnLocalRect.Width / 2f, 126f + copyBtnLocalRect.Y + copyBtnLocalRect.Height / 2f);
-            PointF ptStartBtn = new PointF(40f, 1052f);
-            PointF ptMenuTerminal = new PointF(150f, 758f);
-            PointF ptTerminalCenter = new PointF(760f, 440f);
+            PointF ptStartBtn = new PointF(40f, 1252f);
+            PointF ptMenuTerminal = new PointF(150f, 958f);
+            PointF ptTerminalCenter = new PointF(760f, 520f);
 
             for (int f = 0; f < totalFrames; f++)
             {
@@ -1036,7 +1036,7 @@ public static class InstallWalkthroughRenderer
                     cursor = ptTerminalCenter;
                 }
 
-                using (var frame = new Bitmap(1920, 1080, PixelFormat.Format24bppRgb))
+                using (var frame = new Bitmap(1920, 1280, PixelFormat.Format24bppRgb))
                 {
                     frame.SetResolution(96f, 96f);
                     using (var g = Graphics.FromImage(frame))
@@ -1048,12 +1048,12 @@ public static class InstallWalkthroughRenderer
 
                         // Clean desktop background
                         using (var desk = new LinearGradientBrush(
-                            new Rectangle(0, 0, 1920, 1080),
+                            new Rectangle(0, 0, 1920, 1280),
                             Color.FromArgb(255, 30, 41, 59),
                             Color.FromArgb(255, 15, 23, 42),
                             45f))
                         {
-                            g.FillRectangle(desk, 0, 0, 1920, 1080);
+                            g.FillRectangle(desk, 0, 0, 1920, 1280);
                         }
 
                         DrawBrowserWindow(g, browserBmp, copyBtnLocalRect, copyHover, copyDone, showCopiedToast);
@@ -1100,10 +1100,15 @@ Add-Type -TypeDefinition $rendererCs -ReferencedAssemblies @('System.Drawing') -
 $copyBtnLocalRect = [InstallWalkthroughRenderer]::LocateTealCopyButton($browserShotPath)
 Write-Host "[+] Located teal Copy button at viewport rect: X=$($copyBtnLocalRect.X) Y=$($copyBtnLocalRect.Y) W=$($copyBtnLocalRect.Width) H=$($copyBtnLocalRect.Height)" -ForegroundColor Green
 
-$shotPath = Join-Path $outDir 'shot.png'
+$rawShotPath = Join-Path $workTemp 'shot_raw.png'
+$shotPath = Join-Path $outDir 'shot.webp'
 $debugDir = if ($SaveDebugFrames) { [System.IO.Path]::GetTempPath() } else { '' }
-Write-Host "[+] Rendering 405 slow beginner-friendly frames (1920x1080 @ 15fps = 27.0s)..." -ForegroundColor Cyan
-[InstallWalkthroughRenderer]::RenderAllFrames($browserShotPath, $copyBtnLocalRect, $framesDir, $shotPath, $addinVersion, $debugDir)
+Write-Host "[+] Rendering 405 slow beginner-friendly frames (1920x1280 @ 15fps = 27.0s)..." -ForegroundColor Cyan
+[InstallWalkthroughRenderer]::RenderAllFrames($browserShotPath, $copyBtnLocalRect, $framesDir, $rawShotPath, $addinVersion, $debugDir)
+
+& $ffmpeg -hide_banner -loglevel error -y -i $rawShotPath `
+    -vf "scale=1920:1280:flags=lanczos" -c:v libwebp -quality 86 $shotPath
+if ($LASTEXITCODE -ne 0) { throw "FFmpeg WebP screenshot encoding failed." }
 
 # -----------------------------------------------------------------------------
 # 3. Encode MP4 + WebM and generate bilingual WebVTT captions + manifest sync
@@ -1180,7 +1185,7 @@ $manifest['common-install-walkthrough'] = [ordered]@{
     host       = 'common'
     titleEn    = 'Mouse-First 5-Step PowerShell Installation Walkthrough'
     titleKo    = '마우스로 따라하는 5단계 PowerShell 설치 가이드'
-    shot       = '/media/common-install-walkthrough/shot.png'
+    shot       = '/media/common-install-walkthrough/shot.webp'
     webm       = '/media/common-install-walkthrough/clip.webm'
     mp4        = '/media/common-install-walkthrough/clip.mp4'
     captionEn  = 'Step-by-step installation video: Copy command -> Right-click Start -> Open Terminal / PowerShell -> Right-click to paste -> Press Enter.'
@@ -1190,7 +1195,7 @@ $manifest['common-install-walkthrough'] = [ordered]@{
     version    = $addinVersion
     capturedAt = (Get-Date -Format 'yyyy-MM-dd')
     width      = 1920
-    height     = 1080
+    height     = 1280
     durationSec = $dur
 }
 
@@ -1200,7 +1205,7 @@ $outJson = $manifest | ConvertTo-Json -Depth 6
 
 Remove-Item -LiteralPath $workTemp -Recurse -Force -ErrorAction SilentlyContinue
 
-Write-Host ("  [OK] common-install-walkthrough | PNG 1920x1080 ({0} KB) | MP4 {1} KB | WebM {2} KB | {3}s" -f `
+Write-Host ("  [OK] common-install-walkthrough | WebP 1920x1280 ({0} KB) | MP4 {1} KB | WebM {2} KB | {3}s" -f `
     [int]((Get-Item $shotPath).Length / 1KB),
     [int]((Get-Item $mp4Path).Length / 1KB),
     [int]((Get-Item $webmPath).Length / 1KB),

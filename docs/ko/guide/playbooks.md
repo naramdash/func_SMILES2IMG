@@ -4,6 +4,10 @@ Microsoft Excel, Word, PowerPoint용 **자체 완결형(Self-Contained) 공식 P
 
 <PlaybookTocCards />
 
+## Playbook 미리보기 (Excel · Word · PowerPoint)
+
+<PlaybookPreview />
+
 ::: tip Playbook 활용 방법
 1. 먼저 `func_SMILES2IMG`를 설치합니다 ([설치 가이드](/ko/guide/install)).
 2. 위에서 사용할 오피스 앱 카드를 선택해 Playbook을 미리 보고 내려받은 뒤, **Excel**, **Word**, **PowerPoint**에서 바로 엽니다.

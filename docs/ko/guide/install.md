@@ -1,4 +1,4 @@
-# 설치 (Installation)
+# 설치
 
 **관리자 권한 없이** Microsoft Excel, Word, PowerPoint 전체에 `func_SMILES2IMG`를 설치합니다.
 

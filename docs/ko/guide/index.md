@@ -1,4 +1,4 @@
-# 소개 (Introduction)
+# 소개
 
 `func_SMILES2IMG`는 **Microsoft Excel, Word, PowerPoint** 안에서 편집 가능한 2D 화학 구조식, 분자 물성 계산, 3D 단백질 모델을 바로 다루는 무료·오픈소스(MIT) 추가 기능입니다.
 
@@ -15,6 +15,10 @@
 세 앱 모두 오프라인 **[Ketcher 2D](/ko/editor/)** 편집기와 **[Mol\* 3D](/ko/editor/molstar)** 단백질 뷰어가 내장되어 있어, 삽입된 구조식이나 반응식을 더블클릭하면 레이아웃을 깨뜨리지 않고 즉시 수정할 수 있습니다.
 
 ![Microsoft Excel에서 실행 중인 func_SMILES2IMG](/excel-showcase.png)
+
+![Microsoft Word에서 실행 중인 func_SMILES2IMG](/word-showcase.png)
+
+![Microsoft PowerPoint에서 실행 중인 func_SMILES2IMG](/powerpoint-showcase.png)
 
 ## 기존 도구와 비교
 

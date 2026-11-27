@@ -9,6 +9,8 @@ Standard copy-pasted screenshots leave opaque white boxes over dark navy/slate p
 * **Fix Existing Slide or Whole Deck Together:** Select the structure shape—or click empty slide background (nothing selected) to convert the **entire presentation deck**—and click **`[SMILES]` ➔ `[Batch Style]` ➔ `[Dark Mode (White Ink)]`**.
 * **Insert Transparently From the Start:** Before pressing <kbd>Ctrl</kbd> + <kbd>Enter</kbd>, set Ketcher's top bar to **`[Background: Transparent]`** (or Mol\*'s **`BG: Transparent`**) so no opaque rectangle is generated.
 
+<FeatureMedia id="powerpoint-slide-dark-mode" />
+
 ## 2. Grouped Cards Skipped by Batch Style {#grouped-shapes}
 
 * **Why shapes get skipped:** `Batch Style` iterates over top-level slide shapes (`slide.Shapes`) and intentionally avoids mutating PowerPoint Groups (`Ctrl+G`) so card layouts and textboxes inside a group never detach or reorder.

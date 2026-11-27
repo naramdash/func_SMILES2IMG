@@ -24,6 +24,8 @@ Microsoft Word에서 구조식을 더블클릭했을 때 **Ketcher 2D**나 **Mol
 1. 그림을 선택한 상태에서 상단 리본 **`[SMILES]` ➔ `[Insert / Edit Structure]`** (2D) 또는 **`[3D Structure (Mol*)]`** (3D) 클릭
 2. 그림 **우클릭 ➔ `Chemical Structure` ➔ `Insert / Edit Structure...`** (2D) 또는 **`3D Structure (Mol*)...`** (3D) 클릭
 
+![Word Chemical Structure 우클릭 컨텍스트 메뉴](/word-context-menu-guide.png)
+
 ## 관련 가이드
 
 - [**표 잘림 · 일괄 스타일**](/ko/word/troubleshooting/table-layout) — 표 셀 상단 그림 잘림, 열 너비 밀림, `Batch Style` 적용 범위 해결

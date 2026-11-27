@@ -6,13 +6,13 @@
     and AboutDialog on Windows.
 #>
 param(
-    [ValidateSet('All', 'Excel', 'Word', 'PowerPoint', 'Common', 'Finalize')]
+    [ValidateSet('All', 'Excel', 'Word', 'PowerPoint', 'Common', 'UseCases', 'Finalize')]
     [string]$Section = 'All'
 )
 
 $ErrorActionPreference = 'Stop'
 $CaptureLogicalWidth  = 1230
-$CaptureLogicalHeight = 692
+$CaptureLogicalHeight = 820
 Add-Type -AssemblyName System.Drawing, System.Windows.Forms, UIAutomationClient, UIAutomationTypes, WindowsBase
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
@@ -119,7 +119,7 @@ function Save-ManifestFiles {
 }
 
 function Set-StandardHostWindow([IntPtr]$hwnd, [string]$label) {
-    $sz = [LiveCaptureEngine]::SetMainWindowSizeLogical($hwnd, 8, 8, $CaptureLogicalWidth, $CaptureLogicalHeight)
+    $sz = [LiveCaptureEngine]::SetMainWindowSizeLogical($hwnd, 4, 4, $CaptureLogicalWidth, $CaptureLogicalHeight)
     $dpiScale = [LiveCaptureEngine]::GetWindowDpiScale($hwnd)
     Write-Host ("  [Window] {0} sized to {1}x{2} px ({3}x{4} DIPs @ {5}% DPI)" -f `
         $label, $sz.Width, $sz.Height, $CaptureLogicalWidth, $CaptureLogicalHeight, [int][Math]::Round($dpiScale * 100)) -ForegroundColor DarkCyan
@@ -134,8 +134,8 @@ function Scale-RefX([IntPtr]$hwnd, [int]$refX) {
 
 function Scale-RefY([IntPtr]$hwnd, [int]$refY) {
     $sz = [LiveCaptureEngine]::GetWindowSize($hwnd)
-    if ($sz.Height -le 0) { return $refY }
-    return [int][Math]::Round($refY * $sz.Height / 1556.0)
+    if ($sz.Width -le 0) { return $refY }
+    return [int][Math]::Round($refY * $sz.Width / 2766.0)
 }
 
 function Format-VttTime([double]$sec) {
@@ -239,7 +239,7 @@ function Start-FeatureClip {
         CurY        = (Scale-RefY $MainHwnd 630)
         Cues        = (New-Object 'System.Collections.Generic.List[hashtable]')
         ShotSaved   = $false
-        ShotPath    = (Join-Path $outDir 'shot.png')
+        ShotPath    = (Join-Path $framesDir 'shot_raw.png')
     }
 
     $state | Add-Member -MemberType ScriptMethod -Name Snap -Value {
@@ -364,14 +364,20 @@ function Complete-FeatureClip {
 
     $inputPattern = Join-Path $Clip.FramesDir 'f_%04d.png'
     & $ffmpeg -hide_banner -loglevel error -y -framerate $Clip.Fps -i $inputPattern `
-        -vf "scale=1920:1080:flags=lanczos,format=yuv420p" `
+        -vf "scale=1920:1280:flags=lanczos,format=yuv420p" `
         -c:v libx264 -preset medium -crf 23 -movflags +faststart $mp4Path
     if ($LASTEXITCODE -ne 0) { throw "FFmpeg MP4 encoding failed for $($Clip.Id)" }
 
     & $ffmpeg -hide_banner -loglevel error -y -framerate $Clip.Fps -i $inputPattern `
-        -vf "scale=1920:1080:flags=lanczos,format=yuv420p" `
+        -vf "scale=1920:1280:flags=lanczos,format=yuv420p" `
         -c:v libvpx-vp9 -b:v 0 -crf 34 -row-mt 1 $webmPath
     if ($LASTEXITCODE -ne 0) { throw "FFmpeg WebM encoding failed for $($Clip.Id)" }
+
+    $shotWebpPath = Join-Path $Clip.OutDir 'shot.webp'
+    & $ffmpeg -hide_banner -loglevel error -y -i $Clip.ShotPath `
+        -vf "scale=1920:1280:flags=lanczos" `
+        -c:v libwebp -quality 86 $shotWebpPath
+    if ($LASTEXITCODE -ne 0) { throw "FFmpeg WebP screenshot encoding failed for $($Clip.Id)" }
 
     $dur = 0.0
     try {
@@ -384,17 +390,15 @@ function Complete-FeatureClip {
 
     $durRounded = [Math]::Round($dur, 1)
 
-    $imgInfo = [System.Drawing.Image]::FromFile($Clip.ShotPath)
-    $w = $imgInfo.Width
-    $h = $imgInfo.Height
-    $imgInfo.Dispose()
+    $w = 1920
+    $h = 1280
 
     $manifest[$Clip.Id] = [ordered]@{
         id         = $Clip.Id
         host       = $Clip.HostApp
         titleEn    = $Clip.TitleEn
         titleKo    = $Clip.TitleKo
-        shot       = "/media/$($Clip.Id)/shot.png"
+        shot       = "/media/$($Clip.Id)/shot.webp"
         webm       = "/media/$($Clip.Id)/clip.webm"
         mp4        = "/media/$($Clip.Id)/clip.mp4"
         captionEn  = $Clip.CaptionEn
@@ -409,8 +413,8 @@ function Complete-FeatureClip {
     }
     Save-ManifestFiles
 
-    Write-Host ("  [OK] {0,-34} | PNG {1}x{2} | MP4 {3}KB | WebM {4}KB | {5}s" -f `
-        $Clip.Id, $w, $h, [int]((Get-Item $mp4Path).Length/1KB), [int]((Get-Item $webmPath).Length/1KB), $durRounded) -ForegroundColor Green
+    Write-Host ("  [OK] {0,-34} | WebP {1}x{2} ({3}KB) | MP4 {4}KB | WebM {5}KB | {6}s" -f `
+        $Clip.Id, $w, $h, [int]((Get-Item $shotWebpPath).Length/1KB), [int]((Get-Item $mp4Path).Length/1KB), [int]((Get-Item $webmPath).Length/1KB), $durRounded) -ForegroundColor Green
 
     Remove-Item -LiteralPath $Clip.FramesDir -Recurse -Force -ErrorAction SilentlyContinue
 }
@@ -567,7 +571,7 @@ function Show-LiveAboutOverHost {
 # =============================================================================
 # 1. MICROSOFT EXCEL LIVE CAPTURE (11 Features + Ribbon + Showcase + Matrix)
 # =============================================================================
-if ($Section -eq 'All' -or $Section -eq 'Excel') {
+if ($Section -eq 'All' -or $Section -eq 'Excel' -or $Section -eq 'UseCases') {
     Write-Host "`n=== [1/4] Capturing Live Microsoft Excel Features ===" -ForegroundColor Cyan
     $excel = New-Object -ComObject Excel.Application
     $excel.Visible = $true
@@ -592,9 +596,10 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         $ptDiag         = [LiveCaptureEngine]::FindControlRelativeCenter($xHwnd, @('Diagnostics'))
         $ptAbout        = [LiveCaptureEngine]::FindControlRelativeCenter($xHwnd, @('About func_SMILES2IMG'))
 
-        # --- 1.1 excel-overview ---
         $wb = $excel.Workbooks.Add()
         try { $excel.ActiveWindow.Zoom = 85 } catch {}
+        if ($Section -eq 'All' -or $Section -eq 'Excel') {
+        # --- 1.1 excel-overview ---
         $ws = $wb.ActiveSheet
         $ws.Name = 'Compounds'
         $ws.Range('A1:F1').Value2 = @('Compound', 'SMILES', '2D Structure (=SMILES2IMG)', 'Formula', 'MW (g/mol)', 'LogP')
@@ -1077,6 +1082,323 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
         $c.CaptureShot(@())
         $c.Snap(8, -1, -1)
         Complete-FeatureClip $c
+        }
+
+        if ($Section -eq 'All' -or $Section -eq 'Excel' -or $Section -eq 'UseCases') {
+        # --- 1.12 excel-usecase-eln-stoichiometry ---
+        $wsEln = Invoke-ComRetry { $wb.Worksheets.Add() }
+        Invoke-ComRetry { $wsEln.Name = 'ELNStoichiometry' }
+        Invoke-ComRetry { $wsEln.Activate() }
+        try { $excel.ActiveWindow.Zoom = 85 } catch {}
+        $wsEln.Range('A1:G1').Value2 = @('Reagent / CAS', 'SMILES (=NAME2SMILES)', 'Structure (=SMILES2IMG)', 'MW (=SMILES2MW)', 'Eq.', 'mmol', 'Mass (mg)')
+        $wsEln.Range('A1:G1').Font.Bold = $true
+        $wsEln.Range('A1:G1').Interior.Color = 0xEFE7DC
+        $wsEln.Columns.Item(1).ColumnWidth = 17
+        $wsEln.Columns.Item(2).ColumnWidth = 23
+        $wsEln.Columns.Item(3).ColumnWidth = 22
+        $wsEln.Columns.Item(4).ColumnWidth = 17
+        $wsEln.Columns.Item(5).ColumnWidth = 7
+        $wsEln.Columns.Item(6).ColumnWidth = 9
+        $wsEln.Columns.Item(7).ColumnWidth = 13
+        $wsEln.Range('B2:B4').Font.Size = 9
+        $wsEln.Range('A2').Value2 = 'Salicylic Acid'
+        $wsEln.Range('A3').Value2 = 'Acetic Anhydride'
+        $wsEln.Range('A4').Value2 = '50-78-2'
+        $wsEln.Range('E2').Value2 = 1.0
+        $wsEln.Range('E3').Value2 = 1.5
+        $wsEln.Range('E4').Value2 = 1.0
+        $wsEln.Range('F2').Value2 = 5.0
+        $wsEln.Range('F2').Interior.Color = 0xCCF5FF
+        $wsEln.Range('F2').Font.Bold = $true
+        $wsEln.Range('G2:G4').NumberFormat = '0.0 "mg"'
+        $wsEln.Range('D2:D4').NumberFormat = '0.00'
+        for ($r = 2; $r -le 4; $r++) { $wsEln.Rows.Item($r).RowHeight = 68 }
+        $c = Start-FeatureClip -Id 'excel-usecase-eln-stoichiometry' -HostApp 'excel' -MainHwnd $xHwnd -OfficePid $xPid `
+            -TitleEn 'Use Case: Synthesis ELN & Stoichiometry Calculator' `
+            -TitleKo '실전 시나리오: 합성 실험노트(ELN) & 당량·질량 자동 계산기' `
+            -CaptionEn 'Populate SMILES, 2D structures, numeric MW, and reagent mg weights from names or CAS, then scale mmol dynamically.' `
+            -CaptionKo '시약명·CAS 번호로 SMILES·구조식·분자량·질량(mg)을 채우고 mmol 배치를 변경해 무게를 자동 재계산합니다.'
+        Select-ExcelCell $excel $wsEln 'B2' 350
+        $c.Snap(4, (Scale-RefX $xHwnd 520), (Scale-RefY $xHwnd 480))
+        $c.AddCue(1.8, 'Resolve Salicylic Acid, Acetic Anhydride & CAS 50-78-2 into structures and mg weights.', '시약명과 CAS 번호(50-78-2)로 구조식·분자량·질량(mg)을 자동 계산합니다.')
+        for ($r = 2; $r -le 4; $r++) {
+            $wsEln.Range("B$r").Formula2 = "=NAME2SMILES(A$r)"
+            $wsEln.Range("C$r").Formula2 = "=SMILES2IMG(B$r)"
+            $wsEln.Range("D$r").Formula2 = "=SMILES2MW(B$r)"
+            if ($r -gt 2) { $wsEln.Range("F$r").Formula2 = "=`$F`$2*E$r" }
+            $wsEln.Range("G$r").Formula2 = "=ROUND(D$r*F$r, 1)"
+            Start-Sleep -Milliseconds 600
+            $c.Snap(4, (Scale-RefX $xHwnd 780), (Scale-RefY $xHwnd (490 + ($r - 2) * 90)))
+        }
+        Start-Sleep -Seconds 1
+        Select-ExcelCell $excel $wsEln 'F2' 450
+        $c.Snap(6, (Scale-RefX $xHwnd 1340), (Scale-RefY $xHwnd 490))
+        $c.AddCue(1.8, 'Change reaction scale F2 from 5.0 to 10.0 mmol to recalculate every reagent weight.', '기준 스케일 F2를 5.0에서 10.0 mmol로 변경해 모든 시약 질량을 갱신합니다.')
+        $wsEln.Range('F2').Value2 = 10.0
+        Select-ExcelCell $excel $wsEln 'G4' 600
+        $excel.ActiveWindow.ScrollColumn = 1
+        $excel.ActiveWindow.ScrollRow = 1
+        $c.CaptureShot(@())
+        $c.Snap(10, -1, -1)
+        Complete-FeatureClip $c
+
+        # --- 1.13 excel-usecase-deduplication ---
+        $wsDedup = Invoke-ComRetry { $wb.Worksheets.Add() }
+        Invoke-ComRetry { $wsDedup.Name = 'Deduplication' }
+        Invoke-ComRetry { $wsDedup.Activate() }
+        try { $excel.ActiveWindow.Zoom = 85 } catch {}
+        $wsDedup.Range('A1:E1').Value2 = @('Input SMILES / Name', 'Structure', 'Canonical SMILES', 'InChIKey (=SMILES2INCHIKEY)', 'Duplicate Flag')
+        $wsDedup.Range('A1:E1').Font.Bold = $true
+        $wsDedup.Range('A1:E1').Interior.Color = 0xEFE7DC
+        $wsDedup.Columns.Item(1).ColumnWidth = 22
+        $wsDedup.Columns.Item(2).ColumnWidth = 14
+        $wsDedup.Columns.Item(3).ColumnWidth = 22
+        $wsDedup.Columns.Item(4).ColumnWidth = 29
+        $wsDedup.Columns.Item(5).ColumnWidth = 14
+        $wsDedup.Range('A2:A5').Font.Size = 9.5
+        $wsDedup.Range('C2:D5').Font.Size = 9
+        $wsDedup.Range('A2').Value2 = 'c1ccccc1C(=O)O'
+        $wsDedup.Range('A3').Value2 = 'O=C(O)c1ccccc1'
+        $wsDedup.Range('A4').Value2 = 'Aspirin'
+        $wsDedup.Range('A5').Value2 = 'Caffeine'
+        for ($r = 2; $r -le 5; $r++) { $wsDedup.Rows.Item($r).RowHeight = 64 }
+        $c = Start-FeatureClip -Id 'excel-usecase-deduplication' -HostApp 'excel' -MainHwnd $xHwnd -OfficePid $xPid `
+            -TitleEn 'Use Case: Reagent & Library Deduplication via InChIKey' `
+            -TitleKo '실전 시나리오: InChIKey 기반 시약·화합물 중복 제거' `
+            -CaptionEn 'Normalize different SMILES strings of the same molecule into identical InChIKeys and flag duplicates with COUNTIF.' `
+            -CaptionKo '서로 다르게 표기된 동일 분자 SMILES를 InChIKey로 정규화해 COUNTIF로 중복 항목을 판별합니다.'
+        Select-ExcelCell $excel $wsDedup 'C2' 350
+        $c.Snap(4, (Scale-RefX $xHwnd 600), (Scale-RefY $xHwnd 490))
+        $c.AddCue(1.8, 'Generate Canonical SMILES and 27-character InChIKeys across mixed SMILES and names.', '서로 다른 SMILES 표기와 화합물명에서 표준 SMILES와 InChIKey를 생성합니다.')
+        $wsDedup.Range('B2').Formula2 = '=SMILES2IMG(A2)'
+        $wsDedup.Range('C2').Formula2 = '=INCHI2SMILES(SMILES2INCHI(A2))'
+        $wsDedup.Range('D2').Formula2 = '=SMILES2INCHIKEY(A2)'
+        $wsDedup.Range('B3').Formula2 = '=SMILES2IMG(A3)'
+        $wsDedup.Range('C3').Formula2 = '=INCHI2SMILES(SMILES2INCHI(A3))'
+        $wsDedup.Range('D3').Formula2 = '=SMILES2INCHIKEY(A3)'
+        Start-Sleep -Milliseconds 700
+        $c.Snap(5, (Scale-RefX $xHwnd 1280), (Scale-RefY $xHwnd 560))
+        $wsDedup.Range('B4').Formula2 = '=NAME2IMG(A4)'
+        $wsDedup.Range('C4').Formula2 = '=NAME2SMILES(A4)'
+        $wsDedup.Range('D4').Formula2 = '=SMILES2INCHIKEY(C4)'
+        $wsDedup.Range('B5').Formula2 = '=NAME2IMG(A5)'
+        $wsDedup.Range('C5').Formula2 = '=NAME2SMILES(A5)'
+        $wsDedup.Range('D5').Formula2 = '=SMILES2INCHIKEY(C5)'
+        Start-Sleep -Milliseconds 800
+        $c.Snap(5, (Scale-RefX $xHwnd 1280), (Scale-RefY $xHwnd 720))
+        $c.AddCue(1.8, 'Evaluate COUNTIF on InChIKey: both Benzoic acid variants are flagged as Duplicate.', 'InChIKey 열에 COUNTIF를 적용해 표기가 다른 두 벤조산 항목을 중복(Duplicate)으로 검출합니다.')
+        for ($r = 2; $r -le 5; $r++) {
+            $wsDedup.Range("E$r").Formula2 = "=IF(COUNTIF(`$D`$2:`$D`$5, D$r)>1, `"Duplicate`", `"Unique`")"
+        }
+        $wsDedup.Range('E2:E3').Interior.Color = 0xD7D7FE
+        $wsDedup.Range('E2:E3').Font.Bold = $true
+        $wsDedup.Range('E4:E5').Interior.Color = 0xE7F7DC
+        $wsDedup.Range('E2:E5').HorizontalAlignment = -4108
+        Start-Sleep -Seconds 1
+        $excel.ActiveWindow.ScrollColumn = 1
+        $excel.ActiveWindow.ScrollRow = 1
+        Select-ExcelCell $excel $wsDedup 'E2' 450
+        $c.CaptureShot(@())
+        $c.Snap(10, -1, -1)
+        Complete-FeatureClip $c
+
+        # --- 1.14 excel-usecase-rgroup-enumeration ---
+        $wsRgrp = Invoke-ComRetry { $wb.Worksheets.Add() }
+        Invoke-ComRetry { $wsRgrp.Name = 'RGroupEnum' }
+        Invoke-ComRetry { $wsRgrp.Activate() }
+        try { $excel.ActiveWindow.Zoom = 85 } catch {}
+        $wsRgrp.Range('A1:G1').Value2 = @('R-Group', 'Template ($B$2)', 'Analog SMILES (=SUBSTITUTE)', '2D Structure (=SMILES2IMG)', 'MW', 'Formula', 'LogP')
+        $wsRgrp.Range('A1:G1').Font.Bold = $true
+        $wsRgrp.Range('A1:G1').Interior.Color = 0xEFE7DC
+        $wsRgrp.Columns.Item(1).ColumnWidth = 10
+        $wsRgrp.Columns.Item(2).ColumnWidth = 23
+        $wsRgrp.Columns.Item(3).ColumnWidth = 25
+        $wsRgrp.Columns.Item(4).ColumnWidth = 23
+        $wsRgrp.Columns.Item(5).ColumnWidth = 9
+        $wsRgrp.Columns.Item(6).ColumnWidth = 11
+        $wsRgrp.Columns.Item(7).ColumnWidth = 8
+        $wsRgrp.Range('B2:C6').Font.Size = 9
+        $wsRgrp.Range('B2').Value2 = 'CC(=O)Nc1ccc([R])cc1'
+        $wsRgrp.Range('B2').Interior.Color = 0xCCF5FF
+        $wsRgrp.Range('B2').Font.Bold = $true
+        $rGroups = @('O', 'F', 'C(F)(F)F', 'Cl', 'OC')
+        for ($i = 0; $i -lt 4; $i++) {
+            $r = $i + 2
+            $wsRgrp.Rows.Item($r).RowHeight = 62
+            $wsRgrp.Range("A$r").Value2 = $rGroups[$i]
+        }
+        $wsRgrp.Rows.Item(6).RowHeight = 62
+        $c = Start-FeatureClip -Id 'excel-usecase-rgroup-enumeration' -HostApp 'excel' -MainHwnd $xHwnd -OfficePid $xPid `
+            -TitleEn 'Use Case: R-Group Analog Enumeration with SUBSTITUTE' `
+            -TitleKo '실전 시나리오: SUBSTITUTE 기반 R-치환기 유도체 자동 생성' `
+            -CaptionEn 'Swap [R] placeholders via Excel SUBSTITUTE to generate analog 2D structures, MW, Formula, and LogP offline.' `
+            -CaptionKo '엑셀 SUBSTITUTE 함수로 [R] 치환기를 자동 치환해 유도체 구조식·분자량·화학식·LogP를 오프라인으로 생성합니다.'
+        Select-ExcelCell $excel $wsRgrp 'C2' 350
+        $c.Snap(4, (Scale-RefX $xHwnd 680), (Scale-RefY $xHwnd 490))
+        $c.AddCue(1.8, 'Substitute R-groups (O, F, CF3, Cl) into template $B$2 and compute structures & properties.', '치환기(O, F, CF3, Cl)를 템플릿 $B$2에 치환해 구조식과 물성을 자동 계산합니다.')
+        for ($r = 2; $r -le 5; $r++) {
+            $wsRgrp.Range("C$r").Formula2 = "=SUBSTITUTE(`$B`$2, `"[R]`", A$r)"
+            $wsRgrp.Range("D$r").Formula2 = "=SMILES2IMG(C$r)"
+            $wsRgrp.Range("E$r").Formula2 = "=SMILES2MW(C$r)"
+            $wsRgrp.Range("F$r").Formula2 = "=SMILES2FORMULA(C$r)"
+            $wsRgrp.Range("G$r").Formula2 = "=SMILES2LOGP(C$r)"
+            Start-Sleep -Milliseconds 500
+            $c.Snap(4, (Scale-RefX $xHwnd 980), (Scale-RefY $xHwnd (490 + ($r - 2) * 85)))
+        }
+        $c.AddCue(1.8, 'Add a new methoxy fragment (OC) in A6 to render the 5th analog and its descriptors.', 'A6에 새 메톡시 치환기(OC)를 추가하면 5번째 유도체 구조와 물성이 바로 생성됩니다.')
+        $wsRgrp.Range('A6').Value2 = 'OC'
+        $wsRgrp.Range('C6').Formula2 = '=SUBSTITUTE($B$2, "[R]", A6)'
+        $wsRgrp.Range('D6').Formula2 = '=SMILES2IMG(C6)'
+        $wsRgrp.Range('E6').Formula2 = '=SMILES2MW(C6)'
+        $wsRgrp.Range('F6').Formula2 = '=SMILES2FORMULA(C6)'
+        $wsRgrp.Range('G6').Formula2 = '=SMILES2LOGP(C6)'
+        Start-Sleep -Seconds 1
+        $excel.ActiveWindow.ScrollColumn = 1
+        $excel.ActiveWindow.ScrollRow = 1
+        Select-ExcelCell $excel $wsRgrp 'C6' 450
+        $c.CaptureShot(@())
+        $c.Snap(10, -1, -1)
+        Complete-FeatureClip $c
+
+        # --- 1.15 excel-usecase-dynamic-filter ---
+        $wsFilt = Invoke-ComRetry { $wb.Worksheets.Add() }
+        Invoke-ComRetry { $wsFilt.Name = 'DynamicFilter' }
+        Invoke-ComRetry { $wsFilt.Activate() }
+        try { $excel.ActiveWindow.Zoom = 85 } catch {}
+        $wsFilt.Rows.Item(1).RowHeight = 24
+        $wsFilt.Rows.Item(2).RowHeight = 22
+        $wsFilt.Range('A1').Value2 = 'Master Library (6 Compounds)'
+        $wsFilt.Range('A1').Font.Bold = $true
+        $wsFilt.Range('G1').Value2 = 'Cutoff LogP <='
+        $wsFilt.Range('G1').Font.Bold = $true
+        $wsFilt.Range('H1').Value2 = 4.2
+        $wsFilt.Range('H1').Interior.Color = 0xCCF5FF
+        $wsFilt.Range('H1').Font.Bold = $true
+        $wsFilt.Range('H1').HorizontalAlignment = -4108
+        $wsFilt.Range('A2:E2').Value2 = @('Compound', 'Structure', 'MW', 'LogP', 'SMILES')
+        $wsFilt.Range('A2:E2').Font.Bold = $true
+        $wsFilt.Range('A2:E2').Interior.Color = 0xEFE7DC
+        $wsFilt.Range('G2:J2').Value2 = @('Filtered Lead', 'Live Structure (=FILTER)', 'MW', 'LogP')
+        $wsFilt.Range('G2:J2').Font.Bold = $true
+        $wsFilt.Range('G2:J2').Interior.Color = 0xE7F7DC
+        $wsFilt.Columns.Item(1).ColumnWidth = 12
+        $wsFilt.Columns.Item(2).ColumnWidth = 13
+        $wsFilt.Columns.Item(3).ColumnWidth = 8
+        $wsFilt.Columns.Item(4).ColumnWidth = 7
+        $wsFilt.Columns.Item(5).ColumnWidth = 18
+        $wsFilt.Columns.Item(6).ColumnWidth = 3
+        $wsFilt.Columns.Item(7).ColumnWidth = 13
+        $wsFilt.Columns.Item(8).ColumnWidth = 22
+        $wsFilt.Columns.Item(9).ColumnWidth = 8
+        $wsFilt.Columns.Item(10).ColumnWidth = 7
+        $wsFilt.Range('E3:E8').Font.Size = 8
+        $filtData = @(
+            @('Caffeine',    $caffeineSmiles),
+            @('Paracetamol', $paracetamolSmiles),
+            @('Nicotine',    $nicotineSmiles),
+            @('Aspirin',     $aspirinSmiles),
+            @('Ibuprofen',   $ibuprofenSmiles),
+            @('Diclofenac',  'O=C(O)Cc1ccccc1Nc2c(Cl)cccc2Cl')
+        )
+        for ($i = 0; $i -lt $filtData.Count; $i++) {
+            $r = $i + 3
+            $wsFilt.Rows.Item($r).RowHeight = 56
+            $wsFilt.Range("A$r").Value2 = $filtData[$i][0]
+            $wsFilt.Range("E$r").Value2 = $filtData[$i][1]
+            $wsFilt.Range("B$r").Formula2 = "=SMILES2IMG(E$r)"
+            $wsFilt.Range("C$r").Formula2 = "=SMILES2MW(E$r)"
+            $wsFilt.Range("D$r").Formula2 = "=SMILES2LOGP(E$r)"
+        }
+        $wsFilt.Range('G3').Formula2 = '=FILTER(A3:D8, D3:D8<=H1)'
+        Start-Sleep -Seconds 2
+        Select-ExcelCell $excel $wsFilt 'G3' 500
+        [void][LiveCaptureEngine]::DismissUiaButton($xHwnd, $xPid, 'Got it')
+        Start-Sleep -Milliseconds 350
+        $c = Start-FeatureClip -Id 'excel-usecase-dynamic-filter' -HostApp 'excel' -MainHwnd $xHwnd -OfficePid $xPid `
+            -TitleEn 'Use Case: Dynamic In-Cell Structure Filtering (=FILTER)' `
+            -TitleKo '실전 시나리오: Microsoft 365 동적 배열(=FILTER) 구조식 자동 필터링' `
+            -CaptionEn 'Spill live in-cell 2D chemical structures alongside MW and LogP dynamically as threshold cell H1 changes.' `
+            -CaptionKo 'LogP 기준 셀(H1)을 변경하면 =FILTER 함수가 인셀 2D 구조식과 물성 행을 동적으로 다시 추출합니다.'
+        Select-ExcelCell $excel $wsFilt 'G3' 400
+        [void][LiveCaptureEngine]::DismissUiaButton($xHwnd, $xPid, 'Got it')
+        $c.Snap(8, (Scale-RefX $xHwnd 1520), (Scale-RefY $xHwnd 560))
+        $c.AddCue(1.8, 'Lower LogP threshold H1 from 4.2 to 2.0: high-LogP compounds drop out automatically.', '기준 셀 H1을 4.2에서 2.0으로 낮추면 고지용성 화합물이 구조식과 함께 자동 제외됩니다.')
+        $wsFilt.Range('H1').Value2 = 2.0
+        Select-ExcelCell $excel $wsFilt 'H1' 800
+        $c.Snap(8, (Scale-RefX $xHwnd 1680), (Scale-RefY $xHwnd 420))
+        $c.AddCue(1.6, 'Tighten cutoff H1 to 1.0 to narrow down polar leads, then restore to 2.0.', '기준을 1.0으로 더 조여 친수성 후보만 추린 뒤 2.0으로 복원합니다.')
+        $wsFilt.Range('H1').Value2 = 1.0
+        Select-ExcelCell $excel $wsFilt 'H1' 800
+        $c.Snap(8, (Scale-RefX $xHwnd 1680), (Scale-RefY $xHwnd 420))
+        $wsFilt.Range('H1').Value2 = 2.0
+        Select-ExcelCell $excel $wsFilt 'G3' 700
+        [void][LiveCaptureEngine]::DismissUiaButton($xHwnd, $xPid, 'Got it')
+        Start-Sleep -Milliseconds 300
+        $excel.ActiveWindow.ScrollColumn = 1
+        $excel.ActiveWindow.ScrollRow = 1
+        $c.CaptureShot(@())
+        $c.Snap(10, -1, -1)
+        Complete-FeatureClip $c
+
+        # --- 1.16 excel-diagnostics-dialog ---
+        $wsDiag = Invoke-ComRetry { $wb.Worksheets.Add() }
+        Invoke-ComRetry { $wsDiag.Name = 'Diagnostics' }
+        Invoke-ComRetry { $wsDiag.Activate() }
+        try { $excel.ActiveWindow.Zoom = 85 } catch {}
+        $wsDiag.Range('A1:D1').Value2 = @('Test Case', 'Input SMILES', 'Formula (=SMILES2IMG)', 'Expected Cause')
+        $wsDiag.Range('A1:D1').Font.Bold = $true
+        $wsDiag.Range('A1:D1').Interior.Color = 0xEFE7DC
+        $wsDiag.Columns.Item(1).ColumnWidth = 18
+        $wsDiag.Columns.Item(2).ColumnWidth = 24
+        $wsDiag.Columns.Item(3).ColumnWidth = 18
+        $wsDiag.Columns.Item(4).ColumnWidth = 26
+        $wsDiag.Range('A2').Value2 = 'Valid Aspirin'
+        $wsDiag.Range('B2').Value2 = $aspirinSmiles
+        $wsDiag.Range('D2').Value2 = 'Valid SMILES -> 2D image'
+        $wsDiag.Range('A3').Value2 = 'Unclosed Ring'
+        $wsDiag.Range('B3').Value2 = 'c1ccccc'
+        $wsDiag.Range('D3').Value2 = 'Unclosed ring #1 (#VALUE!)'
+        $wsDiag.Range('A4').Value2 = 'Unmatched Bracket'
+        $wsDiag.Range('B4').Value2 = 'CC(=O'
+        $wsDiag.Range('D4').Value2 = 'Syntax / parenthesis (#VALUE!)'
+        $wsDiag.Range('A5').Value2 = 'Bad Valence'
+        $wsDiag.Range('B5').Value2 = 'C(C)(C)(C)(C)C'
+        $wsDiag.Range('D5').Value2 = 'Pentavalent carbon (#VALUE!)'
+        $wsDiag.Rows.Item(2).RowHeight = 64
+        for ($r = 3; $r -le 5; $r++) { $wsDiag.Rows.Item($r).RowHeight = 32 }
+        for ($r = 2; $r -le 5; $r++) { $wsDiag.Range("C$r").Formula2 = "=SMILES2IMG(B$r)" }
+        Start-Sleep -Seconds 1
+        $c = Start-FeatureClip -Id 'excel-diagnostics-dialog' -HostApp 'excel' -MainHwnd $xHwnd -OfficePid $xPid `
+            -TitleEn 'Excel Diagnostics: Inspect #VALUE! Indigo Parser Errors' `
+            -TitleKo 'Excel 진단 로그(Diagnostics): #VALUE! 화학 문법 오류 원인 확인' `
+            -CaptionEn 'Click [SMILES] -> [Diagnostics] to read exact EPAM Indigo parser messages behind #VALUE! cells.' `
+            -CaptionKo '#VALUE! 오류가 발생했을 때 리본 [Diagnostics]로 정확한 Indigo 파서 오류 원인을 확인합니다.'
+        Select-ExcelCell $excel $wsDiag 'C3' 450
+        $c.Snap(6, $ptDiag.X, $ptDiag.Y)
+        $c.ClickAt($ptDiag.X, $ptDiag.Y, 'Invalid SMILES returns #VALUE!. Click [Diagnostics] on the [SMILES] ribbon.', '잘못된 SMILES가 #VALUE!를 반환했습니다. 리본의 [Diagnostics] 버튼을 클릭합니다.')
+        [void](Invoke-ComRetry { $excel.Run('ShowDiagnostics') })
+        Start-Sleep -Milliseconds 900
+        $diagHwnd = [LiveCaptureEngine]::FindChildWindowByTitle($xHwnd, $xPid, 'Diagnostic')
+        if ($diagHwnd -eq [IntPtr]::Zero) { $diagHwnd = [LiveCaptureEngine]::FindChildWindowByTitle($xHwnd, $xPid, 'Log') }
+        if ($diagHwnd -eq [IntPtr]::Zero) { $diagHwnd = [LiveCaptureEngine]::FindChildWindowByTitle($xHwnd, $xPid, '') }
+        if ($diagHwnd -ne [IntPtr]::Zero) {
+            [LiveCaptureEngine]::PositionChildWindowRelative(
+                $xHwnd, $diagHwnd,
+                (Scale-RefX $xHwnd 820), (Scale-RefY $xHwnd 920),
+                (Scale-RefX $xHwnd 1820), (Scale-RefY $xHwnd 780)
+            )
+            Start-Sleep -Milliseconds 500
+        }
+        $c.AddCue(2.4, 'The Diagnostics window lists exact Indigo parser errors for each failing formula.', 'Diagnostics 창에 오류를 일으킨 함수명과 정확한 EPAM Indigo 파서 메시지가 기록됩니다.')
+        $c.CaptureShot(@())
+        $c.Snap(16, -1, -1)
+        if ($diagHwnd -ne [IntPtr]::Zero) {
+            [LiveCaptureEngine]::CloseWindow($diagHwnd)
+            Start-Sleep -Milliseconds 400
+        }
+        $c.Snap(6, -1, -1)
+        Complete-FeatureClip $c
+        }
 
         $wb.Close($false)
     } finally {
@@ -1089,7 +1411,7 @@ if ($Section -eq 'All' -or $Section -eq 'Excel') {
 # =============================================================================
 # 2. MICROSOFT WORD LIVE CAPTURE (7 Features + Ribbon + Showcase)
 # =============================================================================
-if ($Section -eq 'All' -or $Section -eq 'Word') {
+if ($Section -eq 'All' -or $Section -eq 'Word' -or $Section -eq 'UseCases') {
     Write-Host "`n=== [2/4] Capturing Live Microsoft Word Manuscript Tutorial (6 Chapters) ===" -ForegroundColor Cyan
     $word = New-Object -ComObject Word.Application
     $word.Visible = $true
@@ -1120,6 +1442,7 @@ if ($Section -eq 'All' -or $Section -eq 'Word') {
         $ptMolInfo  = [LiveCaptureEngine]::FindControlRelativeCenter($wHwnd, @('Molecule Info'))
         $ptBatch    = [LiveCaptureEngine]::FindControlRelativeCenter($wHwnd, @('Batch Style'))
 
+        if ($Section -eq 'All' -or $Section -eq 'Word') {
         # --- Helper to build manuscript section cleanly ---
         $p1 = $doc.Paragraphs.Add()
         $p1.Range.Text = "Synthesis and Structural Characterization of Aspirin Analogs"
@@ -1406,8 +1729,116 @@ if ($Section -eq 'All' -or $Section -eq 'Word') {
         ))
         $c.Snap(6, -1, -1)
         Complete-FeatureClip $c
+        }
 
-        $doc.Close($false)
+        try { $doc.Close($false) } catch {}
+
+        if ($Section -eq 'All' -or $Section -eq 'Word' -or $Section -eq 'UseCases') {
+        # --- 2.8 word-usecase-thesis-captions ---
+        $docThesis = $word.Documents.Add()
+        $docThesis.PageSetup.TopMargin = 36
+        $docThesis.PageSetup.BottomMargin = 36
+        $docThesis.PageSetup.LeftMargin = 48
+        $docThesis.PageSetup.RightMargin = 48
+        $word.ActiveWindow.View.Zoom.Percentage = 85
+        $wHwndT = [IntPtr]$word.ActiveWindow.Hwnd
+        [void](Set-StandardHostWindow $wHwndT 'Word (Thesis)')
+        Start-Sleep -Milliseconds 500
+        [void][LiveCaptureEngine]::SelectRibbonTab($wHwndT, 'SMILES')
+        Start-Sleep -Milliseconds 400
+        $ptBatchT = [LiveCaptureEngine]::FindControlRelativeCenter($wHwndT, @('Batch Style'))
+
+        $pThTitle = $docThesis.Paragraphs.Add()
+        $pThTitle.Range.Text = 'Chapter 3. Synthesis & Structural Verification of Acetylsalicylic Acid'
+        $pThTitle.Range.Font.Name = 'Segoe UI'
+        $pThTitle.Range.Font.Size = 16
+        $pThTitle.Range.Font.Bold = 1
+        $pThTitle.Range.Font.Color = 0x1E293B
+        $pThTitle.Range.InsertParagraphAfter()
+
+        $pTh1 = $docThesis.Paragraphs.Add()
+        $pTh1.Range.Text = '3.1 Reaction Scheme (Word Captions & Cross-Reference Anchors)'
+        $pTh1.Range.Font.Name = 'Segoe UI'
+        $pTh1.Range.Font.Size = 12
+        $pTh1.Range.Font.Bold = 1
+        $pTh1.Range.InsertParagraphAfter()
+
+        $pThBody1 = $docThesis.Paragraphs.Add()
+        $pThBody1.Range.Text = 'Color master thesis draft for digital defense PDF and monochrome bound print copy (Scheme 3.1):'
+        $pThBody1.Range.Font.Name = 'Segoe UI'
+        $pThBody1.Range.Font.Size = 10.5
+        $pThBody1.Range.Font.Bold = 0
+        $pThBody1.Range.InsertParagraphAfter()
+
+        $docThesis.Range($docThesis.Content.End - 1, $docThesis.Content.End - 1).Select()
+        [void][Smiles2Img.Editor.SafeClipboard]::SetText($sampleReactionKet)
+        [void]$wordObj.ExecuteRibbonAction('OnQuickInsert')
+        if ($docThesis.InlineShapes.Count -ge 1) {
+            $picTh1 = $docThesis.InlineShapes.Item($docThesis.InlineShapes.Count)
+            $picTh1.LockAspectRatio = -1
+            $picTh1.Width = 370
+        }
+        $word.Selection.Collapse(0)
+        $word.Selection.InsertParagraphAfter()
+        $pCap1 = $docThesis.Paragraphs.Add()
+        $pCap1.Range.Text = 'Scheme 3.1. Acid-catalyzed acetylation of salicylic acid to aspirin (KET editable scheme).'
+        $pCap1.Range.Font.Name = 'Segoe UI'
+        $pCap1.Range.Font.Size = 9.5
+        $pCap1.Range.Font.Italic = 1
+        $pCap1.Range.Font.Color = 0x64748B
+        $pCap1.Range.InsertParagraphAfter()
+
+        $pTh2 = $docThesis.Paragraphs.Add()
+        $pTh2.Range.Text = '3.2 Target Compound Characterization'
+        $pTh2.Range.Font.Name = 'Segoe UI'
+        $pTh2.Range.Font.Size = 12
+        $pTh2.Range.Font.Bold = 1
+        $pTh2.Range.Font.Italic = 0
+        $pTh2.Range.Font.Color = 0x1E293B
+        $pTh2.Range.InsertParagraphAfter()
+
+        $docThesis.Range($docThesis.Content.End - 1, $docThesis.Content.End - 1).Select()
+        [void][Smiles2Img.Editor.SafeClipboard]::SetText($aspirinSmiles)
+        [void]$wordObj.ExecuteRibbonAction('OnQuickInsert')
+        if ($docThesis.InlineShapes.Count -ge 2) {
+            $picTh2 = $docThesis.InlineShapes.Item($docThesis.InlineShapes.Count)
+            $picTh2.LockAspectRatio = -1
+            $picTh2.Width = 145
+        }
+        $word.Selection.Collapse(0)
+        $word.Selection.InsertParagraphAfter()
+        if ($docThesis.InlineShapes.Count -lt 2) { throw "Thesis capture expected 2 inline structures, got $($docThesis.InlineShapes.Count)" }
+        $pCap2 = $docThesis.Paragraphs.Add()
+        $pCap2.Range.Text = 'Figure 3.1. Target compound 1a (Acetylsalicylic acid, C9H8O4, MW 180.16 g/mol).'
+        $pCap2.Range.Font.Name = 'Segoe UI'
+        $pCap2.Range.Font.Size = 9.5
+        $pCap2.Range.Font.Italic = 1
+        $pCap2.Range.Font.Color = 0x64748B
+        $pCap2.Range.InsertParagraphAfter()
+
+        $docThesis.Range($pThBody1.Range.Start, $pThBody1.Range.Start).Select()
+        $word.ActiveWindow.ScrollIntoView($pThTitle.Range, $true)
+        $word.ActiveWindow.VerticalPercentScrolled = 0
+        Start-Sleep -Milliseconds 600
+
+        $c = Start-FeatureClip -Id 'word-usecase-thesis-captions' -HostApp 'word' -MainHwnd $wHwndT -OfficePid $wPid `
+            -TitleEn 'Use Case: Long Thesis Dual Color/B&W & Preserved Captions' `
+            -TitleKo '실전 시나리오: 학위논문 캡션·앵커 유지 및 인쇄용 흑백 일괄 전환' `
+            -CaptionEn 'Switch a multi-section thesis draft from color PDF to ACS B&W print copy without disturbing Word captions or anchors.' `
+            -CaptionKo '학위논문 초안의 컬러 구조식과 반응식을 캡션 번호·문단 앵커 손상 없이 인쇄용 ACS 흑백으로 일괄 전환합니다.'
+        $c.Snap(8, $ptBatchT.X, $ptBatchT.Y)
+        $c.ClickAt($ptBatchT.X, $ptBatchT.Y, 'Color thesis master with Scheme 3.1 & Figure 3.1. Run [Batch Style -> Publication B&W].', 'Scheme 3.1과 Figure 3.1 캡션이 연결된 컬러 논문 초안에서 [Batch Style -> Publication B&W]를 실행합니다.')
+        [void]$wordObj.ExecuteRibbonAction('OnBatchStyleBw')
+        $docThesis.Range($pThBody1.Range.Start, $pThBody1.Range.Start).Select()
+        $word.ActiveWindow.ScrollIntoView($pThTitle.Range, $true)
+        $word.ActiveWindow.VerticalPercentScrolled = 0
+        Start-Sleep -Milliseconds 900
+        $c.AddCue(2.2, 'Both figures convert to monochrome line art while Scheme 3.1 and Figure 3.1 captions remain intact.', '두 그림이 흑백 선화로 변환되면서도 Scheme 3.1·Figure 3.1 캡션과 배치가 그대로 유지됩니다.')
+        $c.CaptureShot(@())
+        $c.Snap(14, -1, -1)
+        Complete-FeatureClip $c
+        $docThesis.Close($false)
+        }
     } finally {
         try { $word.Quit() } catch {}
         [System.Runtime.InteropServices.Marshal]::ReleaseComObject($word) | Out-Null
@@ -1418,7 +1849,7 @@ if ($Section -eq 'All' -or $Section -eq 'Word') {
 # =============================================================================
 # 3. MICROSOFT POWERPOINT LIVE CAPTURE (8 Features + Ribbon + Showcase)
 # =============================================================================
-if ($Section -eq 'All' -or $Section -eq 'PowerPoint') {
+if ($Section -eq 'All' -or $Section -eq 'PowerPoint' -or $Section -eq 'UseCases') {
     Write-Host "`n=== [3/4] Capturing Live Microsoft PowerPoint Slide Gallery ===" -ForegroundColor Cyan
     $ppt = New-Object -ComObject PowerPoint.Application
     try {
@@ -1461,6 +1892,7 @@ if ($Section -eq 'All' -or $Section -eq 'PowerPoint') {
         $ptMolstar = [LiveCaptureEngine]::FindControlRelativeCenter($pHwnd, @('3D Structure (Mol*)'))
         $ptPaste   = [LiveCaptureEngine]::FindControlRelativeCenter($pHwnd, @('Paste Structure'))
         $ptMolInfo = [LiveCaptureEngine]::FindControlRelativeCenter($pHwnd, @('Molecule Info'))
+        $ptCopySvgP = [LiveCaptureEngine]::FindControlRelativeCenter($pHwnd, @('Copy SVG'))
         $ptBatch   = [LiveCaptureEngine]::FindControlRelativeCenter($pHwnd, @('Batch Style'))
 
         function New-DarkSlide($presObj, $titleText, $subText) {
@@ -1482,6 +1914,7 @@ if ($Section -eq 'All' -or $Section -eq 'PowerPoint') {
             return $s
         }
 
+        if ($Section -eq 'All' -or $Section -eq 'PowerPoint') {
         # --- 3.1 powerpoint-slide-candidate-grid ---
         $sGrid = New-DarkSlide $pres 'Lead Compound Candidates - Dark Slide Screening' 'Inserted via func_SMILES2IMG PowerPoint Add-in • Transparent Dark Mode White Ink'
         $sGrid.Select()
@@ -1702,6 +2135,162 @@ if ($Section -eq 'All' -or $Section -eq 'PowerPoint') {
         $s3d.Select(); Start-Sleep -Milliseconds 400; $cOv.Snap(6, -1, -1)
         $sGrid.Select(); Start-Sleep -Milliseconds 300; $cOv.Snap(4, $ptBatch.X, $ptBatch.Y)
         Complete-FeatureClip $cOv
+        }
+
+        if ($Section -eq 'All' -or $Section -eq 'PowerPoint' -or $Section -eq 'UseCases') {
+        # --- 3.9 powerpoint-slide-svg-animation ---
+        $sSvg = $pres.Slides.Add($pres.Slides.Count + 1, 12)
+        $sSvg.FollowMasterBackground = 0
+        $sSvg.Background.Fill.Solid()
+        $sSvg.Background.Fill.ForeColor.RGB = 0xFAF6F4 # Soft off-white #F4F6FA
+        $tbSvgTitle = $sSvg.Shapes.AddTextbox(1, 36, 20, 888, 38)
+        $tbSvgTitle.TextFrame.TextRange.Text = 'Step-by-Step SVG Vector Editing & Stage Animation'
+        $tbSvgTitle.TextFrame.TextRange.Font.Name = 'Segoe UI'
+        $tbSvgTitle.TextFrame.TextRange.Font.Size = 22
+        $tbSvgTitle.TextFrame.TextRange.Font.Bold = -1
+        $tbSvgTitle.TextFrame.TextRange.Font.Color.RGB = 0x2A170F
+        $tbSvgSub = $sSvg.Shapes.AddTextbox(1, 36, 58, 888, 22)
+        $tbSvgSub.TextFrame.TextRange.Text = 'Copy SVG -> Paste onto Slide -> Convert to Shape -> Recolor Key Product & Arrow Paths'
+        $tbSvgSub.TextFrame.TextRange.Font.Name = 'Segoe UI'
+        $tbSvgSub.TextFrame.TextRange.Font.Size = 11.5
+        $tbSvgSub.TextFrame.TextRange.Font.Color.RGB = 0x695547
+
+        # Top-left original KET reference box
+        $boxOrig = $sSvg.Shapes.AddShape(1, 36, 94, 888, 152)
+        $boxOrig.Fill.Solid()
+        $boxOrig.Fill.ForeColor.RGB = 0xFFFFFF
+        $boxOrig.Line.ForeColor.RGB = 0xE2D5CB
+        $lblOrig = $sSvg.Shapes.AddTextbox(1, 50, 100, 360, 22)
+        $lblOrig.TextFrame.TextRange.Text = '1. Original Editable KET Scheme (Source)'
+        $lblOrig.TextFrame.TextRange.Font.Name = 'Segoe UI'
+        $lblOrig.TextFrame.TextRange.Font.Size = 10.5
+        $lblOrig.TextFrame.TextRange.Font.Bold = -1
+        $lblOrig.TextFrame.TextRange.Font.Color.RGB = 0x8A5A2B
+
+        # Bottom editable vector stage box
+        $boxVec = $sSvg.Shapes.AddShape(1, 36, 260, 888, 250)
+        $boxVec.Fill.Solid()
+        $boxVec.Fill.ForeColor.RGB = 0xFFFFFF
+        $boxVec.Line.ForeColor.RGB = 0xC8A882
+        $lblVec = $sSvg.Shapes.AddTextbox(1, 50, 268, 520, 22)
+        $lblVec.TextFrame.TextRange.Text = '2. Pasted SVG -> Convert to Native PowerPoint Shapes (Highlight & Click Build)'
+        $lblVec.TextFrame.TextRange.Font.Name = 'Segoe UI'
+        $lblVec.TextFrame.TextRange.Font.Size = 10.5
+        $lblVec.TextFrame.TextRange.Font.Bold = -1
+        $lblVec.TextFrame.TextRange.Font.Color.RGB = 0x597E0D
+
+        $sSvg.Select()
+        Reset-PowerPointSlideZoom
+        Start-Sleep -Milliseconds 400
+
+        [void][Smiles2Img.Editor.SafeClipboard]::SetText($sampleReactionKet)
+        [void]$pptObj.ExecuteRibbonAction('OnQuickInsert')
+        $picOrig = $sSvg.Shapes.Item($sSvg.Shapes.Count)
+        $picOrig.LockAspectRatio = -1
+        $picOrig.Height = 106
+        if ($picOrig.Width -gt 780) { $picOrig.Width = 780 }
+        $picOrig.Left = 480 - ($picOrig.Width / 2)
+        $picOrig.Top = 126
+        $picOrig.Select()
+        Start-Sleep -Milliseconds 400
+
+        $c = Start-FeatureClip -Id 'powerpoint-slide-svg-animation' -HostApp 'powerpoint' -MainHwnd $pHwnd -OfficePid $pPid `
+            -TitleEn 'Use Case: Copy SVG -> Convert to Editable PowerPoint Shapes' `
+            -TitleKo '실전 시나리오: Copy SVG -> 파워포인트 네이티브 도형 변환 및 단계 강조' `
+            -CaptionEn 'Copy lossless SVG from a reaction scheme, paste onto a slide, convert to native vector shapes, and recolor key regions.' `
+            -CaptionKo '반응식에서 [Copy SVG]로 벡터를 복사해 슬라이드에 붙여넣은 뒤 네이티브 도형으로 변환해 핵심 결합·생성물을 강조합니다.'
+        $c.Snap(6, $ptCopySvgP.X, $ptCopySvgP.Y)
+        $c.ClickAt($ptCopySvgP.X, $ptCopySvgP.Y, 'Select the KET scheme and click [Copy SVG] on the [SMILES] ribbon.', '반응식을 선택하고 [SMILES] 리본의 [Copy SVG]를 클릭합니다.')
+        [void]$pptObj.ExecuteRibbonAction('OnCopySvg')
+        Start-Sleep -Milliseconds 400
+
+        # Render the exact SVG XML from MoleculeRenderer and place it as a native Office SVG graphic
+        $svgXml = [Smiles2Img.Rendering.MoleculeRenderer]::RenderSvg($sampleReactionKet, [Smiles2Img.Rendering.RenderOptions]::Default)
+        $tmpSvgPath = Join-Path ([System.IO.Path]::GetTempPath()) ("s2i_slide_svg_" + [Guid]::NewGuid().ToString('N') + ".svg")
+        [System.IO.File]::WriteAllText($tmpSvgPath, $svgXml, [System.Text.UTF8Encoding]::new($false))
+        $svgPic = $sSvg.Shapes.AddPicture($tmpSvgPath, 0, -1, 120, 304)
+        $svgPic.LockAspectRatio = -1
+        $svgPic.Height = 148
+        if ($svgPic.Width -gt 800) { $svgPic.Width = 800 }
+        $svgPic.Left = 480 - ($svgPic.Width / 2)
+        $svgPic.Top = 304
+        $svgLeft = $svgPic.Left
+        $svgWidth = $svgPic.Width
+        $svgTop = $svgPic.Top
+        $svgHeight = $svgPic.Height
+        $svgPic.Select()
+        Start-Sleep -Milliseconds 500
+        $c.AddCue(1.8, 'Paste the scalable SVG graphic onto the slide and run Convert to Shape.', '슬라이드에 무손실 SVG 그래픽을 붙여넣고 도형으로 변환(Convert to Shape)을 실행합니다.')
+        $c.Snap(6, (Scale-RefX $pHwnd 1380), (Scale-RefY $pHwnd 1250))
+
+        # Convert native SVG graphic into individual editable PowerPoint Freeform vector shapes via SVGEdit
+        $firstVecIdx = $sSvg.Shapes.Count
+        try {
+            $ppt.CommandBars.ExecuteMso('SVGEdit')
+            Start-Sleep -Milliseconds 1200
+        } catch {
+            Write-Warning "SVGEdit failed: $($_.Exception.Message)"
+        }
+
+        # SVGEdit splits the SVG Graphic directly into native Freeform shapes starting at $firstVecIdx
+        $recoloredCount = 0
+        $prodNames = New-Object 'System.Collections.Generic.List[string]'
+        $arrowMinX = $svgLeft + ($svgWidth * 0.598)
+        $prodMinX  = $svgLeft + ($svgWidth * 0.66)
+        $vecTotal = $sSvg.Shapes.Count - $firstVecIdx + 1
+        for ($si = $firstVecIdx; $si -le $sSvg.Shapes.Count; $si++) {
+            $sh = $sSvg.Shapes.Item($si)
+            $centerX = $sh.Left + ($sh.Width / 2.0)
+            if ($centerX -ge $prodMinX) {
+                try {
+                    if ($sh.Fill.Visible -ne 0) { $sh.Fill.ForeColor.RGB = 0x3D3DE1 } # Vivid crimson/coral (BGR #E13D3D)
+                    if ($sh.Line.Visible -ne 0) { $sh.Line.ForeColor.RGB = 0x3D3DE1 }
+                    $prodNames.Add($sh.Name)
+                    $recoloredCount++
+                } catch {}
+            } elseif ($centerX -ge $arrowMinX) {
+                try {
+                    if ($sh.Fill.Visible -ne 0) { $sh.Fill.ForeColor.RGB = 0xD8631D } # Cobalt blue arrow (BGR #1D63D8)
+                    if ($sh.Line.Visible -ne 0) { $sh.Line.ForeColor.RGB = 0xD8631D }
+                    $recoloredCount++
+                } catch {}
+            }
+        }
+        Write-Host "    [SVG Convert] Split into $vecTotal native PowerPoint Freeform vector shapes; recolored $recoloredCount shapes." -ForegroundColor DarkCyan
+
+        # Add clean stage footer pills beneath the 3 reaction zones
+        $stages = @(
+            @{ Text = 'Stage 1: Reactants (Click 1)';      X = 90;  W = 240; Bg = 0xF0E6DC; Fg = 0x473626 },
+            @{ Text = 'Stage 2: Arrow (Wipe)';             X = 390; W = 175; Bg = 0xFBE9DA; Fg = 0xB84E10 },
+            @{ Text = 'Stage 3: Highlighted Product (Click 3)'; X = 595; W = 290; Bg = 0xE2E2FE; Fg = 0x2626B9 }
+        )
+        foreach ($st in $stages) {
+            $pill = $sSvg.Shapes.AddShape(5, $st.X, 468, $st.W, 28) # msoShapeRoundedRectangle
+            $pill.Fill.Solid()
+            $pill.Fill.ForeColor.RGB = $st.Bg
+            $pill.Line.Visible = 0
+            $pill.TextFrame.TextRange.Text = $st.Text
+            $pill.TextFrame.TextRange.Font.Name = 'Segoe UI'
+            $pill.TextFrame.TextRange.Font.Size = 10.5
+            $pill.TextFrame.TextRange.Font.Bold = -1
+            $pill.TextFrame.TextRange.Font.Color.RGB = $st.Fg
+            $pill.TextFrame.TextRange.ParagraphFormat.Alignment = 2 # ppAlignCenter
+        }
+        try {
+            if ($prodNames.Count -gt 1) {
+                $prodGrp = $sSvg.Shapes.Range(@($prodNames)).Group()
+                $prodGrp.Select()
+            } else {
+                $ppt.ActiveWindow.Selection.Unselect()
+            }
+        } catch {}
+        Remove-Item -LiteralPath $tmpSvgPath -Force -ErrorAction SilentlyContinue
+        Start-Sleep -Milliseconds 700
+        $c.AddCue(2.4, 'Converted SVG paths are now native PowerPoint vector shapes—recolored and grouped by stage for animation.', '변환된 SVG 경로가 네이티브 파워포인트 도형으로 분리되어 단계별 색상 강조와 그룹 애니메이션이 가능합니다.')
+        $c.CaptureShot(@())
+        $c.Snap(14, -1, -1)
+        Complete-FeatureClip $c
+        }
 
         $pres.Saved = -1
         $pres.Close()
@@ -1861,10 +2450,11 @@ if ($Section -eq 'All' -or $Section -eq 'Finalize') {
     Join-ClipList @('powerpoint-overview', 'powerpoint-slide-candidate-grid', 'powerpoint-slide-dark-mode', 'powerpoint-slide-molstar-3d', 'powerpoint-slide-textbox-quick-insert', 'powerpoint-slide-batch-style') (Join-Path $assetsVideosDir 'powerpoint-guide-video.mp4')
 
     # Generate live hero demo media from real Excel + Ketcher MP4 clips:
-    # - VitePress docs: hero-demo.webm (VP9 crf 34) + hero-demo-poster.webp (first frame)
+    # - VitePress docs: hero-demo.webm (VP9 crf 34) + hero-demo-poster.webp (rendered excel-overview shot)
     # - GitHub README: assets/hero-demo.webp (Animated WebP)
     $heroSrc1 = Join-Path $mediaRoot 'excel-overview\clip.mp4'
     $heroSrc2 = Join-Path $mediaRoot 'excel-reactions-ket\clip.mp4'
+    $heroPosterSrc = Join-Path $mediaRoot 'excel-overview\shot.webp'
     $heroPublicWebm = Join-Path $publicDir 'hero-demo.webm'
     $heroPublicPoster = Join-Path $publicDir 'hero-demo-poster.webp'
     $heroAssetsWebp = Join-Path $assetsDir 'hero-demo.webp'
@@ -1877,15 +2467,22 @@ if ($Section -eq 'All' -or $Section -eq 'Finalize') {
         $heroJoined = Join-Path ([System.IO.Path]::GetTempPath()) ("hero_joined_" + [Guid]::NewGuid().ToString('N') + ".mp4")
         & $ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i $heroConcatTxt -c copy $heroJoined
         & $ffmpeg -hide_banner -loglevel error -y -i $heroJoined `
-            -vf "scale=1280:-2:flags=lanczos" `
+            -vf "scale=1280:854:flags=lanczos" `
             -c:v libvpx-vp9 -b:v 0 -crf 34 -row-mt 1 -an `
             $heroPublicWebm
+        if (Test-Path $heroPosterSrc) {
+            & $ffmpeg -hide_banner -loglevel error -y -i $heroPosterSrc `
+                -vf "scale=1280:854:flags=lanczos" `
+                -c:v libwebp -quality 84 `
+                $heroPublicPoster
+        } else {
+            & $ffmpeg -hide_banner -loglevel error -y -i $heroJoined `
+                -frames:v 1 -vf "scale=1280:854:flags=lanczos" `
+                -c:v libwebp -quality 84 `
+                $heroPublicPoster
+        }
         & $ffmpeg -hide_banner -loglevel error -y -i $heroJoined `
-            -frames:v 1 -vf "scale=1280:-2:flags=lanczos" `
-            -c:v libwebp -q:v 80 `
-            $heroPublicPoster
-        & $ffmpeg -hide_banner -loglevel error -y -i $heroJoined `
-            -vf "scale=1280:-1:flags=lanczos" `
+            -vf "scale=1280:854:flags=lanczos" `
             -c:v libwebp_anim -lossless 0 -compression_level 6 -q:v 80 -preset default -loop 0 `
             $heroAssetsWebp
         Remove-Item -LiteralPath $heroConcatTxt, $heroJoined -Force -ErrorAction SilentlyContinue

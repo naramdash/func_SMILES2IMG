@@ -14,6 +14,8 @@ Standard PNG or JPG captures look fine on a laptop screen, then turn jagged and 
 2. Click **`[SMILES]` ➔ `[Copy SVG]`** (or right-click ➔ **`Chemical Structure` ➔ `Copy Vector SVG`**).
 3. Paste (<kbd>Ctrl</kbd> + <kbd>V</kbd>) onto your PowerPoint A0 poster canvas (Office 365 / 2019+) or into **Adobe Illustrator / Inkscape**—every bond path, wedge, and atom letter pastes as editable vector paths ready to scale cleanly.
 
+<FeatureMedia id="powerpoint-slide-svg-animation" />
+
 ### Step 2: Prepare Q&A Chemistry Metrics (`Molecule Info`)
 
 In full-screen Slide Show mode, PowerPoint hides the Ribbon and right-click add-in menus. Use this two-step Q&A workflow instead:

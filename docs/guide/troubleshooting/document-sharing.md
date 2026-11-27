@@ -8,6 +8,8 @@ How `.docx`, `.pptx`, and `.xlsx` files created with **`func_SMILES2IMG`** behav
 * **No Add-In Needed for Readers:** Colleagues on Windows, **macOS**, iPad, or Office for the Web can view, print, present, and export to PDF without missing images or broken layouts.
 * **Round-Trip Editability Preserved:** Because chemical metadata (`KET:` / `SMILES:` / `MOLSTAR:`) travels inside standard Office Alt Text and `CustomXMLParts`, reopening the same file later on a PC with `func_SMILES2IMG` restores full double-click editing automatically.
 
+![Embedded 2D structures and 3D figures in Microsoft Word](/word-showcase.png)
+
 ## 2. Microsoft Excel (`.xlsx`)
 
 * **Cached Outputs Stay Visible:** `.FLOAT` picture shapes, Microsoft 365 in-cell image caches, and calculated descriptor values (`MW`, `Formula`, `LogP`, `TPSA`) remain visible on other PCs as long as the workbook is not recalculated.

@@ -9,6 +9,8 @@ Ketcher 2D와 Mol\* 3D는 모두 **Microsoft Edge WebView2** 런타임 위에서
 * Windows 10/11에 기본 탑재되어 있으나 일부 경량화 사내 Windows 이미지에서는 누락되어 있을 수 있습니다.
 * WebView2 초기화 오류가 발생하면 공식 **Microsoft Edge WebView2 Evergreen Runtime**을 설치한 뒤 오피스를 재시작하세요.
 
+<FeatureMedia id="common-ketcher-2d" />
+
 ## 2. 로컬 에디터 번들 캐시 초기화
 
 `func_SMILES2IMG`는 오프라인 Ketcher/Mol\* 자산을 `%LOCALAPPDATA%\Smiles2Img`에 추출하고 `SHA-256` 지문으로 무결성을 검증합니다. 백신 잠금이나 비정상 종료로 파일이 손상된 경우:

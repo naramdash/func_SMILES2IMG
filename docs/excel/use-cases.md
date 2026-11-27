@@ -17,7 +17,7 @@ Explore 6 practical ways **`func_SMILES2IMG`** turns Microsoft Excel into a self
 
 Eliminate switching between ChemDraw, PubChem, and manual weight calculators during reaction setup. Sketch your reaction scheme once at the top via **`[SMILES]` ➔ `[Insert / Edit (KET)]`**, then type reagent names or CAS numbers in column `A` to auto-populate SMILES, structures, live numeric `MW`, and `mg` weighing values.
 
-<FeatureMedia id="excel-reactions-ket" />
+<FeatureMedia id="excel-usecase-eln-stoichiometry" />
 
 1. Paste the table below into **`A1`** (append **`.FLOAT`** to `=SMILES2IMG` on Excel 2016–2021).
 2. Adjust the scale in `E2` (`5.0` mmol) to recalculate every reagent weight (`F2:F4`) immediately.
@@ -64,7 +64,7 @@ Point every analog row to a single query scaffold cell (`$B$2`) so editing one S
 
 Chemical vendors and papers often write the exact same molecule with different SMILES atom orderings (`c1ccccc1C(=O)O` vs. `O=C(O)c1ccccc1`). Generating the invariant 27-character **`InChIKey`** lets Excel detect duplicates via `COUNTIF`, merge tables via `XLOOKUP`, and clean master lists with **Remove Duplicates**.
 
-<FeatureMedia id="excel-conversions" />
+<FeatureMedia id="excel-usecase-deduplication" />
 
 1. Paste the sheet below at **`A1`** to compare two different SMILES writings of Benzoic acid alongside Aspirin.
 2. Expand `COUNTIF($C$2:$C$4, C2)>1` across all rows to flag chemically identical entries live.
@@ -104,7 +104,7 @@ Import `.sdf` screening libraries exported from RDKit, KNIME, DataWarrior, or Pu
 
 Simulate entire analog series inside Excel using native **`SUBSTITUTE`**—no Python or RDKit scripts required. Adding a single substituent SMILES fragment renders the analog and updates MW, Formula, LogP, and TPSA locally.
 
-<FeatureMedia id="excel-cheminformatics" />
+<FeatureMedia id="excel-usecase-rgroup-enumeration" />
 
 1. Paste the enumeration table below at **`A1`** (`$B$2` holds the `[R]` scaffold template).
 2. Add more SMILES fragments down column `A` (`Cl`, `OC`, `C#N`) and fill columns `C:F` downward.
@@ -128,7 +128,7 @@ Simulate entire analog series inside Excel using native **`SUBSTITUTE`**—no Py
 
 Because `=SMILES2IMG` returns a native **in-cell `CellImage`** on **Microsoft 365 / Excel 2024+**, native lookup and dynamic array formulas move the rendered structures themselves alongside numbers.
 
-<FeatureMedia id="excel-formula-table" />
+<FeatureMedia id="excel-usecase-dynamic-filter" />
 
 1. **Dropdown Lead Comparator:** Use Excel **Data Validation** dropdowns in `B2` and `C2` pointing to compound names on a `Library` sheet, then pull each live structure cell with `=XLOOKUP(B2, Library!$A:$A, Library!$C:$C)` paired with `=SMILES.MATCH(B3, Library!$B$1)` and `ΔMW` / `ΔLogP` rows.
 2. **Live Spilling `FILTER` Shortlist:** Combine property cutoffs into a dynamic shortlist whose images update automatically whenever thresholds change:

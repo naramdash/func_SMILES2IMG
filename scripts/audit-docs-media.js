@@ -68,7 +68,7 @@ if (!fs.existsSync(manifestPath)) {
       }
     };
 
-    checkAsset(entry.shot, 5000, 'live screenshot (.png)');
+    checkAsset(entry.shot, 5000, 'live screenshot (.webp)');
     checkAsset(entry.webm, 5000, 'live video (.webm)');
     checkAsset(entry.mp4, 5000, 'live video (.mp4)');
     checkAsset(entry.vttEn, 40, 'English captions (.en.vtt)');

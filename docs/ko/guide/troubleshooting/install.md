@@ -20,6 +20,8 @@ Windows 11 스마트 앱 컨트롤 경고, 수동 다운로드 `.xll` / `.zip` �
 * **수동 해결:** 압축 풀기 전 `.zip` 또는 `.xll` 파일을 우클릭 ➔ **속성** ➔ 하단 **[차단 해제]**(Unblock) 체크 ➔ **[확인]** 클릭.
 * **자동 대안:** [PowerShell 자동 설치](/ko/guide/install)를 실행하면 설치된 모든 파일에 `Unblock-File`이 자동 적용됩니다.
 
+<FeatureMedia id="common-install-walkthrough" />
+
 ## 3. 사내 보안망 · 오프라인 환경
 
 * **GitHub 직접 접속이 막힌 경우:** [오프라인 수동 ZIP 설치](/ko/guide/install#offline-zip) 절차를 따르세요.

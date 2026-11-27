@@ -10,6 +10,8 @@
 2. <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Esc</kbd>로 **작업 관리자**를 열어 백그라운드에 `EXCEL.EXE`, `WINWORD.EXE`, `POWERPNT.EXE`가 남아 있지 않은지 확인합니다.
 3. 오피스를 다시 실행하고 상단 메뉴에 **`[SMILES]`** 탭이 나타나는지 확인합니다.
 
+![정상 로드된 Microsoft Excel SMILES 리본 탭](/excel-ribbon-guide.png)
+
 ## 2. 비활성화된 추가 기능(Disabled Items) 복구
 
 오피스가 비정상 종료된 이력이 있으면 추가 기능을 **사용할 수 없는 항목**으로 자동 격리할 수 있습니다.

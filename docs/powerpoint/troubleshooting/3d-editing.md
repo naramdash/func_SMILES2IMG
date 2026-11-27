@@ -8,6 +8,8 @@ Troubleshooting for Mol\* `.glb` 3D protein insertion, `.pptx` file size limits,
 * **Lightweight Decks, PowerPoint 2016, or Giant Cryo-EM/Ribosome Complexes:** Switch Mol\*'s top toolbar from **`3D Model (GLB)`** to **`2D Picture`** with **`BG: Transparent`** to insert a sharp alpha-transparent PNG that works on every PowerPoint version while keeping file size small.
 * **Corporate Firewall Blocking RCSB PDB Fetches:** Click **`Open File...`** inside Mol\* to load local `.pdb`, `.cif`, `.bcif`, `.ent`, `.mol`, `.sdf`, `.molj`, or `.molx` files offline ([Offline PDB Files](/editor/troubleshooting/offline-pdb)).
 
+<FeatureMedia id="powerpoint-slide-molstar-3d" />
+
 ## 2. Double-Click Opens Format Picture Instead of Ketcher or Mol\* {#double-click}
 
 `func_SMILES2IMG` identifies editable slide objects via **`Shape.Tags`** (`KET`, `SMILES`, `MOLSTAR`) and **`Alt Text`**, plus `CustomXMLParts` for 3D Mol\* camera states.

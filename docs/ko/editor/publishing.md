@@ -40,6 +40,8 @@ Excel 시트, Word 논문, PowerPoint 발표 자료 전체의 구조식을 **학
 | **학회 포스터 (PowerPoint / 대판 인쇄)** | A0 크기의 대형 학회 포스터로 확대해 인쇄해도 결합선과 글자가 선명하게 유지됩니다. |
 | **웹 에디터 / 코드 편집기 (VS Code 등)** | 클립보드에 그래픽 스트림(`image/svg+xml`)과 원본 `<svg>...</svg>` XML 텍스트가 동시에 복사되므로, 텍스트 에디터에 붙여넣으면 깔끔한 SVG 코드를 바로 얻을 수 있습니다. |
 
+<FeatureMedia id="powerpoint-slide-svg-animation" />
+
 ## 3. 🔬 분자 정보 상세창 (`Molecule Info`) & 5가지 서식 내보내기
 
 구조식 셀이나 그림을 **우클릭 ➔ `Chemical Structure ➔ Copy Molecule Info`** (또는 상단 리본의 **`[Molecule Info]`** 메뉴)로 선택하면 분자의 모든 물리화학적 특성을 확인하고 원하는 서식으로 즉시 복사할 수 있습니다. **`Detailed Molecule Info Window...`** 창을 열면 상단 2D 구조 미리보기 썸네일, 행별 **`[Copy]`** 버튼, 하단 서식 선택 드롭다운을 갖춘 표준 Windows 상세 창이 표시됩니다:
@@ -129,6 +131,10 @@ InChIKey: BSYNRYMUTXBXSQ-UHFFFAOYSA-N
   "inchiKey": "BSYNRYMUTXBXSQ-UHFFFAOYSA-N"
 }
 ```
+
+::: tip 상세 정보 창의 6번째 서식: `Compact Summary` (한 줄 요약)
+**`Detailed Molecule Info Window...`** 하단 서식 드롭다운에는 **`Compact Summary`** 옵션도 포함되어 있습니다. `|` 구분자로 이어진 단일 줄(`Name: Aspirin | Formula: C9H8O4 | MW: 180.16 g/mol | ...`)로 복사되어 짧은 메모나 로그 기록에 편리합니다.
+:::
 
 ## 🚀 다음 단계로 이어서 보기
 

@@ -72,6 +72,7 @@ function openShotLightbox() {
       playsinline
       preload="metadata"
       :poster="withBase(entry.shot)"
+      :aria-label="displayTitle"
     >
       <source :src="withBase(entry.webm)" type="video/webm" />
       <source :src="withBase(entry.mp4)" type="video/mp4" />
@@ -86,7 +87,7 @@ function openShotLightbox() {
       :title="isKo ? '클릭해서 확대' : 'Click to enlarge'"
       @click="openShotLightbox"
     >
-      <img :src="withBase(entry.shot)" :alt="displayTitle" loading="lazy" class="s2i-media" />
+      <img :src="withBase(entry.shot)" :alt="displayTitle" loading="lazy" decoding="async" class="s2i-media" />
     </button>
 
     <figcaption class="s2i-figcaption">
@@ -113,6 +114,8 @@ function openShotLightbox() {
   display: block;
   width: 100%;
   height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: contain;
   border-radius: 8px;
   border: 1px solid var(--vp-c-divider);
   background: var(--vp-c-bg-soft);

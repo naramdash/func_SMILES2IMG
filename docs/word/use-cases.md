@@ -78,7 +78,7 @@ Screen candidates in [**Excel Use Cases**](/excel/use-cases) ➔ finalize tables
 
 Manage 100+ page theses safely when every scheme is linked to Word **Captions** (`Scheme 3.2`), cross-references, and a Table of Figures—and maintain both a color digital defense PDF and a black-and-white printed bound edition.
 
-<FeatureMedia id="word-ch1-insert-ketcher" />
+<FeatureMedia id="word-usecase-thesis-captions" />
 
 1. **Preserve Captions & Cross-References:** Attach standard Word **Insert Caption** numbering beneath each inline figure. Both **double-click** revisions and **`[Batch Style]`** update the picture in place at its exact paragraph anchor without touching caption numbers or TOF links.
 2. **Produce Color PDF & B&W Bound Copies:** Keep one color master `.docx` for defense review; save a duplicate for library printing and run **`[SMILES]` ➔ `[Batch Style]` ➔ `[Publication B&W (ACS Monochrome)]`** across the thesis.

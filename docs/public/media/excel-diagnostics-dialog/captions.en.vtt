@@ -1,0 +1,8 @@
+WEBVTT
+
+00:00:01.000 --> 00:00:01.320
+Invalid SMILES returns #VALUE!. Click [Diagnostics] on the [SMILES] ribbon.
+
+00:00:01.350 --> 00:00:03.080
+The Diagnostics window lists exact Indigo parser errors for each failing formula.
+

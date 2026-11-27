@@ -105,18 +105,33 @@ const tabs: PlaybookTab[] = [
     slides: [
       {
         img: '/examples/previews/word-01.webp',
-        captionEn: 'Pages 1–2 of 6 · Ribbon Quick Map & Text-to-Structure Lab',
-        captionKo: '1–2 / 6쪽 · 리본 메뉴 가이드 및 텍스트 구조 변환 실습'
+        captionEn: 'Page 1 of 6 · Cover Banner, Quick Guide & [SMILES] Ribbon Reference Table',
+        captionKo: '1 / 6쪽 · 표지 배너, 실습 안내 및 [SMILES] 리본·우클릭 메뉴 요약표'
       },
       {
         img: '/examples/previews/word-02.webp',
-        captionEn: 'Pages 3–4 of 6 · Journal SAR Table & Editable KET Synthesis Schemes',
-        captionKo: '3–4 / 6쪽 · 학술지 SAR 화합물 표 및 편집 가능한 KET 합성 반응식'
+        captionEn: 'Page 2 of 6 · Ch. 1 Inline 2D Structures & Text-to-Structure Conversion Lab',
+        captionKo: '2 / 6쪽 · 1장 본문 인라인 2D 구조식 및 텍스트 제자리 변환 실습'
       },
       {
         img: '/examples/previews/word-03.webp',
-        captionEn: 'Pages 5–6 of 6 · Mol* 3D Protein (1CRN) & ACS B&W Export',
-        captionKo: '5–6 / 6쪽 · Mol* 3D 단백질 그림(1CRN) 및 학술지 흑백 일괄 변환'
+        captionEn: 'Page 3 of 6 · Ch. 2 Journal Compound Summary & SAR Table + Molecule Info',
+        captionKo: '3 / 6쪽 · 2장 학술지 화합물 요약·SAR 표 및 Molecule Info 물성 추출'
+      },
+      {
+        img: '/examples/previews/word-04.webp',
+        captionEn: 'Page 4 of 6 · Ch. 3 Multi-Step Organic Reaction Schemes (Lossless KET)',
+        captionKo: '4 / 6쪽 · 3장 다단계 유기 합성 반응식 (무손실 KET 메타데이터)'
+      },
+      {
+        img: '/examples/previews/word-05.webp',
+        captionEn: 'Page 5 of 6 · Ch. 4 Mol* 3D Macromolecular Target Figure (PDB: 1CRN)',
+        captionKo: '5 / 6쪽 · 4장 Mol* 3D 단백질 구조 Figure (PDB: 1CRN Crambin)'
+      },
+      {
+        img: '/examples/previews/word-06.webp',
+        captionEn: 'Page 6 of 6 · Ch. 5 ACS B&W Batch Style, Vector SVG & Troubleshooting',
+        captionKo: '6 / 6쪽 · 5장 학술지 흑백 일괄 변환(Batch Style), 벡터 SVG 및 문제 해결'
       }
     ]
   },
@@ -456,11 +471,11 @@ function openSlideLightbox() {
   background: var(--s2i-ppt-border);
 }
 
-/* 16:9 Carousel Stage */
+/* 3:2 Carousel Stage */
 .s2i-pb-stage {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 3 / 2;
   background: #141820;
   outline: none;
 }

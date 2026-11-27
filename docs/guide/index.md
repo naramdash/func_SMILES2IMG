@@ -16,6 +16,10 @@ All three apps include the built-in offline **[Ketcher 2D](/editor/)** sketcher 
 
 ![func_SMILES2IMG running in Microsoft Excel](/excel-showcase.png)
 
+![func_SMILES2IMG running in Microsoft Word](/word-showcase.png)
+
+![func_SMILES2IMG running in Microsoft PowerPoint](/powerpoint-showcase.png)
+
 ## Why `func_SMILES2IMG`?
 
 | Feature | **func_SMILES2IMG** | **ChemDraw / JChem for Office** | **Chem4Word** |

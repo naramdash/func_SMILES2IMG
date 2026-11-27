@@ -20,6 +20,8 @@ Files downloaded through a web browser carry a Windows Mark-of-the-Web security 
 * **Manual Fix:** Right-click the `.zip` archive (before extracting) or `.xll` file ➔ **Properties** ➔ check **Unblock** at the bottom ➔ click **OK**.
 * **Automatic Alternative:** Run the [PowerShell Install](/guide/install) command, which calls `Unblock-File` automatically on every installed file.
 
+<FeatureMedia id="common-install-walkthrough" />
+
 ## 3. Corporate Firewall or Offline Workstation
 
 * **Installing Without Direct GitHub Access:** Follow the [Offline Manual ZIP Install](/guide/install#offline-zip) procedure.

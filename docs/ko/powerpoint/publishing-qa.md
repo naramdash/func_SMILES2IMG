@@ -14,6 +14,8 @@
 2. 상단 **`[SMILES]` ➔ `[Copy SVG]`** (또는 우클릭 ➔ **`Chemical Structure` ➔ `Copy Vector SVG`**)를 클릭합니다.
 3. PowerPoint 포스터 슬라이드(Office 365/2019+)나 **Adobe Illustrator / Inkscape**에 <kbd>Ctrl</kbd> + <kbd>V</kbd>로 붙여넣으면 확대 배율과 무관하게 매끈한 벡터 곡선이 유지됩니다.
 
+<FeatureMedia id="powerpoint-slide-svg-animation" />
+
 ### Step 2. 발표 Q&A 물성 답변 준비하기 (`Molecule Info`)
 
 PowerPoint 전체 화면 **슬라이드 쇼 진행 중에는 상단 리본과 추가 기능 우클릭 메뉴가 표시되지 않습니다.** 발표 상황에서는 아래 두 단계로 대비하는 것이 좋습니다:

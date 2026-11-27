@@ -331,7 +331,7 @@ export default defineConfig({
           { text: navApp('excel', 'Excel'), link: '/ko/excel/', activeMatch: '^/ko/excel/' },
           { text: navApp('word', 'Word'), link: '/ko/word/', activeMatch: '^/ko/word/' },
           { text: navApp('powerpoint', 'PowerPoint'), link: '/ko/powerpoint/', activeMatch: '^/ko/powerpoint/' },
-          { text: 'Editor', link: '/ko/editor/', activeMatch: '^/ko/editor/' },
+          { text: '편집기', link: '/ko/editor/', activeMatch: '^/ko/editor/' },
           {
             text: 'v1.9.1',
             items: [
@@ -363,7 +363,7 @@ export default defineConfig({
               ]
             },
             {
-              text: 'Editor',
+              text: '편집기',
               collapsed: false,
               items: [
                 sidebarIconJump('ketcher.png', 'Ketcher (2D)', '/ko/editor/'),

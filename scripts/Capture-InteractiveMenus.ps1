@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Captures real, live 3-level right-click Context Menu screenshots ("Chemical Structure -> Copy Molecule Info -> ...")
     from Microsoft Excel, Word, and PowerPoint using Per-Monitor DPI-Aware PrintWindow + UIA ExpandCollapsePattern.
@@ -324,7 +324,7 @@ if ($TargetApp -eq 'All' -or $TargetApp -eq 'Word') {
         $hwnd = [IntPtr]$word.ActiveWindow.Hwnd
         [uint32]$wPid = 0
         [void][LiveMenuCapture]::GetWindowThreadProcessId($hwnd, [ref]$wPid)
-        [void][LiveMenuCapture]::SetMainWindowSizeLogical($hwnd, 8, 8, 1230, 692)
+        [void][LiveMenuCapture]::SetMainWindowSizeLogical($hwnd, 4, 4, 1230, 820)
         Start-Sleep -Milliseconds 600
         Select-RibbonTab $hwnd 'SMILES'
 
@@ -387,7 +387,7 @@ if ($TargetApp -eq 'All' -or $TargetApp -eq 'Excel') {
         $hwnd = [IntPtr]$excel.Hwnd
         [uint32]$xPid = 0
         [void][LiveMenuCapture]::GetWindowThreadProcessId($hwnd, [ref]$xPid)
-        [void][LiveMenuCapture]::SetMainWindowSizeLogical($hwnd, 8, 8, 1230, 692)
+        [void][LiveMenuCapture]::SetMainWindowSizeLogical($hwnd, 4, 4, 1230, 820)
         Start-Sleep -Milliseconds 600
         Select-RibbonTab $hwnd 'SMILES'
 
@@ -462,12 +462,12 @@ if ($TargetApp -eq 'All' -or $TargetApp -eq 'PowerPoint') {
             Start-Sleep -Milliseconds 300
             if ($slide.Shapes.Count -ge 1) { $shp = $slide.Shapes.Item($slide.Shapes.Count); $shp.Select() }
         }
-        $tb.Delete()
+        try { $tb.Delete() } catch {}
 
         $hwnd = [IntPtr]$ppt.HWND
         [uint32]$pPid = 0
         [void][LiveMenuCapture]::GetWindowThreadProcessId($hwnd, [ref]$pPid)
-        [void][LiveMenuCapture]::SetMainWindowSizeLogical($hwnd, 8, 8, 1230, 692)
+        [void][LiveMenuCapture]::SetMainWindowSizeLogical($hwnd, 4, 4, 1230, 820)
         Start-Sleep -Milliseconds 600
         Select-RibbonTab $hwnd 'SMILES'
 

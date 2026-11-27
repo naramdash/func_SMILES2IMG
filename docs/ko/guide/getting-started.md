@@ -1,4 +1,4 @@
-# 시작하기 (Getting Started)
+# 시작하기
 
 **`func_SMILES2IMG`** 설치 후 상단에 **`[SMILES]`** 리본 탭이 보인다면, Excel · Word · PowerPoint에서 첫 분자 구조식을 그려보세요.
 
@@ -40,4 +40,4 @@
 - [**Excel 가이드**](/ko/excel/) — 구조식 표, 이름·CAS 조회, LogP·TPSA·3D 지표, SAR 스크리닝, `.sdf` 가져오기 및 49개 함수 사전
 - [**Word 가이드**](/ko/word/) — 논문 본문 인라인 구조식, 화합물 SAR 표, KET 합성 반응식, Mol\* 3D 그림 및 ACS 흑백 변환
 - [**PowerPoint 가이드**](/ko/powerpoint/) — 다크 모드 투명 구조식, 텍스트 상자 구조 변환, 반응 메커니즘 및 360° 회전 3D 단백질 슬라이드
-- **[Editor — Ketcher 2D · Mol\* 3D · 출력](/ko/editor/)** — 2D 구조·반응식 편집기, 3D 단백질 뷰어, ACS 흑백 일괄 변환 및 벡터 SVG 복사 가이드
+- **[편집기 — Ketcher 2D · Mol\* 3D · 출력](/ko/editor/)** — 2D 구조·반응식 편집기, 3D 단백질 뷰어, ACS 흑백 일괄 변환 및 벡터 SVG 복사 가이드

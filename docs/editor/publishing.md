@@ -40,6 +40,8 @@ Clicking **`[SMILES] ➔ [Copy SVG]`** (or right-clicking ➔ **`Chemical Struct
 | **Conference Posters (A0 Print)** | Scale structures up to any poster size without pixelation or jagged edges. |
 | **Code & Web Editors (VS Code, HTML)** | Because both the `image/svg+xml` stream and raw `<svg>...</svg>` XML text are copied simultaneously, pasting into a text editor gives you clean inline SVG markup immediately. |
 
+<FeatureMedia id="powerpoint-slide-svg-animation" />
+
 ## 3. 🔬 Molecule Info Window & 5 Multi-Format Exports
 
 **Right-click** any chemical cell or picture ➔ **`Chemical Structure ➔ Copy Molecule Info`** (or click **`[Molecule Info]`** on the ribbon) to inspect calculated properties and copy them in the format your document needs. Clicking **`Detailed Molecule Info Window...`** opens a standard Windows dialog with a 2D structure thumbnail preview, row **`Copy`** buttons, and a bottom format selector:
@@ -127,6 +129,10 @@ Inside the **Detailed Molecule Info Window**, select **JSON** from the format dr
   "inchiKey": "BSYNRYMUTXBXSQ-UHFFFAOYSA-N"
 }
 ```
+
+::: tip 6th Option in the Detailed Window: `Compact Summary`
+The bottom format dropdown in **`Detailed Molecule Info Window...`** also includes **`Compact Summary`**, which copies a single pipe-delimited line (`Name: Aspirin | Formula: C9H8O4 | MW: 180.16 g/mol | ...`) for inline notes, commit messages, or log entries.
+:::
 
 ## 🚀 Continue Exploring
 

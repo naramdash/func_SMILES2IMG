@@ -6,6 +6,8 @@ Losslessly restyle formula-backed chemical tables across an entire Excel workshe
 
 Click **`[SMILES]` ➔ `[Batch Style]`** on the Excel ribbon to standardize the background and bond palette of your chemical structures in one step:
 
+<FeatureMedia id="excel-ribbon-tools" />
+
 * **Lossless Formula Rewriting:** Rewrites standalone `=SMILES2IMG`, `=NAME2IMG`, `=INCHI2IMG`, `=KET2IMG` (and `.FLOAT`) formulas by keeping the first argument (including nested calls or quoted KET strings), updating `[bg]` and color/ink tokens in `[style]`, and **preserving structural tokens (`hl:`, `num`, `stereo`, `h`, `all-c`) and 4th-arg rotations (`rot90`, `rot180`, `rot270`)**.
 * **Dynamic Highlight Compatibility & Composite Protection:** Even formulas with dynamic expressions like `=SMILES2IMG(C5, , "hl:" & $B$3)` keep `$B$3` live after Batch Style, while composite wrapper formulas (such as `=IF(..., SMILES2IMG(...))`) are safely skipped without corruption.
 * **Scope:** Select a multi-cell range to restyle only that selection, select a single cell to scan all formula cells on the **entire active worksheet**, or click an inserted 2D shape to restyle only that shape.

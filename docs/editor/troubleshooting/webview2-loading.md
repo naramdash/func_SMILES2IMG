@@ -9,6 +9,8 @@ Both Ketcher 2D and Mol\* 3D run locally inside **Microsoft Edge WebView2**.
 * Windows 10 and Windows 11 include Edge WebView2 by default, but stripped enterprise OS images occasionally omit it.
 * If the editor dialog cannot initialize WebView2, install the official **Microsoft Edge WebView2 Evergreen Runtime** and restart Office.
 
+<FeatureMedia id="common-ketcher-2d" />
+
 ## 2. Reset the Local Editor Bundle Cache
 
 `func_SMILES2IMG` extracts its offline Ketcher and Mol\* assets into `%LOCALAPPDATA%\Smiles2Img` and validates them using a `SHA-256` fingerprint. If an antivirus lock or interrupted update left partial files:

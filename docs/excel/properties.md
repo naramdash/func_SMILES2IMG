@@ -37,6 +37,8 @@ Because `=SMILES2MW` returns a genuine numeric `Double`, you can multiply it dir
 
 To calculate theoretical yield (`mg`) of your product row (column `B4`), multiply the limiting reagent's `mmol` (`$F$2`), equivalents, and `=SMILES2MW(B4)` directly.
 
+<FeatureMedia id="excel-usecase-eln-stoichiometry" />
+
 ## 3. Template 2: LC-MS & HRMS Calculated Ion Mass (*m/z*)
 
 Use `=SMILES2EXACTMASS(A2)` (accurate to 4 decimal places) to compute calculated exact *m/z* values for common mass spectrometry adducts automatically:

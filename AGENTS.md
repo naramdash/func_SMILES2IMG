@@ -163,46 +163,59 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Generate-All-Playboo
 
 ---
 
-## 5. 라이브 문서 동영상·스크린샷 녹화 배율 및 뷰포트 규격 (Mandatory Media Capture Scale & Framing Rule)
+## 5. 라이브 문서 동영상·스크린샷·Playbook 프리뷰 녹화 배율 및 뷰포트 규격 (Mandatory 3:2 Media Capture Scale & Framing Rule)
 
-문서 사이트와 README용 라이브 동영상·스크린샷(`scripts/Capture-LiveDocsMedia.ps1`, `scripts/Capture-InteractiveMenus.ps1`)은 **작은 화면 기준의 일관된 논리 뷰포트(Logical DIPs)**로 녹화하여, 임베드 카드·Hero 뷰포트에서도 리본 아이콘·분자 구조식·셀 텍스트가 크고 선명하게 읽혀야 합니다.
+문서 사이트와 README용 모든 라이브 동영상·스크린샷·Playbook 프리뷰(`scripts/Capture-LiveDocsMedia.ps1`, `scripts/Capture-InteractiveMenus.ps1`, `scripts/Generate-Playbook-Previews.ps1`, `scripts/Capture-InstallWalkthrough.ps1`)는 **3:2 종횡비(`1230 × 820` DIPs)의 일관된 논리 뷰포트(Logical DIPs)**로 촬영하여, 상단 리본 UI가 과도하게 비대해지지 않으면서 하단 본문(엑셀 구조식 행, 워드 표·본문, 파워포인트 슬라이드 캔버스)이 충분히 노출되어야 합니다.
 
-### ⚠️ 동영상이 작고 빽빽하게 찍히는 원인 (Root Cause)
-- [LiveCaptureEngine.cs](scripts/LiveCaptureEngine.cs)의 `InitDpi()`와 [Capture-InteractiveMenus.ps1](scripts/Capture-InteractiveMenus.ps1)은 Per-Monitor-V2 DPI Awareness(`SetProcessDpiAwarenessContext(-4)`)를 활성화하므로 Win32 `SetWindowPos`에 **물리 픽셀(Physical px)**이 그대로 전달됩니다.
-- `2768×1556` 물리 픽셀을 DPI 스케일링 없이 하드코딩한 상태에서 **100% DPI(96 DPI)** 디스플레이/세션으로 캡처하면 논리 창 크기가 **2.25배 확대**되어(`2768×1556 DIPs`), Excel 시트는 `A–AL`(38열 × 72행)의 깨알 그리드로 축소되고, Word 문서는 좌측 1/3 폭으로 쪼그라들며, 제목 표시줄 마스크가 리본 탭까지 침범하게 됩니다.
+### ⚠️ UI만 거대해지거나 반대로 깨알같이 작아지는 원인 (Root Cause)
+1. **Per-Monitor-V2 DPI Awareness와 물리 픽셀 하드코딩 문제**:
+   - [LiveCaptureEngine.cs](scripts/LiveCaptureEngine.cs)의 `InitDpi()`와 [Capture-InteractiveMenus.ps1](scripts/Capture-InteractiveMenus.ps1)은 `SetProcessDpiAwarenessContext(-4)`를 활성화하므로 Win32 `SetWindowPos`에 **물리 픽셀(Physical px)**이 전달됩니다.
+   - `1920×1080` 물리 픽셀을 하드코딩한 채 **225% DPI(216 DPI)** 환경에서 캡처하면 논리 창이 `853×480 DIPs`로 쪼그라들어 리본 그룹(`Structure Tools`, `About`)이 접히고 본문이 잘립니다. 반대로 `2768×1556` 물리 픽셀을 **100% DPI(96 DPI)** 환경에서 캡처하면 논리 창이 2.25배 커져 깨알 그리드가 됩니다.
+2. **16:9 종횡비의 세로 본문 부족 문제**:
+   - Office 앱의 상단 고정 UI(제목 표시줄 + 리본 + 수식 입력줄 + 하단 상태 표시줄)는 세로 높이가 약 `220~250 DIPs`로 고정되어 있습니다.
+   - `16:9`(`1230×692 DIPs`)에서는 상하단 고정 UI를 제외한 본문 세로 높이가 부족해 표 헤더만 보이고 구조식 데이터 행이 잘리기 쉽습니다. 가로 폭(`1230 DIPs`)을 유지한 채 세로 높이를 **`3:2`(`1230×820 DIPs`, `+128 DIPs`)**로 늘리면 늘어나는 세로 공간이 100% 본문 영역에 할당됩니다.
 
-### 📐 필수 표준 논리 창 크기 (Small Baseline Standard: `1230 × 692` DIPs)
-- **절대로 `2768×1556` 같은 물리 픽셀을 직접 넘기지 마십시오.**
-- 항상 **`[LiveCaptureEngine]::SetMainWindowSizeLogical($hwnd, 8, 8, 1230, 692)`**(또는 `Capture-InteractiveMenus.ps1`의 `[LiveMenuCapture]::SetMainWindowSizeLogical($hwnd, 8, 8, 1230, 692)`)를 사용해 현재 창 DPI(`GetDpiForWindow(hwnd) / 96.0`)에 비례한 물리 픽셀로 자동 변환하십시오. (화면 작업 영역 초과 시 동일 종횡비로 자동 클램프)
+### 📐 필수 표준 논리 창 크기 (3:2 Baseline Standard: `1230 × 820` DIPs)
+- **절대로 물리 픽셀을 `SetMainWindowSize`에 직접 넘기지 마십시오.**
+- 항상 **`[LiveCaptureEngine]::SetMainWindowSizeLogical($hwnd, 4, 4, 1230, 820)`**(또는 `Capture-InteractiveMenus.ps1`의 `[LiveMenuCapture]::SetMainWindowSizeLogical($hwnd, 4, 4, 1230, 820)`)를 사용해 현재 창 DPI(`GetDpiForWindow(hwnd) / 96.0`)에 비례한 3:2 물리 픽셀로 자동 변환하십시오.
 
-| 디스플레이 배율 | `GetDpiForWindow` | 적용 물리 창 크기 (`1230×692` DIPs 기준) | 비고 |
+| 디스플레이 배율 | `GetDpiForWindow` | 적용 물리 창 크기 (`1230×820` DIPs, 3:2 기준) | 비고 |
 | :--- | :--- | :--- | :--- |
-| **100%** | `96 DPI` | `1230 × 692 px` | 작은 16:9 기준에서도 FFmpeg `1920×1080` 업스케일 품질 유지 |
-| **125%** | `120 DPI` | `1538 × 864 px` | 짝수 픽셀 정렬 |
-| **150%** | `144 DPI` | `1844 × 1038 px` | 약 1080p 근접 |
-| **200%** | `192 DPI` | `2460 × 1384 px` | 4K/HiDPI 기준 |
-| **225%** *(표준)* | `216 DPI` | **`2768 × 1556 px`** | `v1.8.1` 기준 클로즈업 프레이밍과 100% 동일 |
+| **100%** | `96 DPI` | `1230 × 820 px` | 3:2 논리 뷰포트 원본 |
+| **125%** | `120 DPI` | `1538 × 1024 px` | 짝수 픽셀 정렬 (3:2) |
+| **150%** | `144 DPI` | `1844 × 1230 px` | 짝수 픽셀 정렬 (3:2) |
+| **200%** | `192 DPI` | `2460 × 1640 px` | 4K/HiDPI 3:2 기준 |
+| **225%** *(표준)* | `216 DPI` | **`2766 × 1844 px`** | 3:2 표준 클로즈업 + 본문 확장 프레이밍 |
 
-- **`1230 × 692` DIPs 선정 이유**: Excel `SMILES` 리본의 전체 14개 버튼(`Online Docs` 포함)이 접히지 않고 한 줄에 표시되며, 동시에 `SDFImport` 11/12열(`A–L`) 전체가 가로 잘림 없이 들어오고 Hero·가이드 카드 내에서도 구조식·수식이 크고 또렷하게 보입니다.
+- **`1230 × 820` DIPs (3:2) 선정 이유**:
+  1. **가로 `1230 DIPs`**: Excel `SMILES` 리본의 전체 14개 버튼(`Online Docs` 포함)이 접히지 않고 한 줄에 펼쳐지며, `SDFImport` 11/12열(`A–L`) 전체가 가로 잘림 없이 들어옵니다.
+  2. **세로 `820 DIPs` (3:2)**: 상단 고정 리본 UI 비율은 컴팩트하게 유지하면서 본문 세로 노출 영역을 16:9 대비 30~50% 확장하여 Excel 구조식 행 4~8개, Word 본문 표·구조식, PowerPoint 슬라이드(`~73%` 줌)가 한눈에 들어옵니다.
 
-### 🔍 호스트 애플리케이션별 필수 Zoom 및 UI 스케일 규격
-1. **Excel**: `ActiveWindow.Zoom = 85` (`excel-overview` 기준 **약 12~15열 `A–L` / `1–14행`**이 화면을 채워야 하며 25열 이상 깨알 그리드가 되면 실패).
-2. **Word**: `ActiveWindow.View.Zoom.Percentage = 85` (단일 페이지 원고가 뷰포트 가로 폭의 **50% 이상(~65%)**을 차지해야 하며, 2단/3단 축소 정렬 방지). Common 백드롭 Word 창에도 동일하게 85% 적용.
-3. **PowerPoint**: `SlideWidth = 960`, `SlideHeight = 540` (16:9) + `ActiveWindow.View.ZoomToFit = -1`.
+### 🔍 호스트 애플리케이션별 필수 Zoom 및 UI 스케일 규격 (`1230 × 820` DIPs 기준)
+1. **Excel**:
+   - 라이브 문서 미디어(`Capture-LiveDocsMedia.ps1`, `Capture-InteractiveMenus.ps1`): `ActiveWindow.Zoom = 85` (`excel-overview` 기준 **약 10~14열 `A–L` / `1–18행`** 노출, 25열 이상 축소 금지).
+   - Playbook 프리뷰(`Generate-Playbook-Previews.ps1`): 탭별 열 폭(6~14열)에 맞춰 `ActiveWindow.Zoom = 70~82` 적용하여 `Col E` 실제 인셀 2D 구조식 행들이 4행 이상 온전히 보이도록 촬영.
+2. **Word**:
+   - 라이브 문서 미디어(`Capture-LiveDocsMedia.ps1`): `ActiveWindow.View.Zoom.Percentage = 85` (단일 페이지 원고가 뷰포트 가로 폭의 **50% 이상(~65%)** 차지). Common 백드롭 Word 창에도 동일하게 85% 적용.
+   - Playbook 프리뷰(`Generate-Playbook-Previews.ps1`): `PageColumns = 1`, `Zoom.Percentage = 86`으로 6페이지 전체(`word-01`~`word-06.webp`)를 단일 페이지 뷰로 촬영.
+3. **PowerPoint**:
+   - `SlideWidth = 960`, `SlideHeight = 540` + `ActiveWindow.View.ZoomToFit = -1` (Playbook 프리뷰는 `SplitHorizontal = 15`, `SplitVertical = 88`로 슬라이드 편집 캔버스가 약 `73%` 배율로 큼직하게 표시되어야 함).
 4. **제목 표시줄 계정 마스킹 & 커서**:
    - `SanitizeTitleBar(bmp, dpiScale)`는 DPI 스케일에 비례해 우측 상단 계정/`plan` 배지/프로필 아이콘 영역(`w - 380*s` ~ `w - 150*s`, `y = 2*s`, `h = 38*s`)만 덮어 창 최소화/최대화/닫기(`_ □ X`)와 아래 리본 탭(`File..SMILES`)을 건드리지 않습니다.
-   - `DrawCursor(..., scale)`와 클릭 캔버스 fallback 좌표(`Scale-RefX`/`Scale-RefY`), `Show-LiveAboutOverHost` 중앙 정렬도 실제 창 크기에 비례 스케일링합니다.
-5. **출력 인코딩 및 Manifest 보호**:
-   - 기능 클립(`clip.mp4`, `clip.webm`): FFmpeg `scale=1920:1080:flags=lanczos`, `12fps`, 3.0초 이상.
-   - 랜딩 Hero(`docs/public/hero-demo.webm`, `hero-demo-poster.webp`, `assets/hero-demo.webp`): `scale=1280:-2:flags=lanczos` (`VP9 crf 34` / `WebP`).
+   - `DrawCursor(..., scale)`와 클릭 캔버스 fallback 좌표(`Scale-RefX`/`Scale-RefY`), `Show-LiveAboutOverHost` 중앙 정렬도 실제 창 가로 DPI 스케일(`$sz.Width / 2766.0`)에 비례해 스케일링합니다.
+5. **3:2 출력 인코딩 해상도 및 뷰포트 규격**:
+   - 기능 클립(`clip.mp4`, `clip.webm`, `shot.webp`) 및 설치 가이드(`Capture-InstallWalkthrough.ps1`): **`1920 × 1280` (3:2)** (`scale=1920:1280:flags=lanczos`, `12~15fps`, 3.0초 이상, 정지컷은 `libwebp -quality 86`).
+   - 랜딩 Hero(`docs/public/hero-demo.webm`, `hero-demo-poster.webp`, `assets/hero-demo.webp`, `HeroDemoVideo.vue`): **`1280 × 854` (3:2)** (`aspect-ratio: 3 / 2`, `VP9 crf 34` / `WebP`).
+   - Playbook 프리뷰(`docs/public/examples/previews/*.webp`, `PlaybookPreview.vue`): **`1380 × 920` (3:2)** (`aspect-ratio: 3 / 2`, `libwebp -quality 86`).
    - `Capture-LiveDocsMedia.ps1 -Section All` 실행 시 `Capture-InstallWalkthrough.ps1`이 관리하는 `common-install-walkthrough` 항목을 `manifest.json` / `mediaManifest.json`에서 삭제하지 말고 반드시 보존하십시오.
 
 ### ✅ 녹화 후 필수 시각 검증 게이트 (Post-Capture Visual Verification)
-라이브 미디어를 재촬영한 뒤에는 **반드시 아래 대표 이미지를 직접 열어 눈으로 프레이밍을 확인**한 뒤 완료 처리하십시오:
-- `docs/public/media/excel-overview/shot.png` & `docs/public/hero-demo-poster.webp`: **10~15열(`A–L`~`A–O`) 및 `SMILES` 리본 전체 노출** 여부 (30열+ 축소 금지)
-- `docs/public/media/word-overview/shot.png`: 원고 페이지 폭이 전체 창 폭의 **50% 이상**인지 여부
-- `docs/public/media/powerpoint-overview/shot.png`: 리본과 슬라이드 비율 균형 여부
-- `docs/public/media/excel-sdf-workflow/shot.png`: 11열(`A–K`/`A–L`) 가로 잘림 없음 확인
+라이브 미디어 또는 Playbook 프리뷰를 재촬영한 뒤에는 **반드시 아래 대표 이미지를 직접 열어 눈으로 3:2 프레이밍과 본문 노출을 확인**한 뒤 완료 처리하십시오:
+- `docs/public/media/excel-overview/shot.webp` & `docs/public/hero-demo-poster.webp`: **3:2 비율(`1920×1280` / `1280×854`), 10~14열(`A–L`), `1–18행` 본문 및 `SMILES` 리본 14개 버튼 전체 노출** 여부
+- `docs/public/examples/previews/excel-01.webp`, `word-01.webp`, `ppt-01.webp`: **3:2 비율(`1380×920`), 리본 미접힘 및 본문 구조식·표·슬라이드(`~73%` 줌)가 시원하게 보이는지** 확인
+- `docs/public/media/word-overview/shot.webp`: 원고 페이지 폭이 전체 창 폭의 **50% 이상**이며 3:2 세로 공간에 본문과 요약 표가 함께 노출되는지 여부
+- `docs/public/media/powerpoint-overview/shot.webp`: 3:2 창에서 리본과 슬라이드 비율 균형 여부
+- `docs/public/media/excel-sdf-workflow/shot.webp`: 11열(`A–K`/`A–L`) 가로 잘림 없음 확인
 - 우측 상단 제목 표시줄 마스킹: 계정 배지/`plan`/초록 아이콘 노출 0건 & 리본 탭 행 무침범 확인
 - 문서 무결성 검증: `node scripts/audit-docs-links.js`, `node scripts/audit-docs-media.js`, `npm.cmd run docs:build` 모두 오류 0건
 
@@ -220,8 +233,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Generate-All-Playboo
 6. (프리뷰 릴리스 시에만) `docs/guide/install.md` & `docs/ko/guide/install.md`에 프리뷰 안내 추가, 설치 영상 변경 시 `Capture-InstallWalkthrough.ps1` 재실행
 7. `install.ps1` & `uninstall.ps1`: 기본 폴백 버전(`"vX.Y.Z-preview.N"`), COM 어셈블리 폴백(`Version=X.Y.Z.0`), `Get-InstalledFileVersion` 프리뷰 파싱
 8. (`Indigo.Net`, `Microsoft.Web.WebView2` 등 의존성 변경 시) `src/Smiles2Img.Core/Editor/AboutDialog.cs`, `THIRD_PARTY_NOTICES.md`, `README.md` 동기화
-9. **공식 Office Playbook 3종 재생성**: `scripts/Generate-All-Playbooks.ps1` 실행하여 새 버전 번호와 신규 기능을 `examples/` 및 `docs/public/examples/`에 반영
-10. **라이브 미디어 재촬영 및 배율·프레이밍 검증** *(UI·기능·버전 표시 변경 시)*: `Capture-LiveDocsMedia.ps1 -Section All` (`1230×692` DIPs 논리 창 기준) 실행 후 §5 시각 검증 게이트 확인
+9. **공식 Office Playbook 3종 및 3:2 프리뷰 재생성**: `scripts/Generate-All-Playbooks.ps1` 실행하여 새 버전 번호와 신규 기능을 `examples/`, `docs/public/examples/`, `docs/public/examples/previews/`(3:2 WebP)에 반영
+10. **라이브 미디어 재촬영 및 3:2 배율·프레이밍 검증** *(UI·기능·버전 표시 변경 시)*: `Capture-LiveDocsMedia.ps1 -Section All`, `Capture-InteractiveMenus.ps1`, `Capture-InstallWalkthrough.ps1` (`1230×820` DIPs 3:2 논리 창 기준) 실행 후 §5 시각 검증 게이트 확인
 
 ### 검증 및 배포 커맨드:
 ```powershell

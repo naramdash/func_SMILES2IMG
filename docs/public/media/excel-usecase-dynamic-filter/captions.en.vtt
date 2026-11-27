@@ -1,0 +1,8 @@
+WEBVTT
+
+00:00:00.667 --> 00:00:01.303
+Lower LogP threshold H1 from 4.2 to 2.0: high-LogP compounds drop out automatically.
+
+00:00:01.333 --> 00:00:02.933
+Tighten cutoff H1 to 1.0 to narrow down polar leads, then restore to 2.0.
+

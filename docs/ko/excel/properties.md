@@ -37,6 +37,8 @@
 
 생성물 행의 SMILES(`B4`)에 대해서도 한계 시약 `mmol`(`$F$2`) × `SMILES2MW(B4)` 수식을 넣으면 **이론 수율**(`mg`)이 즉시 계산됩니다.
 
+<FeatureMedia id="excel-usecase-eln-stoichiometry" />
+
 ## 3. 실전 템플릿 ②: LC-MS / HRMS 이온 피크 계산표 (*m/z*)
 
 소수점 4자리까지 계산되는 `=SMILES2EXACTMASS(A2)` 를 이용해 질량분석(HRMS) 이론 이온 피크를 자동 계산해 두세요:

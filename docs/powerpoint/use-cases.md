@@ -79,6 +79,8 @@ Screen libraries in [**Excel Use Cases**](/excel/use-cases) ➔ draft manuscript
 
 Reveal multi-step reaction mechanisms stage by stage on click or recolor key reactive bonds directly inside PowerPoint 2019–365 using editable native vector shapes.
 
+<FeatureMedia id="powerpoint-slide-svg-animation" />
+
 1. **Finalize Chemistry First:** Finish all bonds, arrows, and labels in **Ketcher 2D**, then select the slide shape (or highlight a SMILES string).
 2. **Paste as SVG Graphic:** Click **`[SMILES]` ➔ `[Copy SVG]`** and press <kbd>Ctrl</kbd> + <kbd>V</kbd> onto the slide.
 3. **Convert SVG Into Native Shapes:** Right-click the pasted SVG ➔ **Group ➔ Ungroup** (or **Graphics Format ➔ Convert to Shape**) to split every bond line, arrow, and atom letter into individual vector objects.

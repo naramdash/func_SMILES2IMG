@@ -14,6 +14,8 @@ Word 본문이나 화합물 표 안에서 인라인 구조식의 윗부분이 �
 * **구조식 삽입 전 표 너비 고정:** 표 우클릭 ➔ **자동 맞춤 ➔ 열 너비 고정**을 켜 두세요. `func_SMILES2IMG` 는 가로세로 비율(`LockAspectRatio`)을 고정해 기존 셀 너비 안에서 크기를 맞춰 교체합니다.
 * **음영 셀 · 교대 줄 배경과 대비가 낮을 때:** **`[SMILES]` ➔ `[Batch Style]` ➔ `[Standard Color (Transparent)]`** 로 흰 사각형 여백을 없애거나, 짙은 음영 행 위에서는 **`[White Background (Color)]`** 를 적용해 뚜렷하게 분리하세요.
 
+<FeatureMedia id="word-ch3-compound-table" />
+
 ## 3. `Batch Style` 적용 범위가 예상과 다름 {#batch-style}
 
 `Batch Style` 은 현재 Word에서 무엇이 선택되어 있는지에 따라 적용 범위를 자동으로 판별합니다:
@@ -24,6 +26,8 @@ Word 본문이나 화합물 표 안에서 인라인 구조식의 윗부분이 �
 ::: tip 실행 전 선택 상태 확인
 문서 전체를 흑백 변환하려 했는데 그림 1개만 바뀌었다면, 그림 선택을 해제하고 빈 문단에 커서만 둔 뒤 **`[Batch Style]`** 을 다시 클릭하세요.
 :::
+
+<FeatureMedia id="word-ch6-publication-finish" />
 
 ## 관련 가이드
 

@@ -32,6 +32,8 @@ Right-clicking a **worksheet cell** (`ContextMenuCell`), an **Excel Table (`List
 
 When a cell formula returns `#VALUE!`, click **`[SMILES]` ➔ `[Diagnostics]`** on the ribbon. The log window records the failing formula function name and exact EPAM Indigo parser message (for example, `SMILES2IMG: Indigo: unclosed ring #1`), allowing you to pinpoint malformed SMILES, InChI, KET, or SMARTS strings quickly.
 
+<FeatureMedia id="excel-diagnostics-dialog" />
+
 ## Related Guides
 
 - [**Batch Style, TSV, 3D**](/excel/tools-export) — Practical workflows for lossless sheet styling, 12-column TSV copy, and 3D PDB models

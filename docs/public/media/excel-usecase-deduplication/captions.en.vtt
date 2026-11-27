@@ -1,0 +1,8 @@
+WEBVTT
+
+00:00:00.333 --> 00:00:01.137
+Generate Canonical SMILES and 27-character InChIKeys across mixed SMILES and names.
+
+00:00:01.167 --> 00:00:02.967
+Evaluate COUNTIF on InChIKey: both Benzoic acid variants are flagged as Duplicate.
+

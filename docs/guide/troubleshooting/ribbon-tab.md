@@ -10,6 +10,8 @@ Office loads add-ins only during application startup.
 2. Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Esc</kbd> to open **Task Manager** and confirm no background `EXCEL.EXE`, `WINWORD.EXE`, or `POWERPNT.EXE` process is lingering.
 3. Reopen Office and check the top ribbon for **`[SMILES]`**.
 
+![Expected SMILES ribbon tab in Microsoft Excel](/excel-ribbon-guide.png)
+
 ## 2. Re-Enable Disabled Add-Ins
 
 If Office crashed previously, it may place an add-in into its **Disabled Items** list automatically.

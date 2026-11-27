@@ -2,14 +2,14 @@
 
 Diagnosis and fixes for every error or status code returned by `func_SMILES2IMG` formulas in Microsoft Excel.
 
-## 1. `#NAME?` Error
+## 1. `#NAME?` Error & Legacy Excel Notice
 
-Excel displays `#NAME?` when it does not recognize the function name:
+Excel displays `#NAME?` when it does not recognize the function name, or a `.FLOAT` guidance notice on perpetual Excel 2016–2021:
 
-| Cause | How to Tell | Fix |
+| Symptom | Cause | Fix |
 | :--- | :--- | :--- |
-| **Excel 2016 / 2019 / 2021** | Native in-cell image formulas (`=SMILES2IMG`, `=NAME2IMG`, `=KET2IMG`, `=INCHI2IMG`) require Microsoft 365 or Excel 2024+. | Append **`.FLOAT`** to the formula: `=SMILES2IMG.FLOAT(A2)` or `=NAME2IMG.FLOAT("Aspirin")`. |
-| **Add-In Not Loaded or Blocked** | Even `=SMILES2MW("CCO")` returns `#NAME?`, or the `[SMILES]` tab is missing. | Check [Installation Blocks](/guide/troubleshooting/install) and [Missing Ribbon Tab](/guide/troubleshooting/ribbon-tab). |
+| **`#NAME?` on every formula** | Add-in is not loaded/blocked, or workbook was recalculated on a PC without `func_SMILES2IMG` (`=SMILES2MW("CCO")` also returns `#NAME?`, or `[SMILES]` tab is missing). | Check [Installation Blocks](/guide/troubleshooting/install) and [Missing Ribbon Tab](/guide/troubleshooting/ribbon-tab). |
+| **`"Needs Excel 2024/365: use SMILES2IMG.FLOAT"`** | Native in-cell image formulas (`=SMILES2IMG`, `=NAME2IMG`, `=KET2IMG`, `=INCHI2IMG`) require Microsoft 365 or Excel 2024+. | Append **`.FLOAT`** to image formulas: `=SMILES2IMG.FLOAT(A2)` or `=NAME2IMG.FLOAT("Aspirin")` (scalar property formulas work without `.FLOAT`). |
 
 ## 2. `#VALUE!` Error
 
@@ -20,11 +20,13 @@ Excel displays `#VALUE!` when the formula ran, but the input or query string is 
 3. **Empty or Merged Cells:** When referencing a merged range, always point to its **top-left cell**.
 4. **Inspect Exact Parser Logs (`Diagnostics`):** Click **`[SMILES]` ➔ `[Diagnostics]`** on the ribbon to read the failing formula function name and exact EPAM Indigo parser error message (for example, `SMILES2IMG: Indigo: ...`).
 
-## 3. `#N/A` Status & Guardrails
+<FeatureMedia id="excel-diagnostics-dialog" />
 
-* **Brief Async Indicator:** When rendering a structure for the first time—or looking up an uncached compound name/CAS from PubChem—Excel briefly shows `#N/A` and **automatically replaces it** once complete.
-* **Unknown Names & Invalid CAS Numbers:** If a compound name is not in the built-in offline dictionary (or PubChem is unreachable/returns no match), or if a CAS number fails mathematical check-digit validation (e.g., `"50-78-3"`), `=NAME2*` immediately returns `#N/A` without waiting on a failed network call.
-* **Queries & Reactions in Single-Molecule Descriptors:** Passing query atoms / R-groups (`*`) or reaction schemes (`>>`) to single-molecule scalar property functions (`=SMILES2MW`, `=SMILES2LOGP`, `=SMILES2FSP3`, etc.) returns `#N/A` instead of miscomputing a false number.
+## 3. `#N/A` Status, Brief Blank Cell & Guardrails
+
+* **Brief Blank Cell During Async Rendering (`...2IMG`):** When rendering an uncached structure for the first time, `=SMILES2IMG`, `=NAME2IMG`, `=INCHI2IMG`, and `=KET2IMG` stay briefly blank (`""`) while the queued image update completes, then **automatically replace the cell** with the rendered image.
+* **Unknown Names, Offline Lookups & Invalid CAS Numbers (`#N/A`):** If a compound name is not in the built-in offline dictionary (or PubChem is unreachable/returns no match), or if a CAS number fails mathematical check-digit validation (e.g., `"50-78-3"`), `=NAME2*` / `*2NAME` returns `#N/A` cleanly (invalid CAS numbers fail locally without a network request).
+* **Queries & Reactions in Single-Molecule Descriptors (`#N/A`):** Passing query atoms / R-groups (`*`) or reaction schemes (`>>`) to single-molecule scalar property functions (`=SMILES2MW`, `=SMILES2LOGP`, `=SMILES2FSP3`, etc.) returns `#N/A` instead of miscomputing a false number.
 
 ## Related Guides
 

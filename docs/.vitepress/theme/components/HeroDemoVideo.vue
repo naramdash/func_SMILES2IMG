@@ -66,7 +66,7 @@ onBeforeUnmount(() => {
     ref="videoEl"
     class="image-src s2i-hero-video"
     width="1280"
-    height="720"
+    height="854"
     autoplay
     muted
     loop
@@ -83,7 +83,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .s2i-hero-video {
   display: block;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 3 / 2;
   object-fit: cover;
   background: var(--vp-c-bg-soft);
   cursor: pointer;

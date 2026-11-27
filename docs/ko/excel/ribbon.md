@@ -32,6 +32,8 @@ Microsoft Excel 상단 **`[SMILES]`** 리본 탭의 전체 명령, 4가지 대�
 
 수식 결과가 `#VALUE!`로 표시될 때 상단 **`[SMILES]` ➔ `[Diagnostics]`** 버튼을 클릭하세요. 오류가 발생한 수식 함수명과 함께 닫히지 않은 고리 번호(`unclosed ring`), 괄호 불일치, 잘못된 원자가 등 EPAM Indigo 화학 엔진이 보고한 정확한 문법 오류 메시지(예: `SMILES2IMG: Indigo: ...`)를 즉시 확인할 수 있습니다.
 
+<FeatureMedia id="excel-diagnostics-dialog" />
+
 ## 관련 가이드
 
 - [**일괄 스타일 · TSV · 3D**](/ko/excel/tools-export) — 무손실 시트 일괄 스타일 변환, 12열 TSV 복사 및 셀 PDB 기반 3D 단백질 삽입 활용법

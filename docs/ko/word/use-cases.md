@@ -78,7 +78,7 @@
 
 100페이지가 넘는 석·박사 학위논문에서도 Word **캡션(`Scheme 3.2`)** · 본문 **상호 참조** · **그림/반응식 목차**를 깨뜨리지 않고 수정할 수 있으며, 심사본(컬러 PDF)과 도서관 제본본(흑백 인쇄) 두 버전을 손쉽게 분기합니다.
 
-<FeatureMedia id="word-ch1-insert-ketcher" />
+<FeatureMedia id="word-usecase-thesis-captions" />
 
 1. **캡션 · 상호 참조 무결성 유지:** 인라인 구조식 아래 Word 기본 **캡션 삽입**을 붙여 두세요. **더블클릭** 재편집이나 **`[Batch Style]`** 은 문단 내 그림 위치만 제자리 교체하므로 자동 번호와 목차가 유지됩니다.
 2. **컬러 심사본 ↔ 흑백 제본본 일괄 전환:** 컬러 마스터 `.docx`로 심사본 PDF를 출력하고, 제본용 사본에서 **`[SMILES]` ➔ `[Batch Style]` ➔ `[Publication B&W (ACS Monochrome)]`** 를 실행해 전체 흑백본을 만듭니다.

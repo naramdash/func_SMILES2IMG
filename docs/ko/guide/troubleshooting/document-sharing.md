@@ -8,6 +8,8 @@
 * **열람자는 설치 불필요:** Windows, **macOS**, 아이패드, 웹 오피스에서 추가 기능 없이도 그림 깨짐이나 레이아웃 틀어짐 없이 열람·발표·인쇄·PDF 저장이 가능합니다.
 * **왕복 재편집 유지:** 화학 메타데이터(`KET:` / `SMILES:` / `MOLSTAR:`)가 표준 Alt Text와 `CustomXMLParts`에 함께 저장되므로, 나중에 `func_SMILES2IMG`가 설치된 PC에서 다시 열면 더블클릭 편집도 그대로 작동합니다.
 
+![Microsoft Word 문서에 임베드된 2D 구조식 및 3D 단백질 그림](/word-showcase.png)
+
 ## 2. Microsoft Excel (`.xlsx`)
 
 * **캐시된 결과 그대로 표시:** `.FLOAT` 도형, Microsoft 365 인셀 이미지 캐시, 이미 계산된 물성값(`MW`, `Formula`, `LogP`, `TPSA`)은 재계산이 일어나기 전까지 다른 PC에서도 화면에 그대로 보입니다.

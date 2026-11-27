@@ -81,7 +81,7 @@ sequenceDiagram
     else Cache Miss
         C->>R: In-memory high-res PNG render
         R-->>C: Generated PNG byte stream
-        C->>U: Enqueue async update & return temporary #N/A
+        C->>U: Enqueue async update & return temporary "" (blank)
         U->>Cache: Insert native in-cell picture into hidden sheet
         U->>F: Trigger worksheet recalculation
         F-->>User: Rendered molecule displayed in cell
@@ -103,7 +103,7 @@ func_SMILES2IMG/
 ├── package.json                        # VitePress documentation dependencies and scripts
 ├── .editorconfig & .vscode/            # Enforces UTF-8 (no BOM) & CRLF across editors
 ├── .github/workflows/                  # GitHub Actions workflows
-│   ├── ci.yml                          # Release build + 24 Unit/WebView2 E2E test suites
+│   ├── ci.yml                          # Release build + 31 Unit/WebView2 E2E test suites
 │   ├── release.yml                     # Release packaging, installer encoding check & GitHub Release
 │   └── deploy-docs.yml                 # Docs link & live-media audits + GitHub Pages deployment
 ├── docs/                               # VitePress documentation source
@@ -120,7 +120,7 @@ func_SMILES2IMG/
 │   │   ├── Notifications/              # Non-intrusive floating badges and notification service
 │   │   └── COM/                        # Shared Office COM interfaces (IDTExtensibility2, IRibbonExtensibility)
 │   ├── Smiles2Img.Excel/               # Excel-DNA standalone XLL add-in (net48)
-│   │   ├── Functions.cs                # 48 in-cell UDFs (=SMILES2IMG, =INCHI2*, =KET2*, =SMILES.MATCH, etc.)
+│   │   ├── Functions.cs                # 45 in-cell & scalar UDFs (=SMILES2IMG, =INCHI2*, =KET2*, =SMILES.MATCH, etc.)
 │   │   ├── FloatFunctions.cs           # 4 floating shape UDFs (.FLOAT for Excel 2016-2021)
 │   │   ├── CellImages.cs               # In-cell image cache manager
 │   │   ├── FloatingPictures.cs         # Cell-anchored floating shape manager

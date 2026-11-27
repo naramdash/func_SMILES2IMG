@@ -14,6 +14,8 @@ When an inline picture (`InlineShape`) appears cleanly at the bottom half while 
 * **Lock table widths before inserting structures:** Right-click the table ➔ **AutoFit ➔ Fixed Column Width**. `func_SMILES2IMG` automatically keeps aspect ratio locked (`LockAspectRatio`) and replaces structures inside your existing cell bounds.
 * **Low contrast on shaded rows or alternating stripes:** Run **`[SMILES]` ➔ `[Batch Style]` ➔ `[Standard Color (Transparent)]`** so structures sit cleanly over cell shading without white rectangles, or pick **`[White Background (Color)]`** to place a crisp white card behind each molecule.
 
+<FeatureMedia id="word-ch3-compound-table" />
+
 ## 3. Batch Style Changed Too Few or Too Many Figures {#batch-style}
 
 `Batch Style` scopes itself automatically based on what is currently selected in Word:
@@ -24,6 +26,8 @@ When an inline picture (`InlineShape`) appears cleanly at the bottom half while 
 ::: tip Check Selection Before Clicking Batch Style
 If you intended to restyle your whole manuscript and only one structure changed, click empty prose with nothing highlighted and run **`[Batch Style]`** again.
 :::
+
+<FeatureMedia id="word-ch6-publication-finish" />
 
 ## Related Guides
 

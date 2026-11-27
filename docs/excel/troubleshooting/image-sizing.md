@@ -16,6 +16,8 @@ Older perpetual Excel versions do not support native in-cell image formulas (`=S
 * Use the `.FLOAT` variants instead: `=SMILES2IMG.FLOAT(A2)`, `=NAME2IMG.FLOAT("Aspirin")`, `=KET2IMG.FLOAT(A2)`, `=INCHI2IMG.FLOAT(A2)`.
 * Generated picture shapes are anchored to their host cell (`xlMoveAndSize`), so resizing the cell scales the structure automatically.
 
+<FeatureMedia id="excel-legacy-float" />
+
 ## 3. Sharing `.xlsx` Files Without `#NAME?`
 
 * Cached cell images and calculated descriptor values remain visible on other PCs until someone triggers a recalculation (<kbd>F9</kbd>).

@@ -4,6 +4,10 @@ Explore the official **self-contained playbooks** for Microsoft Excel, Word, and
 
 <PlaybookTocCards />
 
+## Live Playbook Previews (Excel · Word · PowerPoint)
+
+<PlaybookPreview />
+
 ::: tip How to Use These Playbooks
 1. Make sure **`func_SMILES2IMG`** is installed ([Installation](/guide/install)).
 2. Select an Office app above to preview and download its playbook, then open it directly in **Excel**, **Word**, or **PowerPoint**.

@@ -17,7 +17,7 @@
 
 반응 셋업 때마다 ChemDraw·PubChem·계산기를 오갈 필요 없이, 상단에 **`[SMILES]` ➔ `[Insert / Edit (KET)]`** 로 반응식을 붙여 두고 `A` 열에 시약명이나 CAS 번호만 입력해 SMILES, 구조식, 분자량(`MW`), 칭량값(`mg`)을 자동 연동합니다.
 
-<FeatureMedia id="excel-reactions-ket" />
+<FeatureMedia id="excel-usecase-eln-stoichiometry" />
 
 1. 아래 표를 **`전체 복사`** 해 엑셀 **`A1`** 셀에 붙여넣으세요 (Excel 2016~2021은 `=SMILES2IMG` 뒤에 **`.FLOAT`** 추가).
 2. 한계 시약 `E2` 셀(`5.0` mmol) 숫자만 바꾸면 전 시약의 필요 칭량값(`F2:F4`)이 즉시 재계산됩니다.
@@ -64,7 +64,7 @@
 
 공급처나 논문마다 동일 분자의 SMILES 원자 순서가 달라(`c1ccccc1C(=O)O` vs `O=C(O)c1ccccc1`) 일반 텍스트 비교로는 중복을 놓치기 쉽습니다. 원자 순서와 무관한 27자리 **`InChIKey`** 로 정규화하면 `COUNTIF` 중복 표시, `XLOOKUP` 시트 병합, **중복된 항목 제거**를 정확하게 수행할 수 있습니다.
 
-<FeatureMedia id="excel-conversions" />
+<FeatureMedia id="excel-usecase-deduplication" />
 
 1. 아래 표를 **`A1`** 셀에 붙여넣으면 표기 순서가 다른 두 벤조산과 아스피린을 비교합니다.
 2. `COUNTIF($C$2:$C$4, C2)>1` 수식을 전체 행으로 채워 화학적으로 동일한 중복 항목을 즉시 검출합니다.
@@ -104,7 +104,7 @@ RDKit, KNIME, DataWarrior, PubChem에서 내보낸 `.sdf` 화학 DB를 엑셀 �
 
 Python이나 RDKit 없이 엑셀 기본 함수 **`SUBSTITUTE`** 만으로 치환기별 구조식과 물성을 시뮬레이션할 수 있습니다. `A` 열에 치환기 SMILES 조각만 추가하면 유도체 구조식·분자량·화학식·LogP가 로컬에서 계산됩니다.
 
-<FeatureMedia id="excel-cheminformatics" />
+<FeatureMedia id="excel-usecase-rgroup-enumeration" />
 
 1. 아래 유도체 조합 시트를 **`A1`** 셀에 붙여넣습니다 (`$B$2` 셀이 `[R]` 골격 템플릿).
 2. `A` 열 아래로 `Cl`, `OC`, `C#N` 등 다른 치환기 조각을 추가해 `C:F` 열 수식을 드래그해 채우세요.
@@ -128,7 +128,7 @@ Python이나 RDKit 없이 엑셀 기본 함수 **`SUBSTITUTE`** 만으로 치환
 
 **Microsoft 365 / Excel 2024+** 에서 `=SMILES2IMG` 는 셀 값 자체인 네이티브 **인셀 이미지(`CellImage`)** 를 반환하므로, 엑셀의 `XLOOKUP` · `FILTER` 수식이 구조식 그림까지 동적으로 끌어올 수 있습니다.
 
-<FeatureMedia id="excel-formula-table" />
+<FeatureMedia id="excel-usecase-dynamic-filter" />
 
 1. **드롭다운 1:1 리드 비교 카드:** `B2`와 `C2` 셀에 `Library` 시트 화합물명 드롭다운을 두고, `=XLOOKUP(B2, Library!$A:$A, Library!$C:$C)` 로 라이브 구조식 셀을 불러온 뒤 `=SMILES.MATCH(B3, Library!$B$1)` 및 `ΔMW` / `ΔLogP` 비교 행을 연결합니다.
 2. **실시간 조건별 `FILTER` 보드:** 조건을 만족하는 후보만 구조식 그림과 함께 자동 추출할 수 있습니다:

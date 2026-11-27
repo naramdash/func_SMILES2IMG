@@ -17,6 +17,8 @@ Mol\* 3D 뷰어 런타임 자체는 `func_SMILES2IMG` 내부에 내장되어 있
 3. Mol\* 상단 툴바의 **`Open File...`** 버튼을 눌러 로컬 파일을 선택합니다.
 4. 원하는 스타일(Cartoon, Surface 등)을 설정한 뒤 **`Apply to Slide`** / **`Apply to Document`** (또는 <kbd>Ctrl</kbd> + <kbd>Enter</kbd>)를 누릅니다.
 
+<FeatureMedia id="common-molstar-3d" />
+
 ## 3. 오프라인 모델 추후 재편집
 
 카메라 각도, 스타일 레시피(`.molj`), 모델 정보는 문서 메타데이터(`CustomXMLParts`)에 함께 저장되므로 나중에 더블클릭하면 같은 화면 그대로 다시 열립니다.

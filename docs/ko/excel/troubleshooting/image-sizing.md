@@ -16,6 +16,8 @@
 * 대신 `.FLOAT` 수식을 사용하세요: `=SMILES2IMG.FLOAT(A2)`, `=NAME2IMG.FLOAT("Aspirin")`, `=KET2IMG.FLOAT(A2)`, `=INCHI2IMG.FLOAT(A2)`
 * 생성된 그림 도형은 셀에 고정(`xlMoveAndSize`)되어 셀 크기를 조정하면 구조식도 함께 조절됩니다.
 
+<FeatureMedia id="excel-legacy-float" />
+
 ## 3. `#NAME?` 없이 `.xlsx` 파일 공유하기
 
 * 캐시된 셀 이미지와 계산된 물성값은 재계산(<kbd>F9</kbd>)이 일어나기 전까지 다른 PC에서도 그대로 표시됩니다.

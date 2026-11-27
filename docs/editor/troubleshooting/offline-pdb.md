@@ -17,6 +17,8 @@ The Mol\* 3D viewer runtime itself is bundled locally inside `func_SMILES2IMG`, 
 3. Click **`Open File...`** in the top Mol\* toolbar and select your local file.
 4. Style the cartoon/surface view as usual and click **`Apply to Slide`** / **`Apply to Document`** (or press <kbd>Ctrl</kbd> + <kbd>Enter</kbd>).
 
+<FeatureMedia id="common-molstar-3d" />
+
 ## 3. Re-Editing Offline Models Later
 
 Your camera angle, style recipe (`.molj`), and model reference persist inside the Office document metadata (`CustomXMLParts`), so double-clicking reopens your exact view later.

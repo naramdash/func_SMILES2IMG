@@ -1,6 +1,6 @@
 # 자주 묻는 질문 (FAQ)
 
-스타일 변환, 벡터 SVG 복사, `.sdf` 파일 연동, 물성 표 복사, 업데이트 등 자주 묻는 활용 질문 모음입니다. 공통 오류는 [설치 보안 차단](/ko/guide/troubleshooting/install), [리본 탭 미표시](/ko/guide/troubleshooting/ribbon-tab), [문서 공유](/ko/guide/troubleshooting/document-sharing)에서, 앱별 오류는 [Excel](/ko/excel/troubleshooting/formula-errors), [Word](/ko/word/troubleshooting/double-click), [PowerPoint](/ko/powerpoint/troubleshooting/dark-slides), [Editor](/ko/editor/troubleshooting/webview2-loading) 트러블슈팅에서 확인하세요.
+스타일 변환, 벡터 SVG 복사, `.sdf` 파일 연동, 물성 표 복사, 업데이트 등 자주 묻는 활용 질문 모음입니다. 공통 오류는 [설치 보안 차단](/ko/guide/troubleshooting/install), [리본 탭 미표시](/ko/guide/troubleshooting/ribbon-tab), [문서 공유](/ko/guide/troubleshooting/document-sharing)에서, 앱별 오류는 [Excel](/ko/excel/troubleshooting/formula-errors), [Word](/ko/word/troubleshooting/double-click), [PowerPoint](/ko/powerpoint/troubleshooting/dark-slides), [편집기](/ko/editor/troubleshooting/webview2-loading) 트러블슈팅에서 확인하세요.
 
 ## 1. 논문용 스타일 · 벡터(SVG)
 

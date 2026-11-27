@@ -32,7 +32,7 @@
   --s2i-ppt-bg: rgba(237, 108, 71, 0.18);
 }
 
-/* Balanced widescreen Hero layout so 16:9 demo GIF matches left column height */
+/* Balanced widescreen Hero layout so 3:2 demo video matches left column height */
 .VPHome .VPHomeHero.VPHero.has-image .image {
   margin: 0 0 28px;
 }
